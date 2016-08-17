@@ -51,3 +51,8 @@ Ubuntu 14.04 降级 Linux 系统内核
 没有什么错误提示，即可 `reboot` 重启。
 
 重新连接上后，检查 `uname -a`，如果已经到目的版本，则说明成功了。
+
+## 参考 ##
+
+降级linux内核，以Ubuntu 14.04为例，降级系统内核<br/>
+[http://www.oldcai.com/archives/1026](http://www.oldcai.com/archives/1026)
