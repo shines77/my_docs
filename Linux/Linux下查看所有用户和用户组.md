@@ -35,23 +35,27 @@ Linux下查看所有用户和用户组
     lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
     mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
     news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
-    uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
-    proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
-    www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
-    backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
-    list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
-    irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
-    gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
-    nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
-    libuuid:x:100:101::/var/lib/libuuid:
-    syslog:x:101:104::/home/syslog:/bin/false
-    messagebus:x:102:106::/var/run/dbus:/bin/false
-    landscape:x:103:109::/var/lib/landscape:/bin/false
-    sshd:x:104:65534::/var/run/sshd:/usr/sbin/nologin
-    skyinno:x:1000:1000:skyinno,,,:/home/skyinno:/bin/bash
-    postgres:x:106:114:PostgreSQL administrator,,,:/var/lib/postgresql:/bin/bash
-    mysql:x:107:116:MySQL Server,,,:/nonexistent:/bin/false
-    dnsmasq:x:108:65534:dnsmasq,,,:/var/lib/misc:/bin/false
-    libvirt-qemu:x:109:117:Libvirt Qemu,,,:/var/lib/libvirt:/bin/false
-    libvirt-dnsmasq:x:110:118:Libvirt Dnsmasq,,,:/var/lib/libvirt/dnsmasq:/bin/false
-    colord:x:111:120:colord colour management daemon,,,:/var/lib/colord:/bin/false
+    .................
+
+## 通过命令显示 ##
+
+    # 注意：最后是一个 “：” 冒号，它是分隔符 (delimiter)
+
+    $ cat /etc/passwd | cut -f 1 -d :
+
+    root
+    daemon
+    bin
+    sys
+    sync
+    games
+    man
+    lp
+    mail
+    news
+    uucp
+    proxy
+    www-data
+    backup
+    ......
+
