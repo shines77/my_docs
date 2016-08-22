@@ -1,0 +1,20 @@
+
+性能测试: write() vs. writev()
+
+http://www.cppblog.com/whoami17/archive/2009/05/10/82452.html
+
+
+第一组数据显示：1.  随着buffer的增大 （ > 64KB）， writev（）的性能开始跟write（）持平； 2. 如果buffer的个数过小 ， writev（）的性能是低于write（）的。 从图一可以看到，  在buffer size 小于1024KB 时， writev（） 使用10 个buffer的性能要低于100 和1000。
+
+第二组数据显示： 1. 当保持buffer size一定情况下， 增加buffer的个数 （< 2000）， writev（） 的性能稳定在70%左右; 2. 增加buffer size, 将会降低writev()的性能。 当buffer为8KB 时， writev（） 所用时间基本上都为相应write（）时间的80%， 性能的提高明显不如1KB 和 2KB。3. 当buffer的个数超过2000， 并且buffer size 大于2KB， writev（）性能将远不如write（）。
+
+结论：
+writev() 应使用在small write intensive 的workload中， buffer size 应控制在 2KB 以下， 同时buffer的数目不要超过IOV_MAX, 否则 writev() 并不会带来性能的提高。 
+ 
+现在， 所要研究的问题是对于不同的workload， 如何快速的确定writev（）中buffer的个数和大小， 从而达到较好performance。
+
+
+第十四章＊高级I／O（七）－－readv和writev函数
+
+http://blog.chinaunix.net/uid-26822401-id-3158225.html
+
