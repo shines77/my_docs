@@ -24,11 +24,27 @@
     $ lsof -i:21
 ```
 
-3）Socket Statistics
+3）查看 TCP/IP 的具体链接情况
+
+定时刷新 TCP/IP 的状态 (每秒刷新一次, watch -n [Interval Seconds])
+
+```shell
+
+    $ watch -n 1 ss -s
+
+```
+
+4）Socket Statistics
 
 ss 是 Socket Statistics 的缩写。顾名思义，ss 命令可以用来获取 socket 统计信息，它可以显示和 netstat 类似的内容。但 ss 的优势在于它能够显示更多更详细的有关 TCP 和连接状态的信息，而且比 netstat 更快速更高效。
 
 (CentOS 里要先安装 IPRoute2)
+
+```shell
+
+    $ ss -anltp
+
+```
 
 命令参数：
 
@@ -139,6 +155,3 @@ ss 是 Socket Statistics 的缩写。顾名思义，ss 命令可以用来获取 
 
 See: [http://www.cnblogs.com/peida/archive/2013/03/11/2953420.html](http://www.cnblogs.com/peida/archive/2013/03/11/2953420.html)
 
-4）杀掉占用端口的进程
-
-    kill -9 进程id
