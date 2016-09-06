@@ -1,0 +1,30 @@
+
+See: http://packages.ubuntu.com/trusty-updates/amd64/kernel-image-4.2.0-27-generic-di/download
+
+
+用在 AMD64 上 kernel-image-4.2.0-27-generic-di_4.2.0-27.32~14.04.1_amd64.udeb 的下载页面:
+
+
+如果您正在运行 Ubuntu，请尽量使用像 aptitude 或者 synaptic 一样的软件包管理器，代替人工手动操作的方式从这个网页下载并安装软件包。
+
+您可以使用以下列表中的任何一个源镜像只要往您的 /etc/apt/sources.list 文件中像下面这样添加一行:
+
+deb http://cz.archive.ubuntu.com/ubuntu trusty-updates main 
+
+请使用最终确定的源镜像替换 cz.archive.ubuntu.com/ubuntu。
+
+
+$ sudo apt-cache search linux-generic-lts
+
+linux-generic-lts-quantal - Generic Linux kernel image and headers
+linux-generic-lts-quantal-eol-upgrade - Complete Generic Linux kernel and headers
+linux-generic-lts-raring - Generic Linux kernel image and headers
+linux-generic-lts-raring-eol-upgrade - Complete Generic Linux kernel and headers
+linux-generic-lts-saucy - Generic Linux kernel image and headers
+linux-generic-lts-saucy-eol-upgrade - Complete Generic Linux kernel and headers
+linux-generic-lts-trusty - Generic Linux kernel image and headers
+linux-generic-lts-utopic - Complete Generic Linux kernel and headers
+linux-generic-lts-vivid - Complete Generic Linux kernel and headers
+linux-generic-lts-wily - Complete Generic Linux kernel and headers                     -- 4.2.0-27-generic
+linux-generic-lts-xenial - Complete Generic Linux kernel and headers                   -- 4.4.0-31-generic
+
