@@ -1,4 +1,10 @@
 
+kvm 虚拟化概述及 virt-manager 安装虚拟机 (CentOS)
+
+See: http://blog.csdn.net/wanglei_storage/article/details/51100506
+
+---------------------------------------------------------
+
 安装 VNC 程序软件包 tigervnc 和 tigervnc-server
 
 编辑 vncserver 配置文件 /etc/sysconfig/vncservers，配置宿主机 VNC 虚拟机显示器为1,端口是5901；虚拟机显示器[2]的监听IP是 0.0.0.0，虚拟机显示器[1]监听127.0.0.1，分辨率 800x600
@@ -15,3 +21,4 @@ VNCSERVERSARGS[2]="-geometry 800x600 -nolisten tcp -localhost"
 # service vncserver restart
 
 重启服务的过程。（省略）
+
