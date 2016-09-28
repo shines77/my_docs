@@ -41,3 +41,9 @@ local copy存在，shared_ptr作为函数参数传递时不必复制。
 （以上）See: https://www.zhihu.com/question/22966055
 
 ------------------------------------------------------------------------
+
+boost智能指针之shared_ptr
+
+See: http://dengzuoheng.github.io/boost-shared-ptr
+
+------------------------------------------------------------------------
