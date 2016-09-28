@@ -7,6 +7,8 @@ std::shared_ptr<T> ÓÐÁ½¸ö¶ÔÏó£¬Ò»¸öÊÇÖ¸Ïò¶ÔÏóµÄÖ¸Õë ptr£¬Ò»¸öÊÇÕâ¸ö¶ÔÏóµÄÒýÓÃ¼ÆÊ
 
 ËäÈ»ÕâÁ½¸öÖµ¶¼ÊÇÔ­×Ó²Ù×÷£¬µ«ÊÇÖÐ¼äÈ´ÊÇ¿ÉÒÔÖÐ¶ÏµÄ£¬ËùÒÔµ±ÓÐ¶à¸öÏß³ÌÍ¬Ê±¶ÁÐ´Í¬Ò»¸ö shared_ptr<T> µÄÊ±ºò£¬Ëü²»ÊÇÏß³Ì°²È«µÄ¡£¼´ÔÊÐí¶àÏß³ÌÍ¬Ê±¶ÁÍ¬Ò»¸ö shared_ptr<T>£¬ÕâÊÇ°²È«µÄ¡£µ«ÊÇ²»ÔÊÐíÕâÐ©Ïß³ÌÀïÓÐÈÎºÎÒ»¸öÏß³Ì¶ÔÕâÍ¬Ò»¸ö shared_ptr<T> ¶ÔÏó½øÐÐÐ´²Ù×÷£¬Ö»ÒªÓÐÈÎÒâÒ»¸öÓÐÐ´ÐÐÎª£¬¾Í²»ÊÇÏß³Ì°²È«µÄ¡£±ÈÈç£¬Ò»¶Á¶àÐ´£¬Ò»Ð´¶à¶Á£¬¶à¶Á¶àÐ´£¬È«²¿¶¼ÊÇÐ´¡£Õâ¸öÊ±ºò£¬¶Ô shared_ptr<T> ¶ÔÏóµÄ²Ù×÷Òª¼ÓËø¡£
 
+Ò»¾ä»°£¬¶Á°²È«£¬Ð´²»°²È«¡£
+
 shared_ptr<T>µÄ¡°Îö¹¹¡±ËãÐ´²Ù×÷¡£
 
 
