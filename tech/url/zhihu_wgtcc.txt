@@ -1,0 +1,69 @@
+
+知乎
+------
+
+C编译器实现？
+http://www.zhihu.com/question/35226878
+http://www.zhihu.com/question/35226878/answer/122792721
+
+[李济深]：
+
+rswier/c4 · GitHub （老外写的）
+
+See: https://github.com/rswier/c4
+
+一个简化的C编译器，用C实现的，实际代码500行不到，比较容易上手。(注：虽然代码短小，但是可读性比较差，不好维护，仅供参考。)
+
+关于 c4 的讨论可以看这里：https://www.zhihu.com/question/28249756 (里面有对 c4 的扩展和分析，强烈推荐)
+
+整体编译流程
+
+一个简单的类C编译器，忽略开头的预处理（preprocessing）和后续的汇编（assembling）
+与链接（linking）动作的话，其工作流程从概念上可以如下所述：
+
+[ 输入的源代码 ] -> 词法分析(lexical analysis) -> [ 单词流(token stream) ] 
+                 -> 语法分析（syntactic analysis / parsing） -> [ 语法树（syntax tree） ]
+                 -> 语义分析（semantic analysis） -> [ 标注过的语法树（annotated syntax tree） ] + [ 符号表（symbol table） ]
+                 -> 代码生成（code generation） -> [ 目标代码（object code） ]
+
+[wgtsam]:
+
+推荐8cc GitHub - rui314/8cc: A Small C Compiler 比起tcc lcc这些比较古老的tiny c 编译器， 8cc的代码好读太多。
+
+See: https://github.com/rui314/8cc
+
+
+如何写一个简单的编译器？
+
+http://www.zhihu.com/question/36756224
+
+寄存器分配问题？(里面资料很多，推荐）
+
+https://www.zhihu.com/question/29355187
+
+
+GitHub
+---------
+
+wgtcc:
+
+https://github.com/wgtdkp/wgtcc
+
+8cc:
+
+https://github.com/rui314/8cc
+
+c4
+
+https://github.com/rswier/c4
+
+编译执行（JIT方式）的 c4
+
+https://github.com/EarlGray/c4
+
+
+
+
+
+
+
