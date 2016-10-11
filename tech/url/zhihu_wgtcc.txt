@@ -21,7 +21,7 @@ See: https://github.com/rswier/c4
 一个简单的类C编译器，忽略开头的预处理（preprocessing）和后续的汇编（assembling）
 与链接（linking）动作的话，其工作流程从概念上可以如下所述：
 
-[ 输入的源代码 ] -> 词法分析(lexical analysis) -> [ 单词流(token stream) ] 
+[ 输入的源代码 ] -> 词法分析(lexical analysis) -> [ 单词流(token stream) ]
                  -> 语法分析（syntactic analysis / parsing） -> [ 语法树（syntax tree） ]
                  -> 语义分析（semantic analysis） -> [ 标注过的语法树（annotated syntax tree） ] + [ 符号表（symbol table） ]
                  -> 代码生成（code generation） -> [ 目标代码（object code） ]
@@ -60,10 +60,5 @@ https://github.com/rswier/c4
 编译执行（JIT方式）的 c4
 
 https://github.com/EarlGray/c4
-
-
-
-
-
 
 
