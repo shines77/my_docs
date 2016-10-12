@@ -53,12 +53,11 @@ https://github.com/wgtdkp/wgtcc
 
 https://github.com/rui314/8cc
 
-c4
+c4:
 
 https://github.com/rswier/c4
 
-编译执行（JIT方式）的 c4
+编译执行（JIT方式）的 c4:
 
 https://github.com/EarlGray/c4
-
 
