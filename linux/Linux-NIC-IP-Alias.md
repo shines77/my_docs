@@ -1,6 +1,6 @@
 
 为 Linux 的网卡 (NIC) 配置 IP 别名
-================================
+=====================================
 
 `Linux` 的 `IP Aliasing` 技术可以让一块网卡绑定多个 `IP` 地址，下面详细介绍在各个系统下的 `IP 别名` 的设置方法。
 
@@ -87,9 +87,97 @@ network 192.168.3.0
 
 注：同样，其中的 `broadcast` 和 `network` 设置不是必需的。
 
-修改好配置以后，重启系统让配置生效。
+保存文件后，重启系统让配置生效。如果不想重启系统，可以尝试下面的命令：
 
-# X. 参考文章 #
+```shell
+$ sudo /etc/init.d/networking restart
+$ sudo ifup eth0:1
+$ sudo ifup eth0:2
+$ sudo ifup eth0:3
+$ sudo ifup eth0:4
+
+...... (以此类推，此处省略。)
+```
+
+# 2. RedHat / RHEL / CentOS / Fedora #
+
+## 2.1 常规方法 ##
+
+拷贝 `eth0 ` 的网络配置：
+
+```shell
+$ sudo cp /etc/sysconfig/network-scripts/ifcfg-eth0 /etc/sysconfig/network-scripts/ifcfg-eth0:0
+```
+
+编辑配置文件 `ifcfg-eth0:0` ：
+
+```shell
+$ sudo vim /etc/sysconfig/network-scripts/ifcfg-eth0:0
+```
+
+把 “`DEVICE=eth0`” 替换成 “`DEVICE=eth0:0`”，“`NAME=eth0`” 替换成 “`NAME=eth0:0`”，以及修改 `IPADDR`、`NETMASK`、`NETMASK` 等配置，并且注意要删掉 `GATEWAY` 这一项配置，因为 `IP 别名` 不支持网关。
+
+例如：
+
+```shell
+DEVICE=eth0:0
+NAME=eth0:0
+IPADDR=192.168.3.101
+NETMASK=255.255.255.0
+NETWORK=192.168.3.0
+ONBOOT=yes
+```
+
+同时打开 `/etc/sysconfig/network-scripts/ifcfg-eth0` 把里面的 `GATEWAY` 一行注释掉，例如：
+
+```shell
+# GATEWAY=192.168.3.254
+```
+
+打开一个新文件，`/etc/sysconfig/network`，把网关的设置写到这个文件里：
+
+```shell
+$ sudo vim /etc/sysconfig/network
+
+GATEWAY=192.168.3.254
+```
+
+保存文件，并执行下面的命令，让配置生效：
+
+```shell
+$ sudo ifup eth0:0
+
+或者
+
+$ sudo service network restart
+```
+
+其他的 `eth0:1` 和 `eth0:2`，按照同样的方法配置即可，最多可以配置到 `eth0:254` 。
+
+## 2.2 多IP地址范围 (Multiple IP address range) ##
+
+在 `Redhat/RHEL/CentOS/Fedora` 系统上，你还可以通过 `Multiple IP address range` 的方式为 `eth0` 配置 `IP地址范围`，例如：
+
+```shell
+$ sudo vim /etc/sysconfig/network-scripts/ifcfg-eth0-range0
+```
+
+添加下面的内容，：
+
+```shell
+IPADDR_START=192.168.3.101
+IPADDR_END=192.168.3.120
+CLONENUM_START=0
+NETMASK=255.255.255.0
+```
+
+保存文件，执行下面的命令重启网络，或者重启系统让配置生效。
+
+```shell
+$ sudo service network restart
+```
+
+# 3. 参考文章 #
 
 Linux Creating or Adding New Network Alias To a Network Card (NIC)<br/>
 [http://www.cyberciti.biz/faq/linux-creating-or-adding-new-network-alias-to-a-network-card-nic/](http://www.cyberciti.biz/faq/linux-creating-or-adding-new-network-alias-to-a-network-card-nic/)

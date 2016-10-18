@@ -1,5 +1,5 @@
 
-Ubuntu 14.04 安装 GCC 4.8.x, 4.9.x, 5.3 和 6.0 并随意切换
+Ubuntu 14.04 安装 GCC 4.8.x, 4.9.x, 5.4 和 6.0 并随意切换
 ============================================================
 
 ## 1. 添加 PPA 源 ##
@@ -33,7 +33,7 @@ sudo: add-apt-repository: command not found
 
 `Ubuntu 14.04` 系统更新源默认安装的版本是 `gcc-4.8`，但现在都什么年代了，可以先安装默认的版本，接着再安装 `gcc-4.9`、`gcc-5` 之类的！
 
-（注意目前 `gcc-5` 实际上是 `5.3.0`，没有 `5.1` 或 `5.2` 可供选择，已提供 `gcc-6` 版本，目前版本是 `6.1.1`。）
+（注意目前 `gcc-5` 实际上是 `5.4.1`，没有 `5.1` 或 `5.2` 可供选择，已提供 `gcc-6` 版本，目前版本是 `6.1.1`。）
 
 ```shell
 $ sudo apt-get upgrade   # 这句可以不执行
@@ -66,40 +66,28 @@ $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 48 \
 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-4.8 \
 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-4.8
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 48 \
---slave /usr/bin/g++-ar g++-ar /usr/bin/g++-ar-4.8 \
---slave /usr/bin/g++-nm g++-nm /usr/bin/g++-nm-4.8 \
---slave /usr/bin/g++-ranlib g++-ranlib /usr/bin/g++-ranlib-4.8
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 48
 
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 49 \
 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-4.9 \
 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-4.9 \
 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-4.9
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 49 \
---slave /usr/bin/g++-ar g++-ar /usr/bin/g++-ar-4.9 \
---slave /usr/bin/g++-nm g++-nm /usr/bin/g++-nm-4.9 \
---slave /usr/bin/g++-ranlib g++-ranlib /usr/bin/g++-ranlib-4.9
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 49
 
-$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 53 \
+$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 54 \
 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-5 \
 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-5 \
 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-5
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 53 \
---slave /usr/bin/g++-ar g++-ar /usr/bin/g++-ar-5 \
---slave /usr/bin/g++-nm g++-nm /usr/bin/g++-nm-5 \
---slave /usr/bin/g++-ranlib g++-ranlib /usr/bin/g++-ranlib-5
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 54
 
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60 \
 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-6 \
 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-6 \
 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-6
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 60 \
---slave /usr/bin/g++-ar g++-ar /usr/bin/g++-ar-6 \
---slave /usr/bin/g++-nm g++-nm /usr/bin/g++-nm-6 \
---slave /usr/bin/g++-ranlib g++-ranlib /usr/bin/g++-ranlib-6
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 60
 ```
 
 下面是单行命令的版本：
@@ -109,7 +97,7 @@ gcc 4.8.x：
 ```shell
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 48 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-4.8 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-4.8 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-4.8
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 48 --slave /usr/bin/g++-ar g++-ar /usr/bin/g++-ar-4.8 --slave /usr/bin/g++-nm g++-nm /usr/bin/g++-nm-4.8 --slave /usr/bin/g++-ranlib g++-ranlib /usr/bin/g++-ranlib-4.8
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 48
 
 ```
 
@@ -118,16 +106,16 @@ gcc 4.9.x：
 ```shell
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 49 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-4.9 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-4.9 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-4.9
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 49 --slave /usr/bin/g++-ar g++-ar /usr/bin/g++-ar-4.9 --slave /usr/bin/g++-nm g++-nm /usr/bin/g++-nm-4.9 --slave /usr/bin/g++-ranlib g++-ranlib /usr/bin/g++-ranlib-4.9
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 49 --slave
 
 ```
 
-gcc 5.3：
+gcc 5.4：
 
 ```shell
-$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 53 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-5 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-5 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-5
+$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 54 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-5 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-5 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-5
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 53 --slave /usr/bin/g++-ar g++-ar /usr/bin/g++-ar-5 --slave /usr/bin/g++-nm g++-nm /usr/bin/g++-nm-5 --slave /usr/bin/g++-ranlib g++-ranlib /usr/bin/g++-ranlib-5
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 54
 
 ```
 
@@ -136,7 +124,7 @@ gcc 6.1.1：
 ```shell
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 61 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-6 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-6 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-6
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 61 --slave /usr/bin/g++-ar g++-ar /usr/bin/g++-ar-6 --slave /usr/bin/g++-nm g++-nm /usr/bin/g++-nm-6 --slave /usr/bin/g++-ranlib g++-ranlib /usr/bin/g++-ranlib-6
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 61
 
 ```
 
@@ -156,7 +144,7 @@ $ sudo update-alternatives --config gcc
 * 0            /usr/bin/gcc-4.9   49        自动模式
   1            /usr/bin/gcc-4.8   48        手动模式
   2            /usr/bin/gcc-4.9   49        手动模式
-  3            /usr/bin/gcc-5     53        手动模式
+  3            /usr/bin/gcc-5     54        手动模式
   4            /usr/bin/gcc-6     61        手动模式
 ```
 
@@ -174,7 +162,7 @@ $ sudo update-alternatives --config g++
 * 0            /usr/bin/g++-4.9   49        自动模式
   1            /usr/bin/g++-4.8   48        手动模式
   2            /usr/bin/g++-4.9   49        手动模式
-  3            /usr/bin/g++-5     53        手动模式
+  3            /usr/bin/g++-5     54        手动模式
   4            /usr/bin/g++-6     61        手动模式
 ```
 
