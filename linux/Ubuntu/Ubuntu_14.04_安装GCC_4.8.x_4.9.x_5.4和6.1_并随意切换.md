@@ -106,7 +106,7 @@ gcc 4.9.x：
 ```shell
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 49 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-4.9 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-4.9 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-4.9
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 49 --slave
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 49
 
 ```
 
