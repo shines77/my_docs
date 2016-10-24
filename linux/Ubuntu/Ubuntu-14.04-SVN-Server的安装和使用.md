@@ -262,6 +262,7 @@ $ sudo htpasswd -c /etc/apache2/dav_svn.passwd {user_name}
 ```shell
 $ sudo htpasswd -c /etc/apache2/dav_svn.passwd shines77
 $ sudo htpasswd /etc/apache2/dav_svn.passwd jicui
+$ sudo htpasswd /etc/apache2/dav_svn.passwd zhangxiaojun
 $ sudo htpasswd /etc/apache2/dav_svn.passwd cailijuan
 $ sudo htpasswd /etc/apache2/dav_svn.passwd wuxiang
 $ sudo htpasswd /etc/apache2/dav_svn.passwd hanxianghui
