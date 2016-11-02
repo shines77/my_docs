@@ -188,7 +188,7 @@ $ sudo svn import -m "本次提交的详细描述信息" {本地仓库的路径}
 
 ## 2.5. 导出 SVN 仓库 ##
 
-在远程的机器上安装 `SVN` 客户端，来测试 `SVN` 仓库的导出，例如：Windows 下安装 `TortoiseSVN`，下载地址是：[http://tortoisesvn.tigris.org/](http://tortoisesvn.tigris.org/)。
+在远程的机器上安装 `SVN` 客户端，来测试 `SVN` 仓库的导出，例如：`Windows` 下安装 `TortoiseSVN`，下载地址是：[http://tortoisesvn.tigris.org/](http://tortoisesvn.tigris.org/)。
 
 在需要导出的目录的空白处，点击鼠标右键，选出 `SVN 检出` (`SVN Checkout`)，然后输入 “`svn://192.168.3.225/myrepo/`”，回车确定，即可完成导出。
 
@@ -266,6 +266,9 @@ $ sudo htpasswd /etc/apache2/dav_svn.passwd zhangxiaojun
 $ sudo htpasswd /etc/apache2/dav_svn.passwd cailijuan
 $ sudo htpasswd /etc/apache2/dav_svn.passwd wuxiang
 $ sudo htpasswd /etc/apache2/dav_svn.passwd hanxianghui
+$ sudo htpasswd /etc/apache2/dav_svn.passwd dongzhe
+$ sudo htpasswd /etc/apache2/dav_svn.passwd guoxionghui
+$ sudo htpasswd /etc/apache2/dav_svn.passwd guest
 ```
 
 可以看到，创建第二个和第二个以后的用户信息时，都没有添加 `-c` 参数。
