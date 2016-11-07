@@ -40,7 +40,7 @@ $ sudo pptpsetup --create pptpd --server 106.185.42.91 --username freevpnss --pa
 $ sudo pptpsetup --create free_us1 --server 69.60.121.29 --username free --password 1786 --encrypt --start
 $ sudo pptpsetup --create free_us2 --server 216.104.36.238 --username free --password 2867 --encrypt --start
 $ sudo pptpsetup --create free_uk --server 77.92.68.65 --username free --password 1108 --encrypt --start
-$ sudo pptpsetup --create free_nl --server 95.211.214.171 --username free --password 1108 --encrypt --start
+$ sudo pptpsetup --create free_nl --server 95.211.214.171 --username free --password 2281 --encrypt --start
 ```
 
 连接信息，`VPN` 服务器域名：`jp.ioss.pw`，账号：`freevpnss`，密码：`41570461`，连接方式：`PPTP IPsec(IKEv1)`，IPSec密钥：`freevpnss` 。
@@ -73,7 +73,7 @@ $ sudo pon pptpd
 $ pppd call pptpd
 ```
 
-其中 pptpd 是前面用 pptpsetup 创建的 tunnel 名称。
+其中 `pptpd` 是前面用 `pptpsetup` 创建的 `tunnel` 名称。
 
 ### 2.2 查看 PPTP 连接 ###
 
@@ -120,7 +120,19 @@ require-mppe-128
 
 ### 3.3 其他配置 ###
 
-`pap` 密码：
+修改 `vpn` 密码：
+
+```shell
+$ sudo vim /etc/ppp/chap-secrets
+
+# Secrets for authentication using CHAP
+# client        server  secret                  IP addresses
+
+# added by pptpsetup for pptpd
+freevpnss pptpd "41570461" *
+```
+
+修改 `pap` 密码：
 
 ```shell
 $ sudo vim /etc/ppp/pap-secrets
@@ -172,18 +184,6 @@ equire-mppe-128
 # Require MPPE 128-bit encryption
 #mppe required,stateless
 # }}}
-```
-
-`vpn` 密码设置：
-
-```shell
-$ sudo vim /etc/ppp/chap-secrets
-
-# Secrets for authentication using CHAP
-# client        server  secret                  IP addresses
-
-# added by pptpsetup for pptpd
-freevpnss pptpd "41570461" *
 ```
 
 ## 4. 关于免费的 PPTP VPN ##
