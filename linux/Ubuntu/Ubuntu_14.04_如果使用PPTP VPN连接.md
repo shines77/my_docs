@@ -40,6 +40,7 @@ $ sudo pptpsetup --create pptpd --server 106.185.42.91 --username freevpnss --pa
 $ sudo pptpsetup --create free_us1 --server 69.60.121.29 --username free --password 1786 --encrypt --start
 $ sudo pptpsetup --create free_us2 --server 216.104.36.238 --username free --password 2867 --encrypt --start
 $ sudo pptpsetup --create free_uk --server 77.92.68.65 --username free --password 1108 --encrypt --start
+$ sudo pptpsetup --create free_nl --server 95.211.214.171 --username free --password 1108 --encrypt --start
 ```
 
 连接信息，`VPN` 服务器域名：`jp.ioss.pw`，账号：`freevpnss`，密码：`41570461`，连接方式：`PPTP IPsec(IKEv1)`，IPSec密钥：`freevpnss` 。
@@ -52,7 +53,42 @@ Connect: ppp0 <--> /dev/pts/10
 anon fatal[open_callmgr:pptp.c:495]: Could not launch call manager after 3 tries.
 Modem hangup
 Connection terminated.
+```
 
+### 2.1 登录 PPTP 连接 ###
+
+命令格式：
+
+```shell
+$ sudo pon {pptp_vpn_tunnel_name}
+或者
+$ pppd call {pptp_vpn_tunnel_name}
+```
+
+例如：
+
+```shell
+$ sudo pon pptpd
+或
+$ pppd call pptpd
+```
+
+其中 pptpd 是前面用 pptpsetup 创建的 tunnel 名称。
+
+### 2.2 查看 PPTP 连接 ###
+
+命令：
+
+```shell
+$ sudo plog
+```
+
+### 2.3 断开 PPTP 连接 ###
+
+命令：
+
+```shell
+$ sudo poff
 ```
 
 ## 3. 其他设置 ##
@@ -65,19 +101,7 @@ Connection terminated.
 $ sudo modprobe ppp_mppe
 ```
 
-### 3.2 启动连接 ###
-
-命令：
-
-```shell
-$ sudo pon pptpd
-或者
-$ pppd call pptpd
-```
-
-其中 `pptpd` 是前面用 `pptpsetup` 创建的 `tunnel` 名称。
-
-### 3.3 连接配置信息 ###
+### 3.2 连接配置信息 ###
 
 ```shell
 $ sudo vim /etc/ppp/peers/pptpd
@@ -94,9 +118,9 @@ ipparam pptpd
 require-mppe-128
 ```
 
-### 3.4 其他配置 ###
+### 3.3 其他配置 ###
 
-pap 密码：
+`pap` 密码：
 
 ```shell
 $ sudo vim /etc/ppp/pap-secrets
@@ -104,7 +128,7 @@ $ sudo vim /etc/ppp/pap-secrets
 *       pptpd           ""              *
 ```
 
-options 选项：
+`options` 选项：
 
 ```shell
 $ sudo vim /etc/ppp/options.pptpd
@@ -150,7 +174,7 @@ equire-mppe-128
 # }}}
 ```
 
-密码设置：
+`vpn` 密码设置：
 
 ```shell
 $ sudo vim /etc/ppp/chap-secrets
@@ -164,7 +188,13 @@ freevpnss pptpd "41570461" *
 
 ## 4. 关于免费的 PPTP VPN ##
 
-请访问：[http://freevpnss.cc/](http://freevpnss.cc/) （需要先翻墙才能打开）
+请访问：
+
+[http://www.superfreevpn.com/](http://www.superfreevpn.com/) （需要先翻墙才能打开）
+
+这些都是免费的，连接方式是 `PPTP`，节点基本上都是欧美的。
+
+[http://freevpnss.cc/](http://freevpnss.cc/) （需要先翻墙才能打开）
 
 这个网站的 `VPN` 使用的是 `PPTP IPsec(IKEv1)` 连接方式，还算稳定，日本的节点大多数时候速度都挺快，第一个节点（美国）的速度也还可以。
 
