@@ -1,0 +1,107 @@
+
+Windows IOCP AccepteEx() 的一些技巧:
+
+http://stackoverflow.com/questions/19956186/iocp-acceptex-not-creating-completion-upon-connect
+
+Call setsockopt() with SO_UPDATE_ACCEPT_CONTEXT on the accepted socket using the listening socket as the data...
+
+If you do not want AcceptEx() to wait for data to arrive then simply provide a data buffer that is ONLY big enough for the addresses to be returned and pass 0 as the 'buffer size'. This will cause the AcceptEx() to operate like an overlaped accept() and return as soon as the connection is established.
+
+Note that Martin James' initial comment to your question is in fact the answer you're looking for. Don't pass outBufLen - ((sizeof (sockaddr_in) + 16) * 2), pass 0.
+
+See:
+
+Boost 1.60
+--------------
+
+--------------------------------------------------------------------------------------------------
+
+D:\Project\Boost\boost_1_60_0\boost\asio\detail\impl\win_iocp_socket_service_base.ipp
+
+Line 473:
+
+void win_iocp_socket_service_base::start_accept_op()
+
+      DWORD bytes_read = 0;
+      BOOL result = ::AcceptEx(impl.socket_, new_socket.get(), output_buffer,
+          0, address_length, address_length, &bytes_read, op);
+
+--------------------------------------------------------------------------------------------------
+
+D:\Project\Boost\boost_1_60_0\boost\asio\detail\impl\socket_ops.ipp
+
+Line 179:
+
+complete_iocp_accept()
+
+    // Need to set the SO_UPDATE_ACCEPT_CONTEXT option so that getsockname
+    // and getpeername will work on the accepted socket.
+    SOCKET update_ctx_param = s;
+    socket_ops::state_type state = 0;
+    socket_ops::setsockopt(new_socket, state,
+          SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT,
+          &update_ctx_param, sizeof(SOCKET), ec);
+
+--------------------------------------------------------------------------------------------------
+
+
+h2o/picohttpparser / SSE 4.2 _mm_cmpestri
+
+https://github.com/h2o/picohttpparser/blob/master/picohttpparser.c
+
+
+_mm_cmpestri
+
+See: https://msdn.microsoft.com/en-us/library/bb531465(v=vs.120).aspx
+
+_mm_cmpestra (Have example code)
+
+See: https://msdn.microsoft.com/en-us/library/bb514048(v=vs.120).aspx
+
+--------------------------------------------------------------------------------------------------
+
+Java 线程 — ThreadLocal
+
+See: http://www.cnblogs.com/sunshine-2015/p/6072184.html
+
+
+神奇的 0x61c88647
+====================
+
+在ThreadLocalMap的hash算法中，很少发生碰撞，原因在于精巧的hash算法
+
+private final int threadLocalHashCode = nextHashCode();
+
+private static final int HASH_INCREMENT = 0x61c88647;
+
+private static int nextHashCode() {
+    return nextHashCode.getAndAdd(HASH_INCREMENT);
+}
+
+private Entry getEntry(ThreadLocal key) {
+    int i = key.threadLocalHashCode & (table.length - 1);
+    Entry e = table[i];
+    if (e != null && e.get() == key)
+        return e;
+    else
+        return getEntryAfterMiss(key, i, e);
+}
+
+这里最不解的是为什么要用0x61c88647这个数？怎么来的？
+0x61c88647换算成十进制是1640531527，计算方法如下：
+
+1640531527 = (long) ((1L << 31) * (Math.sqrt(5) - 1))
+
+(Math.sqrt(5) - 1) / 2 是黄金分割数
+
+这种hash方法是Donald Knuth在 The Art of Computer Programming 中提出，不明觉厉。
+
+--------------------------------------------------------------------------------------------------
+
+ImageNet缔造者：让冰冷的机器读懂照片背后的故事
+
+李飞飞
+
+http://www.leiphone.com/news/201604/uD8o9lV0AhJRhcit.html
+
+--------------------------------------------------------------------------------------------------
