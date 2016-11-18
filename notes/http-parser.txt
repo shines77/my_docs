@@ -1,0 +1,21 @@
+
+-------------------------------------------------------------------------------
+
+ http-parser 解析 http 报文详解
+ http://blog.csdn.net/zzhongcy/article/details/41981855
+
+ ( 使用的是 https://github.com/nodejs/http-parser , 这是新地址，旧址是：https://github.com/joyent/http-parser )
+
+-------------------------------------------------------------------------------
+
+
+【slighttpd】基于 lighttpd 架构的 Server 项目实战(7) —— http-parser 
+http://blog.csdn.net/jiange_zh/article/details/50639178
+
+( 使用的也是 https://github.com/nodejs/http-parser )
+
+
+-------------------------------------------------------------------------------
+
+
+
