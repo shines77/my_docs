@@ -1,0 +1,4 @@
+
+C++、CORBA版HelloWorld程序 [2006年11月15日]
+http://blog.sina.com.cn/s/blog_487de73e010005fz.html
+
