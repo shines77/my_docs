@@ -1,0 +1,104 @@
+=========================================================================
+
+DsoFramer 的简单介绍和资源整理（2015-09-02重新整理）
+--------------------------------------------------------
+
+http://blog.csdn.net/shi0090/article/details/8549235
+
+DSOframer 是微软提供一款开源的用于在线编辑 Word、 Excel 、PowerPoint 的 ActiveX 控件。国内很多著名的 OA 中间件，电子印章，签名留痕等大多数是依此改进而来的。虽然博主的公司已经用了 NTKO 取代了 DSOframer，但免费的控件依旧是更多人的选择，所以在此和大家分享一下 DSOframer 的常用功能。如果看完全文还是不能解决您的问题，请在评论区留言，或加入QQ群(95674923)进行学习交流。
+
+=========================================================================
+
+DSOFramer 控件修改成功
+
+http://www.cppblog.com/wanhhf/archive/2006/02/20/3355.html
+
+
+DSOFramerControl 简单使用
+
+http://www.cnblogs.com/HopeGi/p/3464686.html
+
+有介绍 DSOFramerControl 的使用方法和简单的API介绍.
+
+=========================================================================
+
+NTKO OFFICE文档控件
+
+http://www.ntko.com/pro/show/mid/1_8/pid/2731
+
+NTKO OFFICE文档控件能够在IE、Chrome、Firefox等浏览器中直接编辑MS Office、WPS、金山电子表、永中Office等文档并保存到WEB服务器，实现文档和电子表格的统一管理。并具备痕迹保留、模板套红、二维码、pdf及tif阅读等办公自动化系统的必备功能。
+
+产品性能稳定，可扩展性强，功能强大，已成为国内文档控件领域的事实标准和首选控件。广大的开发商合作伙伴，如神州数码、中科软、金蝶、用友、浪潮、方正、东软、IBM等，不同网络环境及系统环境下的全面应用，也验证了NTKO OFFICE文档控件的稳定性。性能卓越、开发简单、兼容性好，可以与NTKO 电子印章系统等NTKO 系列产品无缝集成，增加电子印章/电子签章、手写签名等功能，为您轻松创建极具特色的办公自动化解决方案！
+
+我们一直在努力发展并完善NTKO OFFICE文档控件，帮助合作伙伴进一步减少开发工作量，缩短开发周期，提升软件的价值。
+
+=========================================================================
+
+优道 Office 文档控件
+
+http://blog.csdn.net/uudoccom/article/details/12837807
+
+=========================================================================
+
+开源: pdfium (PDF查看)
+
+https://pdfium.googlesource.com/
+
+git clone https://pdfium.googlesource.com/pdfium
+
+=========================================================================
+
+How to render pdfs using C#
+
+http://stackoverflow.com/questions/518878/how-to-render-pdfs-using-c-sharp
+
+-------------------------------
+
+.NET open PDF in winform without external dependencies
+
+http://stackoverflow.com/questions/549504/-net-open-pdf-in-winform-without-external-dependencies/
+
+
+First you need to reference the Adobe Reader ActiveX Control
+
+    Adobe Acrobat Browser Control Type Library 1.0
+
+    %programfiles&\Common Files\Adobe\Acrobat\ActiveX\AcroPDF.dll
+
+Then you just drag it into your Windows Form from the Toolbox.
+
+And use some code like this to initialize the ActiveX Control.
+
+    private void InitializeAdobe(string filePath)
+    {
+        try
+        {
+            this.axAcroPDF1.LoadFile(filePath);
+            this.axAcroPDF1.src = filePath;
+            this.axAcroPDF1.setShowToolbar(false);
+            this.axAcroPDF1.setView("FitH");
+            this.axAcroPDF1.setLayoutMode("SinglePage");
+            this.axAcroPDF1.Show();
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
+
+Make sure when your Form closes that you dispose of the ActiveX Control
+
+    this.axAcroPDF1.Dispose();
+    this.axAcroPDF1 = null;
+
+otherwise Acrobat might be left lying around.
+
+=========================================================================
+
+PDF Viewer Control Without Acrobat Reader Installed (VB, Need Ghostscript 8.64 DLL (gsdll32.dll))
+
+https://www.codeproject.com/articles/37458/pdf-viewer-control-without-acrobat-reader-installe
+
+=========================================================================
+
+
