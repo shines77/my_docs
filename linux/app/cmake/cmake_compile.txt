@@ -1,0 +1,25 @@
+
+自编译 cmake 3.0.3
+-----------------------
+
+另外两个常用的版本: 
+https://cmake.org/files/v2.8/cmake-2.8.11.tar.gz
+https://cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
+
+mkdir -p /root/downloads
+cd /root/downloads
+wget https://cmake.org/files/v3.0/cmake-3.0.2.tar.gz
+tar xzf cmake-3.0.2.tar.gz
+cd cmake-3.0.2
+
+./configure
+make
+make install
+
+mv /usr/bin/cmake /usr/bin/cmake.old
+ln -s /usr/local/bin/cmake /usr/bin/cmake
+
+-------------------------------------------------------------------
+
+See: http://forum.directadmin.com/showthread.php?t=51343
+
