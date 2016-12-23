@@ -13,7 +13,7 @@ Windows SDK 下载
 
 https://developer.microsoft.com/zh-cn/windows/downloads/sdk-archive
 
-目前最新的Windows SDK 版本是：Windows 10 SDK (14393) 
+目前最新的Windows SDK 版本是：Windows 10 SDK (10.0.14393.0) 
 
 注：Windows SDK 和 Windows Driver Kit (WDK) 版本号必须要一致，而且必须先装 Windows SDK 再装 WDK，否则 VisualStudio 无法正常使用新安装的 WDK ！
 
@@ -27,7 +27,7 @@ Windows Driver Kit -- Windows 驱动程序工具包 (WDK)
 
 https://developer.microsoft.com/zh-cn/windows/hardware/windows-driver-kit
 
-目前最新的Windows SDK 版本是：Windows 10 WDK (14393) 
+目前最新的Windows SDK 版本是：Windows 10 WDK (10.0.14393.0) 
 
 -----------------------------------------
 
