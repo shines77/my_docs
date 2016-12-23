@@ -1,0 +1,99 @@
+
+Windows Driver Kits 对驱动 sys 文件数字签名的方法
+------------------------------------------------------
+
+------------------------------------------------------------------------------
+
+参考文章：
+
+Creating Test Certificates
+
+https://msdn.microsoft.com/zh-cn/windows/hardware/drivers/install/creating-test-certificates
+
+------------------------------------------------------------------------------
+
+给 minispy Sample 程序的驱动签名（测试用）
+============================================
+
+先创建一个文件夹，例如：Release，把编译好的 minispy.inf、minispy.sys 和 minispy.exe 都拷贝进来。
+再打开 VS 2015（或别的 VS 版本）的 x86 或 x64 命令行工具，并切换到这个 Release 目录，然后执行下面的命令。
+
+签名时不用 cat 文件也可以，这里只是演示方法。
+
+注：makecert.exe, certmgr.exe, inf2cat.exe, signtool.exe 安装好 WDK 应该就自带了。
+
+----------------------
+
+生成测试(Test)证书：
+
+范例（格式）: makecert -r -pe -ss PrivateCertStore -n CN=Contoso.com(Test) ContosoTest.cer
+
+实例:
+
+makecert -r -pe -ss minispyCertificateStore -n CN=skyinno.com(Test) minispyCrossCertificate.cer
+
+其中 “CN=skyinno.com(Test)” 可以定义成别的，跟下面保持一致即可。
+
+把证书添加到根证书和信任发布者里：
+
+certmgr.exe -add minispyCrossCertificate.cer -s -r localMachine root
+certmgr.exe -add minispyCrossCertificate.cer -s -r localMachine trustedpublisher
+
+删除证书：
+
+certmgr.exe -del minispyCrossCertificate.cer -s -r localMachine root
+certmgr.exe -del minispyCrossCertificate.cer -s -r localMachine trustedpublisher
+
+注：
+
+最直接的证书管理方式是，运行里输入“certmgr.msc”，打开 Windows 证书管理器，找到 minispyCertificateStore，把下面所有存在的证书删掉再生成。
+因为如果 minispyCertificateStore 下面有多个相同 CN 名的证书，可能导致签名失败，所以要最好保证里面相同  CN 名的只有一个证书。
+
+----------------------
+
+生成 cat 文件：
+
+格式：inf2cat.exe /driver:{Your_CAT_File_Path} /os:{Your_OS_String}
+
+Vista_x64下：
+
+inf2cat.exe /driver:C:\Project\OpenSrc\Windows\Windows-driver-samples\filesys\miniFilter\minispy\release /os:Vista_x64
+
+Win7_x64下：
+
+inf2cat.exe /driver:C:\Project\OpenSrc\Windows\Windows-driver-samples\filesys\miniFilter\minispy\release /os:7_x64
+
+/os: 的值定义可以使用 inf2cat.exe -h 命令查询。
+
+----------------------
+
+对 cat 文件签名：
+
+范例（格式）: signtool sign /v /ac CrossCertificateFile /s SPCCertificateStore /n SPCSubjectName /t http://timestamp.verisign.com/scripts/timestamp.dll minispy.cat
+
+实例:
+
+signtool sign /v /ac minispyCrossCertificate.cer /s minispyCertificateStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.cat
+
+----------------------
+
+对 sys 驱动文件签名：
+
+范例（格式）: signtool sign /v /ac CrossCertificateFile /s SPCCertificateStore /n SPCSubjectName /t http://timestamp.verisign.com/scripts/timestamp.dll winloaddriver.sys
+
+实例:
+
+signtool sign /v /ac minispyCrossCertificate.cer /s minispyCertificateStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.sys
+
+------------------------------------------------------------------------------
+
+参考文章：
+
+signtool 的参数说明
+
+https://msdn.microsoft.com/library/windows/hardware/ff551778
+
+signtool sign /v /ac minispyCrossCertificate.cer /s minispyCertificateStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.sys
+
+------------------------------------------------------------------------------
+
