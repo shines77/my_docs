@@ -4,16 +4,18 @@ Windows Driver Kits 对驱动 sys 文件数字签名的方法
 
 ------------------------------------------------------------------------------
 
-参考文章：
+参考文档：
 
-Creating Test Certificates
+Digital Signatures for Kernel Modules on Windows
 
-https://msdn.microsoft.com/zh-cn/windows/hardware/drivers/install/creating-test-certificates
+https://msdn.microsoft.com/en-us/library/windows/hardware/dn653559(v=vs.85).aspx
+
+里面可以下载一个 kmsigning.doc 文件。
 
 ------------------------------------------------------------------------------
 
-给 minispy Sample 程序的驱动签名（测试用）
-============================================
+给 minispy Samples 程序的驱动签名（测试用）
+==============================================
 
 先创建一个文件夹，例如：Release，把编译好的 minispy.inf、minispy.sys 和 minispy.exe 都拷贝进来。
 再打开 VS 2015（或别的 VS 版本）的 x86 或 x64 命令行工具，并切换到这个 Release 目录，然后执行下面的命令。
@@ -88,6 +90,14 @@ signtool sign /v /ac minispyCrossCertificate.cer /s minispyCertificateStore /n s
 ------------------------------------------------------------------------------
 
 参考文章：
+
+Creating Test Certificates
+
+https://msdn.microsoft.com/zh-cn/windows/hardware/drivers/install/creating-test-certificates
+
+MakeCert 的参数说明
+
+https://msdn.microsoft.com/zh-cn/library/windows/hardware/ff548309(v=vs.85).aspx
 
 signtool 的参数说明
 
