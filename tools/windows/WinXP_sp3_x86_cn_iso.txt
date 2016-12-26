@@ -29,6 +29,8 @@ FCKGW-RHQQ2-YXRKT-8TG6W-2B7Q8
 文件名：
 zh-hans_windows_xp_professional_with_service_pack_3_x86_cd_vl_x14-74070.iso
 
+--------------------------------------------------------
+
 下载版本二：
 http://wenku.baidu.com/view/e946751b4431b90d6c85c762
 
@@ -37,6 +39,11 @@ SHA1: 76854F13BD643EF07A401BFCF4CCA1D402017A2D
 CRC32: DBAB5C0D
 
 注：这个版本MD5, SHA1和上面的版本不一样，但大小一样，无所谓了，反正是装在虚拟机里。
+
+实际下载的文件的哈希值如下，值是正确的，没被改动过：
+
+MD5: E74D72F3D90456003E9E02BA0FB7DA61 
+SHA1: D142469D0C3953D8E4A6A490A58052EF52837F0F 
 
 文件大小：601.04 MB (630,237,184 字节)。
 
@@ -47,11 +54,28 @@ MRX3F-47B9T-2487J-KWKMF-RPWBY
 
 迅雷下载：
 
-thunder://QUFodHRwOi8vc29mdC51c2Fpa2EuY24vJUU2JTkzJThEJUU0JUJEJTlDJU
-U3JUIzJUJCJUU3JUJCJTlGL3dpbmRvd3MvV2luZG93c1hQL1ZMLUltYWdlL01TRE4vem
-gtaGFuc193aW5kb3dzX3hwX3Byb2Zlc3Npb25hbF93aXRoX3NlcnZpY2VfcGFja18zX3
-g4Nl9jZF92bF94MTQtNzQwNzAuaXNvWlo=
+thunder://QUFodHRwOi8vc29mdC51c2Fpa2EuY24vJUU2JTkzJThEJUU0JUJEJTlDJUU3JUIzJUJCJUU3JUJCJTlGL3dpbmRvd3MvV2luZG93c1hQL1ZMLUltYWdlL01TRE4vemgtaGFuc193aW5kb3dzX3hwX3Byb2Zlc3Npb25hbF93aXRoX3NlcnZpY2VfcGFja18zX3g4Nl9jZF92bF94MTQtNzQwNzAuaXNvWlo=
 
 文件名：
 zh-hans_windows_xp_professional_with_service_pack_3_x86_cd_vl_x14-74070.iso
 
+--------------------------------------------------------
+
+下载版本三：
+http://wenku.baidu.com/view/3ed3b413227916888486d710
+
+文 件 名：zh-hans_windows_xp_professional_with_service_pack_3_x86_cd_vl_x14-74070.iso
+
+邮寄日期：(UTC) 5/2/2008 12:05:18 AM
+
+MD5: E74D72F3D90456003E9E02BA0FB7DA61
+SHA1： D142469D0C3953D8E4A6A490A58052EF52837F0F
+ISO/CRC： N/A
+
+正版密钥：MRX3F-47B9T-2487J-KWKMF-RPWBY
+
+下载地址：（下载后得知，这个版本的哈希值也是正常的）
+
+ed2k://|file|zh-hans_windows_xp_professional_with_service_pack_3_x86_cd_vl_x14-74070.iso|630237184|EC51916C9D9B8B931195EE0D6EE9B40E|
+
+--------------------------------------------------------
