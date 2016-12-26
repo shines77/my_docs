@@ -14,6 +14,16 @@ https://msdn.microsoft.com/en-us/library/windows/hardware/dn653559(v=vs.85).aspx
 
 ------------------------------------------------------------------------------
 
+Cross-Certificates for Kernel Mode Code Signing
+
+https://msdn.microsoft.com/windows/hardware/drivers/install/cross-certificates-for-kernel-mode-code-signing
+
+Windows 64位内核驱动和内核代码签名(Kernel Signing)指南
+
+http://www.wosign.com/Support/Windows_Kernel_Signing_guide.htm
+
+------------------------------------------------------------------------------
+
 给 minispy Samples 程序的驱动签名（测试用）
 ==============================================
 
@@ -32,14 +42,18 @@ https://msdn.microsoft.com/en-us/library/windows/hardware/dn653559(v=vs.85).aspx
 
 实例:
 
-makecert -r -pe -ss minispyCertificateStore -n CN=skyinno.com(Test) minispyCrossCertificate.cer
+makecert -r -pe -ss minispyCertStore -n CN=skyinno.com(Test) minispyCrossCertificate.cer
 
 其中 “CN=skyinno.com(Test)” 可以定义成别的，跟下面保持一致即可。
 
 把证书添加到根证书和信任发布者里：
 
 certmgr.exe -add minispyCrossCertificate.cer -s -r localMachine root
+certmgr.exe -add minispyCrossCertificate.cer -s -r localMachine rootpublisher
 certmgr.exe -add minispyCrossCertificate.cer -s -r localMachine trustedpublisher
+
+certmgr.exe -add -all MSCV-ThawteClass3.cer -s -r localMachine root
+certmgr.exe -add -all MSCV-ThawteClass3.cer -s -r localMachine trustedpublisher
 
 删除证书：
 
@@ -77,6 +91,14 @@ inf2cat.exe /driver:C:\Project\OpenSrc\Windows\Windows-driver-samples\filesys\mi
 
 signtool sign /v /ac minispyCrossCertificate.cer /s minispyCertificateStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.cat
 
+signtool sign /v /ac MSCV-ThawteClass3.cer /a /s minispyCertificateStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.cat
+
+校验：
+
+signtool verify /kp minispy.cat
+
+signtool verify /kp /c minispy.cat minispy.inf
+
 ----------------------
 
 对 sys 驱动文件签名：
@@ -86,6 +108,20 @@ signtool sign /v /ac minispyCrossCertificate.cer /s minispyCertificateStore /n s
 实例:
 
 signtool sign /v /ac minispyCrossCertificate.cer /s minispyCertificateStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.sys
+
+signtool sign /v /ac MSCV-ThawteClass3.cer /s minispyCertificateStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.sys
+
+校验：
+
+signtool verify /kp minispy.sys
+
+signtool verify /kp /c minispy.cat minispy.sys
+
+----------------------
+
+加载 minispy.sus
+
+sc start minispy
 
 ------------------------------------------------------------------------------
 

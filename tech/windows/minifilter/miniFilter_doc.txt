@@ -142,3 +142,40 @@ http://www.cnblogs.com/js2854/archive/2010/11/03/HideDir.html
 
 -----------------------------------------------------------------------------
 
+File System Minifilter Drivers（文件系统微型过滤驱动）入门
+
+http://www.cnblogs.com/monotone/p/4184219.html
+
+-----------------------------------------------------------------------------
+
+Windows Minifilter驱动 - 加载顺序 （2） 
+
+http://blog.csdn.net/zj510/article/details/39345479
+
+驱动启动类型
+
+看MSDN: http://msdn.microsoft.com/en-us/library/windows/hardware/ff557272(v=vs.85).aspx
+
+vs2013默认使用的是SERVICE_DEMAND_START。 也就是说系统重启后minifilter不会被加载。需要通过Pnp管理器或者SCM来启动。比如使用命令sc start myminifilter。
+
+当windows启动的时候，SERVICE_BOOT_START和SERVICE_SYSTEM_START的minifilter驱动会被自动加载。SERVICE_BOOT_START比SERVICE_SYSTEM_START的驱动更早被加载。MSDN:However, no system-start driver is loaded until after all boot drivers have been loaded.
+
+对于同一种类型的驱动，加载顺序就看他们所属的组了。
+
+-----------------------------------------------------------------------------
+
+Windows Minifilter驱动 - 获取进程ID, 进程名字和线程ID （5）
+
+http://blog.csdn.net/zj510/article/details/39476171
+
+-----------------------------------------------------------------------------
+
+
+
+
+-----------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------------
+
