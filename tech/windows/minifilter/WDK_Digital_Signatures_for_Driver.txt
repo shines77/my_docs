@@ -62,8 +62,8 @@ certmgr.exe -del minispyCrossCertificate.cer -s -r localMachine trustedpublisher
 
 注：
 
-最直接的证书管理方式是，运行里输入“certmgr.msc”，打开 Windows 证书管理器，找到 minispyCertificateStore，把下面所有存在的证书删掉再生成。
-因为如果 minispyCertificateStore 下面有多个相同 CN 名的证书，可能导致签名失败，所以要最好保证里面相同  CN 名的只有一个证书。
+最直接的证书管理方式是，运行里输入“certmgr.msc”，打开 Windows 证书管理器，找到 minispyCertStore ，把下面所有存在的证书删掉再生成。
+因为如果 minispyCertStore 下面有多个相同 CN 名的证书，可能导致签名失败，所以要最好保证里面相同 CN 名的只有一个证书。
 
 ----------------------
 
@@ -79,6 +79,10 @@ Win7_x64下：
 
 inf2cat.exe /driver:C:\Project\OpenSrc\Windows\Windows-driver-samples\filesys\miniFilter\minispy\release /os:7_x64
 
+Win7_x86下：
+
+inf2cat.exe /driver:C:\Project\OpenSrc\Windows\Windows-driver-samples\filesys\miniFilter\minispy\x86-Release /os:7_x86
+
 /os: 的值定义可以使用 inf2cat.exe -h 命令查询。
 
 ----------------------
@@ -89,9 +93,9 @@ inf2cat.exe /driver:C:\Project\OpenSrc\Windows\Windows-driver-samples\filesys\mi
 
 实例:
 
-signtool sign /v /ac minispyCrossCertificate.cer /s minispyCertificateStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.cat
+signtool sign /v /ac minispyCrossCertificate.cer /s minispyCertStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.cat
 
-signtool sign /v /ac MSCV-ThawteClass3.cer /a /s minispyCertificateStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.cat
+signtool sign /v /ac MSCV-ThawteClass3.cer /a /s minispyCertStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.cat
 
 校验：
 
@@ -107,9 +111,9 @@ signtool verify /kp /c minispy.cat minispy.inf
 
 实例:
 
-signtool sign /v /ac minispyCrossCertificate.cer /s minispyCertificateStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.sys
+signtool sign /v /ac minispyCrossCertificate.cer /s minispyCertStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.sys
 
-signtool sign /v /ac MSCV-ThawteClass3.cer /s minispyCertificateStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.sys
+signtool sign /v /ac MSCV-ThawteClass3.cer /s minispyCertStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.sys
 
 校验：
 
@@ -139,7 +143,7 @@ signtool 的参数说明
 
 https://msdn.microsoft.com/library/windows/hardware/ff551778
 
-signtool sign /v /ac minispyCrossCertificate.cer /s minispyCertificateStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.sys
+signtool sign /v /ac minispyCrossCertificate.cer /s minispyCertStore /n skyinno.com(Test) /t http://timestamp.verisign.com/scripts/timstamp.dll minispy.sys
 
 ------------------------------------------------------------------------------
 
