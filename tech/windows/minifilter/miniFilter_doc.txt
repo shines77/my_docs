@@ -52,6 +52,10 @@ WDK 7.1.0（适用于 Windows XP 驱动程序)
 
 https://www.microsoft.com/download/confirmation.aspx?id=11800
 
+GRMWDK_EN_7600_1.ISO
+
+https://download.microsoft.com/download/4/A/2/4A25C7D5-EFBE-4182-B6A9-AE6850409A78/GRMWDK_EN_7600_1.ISO
+
 -----------------------------------------------------------------------------
 
 File System Minifilter Drivers
