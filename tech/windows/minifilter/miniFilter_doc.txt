@@ -559,7 +559,7 @@ swapbuffers minifilter sample
 
 Windows Driver Kit (WDK) 8.0 Samples (下载地址）
 
-This samples pack contains all the official Windows Driver Kit code examples prepared for use with Visual Studio 2012 and the Windows Driver Kit (WDK) 8.0. 
+This samples pack contains all the official Windows Driver Kit code examples prepared for use with Visual Studio 2012 and the Windows Driver Kit (WDK) 8.0.
 
 https://code.msdn.microsoft.com/windowshardware/windows-driver-kit-wdk-80-e3161626
 
@@ -588,5 +588,16 @@ Windows 文件过滤驱动经验总结
 http://bbs3.driverdevelop.com/read.php?tid=98728&fid=39
 
 挺实用的经验分享，还没验证，目测还不错。
+
+-----------------------------------------------------------------------------
+
+http://bbs3.driverdevelop.com/read.php?tid=108945&fid=39
+
+偶然发现 FltGetFileNameInformation 方法有清缓存的功能，真是又安全又方便。
+
+调用方法：FltGetFileNameInformation( Data,
+                                     FLT_FILE_NAME_NORMALIZED |
+                                     FLT_FILE_NAME_QUERY_ALWAYS_ALLOW_CACHE_LOOKUP,
+                                     &nameInfo );
 
 -----------------------------------------------------------------------------
