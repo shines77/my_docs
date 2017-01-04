@@ -182,7 +182,7 @@ http://blog.csdn.net/liuyez123/article/details/50857621
 
 -----------------------------------------------------------------------------
 
-WinDB G实时打印 Windows 驱动或者内核信息的方法
+WinDBG 实时打印 Windows 驱动或者内核信息的方法
 http://blog.csdn.net/md521/article/details/37704363
 
 在 Windows 7 用 WinDBG 调试时显示 KdPrint 信息
@@ -191,6 +191,102 @@ http://blog.chinaunix.net/uid-701988-id-373702.html
 4.　当WinDBG调试窗口加载符号表未出现错误信息时，在WinDBG中命令行中输入以下命令：
 
     ed kd_default_mask 0xffffffff       // 不区分大小写，用于打开Windows驱动或者内核调试筛选器
+
+
+-----------------------------------------------------------------------------
+
+在windows 7用WinDBG调试时显示KdPrint信息
+
+http://blog.chinaunix.net/uid-701988-id-373702.html
+
+在注册表 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager 下面，
+新建一项 Debug Print Filter，
+新建一个DWORD值，名称为 “DEFAULT”，(注意：必须全部是大写)
+值为8。
+
+重启操作系统即可。
+
+例如：
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter]
+"DEFAULT"=dword:00000008
+
+其他操作系统
+----------------
+
+WinXP:
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter]
+"DEFAULT"=dword:00000008
+
+Vista:
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter]
+"DEFAULT"=dword:0000000f
+
+Windows 7:
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter]
+"DEFAULT"=dword:ffffffff
+
+-----------------------------------------------------------------------------
+
+在 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Debug Print Filter 下面：
+
+新建 DEFAULT（DWORD类型）：
+
+DEFAULT  0x08       输出 xxx_INFO_LEVEL, xxx_ERROR_LEVEL 信息
+
+DEFAULT  0x0f       输出所有级别的信息
+
+DEFAULT  0xffffffff 输出所有的信息
+
+修改后，系统要重启才能生效
+
+-----------------------------------------------------------------------------
+
+WinDBG实时打印Windows驱动或者内核信息的方法
+
+http://blog.csdn.net/md521/article/details/37704363
+
+当我们用 WinDBG 调试 Windows 驱动或者内核时，总是需要查看相关 Log 信息，那么如何在WinDBG中实时打印 Windows 驱动或者内核信息呢？
+
+Windows 驱动包提供了驱动或者内核打印接口：DbgPrintEx.
+
+对于 KMDF 驱动(内核态驱动)，对应的打印接口是 KdPrint 或者 KdPrintEx，其实这两个接口是 DbgPrintEx 的特殊类型或者特殊定义而已。
+对于 UMDF 驱动(用户态驱动)，没有专门的打印接口，可以使用 DbgPrint(DbgPrintEx的特殊定义)，或者直接使用 DbgPrintEx 接口，当然还可以使用 Win32 的调试接口 OutputDebugString。
+
+不过，当用 WinDBG 调试 Windows 驱动或者内核时，如何让上述打印接口实时的显示在WinDBG的调试窗口呢?
+
+1. 打开 WinDBG 调试软件，新建内核调试 WorkSpace(CTRL + K)；
+2. 加载 Windows 驱动或者内核符号表文件(CTRL + S);
+3. 在上述步骤中，选择符号表所载的文件夹，然后选中 Reload ，确定；
+4. 当 WinDBG 调试窗口加载符号表未出现错误信息时，在 WinDBG 中命令行中输入以下命令：
+
+    ed kd_default_mask 0xffffffff       // 不区分大小写，用于打开 Windows 驱动或者内核调试筛选器、
+
+5. 在 WinDBG 命令行输入g，回车运行。
+6. 此时如果 WinDBG 没有任何错误信息，并且调试的正好是相关 Windows 驱动程序或者内核时，就会输出 Debug 信息。
+
+-----------------------------------------------------------------------------
+
+Windbg 下无法显示 DbgPrint 输出的信息
+
+http://blog.csdn.net/happy987818/article/details/50516236
+
+有对 DbgPrintEx() 函数的详细参数说明，同时也转载了别人在 Vista 系统下的分析及解决过程，总得来说值得一看。
+
+转载地址，Vista 下的分析及解决过程：http://blog.csdn.net/xw_1120/article/details/5055030
+
+总结如下：
+
+1、Win7/Vista 下确实需要修改调试信息过滤的键值（不知道我为什么没成功- -），而且该修改竟然存在 wxp 和 wlh 两个版本（网站上并无说明），如果自己修改不成功可以借助别人做的工具。
+
+2、修改过键值后，DbgPrintEx() 函数用于 WDM 驱动调试信息的编写，而 DbgPrint() 函数用于 NT 驱动。
+
+3、关于 DbgPrintEx() 在 WDM 驱动源代码下有时会无法链接成功的问题，上面已有说明，解决方法是将“DRIVERTYPE=WDM”一句删掉。
+
+4、关于 build 工具，使用不同版本要配合相应的键值的修改，这样才能成功打印调试信息。
 
 -----------------------------------------------------------------------------
 
@@ -262,4 +358,114 @@ eb nt!Kd_FLTMGR_Mask 0y11111111   (用于使用的是 eb 命令，最大只能8�
 ed nt!Kd_FLTMGR_Mask 0xffffffff
 
 -----------------------------------------------------------------------------
+
+先复制一份当前的启动配置：
+
+C:\> bcdedit copy {current} "Windows 7 Debug With Serial"
+
+会显示如下信息：
+The entry was successfully copied to {cafcc464-ccc7-11e6-97a2-98d472d6dd37}.
+
+注：除了{current}以外，还有个变量是{default}。
+
+然后打开新启动配置的调试模式，下面这两个命令是等价的：
+
+C:\> bcdedit /debug {cafcc464-ccc7-11e6-97a2-98d472d6dd37} on
+C:\> bcdedit /set {cafcc464-ccc7-11e6-97a2-98d472d6dd37} debug yes
+
+设置允许测试驱动签名（即不强制检测是否为微软正规的驱动签名）：
+C:\> bcdedit /set {cafcc464-ccc7-11e6-97a2-98d472d6dd37} testsigning on
+
+或者启动的时候按 F8，选项中选择“不检测驱动签名”。
+
+C:\> bcdedit /dbgsettings {cafcc464-ccc7-11e6-97a2-98d472d6dd37} serial debugport:1 baudrate:115200
+
+debugport:1 表示使用 COM1 接口。
+
+查看 debug 设置：
+
+C:\> bcdedit /dbgsettings {cafcc464-ccc7-11e6-97a2-98d472d6dd37}
+
+如果使用的是 HyperV 虚拟机,可以这样设置:
+
+C:\> bcdedit /hypervisorsettings {cafcc464-ccc7-11e6-97a2-98d472d6dd37} serial debugport:1 baudrate:115200
+
+debugport:1 表示使用 COM1 接口。
+
+查看当前的启动加载器的配置:
+
+C:\> bcdedit /enum {current}
+
+Windows 启动加载器
+-------------------
+标识符                  {current}
+device                  partition=C:
+path                    \Windows\system32\winload.exe
+description             Windows 7 Debug With Serial
+locale                  zh-CN
+inherit                 {bootloadersettings}
+recoverysequence        {cafcc462-ccc7-11e6-97a2-98d472d6dd37}
+recoveryenabled         Yes
+testsigning             Yes
+osdevice                partition=C:
+systemroot              \Windows
+resumeobject            {cafcc460-ccc7-11e6-97a2-98d472d6dd37}
+nx                      OptIn
+debug                   Yes
+
+列出所有启动管理器和启动加载器的信息：
+
+C:\> bcdedit /enum
+
+-----------------------------------------------------------------------------
+
+示例:
+
+C:\> bcdedit /copy {current} /d "Windows 7 Debug With Serial"
+已将该项成功复制到 {cafcc464-ccc7-11e6-97a2-98d472d6dd37}。
+
+C:\> bcdedit /debug {cafcc464-ccc7-11e6-97a2-98d472d6dd37} on
+操作成功完成。
+
+C:\> bcdedit /dbgsettings
+debugtype               Serial
+debugport               1
+baudrate                115200
+操作成功完成。
+
+C:\Windows\system32>
+
+-----------------------------------------------------------------------------
+
+开机按 F8，可以选择“跳过驱动签名”。
+
+关闭强制驱动签名的命令为:
+
+bcdedit.exe -set loadoptions DDISABLE_INTEGRITY_CHECKS
+
+See: https://zhidao.baidu.com/question/628350255653791564.html
+
+-----------------------------------------------------------------------------
+
+转载: 循序渐进学Minifilter（微过滤器） 之 一 （开篇）
+
+http://blog.csdn.net/lostspeed/article/details/9234887
+
+KdBreakPoint();
+
+-----------------------------------------------------------------------------
+
+【原创】minifilter通讯之简单示例之一
+
+http://bbs.pediy.com/showthread.php?t=186931
+
+/*
+  这里要注意:
+    1. 数据地址的对齐.
+    2. 文档建议使用:try/except处理.
+    3. 如果是64位的驱动要考虑32位的EXE发来的请求.
+*/
+
+-----------------------------------------------------------------------------
+
 
