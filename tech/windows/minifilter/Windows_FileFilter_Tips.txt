@@ -1,0 +1,167 @@
+
+Windows 文件过滤驱动经验总结
+
+http://bbs3.driverdevelop.com/read.php?tid=98728&fid=39
+
+    看了 ChuKuangRen 的第二版《文件过滤驱动开发教程》后，颇有感触。我想，交流都是
+建立在平等的基础上，在抱怨氛围和环境不好的同时应该先想一想自己究竟付出了多少？
+只知索取不愿付出的人也就不用抱怨了，要怪也只能怪自己。发自己心得的人无非是两种
+目的，一是引发一些讨论，好纠正自己错误的认识，以便从中获取更多的知识使自己进步
+的更快。二是做一份备忘，当自己遗忘的时候能够马上找到相关资料。我这里也总结了近
+几年做文件过滤驱动时所积累下来的一些小小经验，这分笔记也是看了 ChuKuangRen 的
+教程后，临时想到的一小部分而已，是想到哪写到哪，不是很全，如果以后再回想起什么
+也会不断补充。因其工作原因，近段时间在 SOLARIS 驱动与 Linux 内核方面投入的精
+力比较多，Windows 下的文件过滤驱动一直也没有怎么去碰，所以最后还是那句老话
+FIXME。
+
+
+1、获得文件全路径以及判断时机
+
+除在所有 IRP_MJ_XXX 之前自己从头创建 IRP 发送到下层设备查询全路径外，
+不要尝试在 IRP_MJ_CREATE 以外的地方获得全路径，因为只有在 IRP_MJ_CREATE
+中才会使用 ObCreateObject() 来建立一个有效的 FILE_OBJECT。而在 IRP_READ
+IRP_WRITE 中它们是直接操作 FCB (File Control Block)的。
+
+
+2、从头建立 IRP 发送关注点
+
+无论你建立什么样的 IRP，是 IRP_MJ_CREATE 也好还是 IRP_MJ_DIRECTORY_CONTROL
+也罢，最要提醒的就是一些标志。不同的标志会代来不同的结果，有些结果是直接
+返回失败。这里指的标志不光是 IRP->Flags，还要考虑 IO_STACK_LOCATION->Flags
+还有其它等等。尤其是你要达到一些特殊目的，这时候更需要注意，如 IRP_MN_QUERY_DIRECTORY，
+不同的标志结果有很大的不同。
+
+
+3、从头建立 IRP 获取全路径注意点
+
+自己从头建立一个 IRP_MJ_QUERY_INFORMATION 的 IRP 获取全路径时需要注意，
+不仅在 IRP_MJ_CREATE 要做区别处理，在 IRP_MJ_CLOSE 也要做同样的处理，
+否则如果目标是 NTFS 文件系统的话可能产生 deadlock。如果是 NTFS 那么在
+IRP_MJ_CLEANUP 的时候也需要对 FO_STREAM_FILE 类型的文件做同样处理。
+
+
+4、获得本地/远程访问用户名（域名/SID）
+
+方法只有在 IRP_MJ_CREATE 中才可用，那是因为 IO_SECURITY_CONTEXT 只有
+在 IO_STACK_LOCATION->Parameters.Create.SecurityContext 才会有效。
+这样你才有可能从 IO_SECURITY_CONTEXT->SecurityContext->AccessState->
+SubjectSecurityContext.XXXToken 中获得访问 TOKEN，从而进一步得到用户名
+或 SID。记得 IFS 中有一个库，它的 LIB 导出一个函数可以让你在获得以上
+信息后得到用户名与域名。但如果你想兼容 NT4 的话，只能自己分析来得出本
+地和远程的 SID。
+
+
+5、文件与目录的判断
+
+正确的方法在楚狂人的文档里已经说过了，再补充一句。如果你的文件过滤驱动
+要兼容所有文件系统，那么不要十分相信从 FileObject->FsContext 里取得的数据。
+正确的方法还是在你传递下去 IRP_MJ_CREATE 后从最下层文件系统延设备栈返回到
+你这里后再获得。
+
+
+6、加/解密中判断点
+
+只判断 IRP_PAGING_IO，IRP_SYNCHRONOUS_PAGING_IO，IRP_NOCACHE 是
+没错的。如果有问题，相信是自己的问题。关于有人提到在 FILE_OBJECT->Flags
+中的 FO_NO_INTERMEDIATE_BUFFERING 是否需要判断，对此问题的回答是只要
+你判断了 IRP_NOCACHE 就不用再判断 FILE_OBJECT 中的，因为它最终会
+设置 IRP->Flags 为 IRP_NOCACHE。关于你看到的诸如 IRP_DEFER_IO_COMPLETION
+等 IRP 不要去管它，因为它只是一个过程。最终读写还是如上所介绍。至于
+以上这些 IRP 哪个是由 CC MGR 发送的，哪些是由 I/O MGR 发送和在什么
+时候发送的，这个已经有很多讨论了，相信可以找到。
+
+
+7、举例说明关于 IRP 传递与完成注意事项
+
+只看 Walter Oney 的那本 《Programming the Microsoft Windows driver model》
+里介绍的流程，自己没有实际的体会还是不够的，那里只介绍了基础概念，让自己
+有了知识。知道如何用，在什么情况下用，用哪种方法，能够用的稳定这叫有了技术。
+我们从另一个角度出发，把问题分为两段来看，这样利于总结。一个 IRP 在过滤驱
+动中，把它分为需要安装 CompleteRoutine 的与无需安装 CompleteRoutine 的。
+那么在不需要安装 CompleteRoutine 的有以下几类情况。
+
+(1) 拿到这个 IRP 后什么都不做，直接调用 IoCompleteRequest() 来返回。
+(2) 拿到这个 IRP 后什么都不做，直接传递到底层设备，使用
+    IoSkipCurrentIrpStackLocation() 后调用 IoCallDriver() 传递。
+(3) 使用 IoBuildSynchronousFsdRequest() 或 IoBuildDeviceIoControlRequest()
+    来建立 IRP 的。
+
+以上几种根据需要直接使用即可，除了一些参数与标志需要注意外，没有什么系统
+机制相关的东西需要注意了。那么再来看需要安装 CompleteRoutine 的情况。我们
+把这种情况再细分为两种，一是在 CompleteRoutine 中返回标志为
+STATUS_MORE_PROCESSING_REQUIRED 的情况。二是返回处这个外的标志，需要使用函数
+IoMarkIrpPending() 的情况。在 CompleteRoutine 中绝大多数就这么两种情况，
+你需要使用其中的一种情况。那么为什么需要安装 CompleteRoutine 呢？那是因为
+我们对其 IRP 从上层驱动，经过我们驱动，在经过底层设备栈返回到我们这一层驱
+动时需要得到其中内容作为参考依据的，还有对其中内容需要进行修改的。再有一种
+情况是没有经过上层驱动，而 IRP 的产生是在我们驱动直接下发到底层驱动，而经
+过设备栈后返回到我们这一层，且我们不在希望它继续向上返回的，因为这个 IRP
+本身就不是从上层来的。综上所述，先来看下 IoMarkIrpPending() 的情况。
+
+
+(1) 在 CompleteRoutine 中判断 Irp->PendingReturned 并使用 IoMarkIrpPending()
+    然后返回。这种方法在没有使用 KeSetEvent() 的情况下，且不是自建 IRP 发送
+    到底层驱动返回时使用。也就是说有可能我所做的工作都是在 CompleteRoutine
+    中进行的。比如加/解密时，我在这里对下层驱动返回数据的判断并修改。修改
+    后因为没有使用 STATUS_MORE_PROCESSING_REQUIRED 标志，它会延设备堆一直向
+    上返回并到用户得到数据为止。这里一定要注意，在这种情况下 CompleteRoutine
+    返回后，不要在碰这个 IRP。也就是说如果这个时候你使用了 IoCompleteRequest()
+    的话会出现一个 MULTIPLE_IRP_COMPLIETE_REQUEST 的 BSOD 错误。
+
+
+(2) 在 CompleteRoutine 中直接返回 STATUS_MORE_PROCESSING_REQUIRED 标志。这种
+    情况在使用了 KeSetEvent() 的函数下出现。这里又有两个小小的分之。
+
+    1) 出现于上层发送到我这里，当我这里使用 IoCallDriver() 后，底层返回数
+       据经过我这一层时，我想让它暂时停止继续向上传递，让这个 IRP 稍微歇息
+       一会，等我对这个 IRP 返回的数据操作完成后（一般是没有在 CompleteRoutine
+       中对返回数据进行操作情况下，也就是说等到完成例程返回后再进行操作），由
+       我来调用 IoCompleteRequest() 让它延着设备栈继续返回。这里要注意，我们
+       是想让它返回的，所以调用了 IoCompleteRequest()。这个可不同于下面所讲的
+       自己从头分配 IRP 时在 CompleteRoutine 中已经调用 IoFreeIrp() 释放了当前
+       IRP 的情况。比如我在做一个改变文件大小，向文件头写入加密标志的驱动时，
+       在上层发来了 IRP_MJ_QUERY_INFORMATION 查询文件，我想在这个时候获得文件
+       信息进行判断，然后根据我的判断结果再移动文件指针。注意：上面是两步，第
+       一步是先获得文件大小，那么在这个时候我就需要用到上述办法，先让这个 IRP
+       传递下去，得到我想要的东西后在进行对比。等待适当时机完成这个 IRP，让数
+       据继续传递，直到用户收到为止。第二步我会结合下面小节来讲。
+
+    2) 出现于自己从头建立 IRP，当使用 IoAllocate() 或 IoBuildAsynchronousFsdRequest()
+       创建 IRP 调用 IoCallDriver() 后，底层返回数据到我这一层时，我不想让这
+       个 IRP 继续向上延设备栈传递。因为这个 IRP 就是在我这层次建立的，上层本
+       就不知道有这么一个 IRP。那么到这里我就要在 CompleteRoutine 中使用 IoFreeIrp()
+       来释放掉这个 IRP，并不让它继续传递。这里一定要注意，在 CompleteRoutine
+       函数返回后，这个 IRP 已经释放了，如果这个时候在有任何关于这个 IRP 的操作
+       那么后果是灾难性的，必定导致 BSOD 错误。前面 1) 小节给出的例子只完成了第
+       一步这里继续讲第二步，第一步我重用这个 IRP 得到了文件大小，那么这个时候虽
+       然知道大小，但我还是无法知道这个文件是否被我加过密。这时，我就需要在这里
+       自己从头建立一个 IRP_MJ_READ 的 IRP 来读取文件来判断是否我加密过了的文件，
+       如果是，则要减少相应的大小，然后继续返回。注意：这里的返回是指让第一步的
+       IRP 返回。而不是我们自己创建的。我们创建的都已经在 CompleteRoutine 中销
+       毁了。
+
+
+8、关于完成 IRP 的动作简介
+
+当一个底层驱动调用了 IoCompleteRequest() 函数时，基本上所有设备栈相关 IRP 处理工
+作都是在它那里完成的。包括 IRP->Flags 的一些标志的判断，对 APC 的处理，抛出
+MULTIPLE_IRP_COMPLETE_REQUESTS 错误等。当它延设备栈一直调用驱动所安装的 CompleteRoutine
+时，如果发现 STATUS_MORE_PROCESSING_REQUIRED 这个标志，则会停止向上继续回滚。这也是
+为什么在 CompleteRoutine 中使用这个标志即可暂停 IRP 的原因。
+
+
+9、关于 ObQueryNameString 的使用
+
+这个函数的使用，在有些环境下会有问题。它的上层函数是 ZwQueryObject()。在某些
+情况下会导致系统挂起，或者直接 BSOD。它是从对象管理器中的 ObpRootDirectoryObject
+开始遍历，通过 OBJECT_HEADER_TO_NAME_INFO 获得对象名称。今天问了下 PolyMeta
+好象是在处理 PIPE 时会挂启，这个问题出现在 2000 系统。在 XP 上好象补丁了。
+
+
+10、关于重入问题
+
+其实这个问题在很久前的 IFS FAQ 里已经介绍的很清楚，包括处理方法以及每种方法
+可能带来的问题。IFS FAQ 里的 Q34 一共介绍了四种方法，包括自己从头建立 IRP
+发送，使用 ShadowDevice，使用特征字符串，根据线程 ID，在 XP 下使用 IoCreateFileSpecifyDeviceObjectHint() 函数。并且把以上几种在不同环境
+下使用要处理的问题也做了简单的介绍。且在 Q33 里介绍了在 CIFS 碰到的 FILE_COMPLETE_IF_OPLOCKED 问题的解决方法。
+

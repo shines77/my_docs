@@ -202,7 +202,7 @@ http://msdn.microsoft.com/en-us/library/windows/hardware/ff540507(v=vs.85).aspx
 
 -----------------------------------------------------------------------------
 
-Windows 内核调试 WinDBG 原理浅析 
+Windows 内核调试 WinDBG 原理浅析
 
 http://dragonsn.bokee.com/502510.html
 
@@ -503,15 +503,69 @@ http://bbs.pediy.com/showthread.php?t=186931
     3. 如果是64位的驱动要考虑32位的EXE发来的请求.
 */
 
+status = FltCreateCommunicationPort(gFilterHandle, &g_ServerPort, &oa, NULL, ConnectNotifyCallback, DisconnectNotifyCallback, MessageNotifyCallback, 1);
+
 -----------------------------------------------------------------------------
 
-WDK Minifilter 自带示例的简要说明
+（译文）WDK Minifilter 自带示例的简要说明
 
 http://blog.csdn.net/jykj_007/article/details/5421397
 
+英文原文地址：http://msdn.microsoft.com/en-us/library/dd445225.aspx
+
+翻译整理如下(原来的翻译格式混乱，不完整，已修复了一些)：
+
+cancelSafe minifilter sample
+
+描述：如果你要使用 cancel-safe 队列（什么意思？），就用 cancelsafe minifilter sample吧。
+操作原理：当 cancelsafe minifilter 附属于一个卷时，将初始化一个 cancel-safe 队列。当这个 minifilter 销毁时，监控器读取通过I/O栈的操作。如果这个读操作已经在一个名叫 csqdemo.txt 文件上运行，这个操作将被排到 cancel-safe 队列，排队操作将在短暂的停顿（通过一个单独的运行在系统上下文的工作线程）之后完成。（去死啊，搞那么多that）
+
+minispy minifilter sample
+
+描述：本示例是一种监控和记录任何 I/O 以及重现系统内部事务活动的工具。这个例子类似大名鼎鼎的 filespy，不过它是用 minifilter 实现的。
+操作原理：minispy 由用户模式和内核模式组成，内核模式组件注册（相当于各种利用过滤管理器进行 I/O 和事务操做）的回调函数，
+这些回调函数帮助 minispy 记录任何系统的 I/O 和事务动作事件。当一个用户能够访问记录信息时，这个记录信息通过用户模式组件，
+即可以输出到屏幕上也可以输入到磁盘上的 log 文件里要观察一个设备上的 I/O 活动，你必须明确地指定 minispy 和这个设备的联系，同样，
+也可以要求 minispy 停止对一个特定设备记录日志。
+
+ctx minifilter sample
+
+描述：本例用来说明如何指派你的 minifilter 和实例、文件、流或流句柄的上下文。
+操作原理：ctx minifilter 展示如何从和实例、文件、流或流句柄指派上下文或移除上下文，无论一个或多个对象被创建，ctx 都会指派一个上下文。当指派一个文件的上下文时，例子同样创建一个流和流句构的上下文。所有的上下文将完全被过滤管理器用 minifilter 提供的回调函数删除。
+
+passThrough minifilter sample
+
+描述：passThrough minifilter 说明如何为不同类型的 irp 指定回调函数。
+操作原理：passThrough minifilter 没有任何真正的功能。对于每种 I/O 操作,预回调和后回调函数同样被调用，这些回调函数仅仅在堆栈的下一个过滤器之前。
+
+fastfat file system
+
+描述: 你可以用它来写全新的文件系统（if you want....）
+操作原理：I had never think of to write a new file system...even the Boss kill me
+
+scanner minifilter sample
+
+描述: 本例适用于有志于写检测文件数据过滤器的“developers”, 尤其是反病毒就是属于这个领域滴（貌似卡巴斯基就用到 minifilter）！
+操作原理：sanner 包括用户模式和内核模式组件，内核组件识别合适的时机去扫描一个文件的数据并且传递数据到用户模式组件做更多的确认。用户模式组件创建一个线程的编号去等待内核组件的确认？？在扫描到脏数据字符后，用户模式发送一个合适的反应给内核模式组件。
+
+内核模式组件仅用特定的扩展名（extensions）扫描文件。文件首先在成功的打时扫描。如果文件被写访问打开，扫描将在文件关闭前重新执行。扫描同样可以运行在将被写入到文件的数据上，当数据里发现脏字符串时写将被拒绝。当脏字符在文件关闭期间发现，打印一个 debug 消息。
+
+swapbuffers minifilter sample
+
+描述: swapbuffer minifilter 展示如何交换读和写数据之间的缓存。这项技术在加密过滤时相当有用，因为你必须在数据写到磁盘上之前加密，在数据从磁盘上读取后解密。由于加解密必须透明，你不能直接使用系统提供的缓存，因此中间缓存是必须引进滴。
+操作原理：swapbuffer minifilter 在读/写或目录控制操作前引进一个新缓存，对应的操作随即运行在新缓存，以代替初始提供的缓存，在操作完成后，新缓存的内容被拷贝回初始缓存。
+
 -----------------------------------------------------------------------------
 
-WinDBG + VM 调试环境的搭建 
+Windows Driver Kit (WDK) 8.0 Samples (下载地址）
+
+This samples pack contains all the official Windows Driver Kit code examples prepared for use with Visual Studio 2012 and the Windows Driver Kit (WDK) 8.0. 
+
+https://code.msdn.microsoft.com/windowshardware/windows-driver-kit-wdk-80-e3161626
+
+-----------------------------------------------------------------------------
+
+WinDBG + VM 调试环境的搭建
 
 http://blog.csdn.net/eric491179912/article/details/6090472
 
@@ -529,4 +583,10 @@ http://blog.csdn.net/eric491179912/article/details/6090472
 
 -----------------------------------------------------------------------------
 
+Windows 文件过滤驱动经验总结
 
+http://bbs3.driverdevelop.com/read.php?tid=98728&fid=39
+
+挺实用的经验分享，还没验证，目测还不错。
+
+-----------------------------------------------------------------------------
