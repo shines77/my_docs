@@ -182,20 +182,44 @@ http://blog.csdn.net/liuyez123/article/details/50857621
 
 -----------------------------------------------------------------------------
 
-WinDBG 实时打印 Windows 驱动或者内核信息的方法
-http://blog.csdn.net/md521/article/details/37704363
+MSDN 上关于 WinDBG 的手册
 
-在 Windows 7 用 WinDBG 调试时显示 KdPrint 信息
-http://blog.chinaunix.net/uid-701988-id-373702.html
+http://www.cnblogs.com/long123king/p/3875145.html
 
-4.　当WinDBG调试窗口加载符号表未出现错误信息时，在WinDBG中命令行中输入以下命令：
+这其实是 WinDBG 的命令一览表，还不错，不过命令说明是英文的。
 
-    ed kd_default_mask 0xffffffff       // 不区分大小写，用于打开Windows驱动或者内核调试筛选器
+分类：
 
+Basic Commands
+Meta commands
+Kernel Mode Extensions
+General Extensions
+User Mode Extensions
+
+据说是参考这个网址的：
+
+http://msdn.microsoft.com/en-us/library/windows/hardware/ff540507(v=vs.85).aspx
 
 -----------------------------------------------------------------------------
 
-在windows 7用WinDBG调试时显示KdPrint信息
+Windows 内核调试 WinDBG 原理浅析 
+
+http://dragonsn.bokee.com/502510.html
+
+转载版本：
+
+http://blog.csdn.net/zht_304/article/details/5726492
+
+-----------------------------------------------------------------------------
+
+WinDBG 实时打印 Windows 驱动或者内核信息的方法
+http://blog.csdn.net/md521/article/details/37704363
+
+在下面一点，有详细的提要说明。
+
+-----------------------------------------------------------------------------
+
+在 Windows 7 用 WinDBG 调试时显示 KdPrint 信息
 
 http://blog.chinaunix.net/uid-701988-id-373702.html
 
@@ -245,7 +269,7 @@ DEFAULT  0xffffffff 输出所有的信息
 
 -----------------------------------------------------------------------------
 
-WinDBG实时打印Windows驱动或者内核信息的方法
+WinDBG 实时打印 Windows 驱动或者内核信息的方法
 
 http://blog.csdn.net/md521/article/details/37704363
 
@@ -261,6 +285,7 @@ Windows 驱动包提供了驱动或者内核打印接口：DbgPrintEx.
 1. 打开 WinDBG 调试软件，新建内核调试 WorkSpace(CTRL + K)；
 2. 加载 Windows 驱动或者内核符号表文件(CTRL + S);
 3. 在上述步骤中，选择符号表所载的文件夹，然后选中 Reload ，确定；
+
 4. 当 WinDBG 调试窗口加载符号表未出现错误信息时，在 WinDBG 中命令行中输入以下命令：
 
     ed kd_default_mask 0xffffffff       // 不区分大小写，用于打开 Windows 驱动或者内核调试筛选器、
@@ -290,7 +315,7 @@ http://blog.csdn.net/happy987818/article/details/50516236
 
 -----------------------------------------------------------------------------
 
-Debugger里面如何得到DbgPrintEx的输出
+Debugger 里面如何得到 DbgPrintEx 的输出
 
 http://advdbg.org/forums/2269/ShowPost.aspx
 
@@ -309,6 +334,18 @@ http://blog.csdn.net/vins_security_lab/article/details/47294225
     DbgPrintEx(DPFLTR_FASTFAT_ID, DPFLTR_BEFORE_LEVEL, "Before!\n");
     DbgPrintEx(DPFLTR_FASTFAT_ID, DPFLTR_MIDDLE_LEVEL, "Middle!\n");
     DbgPrintEx(DPFLTR_FASTFAT_ID, DPFLTR_AFTER_LEVEL, "After!\n");
+
+------------------------------------------------------
+
+WinDBG 实时打印 Windows 驱动或者内核信息的方法
+
+http://blog.csdn.net/md521/article/details/37704363
+
+(上面有个版本，有更详细的摘要)
+
+4. 当 WinDBG 调试窗口加载符号表未出现错误信息时，在 WinDBG 中命令行中输入以下命令：
+
+   ed kd_default_mask 0xffffffff       // 不区分大小写，用于打开Windows驱动或者内核调试筛选器
 
 ------------------------------------------------------
 
@@ -465,6 +502,30 @@ http://bbs.pediy.com/showthread.php?t=186931
     2. 文档建议使用:try/except处理.
     3. 如果是64位的驱动要考虑32位的EXE发来的请求.
 */
+
+-----------------------------------------------------------------------------
+
+WDK Minifilter 自带示例的简要说明
+
+http://blog.csdn.net/jykj_007/article/details/5421397
+
+-----------------------------------------------------------------------------
+
+WinDBG + VM 调试环境的搭建 
+
+http://blog.csdn.net/eric491179912/article/details/6090472
+
+其实还不错，虽然没有什么用，但很多我想说的，他也说到了，写文章的话值得参考一下一些内容。
+
+例如：
+
+3. 我可以在GuestOS的boot.ini文件更改那个COM口吗？比如把COM1改为COM2？ （郭子注：这一点并不一定正确，待求证，至少 VirtualBox 里不一定是这样的。）
+
+不可以的，VMware会把虚拟出的这个COM口总是定义为com1。GuestOS的其他COM口都得让位。
+
+7. 一定要这样创建一个WinDBG的快捷方式才能进行调试吗？
+
+不是的，我们完全可以先正常运行WinDBG，然后选择菜单“File”--->“Kernel Debug...”，然后会弹出以下对话框：
 
 -----------------------------------------------------------------------------
 
