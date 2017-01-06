@@ -384,6 +384,8 @@ dyd nt!Kd_FASTFAT_Mask
           -------- -------- -------- --------
 83d4aec8  11111111 11111111 11111111 11111111  ffffffff
 
+ed nt!Kd_DEFAULT_Mask 0xffffffff
+
 dyd nt!Kd_FLTMGR_Mask
 
 0: kd> dyd nt!Kd_FLTMGR_Mask
@@ -653,6 +655,30 @@ http://bbs3.driverdevelop.com/read.php?tid=120486&fid=39&page=1
 我的透明加密加密标志放在文件头部，长度4K。现在经过测试，记事本和Office系列，AutoCAD都能正常加密解密。就是UltraEdit，写字板，打开文件后，文件内容是解密后的正确数据，但是，在正文后面，会有4K的空白区域，我觉得是这两个应用取到了实际的文件大小。
 
 根据论坛上查找到的资料，我处理了IRP_MJ_QUERY_INFORMATION 的FileAllInformation(StandardInformation.EndOfFile 和 AllocationSize)，FileAllocationInformation(AllocationSize)，FileValidDataLengthInformation(ValidDataLength），FileStandardInformation（EndOfFile 和AllocationSize），FileNetworkOpenInformation（AllocationSize，EndOfFile），IRP_MJ_DIRECTORY_CONTROL（FileBothDirectoryInformation）。跟踪观察，这些返回的数据都是我想要的结果。可为什么UltraEdit和写字板还是能够获取到实际文件的大小，搞不懂，难道他们是通过其他途径得到的文件大小？
+
+-----------------------------------------------------------------------------
+
+WIN7 X64 SSDT函数获得
+
+http://www.52pojie.cn/forum.php?mod=viewthread&action=printable&tid=44156
+
+x86下：
+
+FuncAddr = ([KeServiceDescriptortable + index * 4] + KeServiceDescriptortable) & 0xFFFFFFF0
+
+所以 WIN7 X64 下应该是:
+
+    FuncAddr = ([KeServiceDescriptortable + index * 4] >>4 + KeServiceDescriptortable) & 0xFFFFFFF0.
+
+-----------------------------------------------------------------------------
+
+x64 内核编程小窥 - SSDT HOOK笔记
+
+原文链接: http://bbs.pediy.com/showthread.php?t=194447
+
+转载链接：http://czy0538.lofter.com/post/1ccbdcd5_4079090
+
+写得还不错，并且提供了 x64 下计算 KeServiceDescriptortable 的代码。
 
 -----------------------------------------------------------------------------
 
