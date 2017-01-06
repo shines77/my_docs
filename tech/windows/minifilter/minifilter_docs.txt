@@ -1,7 +1,7 @@
 
 -----------------------------------------------------------------------------
 
-Windows Driver Samples
+Windows Driver Samples (WDK Samples)
 
 https://github.com/Microsoft/Windows-driver-samples.git
 
@@ -29,7 +29,7 @@ https://developer.microsoft.com/zh-cn/windows/hardware/windows-driver-kit
 
 目前最新的Windows SDK 版本是：Windows 10 WDK (10.0.14393.0)
 
------------------------------------------
+---------------------------------------------------
 
 Windows Driver Kit (WDK) 10.0.x (适用于 VS 2015)
 
@@ -84,7 +84,7 @@ http://download.microsoft.com/download/e/b/a/eba1050f-a31d-436b-9281-92cdfeae4b4
 
 -----------------------------------------------------------------------------
 
-MiniFilter文件系统学习
+MiniFilter 文件系统学习
 
 http://blog.csdn.net/zhuhuibeishadiao/article/details/51229122
 
@@ -116,14 +116,14 @@ http://blog.csdn.net/arvon2012/article/details/7926366
 
 节选：
 
-minifilter是sfilter后微软推出的过滤驱动框架。相比于sfilter，他更容易使用，需要程序员做的编码更简洁。
+minifilter 是 sfilter 后微软推出的过滤驱动框架。相比于 sfilter，他更容易使用，需要程序员做的编码更简洁。
 
-系统为minifilter专门制作了一个过滤管理器，这个管理器本身其实是一个传统过滤驱动，它向minifilter的使用者提供许多接口，让原本复杂的文件过滤驱动变得方便简单。之所以简单是因为传统的过滤驱动把大量的工作放在绑定设备上，而现在这些工作都交给minifilter中的过滤管理器来完成。
+系统为 minifilter 专门制作了一个过滤管理器，这个管理器本身其实是一个传统过滤驱动，它向 minifilter 的使用者提供了许多接口，让原本复杂的文件过滤驱动变得方便简单。之所以简单是因为传统的过滤驱动把大量的工作放在绑定设备上，而现在这些工作都交给 minifilter 中的过滤管理器来完成。
 
-缺点：纯粹的使用minifilter提供的接口看不见设备对象和IRP的，所以编程自由度不大。
+缺点：纯粹的使用 minifilter 提供的接口看不见设备对象和 IRP 的，所以编程自由度不大。
 
 
-对minifilter的编写的第一步是向过滤管理器注册一个微过滤器，这个未过滤器是一个组件，包含了一些在文件操作的时候可能需要的回调函数。
+对 minifilter 的编写的第一步是向过滤管理器注册一个微过滤器，这个未过滤器是一个组件，包含了一些在文件操作的时候可能需要的回调函数。
 
 驱动入口中最简单的版本是只包含两个函数：注册函数和开始函数。
 
@@ -134,7 +134,7 @@ Minifilter的动态安装、加载及卸载
 
 http://www.cnblogs.com/js2854/archive/2011/04/03/sysload.html
 
-简单评价：如题，Minifilter驱动的动态安装，加载和卸载，评论里有讨论自动启动的处理方法。
+简单评价：如题，Minifilter 驱动的动态安装，加载和卸载，评论里有讨论自动启动的处理方法。
 
 -----------------------------------------------------------------------------
 
@@ -180,15 +180,17 @@ http://blog.csdn.net/liuyez123/article/details/50857621
 
 简单评价：有较为详细的使用 VS2015(WDK 10) 连接远程调试机（或虚拟机）的步骤介绍。
 
+非常推荐，虽然很乱，但是还算是详细的，是比较有参考意义的文章，但弄懂以后，最好自己重新归纳整理一下。
+
 -----------------------------------------------------------------------------
 
 MSDN 上关于 WinDBG 的手册
 
 http://www.cnblogs.com/long123king/p/3875145.html
 
-这其实是 WinDBG 的命令一览表，还不错，不过命令说明是英文的。
+这其实是 WinDBG 的命令一览表，还不错，不过命令说明是英文的，可以当作工具来查询。
 
-分类：
+命令分类：
 
 Basic Commands
 Meta commands
@@ -206,7 +208,7 @@ Windows 内核调试 WinDBG 原理浅析
 
 http://dragonsn.bokee.com/502510.html
 
-转载版本：
+CSDN 转载的版本：
 
 http://blog.csdn.net/zht_304/article/details/5726492
 
@@ -265,7 +267,7 @@ DEFAULT  0x0f       输出所有级别的信息
 
 DEFAULT  0xffffffff 输出所有的信息
 
-修改后，系统要重启才能生效
+修改后，要重启操作系统才能生效。
 
 -----------------------------------------------------------------------------
 
@@ -334,6 +336,8 @@ http://blog.csdn.net/vins_security_lab/article/details/47294225
     DbgPrintEx(DPFLTR_FASTFAT_ID, DPFLTR_BEFORE_LEVEL, "Before!\n");
     DbgPrintEx(DPFLTR_FASTFAT_ID, DPFLTR_MIDDLE_LEVEL, "Middle!\n");
     DbgPrintEx(DPFLTR_FASTFAT_ID, DPFLTR_AFTER_LEVEL, "After!\n");
+
+文章有介绍 DbgPrintEx 的 Filter 机制的(Mask)组合原理图，可以了解一下。
 
 ------------------------------------------------------
 
@@ -423,7 +427,7 @@ debugport:1 表示使用 COM1 接口。
 
 C:\> bcdedit /dbgsettings {cafcc464-ccc7-11e6-97a2-98d472d6dd37}
 
-如果使用的是 HyperV 虚拟机,可以这样设置:
+如果使用的是 HyperV 虚拟机,可以这样设置：（我也不知道该何时用这个命令，因为虚拟机本身自己就可以通过界面修改串口设置。这个命令是我从 bcdedit 的帮助信息里看到的，如果不知道怎么用请忽略。）
 
 C:\> bcdedit /hypervisorsettings {cafcc464-ccc7-11e6-97a2-98d472d6dd37} serial debugport:1 baudrate:115200
 
@@ -563,6 +567,8 @@ This samples pack contains all the official Windows Driver Kit code examples pre
 
 https://code.msdn.microsoft.com/windowshardware/windows-driver-kit-wdk-80-e3161626
 
+这是 Visual Studio 2012 下用的，配合 WDK 8.0，也行有时候用得着吧，你可以研究一下 WDK 8.0 的例子跟最新的 WDK 例子的有哪些区别（改变）。
+
 -----------------------------------------------------------------------------
 
 WinDBG + VM 调试环境的搭建
@@ -601,3 +607,52 @@ http://bbs3.driverdevelop.com/read.php?tid=108945&fid=39
                                      &nameInfo );
 
 -----------------------------------------------------------------------------
+
+http://bbs3.driverdevelop.com/simple/?t121675.html
+
+双缓存也好几种做法, 公认的是layerfsd, 简单点的就是自建.
+
+-----------------------------------------------------------------------------
+
+【分享】minifilter透明加解密源码 (作者：shenshui)
+
+http://bbs3.driverdevelop.com/read.php?tid=119736
+
+文件名：encryption_on_the_fly.zip
+
+现在很多做透明加解密的初学者都比较困惑，不知从何下手，我也是如此，从什么都不会开始，慢慢肯文件系统内幕，到OSR上面请教，四个月的时间还是收获颇丰。其实真正研究以后会发现，很多都是体力活，要不断的去跟踪文件的操作流程。在这里发一个基于minifilter的透明加解密的驱动源码仅供大家参考，其中也实现了对文件标识的处理，文件标识放在文件尾部。算是抛砖引玉吧。坦白的说，这个代码并不稳定（偶尔与norton杀毒软件会有冲突），但是我觉得整个流程是正确的，可能有些细节还没有考虑清楚，我觉得对初学者还是有一定帮助吧，当然大虾们可以跳过，呵呵。另外，有关加解密算法的代码由于不是我写的，也不好公开，所以我把相关代码用“\\\”给注释掉了（但没有去掉），请大家见谅，不过不会对整个流程产生影响。大家可以重点看一下各个派遣函数的实现。
+
+欢迎大家拍砖，觉得有点意思就顶一下啊，在看代码的过程中如果有什么好的建议，也希望能告诉我。
+
+最后非常感谢XiangXiangRen,zzbwang,neak47等网友在这段时间内对我的帮助。XiangXiangRen的书以及zzbwang的帖子对我完成这项工作有很大的帮助和参考价值，在此谨与大家分享。
+
+编译环境：WDK6001.18002 XP x86
+
+-----------------------------------------------------------------------------
+
+sfilter透明加解密源代码  (标题：透明加解密源程序分享(重新上传了))
+
+http://bbs3.driverdevelop.com/read.php?tid=121897&fid=39
+
+文件名：源程序.zip
+
+这个程序是在 tooflat 的那段经典程序上写的，由底层文件系统过滤驱动和上层应用程序组成，全部附有源码。
+
+功能：保证机密文件夹下文件以密文形式存在，只有机密进程才能对其进行解密操作，加密规则在应用程序中指定。
+
+此程序只是个例子，希望对新手有所帮助，高手就别看了。
+
+使用方法：编译安装驱动程序重启，接下来将上层应用程序运行起来，根据界面设置加密规则，比如我将机密进程表中的 WINWORD.EXE 勾上，再将机密文件夹表中的 D:\EN_TEST 勾上，然后点击确定，那么 D:\EN_TEST 目录下的所有文件都是以密文形式存在，只有 WINWORD.EXE 可以正常打开 WORD 文档。（注意机密进程表和机密文件夹表中的项可以自己通过添加按钮添加）。
+
+-----------------------------------------------------------------------------
+
+miniFilter下，文件透明加密文件大小返回的问题
+
+http://bbs3.driverdevelop.com/read.php?tid=120486&fid=39&page=1
+
+我的透明加密加密标志放在文件头部，长度4K。现在经过测试，记事本和Office系列，AutoCAD都能正常加密解密。就是UltraEdit，写字板，打开文件后，文件内容是解密后的正确数据，但是，在正文后面，会有4K的空白区域，我觉得是这两个应用取到了实际的文件大小。
+
+根据论坛上查找到的资料，我处理了IRP_MJ_QUERY_INFORMATION 的FileAllInformation(StandardInformation.EndOfFile 和 AllocationSize)，FileAllocationInformation(AllocationSize)，FileValidDataLengthInformation(ValidDataLength），FileStandardInformation（EndOfFile 和AllocationSize），FileNetworkOpenInformation（AllocationSize，EndOfFile），IRP_MJ_DIRECTORY_CONTROL（FileBothDirectoryInformation）。跟踪观察，这些返回的数据都是我想要的结果。可为什么UltraEdit和写字板还是能够获取到实际文件的大小，搞不懂，难道他们是通过其他途径得到的文件大小？
+
+-----------------------------------------------------------------------------
+

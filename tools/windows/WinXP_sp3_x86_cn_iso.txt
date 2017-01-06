@@ -1,5 +1,5 @@
 
-Windows XP Professional With SP3 VOL MSDN 简体中文原版ISO镜像(601MB)
+Windows XP Professional With SP3 VOL MSDN （x86）简体中文原版ISO镜像(601MB)
 -------------------------------------------------------------------------
 
 下载版本一：
@@ -28,6 +28,8 @@ FCKGW-RHQQ2-YXRKT-8TG6W-2B7Q8
 
 文件名：
 zh-hans_windows_xp_professional_with_service_pack_3_x86_cd_vl_x14-74070.iso
+
+下载地址见下。
 
 --------------------------------------------------------
 

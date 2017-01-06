@@ -6,7 +6,7 @@ Windows7 Ultimate with SP1
 
 ----------------------------------------------------
 
-微软官方 Windows7 Ultimate with SP1 DVD 官方简体中文原版下载
+微软官方 Windows7 Ultimate with SP1 DVD （x86）官方简体中文原版下载
 
 文件名 cn_windows_7_ultimate_with_sp1_x86_dvd_u_677486.iso
 
@@ -26,6 +26,8 @@ SHA1: 2CE0B2DB34D76ED3F697CE148CB7594432405E23
 ISO/CRC: 69F54CA4
 
 ----------------------------------------------------
+
+微软官方 Windows7 Ultimate with SP1 DVD （x86）官方简体中文原版下载
 
 Windows 7 Ultimate with Service Pack 1 (x86) - DVD (Chinese-Simplified)
 
