@@ -707,3 +707,18 @@ http://blog.csdn.net/liuyez123/article/details/50857621
 
 -----------------------------------------------------------------------------
 
+Windows 7 账号自动登陆
+
+Turn off Automatic login with Windows 7
+
+See: http://superuser.com/questions/21617/turn-off-automatic-login-with-windows-7
+
+Press Windows R. A command box should appear. Type control userpasswords2 and hit the enter key. This should display the User Accounts screen in Windows 7. Select the user account in the main table and uncheck the “Users must enter a user name and password to use this computer". A click on the Apply button will open the Automatically Log On window. Enter the password and confirm it to add the password to the system so that it does not need to be entered during logon.
+
+命令行里输入：control userpasswords2，然后把 “要使用本机，用户必须输入用户名和密码” 的单选框的勾去掉，
+然后点“应用”按钮，就会弹出一个叫“自动登陆”的窗口，在这个界面里输入用户名，和两次确认密码，这样就可以使用
+这个用户名自动登陆 Windows 7 了。
+
+其他一些设置请看这个配置界面的其他窗口。
+
+-----------------------------------------------------------------------------
