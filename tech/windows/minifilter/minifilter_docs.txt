@@ -321,7 +321,9 @@ Debugger 里面如何得到 DbgPrintEx 的输出
 
 http://advdbg.org/forums/2269/ShowPost.aspx
 
-你是在Driver里面用的DbgPrintEx,我当时是断在了ntdll!DbgPrintEx里面了,我跟了一下,发现,这个里面确实有一个filter的,就是后面这个,ntdll!NtQueryDebugFilterState,后者是一个SysCall,根据DbgPrintEx的参数ComponentId来做Mask, 貌似设置nt!Kd_WIN2000_Mask成0xffffffff后,所有的component都不会被mask,也就会被show出来了.
+你是在Driver里面用的DbgPrintEx,我当时是断在了ntdll!DbgPrintEx里面了,我跟了一下,发现,这个里面确实有一个filter的,就是后面这个,
+ntdll!NtQueryDebugFilterState,后者是一个SysCall,根据DbgPrintEx的参数ComponentId来做Mask, 貌似设置nt!Kd_WIN2000_Mask成0xffffffff后,
+所有的component都不会被mask,也就会被show出来了.
 
 -----------------------------------------------------------------------------
 
@@ -385,6 +387,8 @@ dyd nt!Kd_FASTFAT_Mask
 83d4aec8  11111111 11111111 11111111 11111111  ffffffff
 
 ed nt!Kd_DEFAULT_Mask 0xffffffff
+dyd nt!Kd_DEFAULT_Mask
+
 
 dyd nt!Kd_FLTMGR_Mask
 
@@ -679,6 +683,27 @@ x64 内核编程小窥 - SSDT HOOK笔记
 转载链接：http://czy0538.lofter.com/post/1ccbdcd5_4079090
 
 写得还不错，并且提供了 x64 下计算 KeServiceDescriptortable 的代码。
+
+-----------------------------------------------------------------------------
+
+WinDBG
+
+Symbol Path:
+
+srv*C:\SymbolCache*http://msdl.microsoft.com/download/symbols
+
+srv*C:\SymbolLocal*http://msdl.microsoft.com/download/symbols
+
+srv*C:\Symbols*http://msdl.microsoft.com/download/symbols
+
+
+-----------------------------------------------------------------------------
+
+Win 10 下 VS2015（WDK 10.0）驱动开发环境配置
+
+http://blog.csdn.net/liuyez123/article/details/50857621
+
+配置 WDKRemoteUser 的主要参考文章.
 
 -----------------------------------------------------------------------------
 
