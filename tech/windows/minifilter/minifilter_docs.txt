@@ -722,3 +722,11 @@ Press Windows R. A command box should appear. Type control userpasswords2 and hi
 其他一些设置请看这个配置界面的其他窗口。
 
 -----------------------------------------------------------------------------
+
+File Encryption Driver Development with per Process Access Restriction
+
+https://www.apriorit.com/dev-blog/371-file-encryption-driver-development-with-per-process-access-restriction
+
+一篇关于使用 minifilter 做透明加密和 文件系统缓存 的之间的机制和原理的文章, 很不错, 值得一看.
+
+-----------------------------------------------------------------------------
