@@ -723,6 +723,14 @@ Press Windows R. A command box should appear. Type control userpasswords2 and hi
 
 -----------------------------------------------------------------------------
 
+Transparent file encryption on a PC using Cybersafe File Encryption 
+
+http://cybersafesoft.com/blog/transparent-file-encryption-on-a-pc/
+
+一篇关于透明加密的加密和解密过程的文章, 不错, 值得一看.
+
+-----------------------------------------------------------------------------
+
 File Encryption Driver Development with per Process Access Restriction
 
 https://www.apriorit.com/dev-blog/371-file-encryption-driver-development-with-per-process-access-restriction
@@ -839,3 +847,34 @@ Zw          Mirror entry point for system services (beginning with Nt) that sets
 
 -----------------------------------------------------------------------------
 
+Minifilter中 Filter Initiated I/O（过滤器自产生I/O） (翻译)
+
+http://blog.csdn.net/wwwgeyang777/article/details/7011355
+
+-----------------------------------------------------------------------------
+
+Minifilter中Swapping buffers（交换缓冲） (翻译)
+
+http://blog.csdn.net/wwwgeyang777/article/details/7011008
+
+-----------------------------------------------------------------------------
+
+《Filter Driver Developer Guide》
+
+FilterDriverDeveloperGuide.doc
+
+http://download.microsoft.com/download/e/b/a/eba1050f-a31d-436b-9281-92cdfeae4b45/FilterDriverDeveloperGuide.doc
+
+微软官方的 《Filter 驱动开发指南》。
+
+-----------------------------------------------------------------------------
+
+文件的透明加密技术研究与实现-ver1
+
+http://www.doc88.com/p-901293119716.html
+
+基于 PKCS 的文件透明加解密技术的研究与实现
+
+http://www.doc88.com/p-989340877602.html
+
+-----------------------------------------------------------------------------
