@@ -1,0 +1,112 @@
+
+---------------------------------------------------------------------------------------
+
+驱动中PAGED_CODE的作用
+
+http://www.cnblogs.com/long123king/p/3781902.html
+
+简而言之，Windows 并没有将运行在 Ring 0 的代码全部视为内核，而是区分为 Kernel 和 Executive，Executive 可以理解为“管理层”的意思，解释为“执行体”不合理。
+
+其中，Kernel 是狭义的内核，里面的代码包括用到的数据，都是常驻在物理内存中的，不支持分页机制。
+
+而除此之外的代码和数据，是支持分页机制的，并且可以被交换到 PageFile 中，即并非总是在物理内存中的。
+
+对于驱动来说，应该属于后者，因此在驱动中的函数的头部都会使用 PAGED_CODE 来判断一下。
+	
+#define PAGED_CODE() PAGED_ASSERT(KeGetCurrentIrql() <= APC_LEVEL);
+	
+#define PASSIVE_LEVEL   0               // Passive release level
+#define LOW_LEVEL       0               // Lowest interrupt level
+#define APC_LEVEL       1               // APC interrupt level
+#define DISPATCH_LEVEL  2               // Dispatcher level
+#define CMCI_LEVEL      5               // CMCI handler level
+ 
+#define PROFILE_LEVEL   27              // timer used for profiling.
+#define CLOCK1_LEVEL    28              // Interval clock 1 level - Not used on x86
+#define CLOCK2_LEVEL    28              // Interval clock 2 level
+#define IPI_LEVEL       29              // Interprocessor interrupt level
+#define POWER_LEVEL     30              // Power failure level
+#define HIGH_LEVEL      31              // Highest interrupt level
+ 
+#define CLOCK_LEVEL                     (CLOCK2_LEVEL)
+
+如果当前的中断请求级别(IRQL)太高（DPC以上），那么很可能属于Kernel部分，因此需要避免这种情况。
+
+---------------------------------------------------------------------------------------
+
+【求助】内核KeSetEvent导致蓝屏
+
+See: http://bbs.pediy.com/showthread.php?t=197784
+
+------------------
+
+访问分页时必须提高到 IRQL >= DISPATCH_LEVEL 级，你看下wdk手册有详细说明。因为分页可能产生缺页，缺页直接蓝屏。
+
+------------------
+
+eventLock默认的全局变量是在NonPageable的区域，OldIrql栈数据也是在NonPageable区域。
+
+------------------
+
+---------------------------------------------------------------------------------------
+
+探究 Windows 内核你知多少
+
+http://blog.csdn.net/broadview2006/article/details/4171397
+
+Linux内核是全局的，所有进程都公用同一个系统空间。Windows的内核则不同，其相当一部分页面是可倒换的（可分页的）。
+
+不过当然不是所有页面都可倒换，有些页面注定是不可倒换的。例如，与中断和异常有关的代码和数据所在的页面，以及与页面倒换有关的代码和数据所在的页面，就显然是不能被倒换出去的，否则就无法把这些页面倒换回来了。这样，我们就大致可以推断，Windows内核中“内核”层及其以下应该是不允许倒换的。
+
+与此相关，Windows为CPU的运行状态定义了许多“IRQ级别”，即IRQL。在任一时间中，CPU总是运行于其中的某一个级别，这个级别就表明了什么事情可以做、什么事情不可以做。
+
+下面是这些级别的定义：
+
+#define PAGED_CODE() PAGED_ASSERT(KeGetCurrentIrql() <= APC_LEVEL);
+	
+#define PASSIVE_LEVEL   0               // Passive release level
+#define LOW_LEVEL       0               // Lowest interrupt level
+#define APC_LEVEL       1               // APC interrupt level
+#define DISPATCH_LEVEL  2               // Dispatcher level
+#define CMCI_LEVEL      5               // CMCI handler level
+ 
+#define PROFILE_LEVEL   27              // timer used for profiling.
+#define CLOCK1_LEVEL    28              // Interval clock 1 level - Not used on x86
+#define CLOCK2_LEVEL    28              // Interval clock 2 level
+#define IPI_LEVEL       29              // Interprocessor interrupt level
+#define POWER_LEVEL     30              // Power failure level
+#define HIGH_LEVEL      31              // Highest interrupt level
+ 
+#define CLOCK_LEVEL                     (CLOCK2_LEVEL)
+
+这里的 PASSIVE_LEVEL 是级别最低的，但是却对应着系统结构中较高的层次。当 CPU 运行于用户空间，或者虽然进入了内核但还只是运行于管理层的时候，其运行级别就是 PASSIVE_LEVEL。
+
+
+比其略高的是 APC_LEVEL，那是在（内核中）为 APC 函数（见本书“进程与线程”一章）的执行进行准备时的运行级别，APC 请求相当于对用户空间程序的（软件）中断。
+再高一级是 DISPATCH_LEVEL，这大致相当于 CPU 运行于 Windows 内核中的核心层，即“内核”层。线程的切换只能发生于 CPU 行将从 DISPATCH_LEVEL 级别下降的时候。
+
+IRQL 级别 3 级以上用于硬件中断。显然，设计者的意图是采用中断优先级，即优先级较高的中断源可以中断优先级较低的中断服务。但是 x86 的系统结构并不支持中断优先级，所以这实际上是来自 VMS 的遗迹，因为 VAX 和 PDP 的系统结构都是支持中断优先级的。
+
+回到页面换出的问题上，只要 CPU 的 IRQL 级别不高于 APC_LEVEL 的层次，其代码都是允许倒换的，但是从 DISPATCH_LEVEL 开始就不允许了。如果在这一点上搞错了，后果是很严重的。所以在管理层的代码中几乎每个函数的开头都要放上一个宏操作 PAGED_CODE()，说明代码作者的意图是让这个函数所占的页面可以被倒换出去。
+
+PAGED_CODE() 只是当 IRQL > APC_LEVEL 的时候发出警告(ASSERT)，并且只能在 Debug 版中有效。
+
+
+光是在程序中引用宏操作 PAGED_CODE() 是不会使一个函数所在的页面可倒换，真正使其可倒换的是编译指示“#pragma alloc_text()”。
+
+例如：
+#pragma alloc_text(PAGE, NtQueryObject)
+
+正是这一行编译指示让编译工具将为此函数生成的可执行代码放在可被倒换的区间。
+
+---------------------------------------------------------------------------------------
+
+
+
+
+---------------------------------------------------------------------------------------
+
+
+
+
+---------------------------------------------------------------------------------------
