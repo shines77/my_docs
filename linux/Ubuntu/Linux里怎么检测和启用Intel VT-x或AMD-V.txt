@@ -3,25 +3,7 @@ Linux 和 virt-manager 里怎么检测和启用 Intel VT-x 或 AMD-V ?
 ================================================================
 
 
-# 一、virt-manager 里怎么打开 Intel VT-x 或 AMD-V ? #
-
------------------------------------------------------------------------------
-
-How do I know that my virtual guest is using VT-x?
-http://unix.stackexchange.com/questions/117115/how-do-i-know-that-my-virtual-guest-is-using-vt-x
-
-Previously codenamed "Vanderpool", VT-x represents Intel's technology for virtualization on the x86 platform. On November 13, 2005, Intel released two models of Pentium 4 (Model 662 and 672) as the first Intel processors to support VT-x. The CPU flag for VT-x is "vmx"; in Linux, this may be checked via /proc/cpuinfo, or in Mac OS X via sysctl machdep.cpu.features.[19]
-
-How to enable nested virtualization in KVM
-https://fedoraproject.org/wiki/How_to_enable_nested_virtualization_in_KVM
-
-
-点击, virt-manager 的 processor 选择里, Copy Host CPU configuration, 并查看 vmx 是否是 on 或 require 的状态, 如果不是, 可以手动切换到一个更有可能的 CPU 类型.
-
------------------------------------------------------------------------------
-
-
-# 二、如何检测宿主机的 BIOS 是否打开了 Intel VT-x / AMD-V ? #
+# 一、如何检测宿主机的 BIOS 是否打开了 Intel VT-x / AMD-V ? #
 
 ------------------------------------------------------------------
 
@@ -33,16 +15,9 @@ $ cat /proc/cpuinfo | egrep "vmx|svm"
 
 2. 如果安装了 kvm, 可以执行:
 
-先检查是否安装了 cpu-checker:
-
-$ sudo apt-get update    # 可以先执行下面这句检查是否安装了 cpu-checker, 如果没安装再执行这一句进行更新和安装.
-$ sudo apt-get install cpu-checker
-
-然后再执行:
-
 $ sudo kvm-ok
 
-如果开启了  Intel VT-x / AMD-V, 则会显示:
+如果开启了 Intel VT-x / AMD-V, 则会显示:
 
 INFO: /dev/kvm exists
 KVM acceleration can be used
