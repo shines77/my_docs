@@ -10,6 +10,8 @@ Linux 和 virt-manager 里怎么检测和启用 Intel VT-x 或 AMD-V ?
 1. 检测 CPU 是否支持 vmx, vmx 就是 Intel VT-x / AMD-V.
 
 $ cat /proc/cpuinfo | egrep "vmx|svm"
+或
+$ grep -E "vmx|svm" /proc/cpuinfo
 
 如果开启了 vmx, vmx 也就是 Intel VT-x / AMD-V, 会看到列出来的信息里有红色的 "vmx" 字样.
 
