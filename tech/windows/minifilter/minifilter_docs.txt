@@ -878,3 +878,38 @@ http://www.doc88.com/p-901293119716.html
 http://www.doc88.com/p-989340877602.html
 
 -----------------------------------------------------------------------------
+
+驱动开发：The New Data Types
+
+https://msdn.microsoft.com/en-us/library/windows/hardware/ff564619(v=vs.85).aspx
+
+SIZE_T, SSIZE_T, DWORD_PTR, UINT32, UINT64, DWORD32, DWORD64 等类型.
+
+-----------------------------------------------------------------------------
+
+Using extended processor features in Windows drivers
+
+https://msdn.microsoft.com/en-us/library/windows/hardware/ff545910(v=vs.85).aspx
+
+在 Windows 驱动开发里使用处理器的扩展功能。x87浮点，SEE, AVX 等指令。
+
+    EnabledFeatures = RtlGetEnabledExtendedFeatures(-1);
+    if ((EnabledFeatures & XSTATE_MASK_GSSE) == 0) {
+        Status = STATUS_FAILED_DRIVER_ENTRY;
+        goto exit;
+    }
+
+    Status = KeSaveExtendedProcessorState(XSTATE_MASK_GSSE, &SaveState);
+
+    if (!NT_SUCCESS(Status)) {
+        goto exit;
+    }
+
+    __try {
+        SetYmmValues(&RegisterValues);
+    }
+    __finally {
+        KeRestoreExtendedProcessorState(&SaveState);
+    }
+
+-----------------------------------------------------------------------------
