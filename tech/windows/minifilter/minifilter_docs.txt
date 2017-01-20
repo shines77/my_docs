@@ -913,3 +913,166 @@ https://msdn.microsoft.com/en-us/library/windows/hardware/ff545910(v=vs.85).aspx
     }
 
 -----------------------------------------------------------------------------
+
+WDK tips (9.1) 同步机制与锁 （1）
+
+http://www.cnblogs.com/gussing/archive/2012/06/11/2544475.html
+
+介绍了内核态自旋锁的使用。
+
+-----------------------------------------------------------------------------
+
+WDK tips (9.2) 同步机制与锁 （2）
+
+http://www.cnblogs.com/gussing/archive/2012/12/30/2839917.html
+
+介绍内核态的 Mutex，Semaphore，同步类型Event，通知类型Event，Notification Timer, Process, Thread, File 等同步对象。
+
+-----------------------------------------------------------------------------
+
+WDK tips (9.3) 同步机制与锁 （3）
+
+http://www.cnblogs.com/gussing/archive/2012/12/31/2840602.html
+
+介绍 读写锁 Resource 和 Fast Mutex 的用法。
+
+只读锁：
+
+ExAcquireResourceSharedLite()
+ExAcquireSharedWaitForExclusive()
+ExAcquireSharedStarveExclusive()
+
+读写锁：
+
+ExAcquireResourceExclusiveLite()
+
+-----------------------------------------------------------------------------
+
+WDK tips (10) MDL是描述内存的列表（memory descriptor list）
+
+http://www.cnblogs.com/gussing/archive/2013/01/02/2841626.html
+
+介绍了 MDL 的机制和使用，以及 IoAllocateMdl(), MmProbeAndLockPages(), MmMapLockedPagesSpecifyCache() 的用法。
+
+-----------------------------------------------------------------------------
+
+NT内核和驱动开发的基础知识-笔记 
+
+http://blog.csdn.net/cosmoslife/article/details/7710203
+
+线程结构体中有个IrpList域，类型是链表结构体的指针，用作未决IRP链表的头指针，Irp->ThreadListEntry域用于把未决IRP插入该链表。IO子系统试图取消未决IRP时可以遍历该链表。注意IoAllocateIrp例程不会把分配的IRP插入该链表。
+线程结构体中有2个APC队列：R0 APC队列和R3 APC队列，每个队列的APC对象又有特殊和普通属性。特殊APC对象总是排在普通APC对象前面，确保特殊APC对象先运行。
+对于R0层来说，特殊APC对象是常用的(通过线程结构体中的KernelRoutine域完成APC任务)
+对于R3层来说，普通APC对象是常用的(通过线程结构体中的NormalRoutine域完成APC任务)
+每当OS需要丢弃APC队列的内容时候调用线程结构体的RundownRoutine域，APC对象可以在该域中做些析构动作
+对于FS来说，管理APC投递是确保FS正确行为的本质(不正确APC投递可能导致额外的IO被触发到FS系统或者FS的重入)。
+
+禁止APC投递的方法：
+
+1、用KeEnterCriticalRegion/KeLeaveCriticalRegion来禁止/允许R0 普通APC的投递，但是R0 特殊APC还是可以投递的。
+   * R0 特殊APC不会重入FS因此是安全的。
+
+2、提高IRQL到APC_LEVEL将禁止所有APC的投递(R0 普通和R0 特殊APC都被禁止)。
+
+NT中的某些同步原语通过提高IRQL到APC_LEVEL禁止APC投递，以便禁止代码重入。ExAcquireFastMutex(进入APC_LEVEL级)/ReleaseFastMutex(退出APC_LEVEL级)，因此当拥有FastMutex时该线程的所有APC都不能投递。
+
+--------------------------
+
+在 try-finally 结构的 try 部分使用 return 可能引起编译器执行调用帧展开，这是昂贵的操作。在想使用 return 的地方用 goto 跳到 try 的末尾可以避免这种昂贵的展开操作，可见 goto 不是一无是处。
+
+--------------------------
+
+自旋锁必须存储在非分页内存。
+
+保证自旋锁正确行为的规则：
+
+1、在获取 SPINLOCK 和释放 SPINLOCK 之间的代码不能操作非分页内存，因为 IRQL 等级是 DISPATCH_LEVEL。
+2、SPINLOCK 在节点上所有处理器上共享，所以尽可能少占用 SPINLOCK(最晚获取最早释放)，避免 OS 效率低下。
+3、不要嵌套使用同步原语，可能引起 OS 死锁。
+
+--------------------------
+
+ERESOURCE 对象 读/写锁
+
+WINDOWS NT 提供的用于 FSD 的同步机制，ERESOURCE 是提供互斥写共享读语义的结构体对象。读写锁的存储空间必须从非分页内存分配。ERESOURCE 结构对资源来说有所属线程的概念，多个读线程可以并发拥有共享资源，读写锁可以递归获取，唯一的限制是获取和释放次数同样多。注意：读写锁结构必须在释放内存前(初始化时候驱动程序为这个结构体分配的内存)反初始化或者从资源结构的全局链表中删除。所有操作读写锁的例程的 IRQL <= DISPATCH_LEVEL。ERESOURCE 结构使用执行自旋锁来保护在资源内部的域。当得到这个自旋锁时，NT 执行体会把 IRQL 升高到 DISPATCH_LEVEL，因此，调用任何高于 DISPATCH_LEVEL 级的例程将导致死锁。
+
+ExInitializeResourceLite - 初始化驱动程序分配的资源结构(为结构体分配了一块非分页内存)。资源被插入资源结构的全局链表中，因此，在释放分配的非分页内存前反初始化是很重要的。
+
+ExDeleteResourceLite - 把资源从全局链表中脱链，为资源分配的非分页内存随后就可以释放了。
+
+ExAcquireResourceExclusiveLite - 试图为互斥写访问取得资源结构，请求互斥写访问的线程可以指定是否希望阻塞自己直到资源可用。如果线程不希望阻塞并且其他线程已经得到对这个资源的互斥写或共享读，该例程返回FALSE，代表请求失败。
+
+ExTryToAcquireResourceExclusiveLite - 功能上等于ExAcquireResourceExclusiveLite而把等待参数设置为FALSE，Microsoft称这个例程更有效率。
+
+ExAcquireResourceSharedLite - 试图为共享读访问取得资源结构，请求共享读访问的线程可以指定是否希望阻塞自己直到资源可用。如果线程不希望阻塞自己并且其他线程已经得到这个资源的互斥写，该例程返回FALSE，代表请求失败；如果线程不希望阻塞自己并且其他线程已经得到了这个资源的共享读，返回TRUE，代表请求成功。换句话说，访问状态是唯一的，要么是读，要么是写，写访问是互斥的，同时只能有一个线程写，读访问是共享的，同时可以有多个线程读，想象一下，应该是所有读访问线程都退出读状态后，资源变为有信号，那么新的请求(互斥写或共享读)可以被完成了，相应的会有一个(互斥写)或多个线程(共享读)开始工作。
+
+ExReleaseResourceForThreadLite - 释放先前得到的资源结构，线程ID(通过ExGetCurrentResourceThread得到)必须作为参数传递。
+
+ExAcquireSharedStarveExclusive - 通常：因为请求资源结构是受管理的因此线程的请求互斥写访问不会饿死，饥饿在下列情况下发生：一个线程已经得到共享读的资源结构，随后，一个请求互斥写到来而且等待参数设置为TRUE(阻塞自己直到资源可用)，这个请求因此被排队。在线程释放共享读的资源结构前，其他的共享读请求到达，如果NT执行体使共享读请求满足而使互斥写请求继续等待(因为互斥写请求是阻塞等待直到资源可用)，那么互斥写请求将会饥饿，只要还有共享读请求没有释放资源结构，互斥写请求永远不会被满足。因此，NT执行体通常不会在已经有一个阻塞的互斥写请求存在的情况下去满足新的共享读请求，防止饥饿。但是，线程调用这个例程告诉NT执行体：在线程上的共享读请求优先于互斥写请求而不考虑互斥写请求是否会饥饿。
+
+ExAcquireSharedWaitForExclusive - 取消ExAcquireSharedStarveExclusive例程对于读写锁死锁的设置，恢复为NT执行体的默认行为。在线程已经得到共享读的资源结构的请求下，当一个共享读请求到来时候，只有没有互斥写请求时候，该共享读请求才会被满足。
+
+--------------------------
+
+NT执行体的内核组件创建的所有对象有两种方式引用：使用句柄(进程上下文相关的)和使用对象指针(因为在内核地址，所以所有内核组件在任何时候都可以使用)，每个NT对象管理器创建的对象都有一个引用计数器，对象的引用计数为0时NT对象管理器会删除对象。
+
+和引用计数有关的例程：
+
+创建对象时引用计数是1
+ObReferenceObjectByHandle通过句柄得到对象指针，避免句柄是进程相关的问题，会使对象的引用计数加1
+ObDereferenceObject使对象的引用计数减1
+ZwClose关闭句柄，使对象的引用计数减1
+
+-----------------------------------------------------------------------------
+
+//++
+//
+//  VOID
+//  FsRtlEnterFileSystem (
+//      );
+//
+//  Routine Description:
+//
+//      This routine is used when entering a file system (e.g., through its
+//      Fsd entry point).  It ensures that the file system cannot be suspended
+//      while running and thus block other file I/O requests.  Upon exit
+//      the file system must call FsRtlExitFileSystem.
+//
+//  Arguments:
+//
+//  Return Value:
+//
+//      None.
+//
+//--
+
+#define FsRtlEnterFileSystem() { \
+    KeEnterCriticalRegion();     \
+}
+
+This routine is used when entering a file system (e.g., through its Fsd entry point). It ensures that the file system cannot be suspended while running and thus block other file I/O requests. Upon exit the file system must call FsRtlExitFileSystem.
+
+当进入文件系统（例如，通过其Fsd入口点）时使用该例程。 它确保文件系统在运行时不能被挂起，从而阻止其他文件I / O请求。退出时，文件系统必须调用FsRtlExitFileSystem。
+
+-----------------------------------------------------------------------------
+
+KeEnterCriticalRegion routine
+https://msdn.microsoft.com/en-us/library/windows/hardware/ff552021(v=vs.85).aspx
+
+ExEnterCriticalRegionAndAcquireResourceExclusive routine
+https://msdn.microsoft.com/en-us/library/windows/hardware/dn308550(v=vs.85).aspx
+
+example code:
+
+    KeEnterCriticalRegion();
+    ExAcquireResourceExclusiveLite(Resource, TRUE);
+
+    //
+    // Access the resource here.
+    //
+    ...
+
+    ExReleaseResourceLite(Resource);
+    KeLeaveCriticalRegion();
+
+-----------------------------------------------------------------------------
