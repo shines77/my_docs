@@ -1,0 +1,102 @@
+
+PFLT_PRE_OPERATION_CALLBACK 详解
+====================================
+
+-------------------------------------------------------------------------------------------------
+
+# PFLT_PRE_OPERATION_CALLBACK 回调函数 #
+
+A minifilter driver's PFLT_PRE_OPERATION_CALLBACK routine performs pre-operation processing for I/O operations.
+
+作用：在任何 I/O 操作被执行前调用该回调函数，一般命名为 PreXXXXX()，跟 PostXXXXX() 相对，例如：PreCreate()。相对的，PFLT_POST_OPERATION_CALLBACK 则是在该 I/O 操作被执行完以后才调用的回调函数，例如：PostCreate()。
+
+函数指针原型(即函数原型)：
+
+typedef FLT_PREOP_CALLBACK_STATUS (* PFLT_PRE_OPERATION_CALLBACK)(
+  _Inout_ PFLT_CALLBACK_DATA    Data,
+  _In_    PCFLT_RELATED_OBJECTS FltObjects,
+  _Out_   PVOID *               CompletionContext
+);
+
+参数说明：
+
+Data [in, out]：
+
+    Fllter传入的回调数据，包括 Thread, Iopb (FLT_IO_PARAMETER_BLOCK, 最重要的部分),
+    IoStatus, TagData, FilterContext 等数据。
+
+FltObjects [in]：
+
+    包含当前 I/O 请求的相关对象的非透明指针。
+
+CompletionContext [out]：
+
+    这是一个输出值。
+
+    如果回调函数的返回值是 FLT_PREOP_SUCCESS_WITH_CALLBACK 或 FLT_PREOP_SYNCHRONIZE，这个参数是一个可选的指定的post回调函数的上下文指针，否则，它必须设置为 NULL。
+
+    If this callback routine returns FLT_PREOP_SUCCESS_WITH_CALLBACK or FLT_PREOP_SYNCHRONIZE, this parameter is an optional context pointer to be passed to the corresponding post-operation callback routine. Otherwise, it must be NULL.
+
+返回值说明：
+
+FLT_PREOP_COMPLETE
+
+    表示过滤驱动完成此次 I/O 操作。过滤驱动管理器
+
+-------------------------------------------------------------------------------------------------
+
+上下文（context）：
+
+    流上下文（stream context）：为文件流所设置的上下文，需要和打开了的文件对象关联，所以不能在pre-create回调函数中直接关联，但是可以在pre-create中创建，然后通过pre-create的最后一个参数传递到post-create中进行调用FltSetStreamContext进行关联。
+
+
+pre回调函数（PFLT_PRE_OPERATION_CALLBACK）
+
+
+    FLT_PREOP_COMPLETE：表示当前的过滤驱动完成了本次I/O操作，过滤管理器就不再往下发送本次I/O请求，而是依次向上调用post回调函数。这种情况下IoStatus.Status的值就是最终I/O操作的执行结果（不能是STATUS_PENDING)。
+
+    FLT_PREOP_SUCCESS_NO_CALLBACK/FLT_PREOP_SUCCESS_WITH_CALLBACK：这个返回值表示处理成功，让过滤管理器去做自己的事，区别在于WITH_CALLBACK的返回值会标明需要回调post函数。而NO_CALLBACK的则标明不需要。
+
+    FLT_PREOP_PENDING：顾名思义，表明当前过滤驱动将本次I/O操作挂起了，过滤管理器需要等待当前驱动调用FltCompletePendedPreOperation函数后才会继续本次I/0操作处理流程。注意只有对于基于IRP中断的I/O操作（用FLT_IS_IRP_OPERATION宏测试）才可以挂起。
+
+    FLT_PREOP_DISALLOW_FASTIO：只有操作是fast I/O操作（用FLT_IS_FASTIO_OPERATION（Data）进行测试）时才可以返回这个值，表明过滤驱动不允许fast I/O操作继续执行。因此过滤管理器不会再下发该请求，而是依次向上调用post回调函数。这种情况下不需要设置IoStatus.Status的值，过滤管理器会自动设置这个值。
+
+    FLT_PREOP_SYNCHRONIZE：这个返回值表明处理未完成，保持当前过滤驱动上下文线程环境，交由过滤管理器继续下发后调用post回调函数后继续处理。也只对基于IRP中断的操作有效，并且必须有post函数，如果不是基于IRP中断的，就会和FLT_PREOP_SUCCESS_WITH_CALLBACK一样。注意：对于Create操作，不应该返回这个值，因为文件管理器已经为这个操作进行同步了。此外对于同步的读和写操作，如果返回这个值会严重影响驱动和系统性能。
+
+    如果在pre和post函数中更改了Data的内容，必须调用FltSetCallbackDataDirty函数（更改IoStatus除外）。
+
+
+Post回调函数（PFLT_POST_OPERATION_CALLBACK）
+
+
+    这个回调函数执行的中断等级为IRQL <= DISPATCH_LEVEL。所以需要注意以下几点：1、不能安全调用必须低于IRQL级别的任何内核模式的派遣函数。2、在这个函数内开辟的任何数据结构必须位于非页内存。3、该函数不可分页。4、不能请求资源(resource)、信号量(mutextes)和快速信号量（fast mutexes)，只能获取互斥锁（spin lock)。5、不能获取、设置或者删除上下文，但可以释放上下文。
+
+    相对于Pre回调函数多了最后一个参数Flags，这个参数如果存在FLTFL_POST_OPERATION_DRAINING标记位，则表明当前过滤驱动实例正在被取消关联，本次调用是为了清理pre回调函数传入的completion context，返回值必须是FLT_POSTOP_FINISHED_PROCESSING,并且这个回调是在IRQL<=APC_LEVEL执行的。
+
+    FLT_POSTOP_FINISHED_PROCESSING：表明本过滤驱动完成了对I/0操作的处理并将控制交还给过滤管理器。
+
+    FLT_POSTOP_MORE_PROCESSING_REQUIRED：只有当微过滤驱动将本次I/O操作发送到工作队列中时，才能返回这个值，微过滤驱动最后必须负责完成这个I/O操作。过滤管理器会继续等待FltCompletePendedPostOperation函数被调用后才继续执行控制。注意：这个返回值也必须对基于IRP中断的操作执行。
+
+    任何要被执行在IRQL<DISPATCH_LEVEL的I/O完成处理都不能在这个回调函数内直接执行。取而代之，可以使用FltDoCompletionRpocessingWhenSafe或者FltQueueDeferredIoWorkItem之类的函数发送到工作队列中。
+
+    除了以下情况外，要确保在Flags参数没有FLTFL_POST_OPERATION_DRAINING标记位的时候才能调用FltDoCompletionRpocessingWhenSafe函数：
+
+    1、如果微过滤驱动的pre回调函数为一个基于IRP中断的操作返回FLT_PREOP_SYNCHRONIZE，那么对应的post回调要保证和pre回调都处在IRQL<=APC_LEVEL的线程上下文中。
+
+    2、对于create操作的post回调要保证中断级别为IRQL_PASSIVE_LEVEL(原始IRP_MJ_CREATE操作所处的线程上下文）。
+
+-------------------------------------------------------------------------------------------------
+
+参考文章：
+
+MSDN: PFLT_PRE_OPERATION_CALLBACK function pointer
+
+https://technet.microsoft.com/zh-cn/library/ff551109(v=vs.85).aspx
+
+
+File System Minifilter Drivers（文件系统微型过滤驱动）
+
+http://www.cnblogs.com/monotone/p/4184219.html  （原创链接）
+http://www.bubuko.com/infodetail-543747.html    （这是转载）
+
+-------------------------------------------------------------------------------------------------
