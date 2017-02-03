@@ -70,7 +70,7 @@ Post回调函数（PFLT_POST_OPERATION_CALLBACK）
 
 
     这个回调函数执行的中断等级为IRQL <= DISPATCH_LEVEL。所以需要注意以下几点：
-    
+
     1、不能安全调用必须低于IRQL级别的任何内核模式的派遣函数。2、在这个函数内开辟的任何数据结构必须位于非页内存。3、该函数不可分页。4、不能请求资源(resource)、信号量(mutextes)和快速信号量（fast mutexes)，只能获取互斥锁（spin lock)。5、不能获取、设置或者删除上下文，但可以释放上下文。
 
     相对于Pre回调函数多了最后一个参数Flags，这个参数如果存在FLTFL_POST_OPERATION_DRAINING标记位，则表明当前过滤驱动实例正在被取消关联，本次调用是为了清理pre回调函数传入的completion context，返回值必须是FLT_POSTOP_FINISHED_PROCESSING,并且这个回调是在IRQL<=APC_LEVEL执行的。

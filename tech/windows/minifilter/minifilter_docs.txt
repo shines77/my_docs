@@ -150,6 +150,8 @@ File System Minifilter Drivers（文件系统微型过滤驱动）入门
 
 http://www.cnblogs.com/monotone/p/4184219.html
 
+这篇文章很不错，提到的一些细节很有参考意义！！
+
 -----------------------------------------------------------------------------
 
 Windows Minifilter驱动 - 加载顺序 （2）
@@ -560,7 +562,7 @@ scanner minifilter sample
 
 内核模式组件仅用特定的扩展名（extensions）扫描文件。文件首先在成功的打时扫描。如果文件被写访问打开，扫描将在文件关闭前重新执行。扫描同样可以运行在将被写入到文件的数据上，当数据里发现脏字符串时写将被拒绝。当脏字符在文件关闭期间发现，打印一个 debug 消息。
 
-swapbuffers minifilter sample
+swapBuffers minifilter sample
 
 描述: swapbuffer minifilter 展示如何交换读和写数据之间的缓存。这项技术在加密过滤时相当有用，因为你必须在数据写到磁盘上之前加密，在数据从磁盘上读取后解密。由于加解密必须透明，你不能直接使用系统提供的缓存，因此中间缓存是必须引进滴。
 操作原理：swapbuffer minifilter 在读/写或目录控制操作前引进一个新缓存，对应的操作随即运行在新缓存，以代替初始提供的缓存，在操作完成后，新缓存的内容被拷贝回初始缓存。
@@ -1178,4 +1180,55 @@ http://blog.csdn.net/xiao70/article/details/24452695
 文件缓存分析：一个典型文件创建缓存过程。 
 
 --------------------------------------------------------------------------------------------------
+
+MSDN: FltDoCompletionProcessingWhenSafe routine
+
+https://msdn.microsoft.com/en-us/library/windows/hardware/ff542047(v=vs.85).aspx
+
+BOOLEAN FltDoCompletionProcessingWhenSafe(
+  _In_     PFLT_CALLBACK_DATA           Data,
+  _In_     PCFLT_RELATED_OBJECTS        FltObjects,
+  _In_opt_ PVOID                        CompletionContext,
+  _In_     FLT_POST_OPERATION_FLAGS     Flags,
+  _In_     PFLT_POST_OPERATION_CALLBACK SafePostCallback,
+  _Out_    PFLT_POSTOP_CALLBACK_STATUS  RetPostOperationStatus
+);
+
+
+
+Caution
+----------
+
+To avoid deadlocks, FltDoCompletionProcessingWhenSafe cannot be called for I/O operations that can be directly completed by a driver in the storage stack, such as the following:
+
+    IRP_MJ_READ
+    IRP_MJ_WRITE
+    IRP_MJ_FLUSH_BUFFERS
+
+
+警告：为了避免死锁，无法为存储堆栈中的驱动程序直接完成的 I/O 操作调用 FltDoCompletionProcessingWhenSafe，例如：IRP_MJ_READ, IRP_MJ_WRITE, IRP_MJ_FLUSH_BUFFERS.
+
+-------------------------------------------------------------------------------------------------
+
+Title: FltDoCompletionProcessingWhenSafe() & IRP_MJ_WRITE
+
+http://osronline.com/showThread.CFM?link=211001
+
+FLT_POSTOP_MORE_PROCESSING_REQUIRED 和 FltCompletePendedPostOperation() 的关系等。
+
+具体还可以参考 WDK Samples 的 swapBuffers 的例子。
+
+-------------------------------------------------------------------------------------------------
+
+MSDN: FILE_OBJECT structure
+
+https://msdn.microsoft.com/en-us/library/windows/hardware/ff545834(v=vs.85).aspx
+
+MSDN: FSRTL_COMMON_FCB_HEADER structure
+
+https://msdn.microsoft.com/en-us/library/windows/hardware/ff547343(v=vs.85).aspx
+
+fcb header, fcb (File Control Block) 的结构定义等.
+
+-------------------------------------------------------------------------------------------------
 
