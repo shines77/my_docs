@@ -269,3 +269,90 @@ proxy_func(func);
 2017/2/14
 
 --------------------------------------------------------------------------------------------------
+
+Try catch statements in C
+
+http://stackoverflow.com/questions/10586003/try-catch-statements-in-c
+
+While some of the other answers have covered the simple cases using setjmp and longjmp, in a real application there's two concerns that really matter.
+
+    1. Nesting of try/catch blocks. Using a single global variable for your jmp_buf will make these not work.
+    2. Threading. A single global variable for you jmp_buf will cause all kinds of pain in this situation.
+
+The solution to these is to maintain a thread-local stack of jmp_buf that get updated as you go. (I think this is what lua uses internally).
+
+So instead of this (from JaredPar's awesome answer)
+
+    static jmp_buf s_jumpBuffer;
+
+    void Example() {
+      if (setjmp(s_jumpBuffer)) {
+        // The longjmp was executed and returned control here
+        printf("Exception happened\n");
+      } else {
+        // Normal code execution starts here
+        Test();
+      }
+    }
+
+    void Test() {
+      // Rough equivalent of `throw`
+      longjump(s_jumpBuffer, 42);
+    }
+
+You'd use something like:
+
+    #define MAX_EXCEPTION_DEPTH 32;
+
+    struct exception_state {
+      int current_depth;
+      jmp_buf jumpBuffer[MAX_EXCEPTION_DEPTH];    
+    };
+
+    __thread struct exception_state g_exception_state;
+
+    int try_point(struct exception_state * state) {
+      if(current_depth == MAX_EXCEPTION_DEPTH) {
+         abort();
+      }
+      int ok = setjmp(state->jumpBuffer[state->current_depth]);
+      if(ok) {
+        state->current_depth++;
+      } else {
+        // We've had an exception update the stack.
+        state->current_depth--;
+      }
+      return ok;
+    }
+
+    void catch_point(struct exception_state * state) {
+      state->current_depth--;
+    }
+
+    void end_try_point(struct exception_state * state) {
+      state->current_depth--;
+    }
+
+    void throw_exception(struct exception_state * state) {
+      longjump(state->jumpBuffer[state->current_depth - 1], 1);
+    }
+
+    void Example() {
+      if (try_point(&g_exception_state)) {
+        catch_point(&g_exception_state);
+        printf("Exception happened\n");
+      } else {
+        // Normal code execution starts here
+        Test();
+        end_try_point(&g_exception_state);
+      }
+    }
+
+    void Test() {
+      // Rough equivalent of `throw`
+      throw_exception(g_exception_state);
+    }
+
+2017/2/14
+
+--------------------------------------------------------------------------------------------------

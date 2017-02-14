@@ -1248,3 +1248,8 @@ fcb header, fcb (File Control Block) 的结构定义等.
 
 -------------------------------------------------------------------------------------------------
 
+Understanding the Windows I/O System, Part 3.
+
+https://www.microsoftpressstore.com/articles/article.aspx?p=2201309&seqNum=3
+
+-------------------------------------------------------------------------------------------------
