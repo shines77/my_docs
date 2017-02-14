@@ -147,3 +147,125 @@ http://blog.csdn.net/chenlycly/article/details/44871061
 
 --------------------------------------------------------------------------------------------------
 
+How to implement a constant-expression counter in C++
+
+http://b.atch.se/posts/constexpr-counter/
+
+
+Non-constant constant-expressions in C++
+
+http://b.atch.se/posts/non-constant-constant-expressions/
+
+
+经过两篇文章的阅读, 基本掌握了原理, 下面是 purecpp.org 上的摘录, 此方法在 VC++ 上存在问题, VC++ 版本请看上面的两篇文章.
+
+http://purecpp.org/?p=1144
+
+2017/2/14
+
+--------------------------------------------------------------------------------------------------
+
+Is it possible to obtain the address of a implicit instantiation of a function template?
+
+http://stackoverflow.com/questions/29522800/is-it-possible-to-obtain-the-address-of-a-implicit-instantiation-of-a-function-t
+
+Answer1:
+
+    auto callable = +[](A<int> a, A<int> b) { return hello(a, b); };
+
+Answer2:
+
+原版的代码请看原文, 下面是经过本人略做修改后的代码(修改模板参数名称,更容易理解一点):
+
+    #include <functional>
+    #include <iostream>
+
+    template <class A>
+    void func(A a, int b)
+    {
+        std::cout << "a=" << a << " b=" << b << "\n";
+    }
+
+    template <typename... Args>
+    class proxy_func
+    {
+    public:
+        static auto call(Args... args) -> decltype(func(args...))
+        {
+            return func(args...);
+        }
+    };
+
+    template <template <typename...> typename Proxy, typename... Args>
+    void * addr_of(Args... args)
+    {
+        return (void *)&Proxy<Args...>::call;
+    }
+
+    template <template <typename...> typename Proxy, typename... Args>
+    auto call(Args... args) -> decltype(Proxy<Args...>::call(args...))
+    {
+        return Proxy<Args...>::call(args...);
+    }
+
+    template <class T>
+    void test()
+    {
+        T value = 1;
+        printf("func > %p\n", &func<T>);
+        printf("func > ");
+        func(value, 1);
+        printf("proxy> %p\n", &proxy_func<T, int>::call);
+        printf("proxy> ");
+        proxy_func<T, int>::call(value, 1);
+        printf("auto > %p\n", addr_of<proxy_func>(value, 1));
+        printf("auto > ");
+        call<proxy_func>(value, 1);
+    }
+
+    int main(int argc, char ** argv)
+    {
+        printf("==int==\n");
+        test<int>();
+        printf("==long==\n");
+        test<long>();
+    }
+
+
+result:
+
+g++ -std=c++11 -o /tmp/test /tmp/test.cpp && /tmp/test
+
+==int==
+func > 0x400a8d
+func > a=1 b=1
+proxy> 0x400ae6
+proxy> a=1 b=1
+auto > 0x400ae6
+auto > a=1 b=1
+==long==
+func > 0x400b35
+func > a=1 b=1
+proxy> 0x400b91
+proxy> a=1 b=1
+auto > 0x400b91
+auto > a=1 b=1
+
+补充: (用宏实现定义不同的 proxy_func 类)
+
+#define proxy_func(f)                           \
+    template <class... A>                       \
+    class proxy_func_ ## f                      \
+    {                                           \
+    public:                                                     \
+        static auto call(A... args) -> decltype(f(args...))     \
+        {                                                       \
+            return f(args...);                                  \
+        }                                                       \
+    }
+
+proxy_func(func);
+
+2017/2/14
+
+--------------------------------------------------------------------------------------------------
