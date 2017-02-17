@@ -741,7 +741,7 @@ Press Windows R. A command box should appear. Type control userpasswords2 and hi
 
 -----------------------------------------------------------------------------
 
-Transparent file encryption on a PC using Cybersafe File Encryption 
+Transparent file encryption on a PC using Cybersafe File Encryption
 
 http://cybersafesoft.com/blog/transparent-file-encryption-on-a-pc/
 
@@ -974,7 +974,7 @@ http://www.cnblogs.com/gussing/archive/2013/01/02/2841626.html
 
 -----------------------------------------------------------------------------
 
-NT内核和驱动开发的基础知识-笔记 
+NT内核和驱动开发的基础知识-笔记
 
 http://blog.csdn.net/cosmoslife/article/details/7710203
 
@@ -1103,7 +1103,7 @@ znsoft(马勇) 发起的一些讨论，有些深度，可以阅读一下。
 
 -----------------------------------------------------------------------------
 
-layerfsd实现的一些思路 
+layerfsd实现的一些思路
 
 http://blog.csdn.net/xiao70/article/details/48312073
 
@@ -1163,7 +1163,7 @@ http://blog.csdn.net/z18_28_19/article/details/12979743
 
 --------------------------------------------------------------------------------------------------
 
-Minifilter中Swapping buffers（交换缓冲） 
+Minifilter中Swapping buffers（交换缓冲）
 
 http://blog.csdn.net/wwwgeyang777/article/details/7011008
 
@@ -1193,7 +1193,7 @@ Windows内存管理2（做双缓存透明加密驱动必看）
 
 http://blog.csdn.net/xiao70/article/details/24452695
 
-文件缓存分析：一个典型文件创建缓存过程。 
+文件缓存分析：一个典型文件创建缓存过程。
 
 --------------------------------------------------------------------------------------------------
 
@@ -1253,3 +1253,23 @@ Understanding the Windows I/O System, Part 3.
 https://www.microsoftpressstore.com/articles/article.aspx?p=2201309&seqNum=3
 
 -------------------------------------------------------------------------------------------------
+
+That's Just the Way It Is - How NT Describes I/O Requests (译文, 怎么感觉像是机器翻译的....?)
+
+http://blog.csdn.net/jununfly/article/details/3949395
+
+(原文来自 www.osr.com)
+
+描述数据缓冲
+----------------
+
+请求者的数据缓冲的描述符出现在IRP的固定部分中。为了让驱动程序员能描述关联一个I/O操作的请求者的数据缓冲，NT提供了三个不同的选项:
+
+    1. 若缓冲被一个叫做内存描述符列表(MDL)的结构，以该缓冲在请求者的物理地址空间中的真实位置的方式描述了，那这就叫做 Direct I/O.
+
+    2. 若缓冲中的数据会从请求者的地址空间中被复制到系统地址空间中的一个中间位置，且驱动被提供了这个数据副本的一个指针，那这就叫做 Buffered I/O.
+
+    3. 若驱动被提供了请求者的缓冲的虚拟地址，那这就叫做 Neither I/O.
+
+-------------------------------------------------------------------------------------------------
+

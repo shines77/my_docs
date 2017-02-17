@@ -47,45 +47,45 @@ FLT_PREOP_COMPLETE
 
 上下文（context）：
 
-    流上下文（stream context）：为文件流所设置的上下文，需要和打开了的文件对象关联，所以不能在pre-create回调函数中直接关联，但是可以在pre-create中创建，然后通过pre-create的最后一个参数传递到post-create中进行调用FltSetStreamContext进行关联。
+    流上下文（stream context）：为文件流所设置的上下文，需要和打开了的文件对象关联，所以不能在 pre-create 回调函数中直接关联，但是可以在 pre-create 中创建，然后通过 pre-create 的最后一个参数传递到 post-create 中进行调用 FltSetStreamContext 进行关联。
 
 
 pre回调函数（PFLT_PRE_OPERATION_CALLBACK）
 
 
-    FLT_PREOP_COMPLETE：表示当前的过滤驱动完成了本次I/O操作，过滤管理器就不再往下发送本次I/O请求，而是依次向上调用post回调函数。这种情况下IoStatus.Status的值就是最终I/O操作的执行结果（不能是STATUS_PENDING)。
+    FLT_PREOP_COMPLETE：表示当前的过滤驱动完成了本次 I/O 操作，过滤管理器就不再往下发送本次 I/O 请求，而是依次向上调用post回调函数。这种情况下 IoStatus.Status 的值就是最终I/O操作的执行结果（不能是 STATUS_PENDING)。
 
-    FLT_PREOP_SUCCESS_NO_CALLBACK/FLT_PREOP_SUCCESS_WITH_CALLBACK：这个返回值表示处理成功，让过滤管理器去做自己的事，区别在于WITH_CALLBACK的返回值会标明需要回调post函数。而NO_CALLBACK的则标明不需要。
+    FLT_PREOP_SUCCESS_NO_CALLBACK/FLT_PREOP_SUCCESS_WITH_CALLBACK：这个返回值表示处理成功，让过滤管理器去做自己的事，区别在于 WITH_CALLBACK 的返回值会标明需要回调post函数。而 NO_CALLBACK 的则标明不需要。
 
-    FLT_PREOP_PENDING：顾名思义，表明当前过滤驱动将本次I/O操作挂起了，过滤管理器需要等待当前驱动调用FltCompletePendedPreOperation函数后才会继续本次I/0操作处理流程。注意只有对于基于IRP中断的I/O操作（用FLT_IS_IRP_OPERATION宏测试）才可以挂起。
+    FLT_PREOP_PENDING：顾名思义，表明当前过滤驱动将本次 I/O 操作挂起了，过滤管理器需要等待当前驱动调用 FltCompletePendedPreOperation 函数后才会继续本次 I/0 操作处理流程。注意只有对于基于 IRP 中断的I/O操作（用 FLT_IS_IRP_OPERATION 宏测试）才可以挂起。
 
-    FLT_PREOP_DISALLOW_FASTIO：只有操作是fast I/O操作（用FLT_IS_FASTIO_OPERATION（Data）进行测试）时才可以返回这个值，表明过滤驱动不允许fast I/O操作继续执行。因此过滤管理器不会再下发该请求，而是依次向上调用post回调函数。这种情况下不需要设置IoStatus.Status的值，过滤管理器会自动设置这个值。
+    FLT_PREOP_DISALLOW_FASTIO：只有操作是fast I/O操作（用 FLT_IS_FASTIO_OPERATION（Data）进行测试）时才可以返回这个值，表明过滤驱动不允许 fast I/O 操作继续执行。因此过滤管理器不会再下发该请求，而是依次向上调用 post 回调函数。这种情况下不需要设置 IoStatus.Status 的值，过滤管理器会自动设置这个值。
 
-    FLT_PREOP_SYNCHRONIZE：这个返回值表明处理未完成，保持当前过滤驱动上下文线程环境，交由过滤管理器继续下发后调用post回调函数后继续处理。也只对基于IRP中断的操作有效，并且必须有post函数，如果不是基于IRP中断的，就会和FLT_PREOP_SUCCESS_WITH_CALLBACK一样。注意：对于Create操作，不应该返回这个值，因为文件管理器已经为这个操作进行同步了。此外对于同步的读和写操作，如果返回这个值会严重影响驱动和系统性能。
+    FLT_PREOP_SYNCHRONIZE：这个返回值表明处理未完成，保持当前过滤驱动上下文线程环境，交由过滤管理器继续下发后调用 post 回调函数后继续处理。也只对基于IRP中断的操作有效，并且必须有 post 函数，如果不是基于IRP中断的，就会和 FLT_PREOP_SUCCESS_WITH_CALLBACK 一样。注意：对于 Create 操作，不应该返回这个值，因为文件管理器已经为这个操作进行同步了。此外对于同步的读和写操作，如果返回这个值会严重影响驱动和系统性能。
 
-    如果在pre和post函数中更改了Data的内容，必须调用FltSetCallbackDataDirty函数（更改IoStatus除外）。
+    如果在 pre 和 post 函数中更改了 Data 的内容，必须调用 FltSetCallbackDataDirty 函数（更改 IoStatus 除外）。
 
 
 Post回调函数（PFLT_POST_OPERATION_CALLBACK）
 
 
-    这个回调函数执行的中断等级为IRQL <= DISPATCH_LEVEL。所以需要注意以下几点：
+    这个回调函数执行的中断等级为 (IRQL <= DISPATCH_LEVEL) 。所以需要注意以下几点：
 
-    1、不能安全调用必须低于IRQL级别的任何内核模式的派遣函数。2、在这个函数内开辟的任何数据结构必须位于非页内存。3、该函数不可分页。4、不能请求资源(resource)、信号量(mutextes)和快速信号量（fast mutexes)，只能获取互斥锁（spin lock)。5、不能获取、设置或者删除上下文，但可以释放上下文。
+    1、不能安全调用必须低于 IRQL 级别的任何内核模式的派遣函数。2、在这个函数内开辟的任何数据结构必须位于非页内存。3、该函数不可分页。4、不能请求资源(resource)、信号量(mutextes)和快速信号量（fast mutexes)，只能获取互斥锁（spin lock)。5、不能获取、设置或者删除上下文，但可以释放上下文。
 
-    相对于Pre回调函数多了最后一个参数Flags，这个参数如果存在FLTFL_POST_OPERATION_DRAINING标记位，则表明当前过滤驱动实例正在被取消关联，本次调用是为了清理pre回调函数传入的completion context，返回值必须是FLT_POSTOP_FINISHED_PROCESSING,并且这个回调是在IRQL<=APC_LEVEL执行的。
+    相对于 Pre 回调函数多了最后一个参数 Flags，这个参数如果存在 FLTFL_POST_OPERATION_DRAINING 标记位，则表明当前过滤驱动实例正在被取消关联，本次调用是为了清理 pre 回调函数传入的 completion context，返回值必须是 FLT_POSTOP_FINISHED_PROCESSING，并且这个回调是在 (IRQL<=APC_LEVEL) 执行的。
 
-    FLT_POSTOP_FINISHED_PROCESSING：表明本过滤驱动完成了对I/0操作的处理并将控制交还给过滤管理器。
+    FLT_POSTOP_FINISHED_PROCESSING：表明本过滤驱动完成了对 I/0 操作的处理并将控制交还给过滤管理器。
 
-    FLT_POSTOP_MORE_PROCESSING_REQUIRED：只有当微过滤驱动将本次I/O操作发送到工作队列中时，才能返回这个值，微过滤驱动最后必须负责完成这个I/O操作。过滤管理器会继续等待FltCompletePendedPostOperation函数被调用后才继续执行控制。注意：这个返回值也必须对基于IRP中断的操作执行。
+    FLT_POSTOP_MORE_PROCESSING_REQUIRED：只有当微过滤驱动将本次 I/O 操作发送到工作队列中时，才能返回这个值，微过滤驱动最后必须负责完成这个 I/O 操作。过滤管理器会继续等待 FltCompletePendedPostOperation 函数被调用后才继续执行控制。注意：这个返回值也必须对基于 IRP 中断的操作执行。
 
-    任何要被执行在IRQL<DISPATCH_LEVEL的I/O完成处理都不能在这个回调函数内直接执行。取而代之，可以使用FltDoCompletionRpocessingWhenSafe或者FltQueueDeferredIoWorkItem之类的函数发送到工作队列中。
+    任何要被执行在 (IRQL < DISPATCH_LEVEL) 的 I/O 完成处理都不能在这个回调函数内直接执行。取而代之，可以使用 FltDoCompletionRpocessingWhenSafe 或者 FltQueueDeferredIoWorkItem 之类的函数发送到工作队列中。
 
-    除了以下情况外，要确保在Flags参数没有FLTFL_POST_OPERATION_DRAINING标记位的时候才能调用FltDoCompletionRpocessingWhenSafe函数：
+    除了以下情况外，要确保在Flags参数没有 FLTFL_POST_OPERATION_DRAINING 标记位的时候才能调用 FltDoCompletionRpocessingWhenSafe 函数：
 
-    1、如果微过滤驱动的pre回调函数为一个基于IRP中断的操作返回FLT_PREOP_SYNCHRONIZE，那么对应的post回调要保证和pre回调都处在IRQL<=APC_LEVEL的线程上下文中。
+    1、如果微过滤驱动的 pre 回调函数为一个基于 IRP 中断的操作返回 FLT_PREOP_SYNCHRONIZE，那么对应的 post 回调要保证和 pre 回调都处在 (IRQL <= APC_LEVEL) 的线程上下文中。
 
-    2、对于create操作的post回调要保证中断级别为IRQL_PASSIVE_LEVEL(原始IRP_MJ_CREATE操作所处的线程上下文）。
+    2、对于 create 操作的 post 回调要保证中断级别为 IRQL_PASSIVE_LEVEL(原始 IRP_MJ_CREATE 操作所处的线程上下文）。
 
 -------------------------------------------------------------------------------------------------
 
