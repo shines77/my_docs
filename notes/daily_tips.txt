@@ -356,3 +356,36 @@ You'd use something like:
 2017/2/14
 
 --------------------------------------------------------------------------------------------------
+
+使用 Let's Encrypt 和 Nginx 从同一服务器托管多个 HTTPS 域名 (翻译)
+
+https://www.oschina.net/translate/running-multiple-https-domains-from-the-same-server
+
+Let's Encrypt 证书自动续签脚本
+
+/etc/letsencrypt/auto_renew.sh
+
+    #!/bin/sh
+    # This script renews all the Let's Encrypt certificates with a validity < 30 days
+
+    if ! /opt/letsencrypt/letsencrypt-auto renew > /var/log/letsencrypt/renew.log 2>&1 ; then  
+        echo Automated renewal failed:
+        cat /var/log/letsencrypt/renew.log
+        exit 1
+    fi  
+    nginx -t && nginx -s reload
+
+现在将以上的脚本添加到计划任务, 执行 sudo crontab -e 添加下面一行代码:
+
+@daily  /etc/letsencrypt/auto_renew.sh
+
+-------------------------------------------
+
+原文链接:
+
+Hosting Multiple HTTPS Domains from the Same Server with Let's Encrypt and Nginx
+
+https://blog.benroux.me/running-multiple-https-domains-from-the-same-server/
+
+--------------------------------------------------------------------------------------------------
+
