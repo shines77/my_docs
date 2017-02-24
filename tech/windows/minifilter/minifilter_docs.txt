@@ -1273,3 +1273,60 @@ http://blog.csdn.net/jununfly/article/details/3949395
 
 -------------------------------------------------------------------------------------------------
 
+//
+// How to use ZwQueryInformationProcess to get ProcessImageFileName in a kernel driver?
+//
+// See: http://stackoverflow.com/questions/3707133/how-to-use-zwqueryinformationprocess-to-get-processimagefilename-in-a-kernel-driver
+//
+// 在内核驱动中，获得当前进程的全路径 
+//
+// See: http://blog.csdn.net/jianghui3132749/article/details/11107887
+//
+
+//
+// [内核/驱动]驱动中获取进程全路径和注册表全路径 (内有获得当前进程的全路径, EPROCESS 偏移量法)
+//
+// See: http://blog.sina.com.cn/s/blog_60a1a51d0100e78g.html
+//
+
+//
+// 如何获取进程/目标对象的全路径？ 
+//
+// See: http://blog.csdn.net/zhuhuibeishadiao/article/details/51108868
+//
+
+如何获取目标进程的全路径？
+
+PID->eprocess->KeStackAttachProcess->ZwQueryInformationProcess->ProcessImageFileName->ZwCreateFile
+->ObReferenceObjectByHandle->RtlVolumeDeviceToDosName
+->ZwQueryInformationFile
+
+如何获取目标对象的全路径？
+
+Handle
+ObReferenceObjectByHandle -> IoQueryFileDosDeviceName
+ObReferenceObjectByHandle ->ObQueryNameString(强删文件例子里）
+IRP查询（FILEMON4.34中FilemonQueryFile函数）
+FltGetName(minifilter)
+
+//
+// 驱动里执行应用层代码之KeUserModeCallBack，支持64位win7（包括WOW64） 
+//
+// See: http://blog.csdn.net/fanxiushu/article/details/38141219
+// See: http://www.cnblogs.com/findumars/p/4808279.html
+//
+
+-------------------------------------------------------------------------------------------------
+
+【原创】吾爱破解2016安全挑战赛第二题Windows驱动 (是关于实时获取进程的完整路径的题目)
+
+http://bbs.pediy.com/thread-209188.htm
+
+-------------------------------------------------------------------------------------------------
+
+【原创】完整可编译NT4's NTFS源码（可稳定替换xp原版ntfs.sys）
+
+http://bbs.pediy.com/thread-90393.htm
+
+-------------------------------------------------------------------------------------------------
+
