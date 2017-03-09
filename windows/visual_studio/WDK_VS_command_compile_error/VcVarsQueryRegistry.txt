@@ -1,0 +1,7 @@
+
+安装 WDK 后导致命令行编译 Boost 报错的解决办法
+-------------------------------------------------
+
+用该文件覆盖原来的文件即可：
+
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VcVarsQueryRegistry.bat

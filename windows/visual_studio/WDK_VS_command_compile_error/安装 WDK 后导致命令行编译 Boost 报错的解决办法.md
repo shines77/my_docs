@@ -2,19 +2,21 @@
 安装 WDK 后导致命令行编译 Boost 报错的解决办法
 --------------------------------------------------
 
+（注：本文使用的是 `Visual Studio 2015` 。）
+
 # 1. 编译错误
 
 在更新 `Windows SDK`，并且安装 `Windows Driver Kits` 以后（因为两者最好使用同一个版本，所以这个流程几乎是固定的），用命令行的方式编译 `Boost`，可能会看到如下的错误提示：
 
 ```shell
-C:\Program32\Microsoft Visual Studio 14.0\VC\INCLUDE\crtdefs.h(10): fatal error C1083: 无法打开包括文件: “corecrt.h”
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE\crtdefs.h(10): fatal error C1083: 无法打开包括文件: “corecrt.h”
 ```
 
 这会造成某些 `Boost` 不能正确编译，部分库没问题。其实不仅仅是 `Boost`，任何使用 `Visual Studio` 命令行方式来编译的工程，可能都会遇到此类问题。
 
 # 2. 原因分析
 
-我们打开 `C:\Program32\Microsoft Visual Studio 14.0\VC\INCLUDE\crtdefs.h` 文件，看到其中第 `10` 行的确包含了 `corecrt.h` 文件，如下：
+我们打开 `C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE\crtdefs.h` 文件，看到其中第 `10` 行的确包含了 `corecrt.h` 文件，如下：
 
 ```cpp
 //
@@ -33,7 +35,7 @@ C:\Program32\Microsoft Visual Studio 14.0\VC\INCLUDE\crtdefs.h(10): fatal error 
 
 由于安装了 `WDK` 以后，导致 `C:\Program Files (x86)\Windows Kits\10\Include` 目录下除了 `10.0.14393.0` 以后，还多了一个 `wdf` 文件夹。
 
-而当你打开 “`Visual Studio 201x`” 的命令行，读取命令行环境变量的脚本是 “`C:\Program32\Microsoft Visual Studio 14.0\Common7\Tools\VcVarsQueryRegistry.bat`”，它是通过读取 `C:\Program Files (x86)\Windows Kits\10\Include\` 路径下的所有文件夹，并且把读取到的最后一个文件夹名称作为 `WindowsSDKVersion` 和 `UniversalCRTVersion` 的值。如我前面所说的，它会认为该值为 “`wdf`”，而不是正确的值 “`10.0.14393.0`”，所以导致以 `VS` 命令行编译的时候，找不到正确的头文件，而导致编译错误。
+而当你打开 “`Visual Studio 201x`” 的命令行，读取命令行环境变量的脚本是 “`C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VcVarsQueryRegistry.bat`”，它是通过读取 `C:\Program Files (x86)\Windows Kits\10\Include\` 路径下的所有文件夹，并且把读取到的最后一个文件夹名称作为 `WindowsSDKVersion` 和 `UniversalCRTVersion` 的值。如我前面所说的，它会认为该值为 “`wdf`”，而不是正确的值 “`10.0.14393.0`”，所以导致以 `VS` 命令行编译的时候，找不到正确的头文件，而导致编译错误。
 
 如果你仅仅只是安装了新版本的 `Windows SDK`，则会多出一个新的文件夹，即新旧 `Windows SDK` 的版本号，例如：“`10.0.10153.0`” 和 “`10.0.14393.0`”，如按文件夹的先后顺序，一般读取到的是最新的那个版本号，即 “`10.0.14393.0`”，所以不会出错。即使读取到的是错误的旧的版本号，由于新旧版本的 `Windows SDK` 的头文件基本上是可以混用的，所以一般不会出现上面的错误。
 
@@ -41,7 +43,7 @@ C:\Program32\Microsoft Visual Studio 14.0\VC\INCLUDE\crtdefs.h(10): fatal error 
 
 知道了原因以后，那么我们来研究一下解决的办法。
 
-`Visual Studio 201x` 的命令行统一入口是，`C:\Program32\Microsoft Visual Studio 14.0\VC\vcvarsall.bat` 文件，所有的模式，都是通过这个批处理文件出入不同的命令行参数来实现的，所有我们从这个文件开始。
+`Visual Studio 201x` 的命令行统一入口是，`C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat` 文件，所有的模式，都是通过这个批处理文件出入不同的命令行参数来实现的，所有我们从这个文件开始。
 
 查看该文件以后，它在接受命令行的启动模式参数以后，例如：`x86`、`amd64`、`x86_amd64`、`amd64_x86` 等，调用了不同的启动脚本，例如：`x86` 模式调用的是 `.\bin\vcvars32.bat` 脚本，`amd64` 模式调用的是 `.\bin\amd64\vcvars32.bat` 脚本。
 
@@ -49,7 +51,7 @@ C:\Program32\Microsoft Visual Studio 14.0\VC\INCLUDE\crtdefs.h(10): fatal error 
 
 “`%VS140COMNTOOLS%VCVarsQueryRegistry.bat`” 文件的实际路径是：
 
-“`C:\Program32\Microsoft Visual Studio 14.0\Common7\Tools\VCVarsQueryRegistry.bat`”。
+“`C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VCVarsQueryRegistry.bat`”。
 
 查看该文件，该文件有几处需要关心的，例如：
 
