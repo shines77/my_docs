@@ -2,6 +2,6 @@
 安装 WDK 后导致命令行编译 Boost 报错的解决办法
 -------------------------------------------------
 
-用该文件覆盖原来的文件即可：
+用该文件覆盖原来的文件，在编译 Boost 的 Visual Studio 201x 的命令行里执行 "b2 --clean" 就 OK 了：
 
 C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VcVarsQueryRegistry.bat
