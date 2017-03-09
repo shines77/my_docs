@@ -145,10 +145,6 @@ C:\> echo %UCRTVersion%
 10.0.14393.0
 ```
 
-如果看到的是你设置的 `版本号`，而且 `%WindowsSDKVersion%` 后多一个 “`\`” 字符，则说明 `OK` 了，应该可以正常编译了。
-
-`Enjoy it!`
-
 你还可以检查如下一些路径是否正确：
 
 ```shell
@@ -159,4 +155,10 @@ C:\> echo %UniversalCRTSdkDir%
 C:\Program Files (x86)\Windows Kits\10\
 ```
 
-`搞定！`
+如果看到的是你设置的 `版本号`，而且 `%WindowsSDKVersion%` 后多一个 “`\`” 字符，则说明 `OK` 了，应该可以正常编译了。
+
+**重要的事情**
+
+由于 `Boost` 缓存了 `Visual Studio 201x` 命令行的环境变量，可以使用 `b2 --clean` 命令清空一下缓存，就一切正常了。
+
+`Enjoy it!` `搞定！`
