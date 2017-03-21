@@ -1336,3 +1336,39 @@ http://laokaddk.blog.51cto.com/368606/125534/
 
 -------------------------------------------------------------------------------------------------
 
+Minifilter 设计之一 --- Post operation 设计
+
+http://www.lai18.com/content/9576196.html
+
+-------------------------------------------------------------------------------------------------
+
+FltGetFileNameInformation() 函数
+
+http://blog.csdn.net/free2o/article/details/23620239
+
+关于在 MiniFilter Post Operation 里执行 FltReleaseFileNameInformation() 会遇到的问题.
+
+
+具体内容:
+
+FltGetFileNameInformation 函数
+
+在 Minifilter 中可以使用 FltGetFileNameInformation() 来获取文件的名字，但是这个函数在如下几种情况下是不能够工作的：
+
+1. 当前 thread 的 TopLevelIrp() 不是 NULL;
+2. Page I/O;
+3. Pre Create 操作中;
+4. Post Close 操作中;
+
+如果成功的调用了 FltGetFileNameInformation() 函数，则需要调用 FltReleaseFileNameInformation().
+
+
+如果在 Post Operation 中调用 FltGetFileNameInformation()
+
+1. 如果操作是同步的，函数会成功被调用。 (Create 操作永远都是同步的）
+
+2. FLT_FILE_NAME_INFORMATION 结构是从 PagePool 中分配的，不能够在 DPC level 访问，因此不能够在 DPC Level 调用 FltReleaseFileNameInformation()
+
+3. 在 Post Operation 通常用 FltDoCompletionProcessingWhenSafe() 方法来解决这个问题，不过还是可能由于 Thread 的 TopLevelIrp() 不为 NULL 而失败。
+
+-------------------------------------------------------------------------------------------------
