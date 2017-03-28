@@ -1372,3 +1372,24 @@ FltGetFileNameInformation 函数
 3. 在 Post Operation 通常用 FltDoCompletionProcessingWhenSafe() 方法来解决这个问题，不过还是可能由于 Thread 的 TopLevelIrp() 不为 NULL 而失败。
 
 -------------------------------------------------------------------------------------------------
+
+关于内核驱动的可分页和非分页内存
+
+#pragma alloc_text(INIT, DriverEntry)
+#pragma alloc_text (PAGE, DiskPerfCreate)
+
+宏等。
+
+使数据段可分页，使用下面的编译指令：
+
+#ifdef ALLOC_PRAGMA
+#pragma data_seg(PAGE)
+// define your pageeble data section module here.
+#pragma data_seg()
+
+http://www.cppblog.com/momoxiao/archive/2009/12/29/104374.html
+
+-------------------------------------------------------------------------------------------------
+
+
+

@@ -403,3 +403,12 @@ http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algori
 http://www.ruanyifeng.com/blog/2013/05/boyer-moore_string_search_algorithm.html
 
 --------------------------------------------------------------------------------------------------
+
+String Matching
+
+http://www.csie.ntnu.edu.tw/~u91029/StringMatching.html
+
+一个台湾教育网的网站，从 http://www-igm.univ-mlv.fr/~lecroq/string 翻译整理而来，加上自己的理解，有一定的参考价值。
+
+--------------------------------------------------------------------------------------------------
+

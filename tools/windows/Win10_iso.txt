@@ -1,0 +1,96 @@
+
+Windows 10周年更新版简体中文ISO镜像
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+See: http://news.mydrivers.com/1/493/493952.htm
+
+【Windows 10周年更新版64位简体中文家庭/专业版】
+
+文件名：cn_windows_10_multiple_editions_version_1607_updated_jul_2016_x64_dvd_9056935.iso
+SHA1：A2DDAA7BE3BB73FD87C29D6EF8E1EDF4C764DCD9
+文件大小：4.05GB
+下载地址：
+ed2k://|file|cn_windows_10_multiple_editions_version_1607_updated_jul_2016_x64_dvd_9056935.iso|4347183104|35EA5DB0F3BB714F5CE0740FB89D82D1|/
+
+
+【Windows 10周年更新版32位简体中文家庭/专业版】
+
+文件名：cn_windows_10_multiple_editions_version_1607_updated_jul_2016_x86_dvd_9060050.iso
+SH1：EAF7394A25A69E94AD2D3D1D9FBC0007D1DFF720
+文件大小：3.05GB
+下载地址：
+ed2k://|file|cn_windows_10_multiple_editions_version_1607_updated_jul_2016_x86_dvd_9060050.iso|3275581440|006F76229DB61ADA1D8E49DD4A6A0A5D|/
+
+
+【Windows 10周更新版64位简体中文企业版】
+
+文件名：cn_windows_10_enterprise_version_1607_updated_jul_2016_x64_dvd_9057083.iso
+SHA1：1D287AB1F79BCA7166A49ACB27A81B43BE7D75DD
+文件大小：3.86GB
+下载地址：
+ed2k://|file|cn_windows_10_enterprise_version_1607_updated_jul_2016_x64_dvd_9057083.iso|4149981184|EFCB9D522DAA0C6A7BF3A5464C65DCBC|/
+
+
+【Windows 10周年更新版32位简体中文企业版】
+
+文件名：cn_windows_10_enterprise_version_1607_updated_jul_2016_x86_dvd_9059597.iso
+SHA1：C13CA613DD308441F554935912B426A7424AE052
+文件大小：2.89GB
+下载地址：
+ed2k://|file|cn_windows_10_enterprise_version_1607_updated_jul_2016_x86_dvd_9059597.iso|3100624896|0E1580E308D316A8648B0BF58D5CDEE2|/
+
+
+【Windows 10周年更新64位简体中文教育版】
+
+文件名：cn_windows_10_education_version_1607_updated_jul_2016_x64_dvd_9056220.iso
+SHA1：F89AAAE227D7B7D9644E70AEBBD1DD43DC16632A
+文件大小：3.87GB
+下载地址：
+ed2k://|file|cn_windows_10_education_version_1607_updated_jul_2016_x64_dvd_9056220.iso|4150953984|AD0737D5F182082C37E6D1DB7CCDBB77|/
+
+
+【Windows 10周年更新32位简体中文教育版】
+
+文件名：cn_windows_10_education_version_1607_updated_jul_2016_x86_dvd_9056381.iso
+SHA1：095473BE76792E63A9E9F3EBA87E8E287376AB65
+文件大小：2.89GB
+下载地址：
+ed2k://|file|cn_windows_10_education_version_1607_updated_jul_2016_x86_dvd_9056381.iso|3103516672|BA95618BB3D14C0B91A7D6D2518DCCFC|/
+以下为英文版本，有需要的用户可以下载。
+
+
+【Windows 10周年更新版64位英文家庭/专业版】
+
+文件名：en_windows_10_multiple_editions_version_1607_updated_jul_2016_x64_dvd_9058187.iso
+SHA1：99FD8082A609997AE97A514DCA22BECF20420891
+文件大小：4.08GB
+下载地址：
+ed2k://|file|en_windows_10_multiple_editions_version_1607_updated_jul_2016_x64_dvd_9058187.iso|4380387328|870E0589EBEC3296745462E8ACA53FB2|/
+
+
+【Windows 10周年更新版32位英文家庭/专业版】
+
+文件名：en_windows_10_multiple_editions_version_1607_updated_jul_2016_x86_dvd_9053863.iso
+SH1：5A4D2C953D884578A6ADB448BEE5753B80EC1CFA
+文件大小：3.15GB
+下载地址：
+ed2k://|file|en_windows_10_multiple_editions_version_1607_updated_jul_2016_x86_dvd_9053863.iso|3382538240|D2FA87816894D2C5207735AB81BD1363|/
+
+
+【Windows 10周更新版64位英文企业版】
+
+文件名：en_windows_10_enterprise_version_1607_updated_jul_2016_x64_dvd_9054264.iso
+SHA1：F9FFEA3A40BF39CCDE105BB064E153343560D73E
+文件大小：3.64GB
+下载地址：
+ed2k://|file|en_windows_10_enterprise_version_1607_updated_jul_2016_x64_dvd_9054264.iso|3910021120|37F78B22D862C3CC90C83B2598DD380D|/
+
+
+【Windows 10周年更新版32位英文企业版】
+
+文件名：en_windows_10_enterprise_version_1607_updated_jul_2016_x86_dvd_9060097.iso
+SHA1：89E415FEC5F4ED23D96CB543D3CEA838F57A10A0
+文件大小：2.72GB
+下载地址：
+ed2k://|file|en_windows_10_enterprise_version_1607_updated_jul_2016_x86_dvd_9060097.iso|2923022336|119793C52848CE539DF8CBFCCBC55DB2|/
+
