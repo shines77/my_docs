@@ -1,0 +1,35 @@
+
+Win10专业版永久激活方法
+------------------------------
+
+http://jingyan.baidu.com/article/73c3ce2812e0ede50343d9f8.html
+
+----------------------
+显示激活信息：
+
+slmgr.vbs -xpr
+
+----------------------
+
+“我的电脑”右键“属性”里查看Windows 10的版本号：
+
+比如：Windows 10 专业版
+
+----------------------
+
+在“开始菜单”上点击右键，然后选择“命令提示符【管理员】”点击打开，
+
+然后执行以下命令：
+
+slmgr /ipk VK7JG-NPHTM-C97JM-9MPGT-3V66T
+或
+slmgr /ipk W269N-WFGWX-YVC9B-4J6C9-T83GX
+slmgr /skms kms.xspace.in
+slmgr /ato
+
+
+（以上方法已证实无效）
+
+显示错误信息的命令：
+
+slui.exe 0x2a 0x803F7001
