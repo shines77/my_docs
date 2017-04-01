@@ -1,13 +1,14 @@
 
 使用 bcdedit 开启 Windows 10 的内核调试模式
 
------------------------------------------------------------------------------
+--------------------------------------------------
 
 注：Windows 10 的 bcdedit 跟其他版本有一点点小差异，但大体上是一样的，做了一点更新而已。
 具体的区别，可以通过 bcdedit /? 和 bcdedit -help xxxxx 两个命令查询相应的命令格式。
-用 bcdedit /enum 可以枚举当前的 bcd 信息。
+例如：bcdedit -help copy。此外，用 bcdedit /enum 可以枚举当前的 bcd 启动配置信息。
 
-（注意：下面的命令一定要在以管理员身份启动的命令行里执行。）
+（注意：下面的命令一定要在以管理员身份启动的命令行里执行，可以在 Windows 10 的
+“开始菜单”按钮上点鼠标右键，然后点击“命令行（超级管理员）”菜单项。）
 
 1. 先复制一份当前的启动配置：
 
@@ -17,48 +18,59 @@ C:\> bcdedit /copy {current} /d "Windows 10 Debug With Serial"
 
 已将该项成功复制到 {9f5cb028-144c-11e7-aa76-d7a47d59ad30}。
 
-我们记住 “{9f5cb028-144c-11e7-aa76-d7a47d59ad30}”这个id，下面会用到。
+我们把“{9f5cb028-144c-11e7-aa76-d7a47d59ad30}”称为 启动Id ，启动Id 可以是 GUID，也可以是下列固定值：{current}, {default}。
+{current} 表示当前的启动项，{default} 表示你设置的默认启动项（下次启动生效），
+而启动项对应的 {guid} 值可以通过 bcdedit /enum 命令查看。
 
-2. 启用内核调试模式：
+2. 设置默认启动项
 
-C:\> bcdedit /debug {9f5cb028-144c-11e7-aa76-d7a47d59ad30} ON
+我们把刚才 copy 的启动项 {9f5cb028-144c-11e7-aa76-d7a47d59ad30} 设置为 {default} (默认启动项), 
+这样的话后面需要指定 启动Id 的地方，使用 {default} 代替即可，而不必使用 GUID ，简便很多。操作如下：
 
-注：{9f5cb028-144c-11e7-aa76-d7a47d59ad30} 就是我们之前 copy 时看到的 id 。
+C:\> bcdedit /default {9f5cb028-144c-11e7-aa76-d7a47d59ad30}
 
-3. 设置调试的模式，以及参数，下面是串口，COM1口，速率是 115200：
+把我们刚才添加的 "Windows 10 Debug With Serial" 设置为默认启动项。
 
-这一步，由于 Windows 不支持下列的语句（即 /dbgsettings 命令不支持 id 参数，以前的系统是支持的，不知为何）：
+3. 启用内核调试模式：
 
-C:\> bcdedit /dbgsettings {9f5cb028-144c-11e7-aa76-d7a47d59ad30} SERIAL DEBUGPORT:1 BAUDRATE:115200
+C:\> bcdedit /debug {default} ON
 
-所以这一步我们需要设置完了第4、5步以后，重启系统，并选择“Windows 10 Debug With Serial”启动，再使用下面的命令：
+注：这里的 {default} 等价于 {9f5cb028-144c-11e7-aa76-d7a47d59ad30}，就是我们之前 copy 时看到的 id 。
 
-C:\> bcdedit /dbgsettings SERIAL DEBUGPORT:1 BAUDRATE:115200
+4. 设置调试的模式，以及参数，下面是串口，COM1口，速率是 115200：
 
+这一步，由于 Windows 10 不支持下列的语句（即 /dbgsettings 命令不支持 {id} 参数，以前的系统是支持的，不知为何）：
 
-4. 设置允许测试驱动签名（即不强制检测是否为微软正规的驱动签名）：
+C:\> bcdedit /dbgsettings {default} SERIAL DEBUGPORT:1 BAUDRATE:115200
 
-C:\> bcdedit /set {9f5cb028-144c-11e7-aa76-d7a47d59ad30} testsigning On
+所以这一步我们待第5、6、7步骤完成以后，重启系统，再重新设置。
 
-5. 关闭强制检测驱动数字签名的命令：
+5. 设置允许测试驱动签名（即不强制检测是否为微软正规的驱动签名）：
 
-C:\> bcdedit /set {9f5cb028-144c-11e7-aa76-d7a47d59ad30} loadoptions DDISABLE_INTEGRITY_CHECKS
+C:\> bcdedit /set {default} testsigning On
+
+6. 关闭强制检测驱动数字签名的命令：
+
+C:\> bcdedit /set {default} loadoptions DDISABLE_INTEGRITY_CHECKS
 
 也可以开机按 F8，然后选择“跳过驱动签名”。
 
-6. 设置默认启动项，开机菜单超时时间：
+7. 设置开机菜单等待时间：
 
-C:\> bcdedit /default {9f5cb028-144c-11e7-aa76-d7a47d59ad30}
 C:\> bcdedit /timeout 5
 
-把我们刚才添加的 "Windows 10 Debug With Serial" 设置为默认启动项，并设置开机菜单的超时时间为 5 秒。
+设置开机菜单的等待时间为 5 秒，这里不需要指定 {default} 或别的 启动Id，因为这是全局设置，所有启动项的等待时间都是一样的。
 
-7. 检验是否正确开启了内核调试模式：
+8. 设置串口调试和参数
+
+设置完以上的内容后，重启系统，并选择“Windows 10 Debug With Serial”启动项，再执行下面的命令：
+
+C:\> bcdedit /dbgsettings SERIAL DEBUGPORT:1 BAUDRATE:115200
+
+9. 检验是否正确开启了内核调试模式：
 
 重启系统以后，如果 Windows 右下角有显示 “测试模式”，“Windows 10 xxxxx 版” 的字样，就说明开启成功了。
 
------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------
 
-C:\> bcdedit.exe -set loadoptions DDISABLE_INTEGRITY_CHECKS
-
------------------------------------------------------------------------------
+<.End.>
