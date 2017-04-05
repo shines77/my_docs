@@ -13,7 +13,7 @@
 
 1. 先复制一份当前的启动配置：
 
-C:\> bcdedit /copy {current} /d "Windows 10 Debug With Serial"
+bcdedit /copy {current} /d "Windows 10 Debug With Serial"
 
 会显示如下信息：
 
@@ -28,13 +28,13 @@ C:\> bcdedit /copy {current} /d "Windows 10 Debug With Serial"
 我们把刚才 copy 的启动项 {9f5cb028-144c-11e7-aa76-d7a47d59ad30} 设置为 {default} (默认启动项), 
 这样的话后面需要指定 启动Id 的地方，使用 {default} 代替即可，而不必使用 GUID ，简便很多。操作如下：
 
-C:\> bcdedit /default {9f5cb028-144c-11e7-aa76-d7a47d59ad30}
+bcdedit /default {9f5cb028-144c-11e7-aa76-d7a47d59ad30}
 
 把我们刚才添加的 "Windows 10 Debug With Serial" 设置为默认启动项。
 
 3. 启用内核调试模式：
 
-C:\> bcdedit /debug {default} ON
+bcdedit /debug {default} ON
 
 注：这里的 {default} 等价于 {9f5cb028-144c-11e7-aa76-d7a47d59ad30}，就是我们之前 copy 时看到的 id 。
 
@@ -42,24 +42,24 @@ C:\> bcdedit /debug {default} ON
 
 这一步，由于 Windows 10 不支持下列的语句（即 /dbgsettings 命令不支持 {id} 参数，以前的系统是支持的，不知为何）：
 
-C:\> bcdedit /dbgsettings {default} SERIAL DEBUGPORT:1 BAUDRATE:115200
+bcdedit /dbgsettings {default} SERIAL DEBUGPORT:1 BAUDRATE:115200
 
 所以这一步我们待第5、6、7步骤完成以后，重启系统，再重新设置，具体请看步骤 8（需先完成第5、6、7步骤）。
 
 5. 设置允许测试驱动签名（即不强制检测是否为微软正规的驱动签名）：
 
-C:\> bcdedit /set {default} testsigning On
+bcdedit /set {default} testsigning On
 
 6. 关闭强制检测驱动数字签名的命令：
 
-C:\> bcdedit /set {default} loadoptions DDISABLE_INTEGRITY_CHECKS
-C:\> bcdedit /set {default} nointegritychecks on
+bcdedit /set {default} loadoptions DDISABLE_INTEGRITY_CHECKS
+bcdedit /set {default} nointegritychecks on
 
 当然，这个步骤也可以在开机的时候按 F8，然后选择“跳过驱动签名”来实现，但不推荐那么做，用上面的命令即可。
 
 7. 设置开机菜单等待时间：
 
-C:\> bcdedit /timeout 5
+bcdedit /timeout 5
 
 设置开机菜单的等待时间为 5 秒，这里不需要指定 {default} 或别的 启动Id，因为这是全局设置，即所有启动项的等待时间都是统一的。
 
@@ -67,7 +67,7 @@ C:\> bcdedit /timeout 5
 
 设置完以上的内容后，重启系统，并选择“Windows 10 Debug With Serial”启动项，再执行下面的命令：
 
-C:\> bcdedit /dbgsettings SERIAL DEBUGPORT:1 BAUDRATE:115200
+bcdedit /dbgsettings SERIAL DEBUGPORT:1 BAUDRATE:115200
 
 9. 检验是否正确开启了内核调试模式：
 
