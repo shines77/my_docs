@@ -147,6 +147,8 @@ http://blog.csdn.net/chenlycly/article/details/44871061
 
 --------------------------------------------------------------------------------------------------
 
+怎么在 C++ 里实现一个常量表达式的计数器
+
 How to implement a constant-expression counter in C++
 
 http://b.atch.se/posts/constexpr-counter/
@@ -157,7 +159,7 @@ Non-constant constant-expressions in C++
 http://b.atch.se/posts/non-constant-constant-expressions/
 
 
-经过两篇文章的阅读, 基本掌握了原理, 下面是 purecpp.org 上的摘录, 此方法在 VC++ 上存在问题, VC++ 版本请看上面的两篇文章.
+经过两篇文章的阅读, 基本掌握了原理, 下面是 purecpp.org 上的摘录, 此方法在 vc++ 上存在问题, vc++ 版本请看上面的两篇文章.
 
 http://purecpp.org/?p=1144
 
@@ -417,5 +419,17 @@ http://www.csie.ntnu.edu.tw/~u91029/StringMatching.html
 http://guokr.github.io/pattern-matching-problem.html
 
 (C) 2015 果壳网平台组
+
+--------------------------------------------------------------------------------------------------
+
+怎么在 C++ 里实现一个常量表达式的计数器
+
+How to implement a constant-expression counter in C++
+
+http://b.atch.se/posts/constexpr-counter/
+
+Non-constant constant-expressions in C++
+
+http://b.atch.se/posts/non-constant-constant-expressions/
 
 --------------------------------------------------------------------------------------------------

@@ -1278,7 +1278,7 @@ http://blog.csdn.net/jununfly/article/details/3949395
 //
 // See: http://stackoverflow.com/questions/3707133/how-to-use-zwqueryinformationprocess-to-get-processimagefilename-in-a-kernel-driver
 //
-// 在内核驱动中，获得当前进程的全路径 
+// 在内核驱动中，获得当前进程的全路径
 //
 // See: http://blog.csdn.net/jianghui3132749/article/details/11107887
 //
@@ -1290,7 +1290,7 @@ http://blog.csdn.net/jununfly/article/details/3949395
 //
 
 //
-// 如何获取进程/目标对象的全路径？ 
+// 如何获取进程/目标对象的全路径？
 //
 // See: http://blog.csdn.net/zhuhuibeishadiao/article/details/51108868
 //
@@ -1310,7 +1310,7 @@ IRP查询（FILEMON4.34中FilemonQueryFile函数）
 FltGetName(minifilter)
 
 //
-// 驱动里执行应用层代码之KeUserModeCallBack，支持64位win7（包括WOW64） 
+// 驱动里执行应用层代码之KeUserModeCallBack，支持64位win7（包括WOW64）
 //
 // See: http://blog.csdn.net/fanxiushu/article/details/38141219
 // See: http://www.cnblogs.com/findumars/p/4808279.html
@@ -1391,5 +1391,26 @@ http://www.cppblog.com/momoxiao/archive/2009/12/29/104374.html
 
 -------------------------------------------------------------------------------------------------
 
+[求助]ObOpenObjectByPointer后系统蓝屏的问题
 
+http://bbs.pediy.com/thread-102421.htm
 
+分析了在 GetThreadHandle() 里调用 GetProcessThread() 后再调用 ObOpenObjectByPointer 蓝屏的问题。
+
+---------------------------------------------------
+
+PspCreateThread先调用ObCreateObject创建线程对象，然后再进行一些初始化工作之后，把线程对象插入进程EPROCESS的活动线程链里面。然后再经过一些操作，再调用CreateThreadNotifyRoutine，之后再调用ObInsertObject把线程对象加入进程的句柄表中。
+
+也就是说，对CreateThreadNotifyRoutine的调用是在ObCreateObject之后而在ObInsertObject之前。而实际上，ObInsertObject默认其是在ObCreateObject之后第一个调用ObpCreateHandle将其加入句柄表的例程，试图在ObInsertObject被调用之前使用ObpCreateHandle获取相应对象句柄的操作都是不稳定的。
+
+其实这个问题，早有文章出来，我就是Google到的。
+
+我Google到的原文在http://uninformed.org/index.cgi?v=1&a=5&p=5，该章讲述的是McAfee以前的版本的一个问题，即试图在ObCreateObject创建EPROCESS对象后在ObInsertObject前使用ObOpenObjectByPointer获取EPROCESS对象的句柄。这和楼主对ETHREAD对象的访问错误是一个道理（PspCreateProcess和PspCreateThread都涉及到先ObCreateObject再ObInsertObject的过程）。
+
+---------------------------------------------------
+
+VC++ 创建Windows服务
+
+http://blog.csdn.net/liuzhihan209/article/details/8763266
+
+-------------------------------------------------------------------------------------------------
