@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Win10_bcdedit_for_serial</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code {
+  font-size: 14px;
+  margin: 0 0px;
+  padding: 3px 5px;
+  white-space: nowrap;
+  border: 1px solid #e0e0e0;
+  background-color: #f2f2f2;
+  border-radius: 3px;
+  text-decoration: none;
+  color: #880022;
+}
+
+tt {
+  margin: 0 0px;
+  padding: 3px 5px;
+  white-space: nowrap;
+  border: 1px solid #e0e0e0;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</style>
+<base href='file:\\\D:\Project\my_docs\tech\windows\minifilter\'/>
+</head>
+<body>
+<h2>使用 bcdedit 开启 Windows 10 的内核调试模式</h2>
+<p>注：因为 <code>Windows 10</code> 的 <code>bcdedit</code> 跟其他版本有一点小改动，所以其他系统的方法不一定完全通用。
+具体的区别，可以通过 <code>bcdedit /?</code> 和 <code>bcdedit -help xxxxx</code> 两个命令查询相应的命令格式。
+例如：<code>bcdedit -help copy</code>。此外，用 <code>bcdedit /enum</code> 可以枚举当前的 <code>bcd</code> 启动配置信息，建议修改前先浏览一遍，以便有个大致的了解。</p>
+<p>下面的命令一定要在以 <code>管理员身份</code> 启动的命令行里执行，可以在 <code>Windows 10</code> 的
+ “<code>开始菜单</code>” 按钮上点鼠标右键，然后点击 “<code>命令行（超级管理员）</code>” 菜单项。目前发现使用 <code>PowerShell</code> 命令行执行 <code>bcdedit</code> 可能会无效。</p>
+<h2>一、设置新的启动项</h2>
+<h3>1. 复制启动项</h3>
+<p>先复制一份当前的启动配置：</p>
+<pre><code>bcdedit /copy {current} /d &quot;Windows 10 Debug With Serial&quot;
+</code></pre>
+
+<p>会显示如下信息：</p>
+<pre><code>已将该项成功复制到 {9f5cb028-144c-11e7-aa76-d7a47d59ad30} 。
+</code></pre>
+
+<p>注：我们把 “<code>{9f5cb028-144c-11e7-aa76-d7a47d59ad30}</code>” 称为 <code>启动Id</code> ，<code>启动Id</code> 可以是 <code>GUID</code>，也可以选择下列的值：<code>{current}</code>, <code>{default}</code>。</p>
+<p>其中 <code>{current}</code> 表示当前的启动项，<code>{default}</code> 表示你设置的默认启动项（下次启动生效），
+而启动项对应的<code>{guid}</code> 值可以通过 <code>bcdedit /enum</code> 命令查看。</p>
+<h3>2. 设置默认启动项</h3>
+<p>我们把刚才 <code>copy</code> 的启动项 <code>{9f5cb028-144c-11e7-aa76-d7a47d59ad30}</code> 设置为 <code>{default}</code> (默认启动项), 
+这样的话后面需要指定 <code>启动Id</code> 的地方，使用 <code>{default}</code> 代替即可，而不必使用 <code>GUID</code> ，简便很多。</p>
+<p>命令如下：</p>
+<pre><code>bcdedit /default {9f5cb028-144c-11e7-aa76-d7a47d59ad30}
+</code></pre>
+
+<p>把我们刚才添加的 &quot;<code>Windows 10 Debug With Serial</code>&quot; 设置为默认启动项。</p>
+<h3>3. 启用内核调试模式</h3>
+<p>命令如下：</p>
+<pre><code>bcdedit /debug {default} ON
+</code></pre>
+
+<p>注：这里的<code>{default}</code> 等价于 <code>{9f5cb028-144c-11e7-aa76-d7a47d59ad30}</code>，就是我们之前 <code>copy</code> 时看到的 <code>id</code> 。</p>
+<h3>4. 设置调试的模式及参数</h3>
+<p>调试的模式是 <code>串口</code>，端口是<code>COM1</code>，速率是 <code>115200</code>，命令如下：</p>
+<pre><code>bcdedit /dbgsettings {default} SERIAL DEBUGPORT:1 BAUDRATE:115200
+</code></pre>
+
+<p>执行上面的命令是会报错的，是由于 <code>Windows 10</code> 的 <code>/dbgsettings</code> 命令不再支持 <code>{id}</code> 参数，以前的系统是支持的，不知为何改了。</p>
+<p>所以这一步我们待第5、6、7步骤完成以后，重启系统后，再设置，具体请看<code>步骤 8</code>（需先完成第5、6、7步骤）。</p>
+<h3>5. 设置允许测试驱动签名</h3>
+<p>即不强制检测是否为微软正规的驱动签名：</p>
+<pre><code>bcdedit /set {default} testsigning On
+</code></pre>
+
+<h3>6. 关闭强制检测驱动数字签名</h3>
+<p>命令如下：</p>
+<pre><code>bcdedit /set {default} loadoptions DDISABLE_INTEGRITY_CHECKS
+bcdedit /set {default} nointegritychecks on
+</code></pre>
+
+<p>当然，这个步骤也可以在开机按 <code>F8</code>，进入 “<code>高级启动选项</code>”，再选择 “<code>禁用强制驱动程序签名</code>” 来实现，但不推荐那么做，用上面的命令即可。</p>
+<h3>7. 设置开机菜单等待时间</h3>
+<p>命令如下：</p>
+<pre><code>bcdedit /timeout 5
+</code></pre>
+
+<p>设置开机菜单的等待时间为 <code>5</code> 秒，这里不需要指定 <code>{default}</code> 或别的 <code>启动Id</code>，因为这是全局设置，即所有启动项的等待时间都是统一的。</p>
+<h3>8. 设置串口调试和参数</h3>
+<p>设置完以上的内容后，重启系统，并选择 “<code>Windows 10 Debug With Serial</code>” 启动项，再执行下面的命令：</p>
+<pre><code>bcdedit /dbgsettings SERIAL DEBUGPORT:1 BAUDRATE:115200
+</code></pre>
+
+<h3>9. 检验是否正确开启了内核调试模式：</h3>
+<p>重启系统以后，如果 <code>Windows</code> 右下角有显示 “<code>测试模式</code>”，“<code>Windows 10 xxxxx 版</code>” 的字样，就说明开启成功了。</p>
+<hr />
+<h2>二、可能会遇到的问题</h2>
+<h3>1. 候补方法</h3>
+<p>如果以上设置不生效，可以试试下面的方法：</p>
+<ol>
+<li>
+<p>点击 “<code>开始按钮</code>”，然后在运行框里输入 <code>gpedit.msc</code>，按回车键；</p>
+</li>
+<li>
+<p>展开：<code>用户配置</code> --&gt; <code>管理模板</code> --&gt; <code>系统</code> --&gt; <code>驱动程序安装</code>；</p>
+</li>
+<li>
+<p>双击右边列表里的 “<code>设备驱动程序的代码签名</code>”；</p>
+</li>
+<li>
+<p>选择 “<code>已禁用</code>”，点确定。</p>
+</li>
+</ol>
+<h3>2. 如果命令行无修改权限</h3>
+<p>如果遇到提示命令行模式下无修改权限的情况：</p>
+<ol>
+<li>
+<p>在运行框里面输入 “<code>gpedit.msc</code>”，进入 “<code>组策略编辑器</code>”；</p>
+</li>
+<li>
+<p>展开：<code>Windows 设置</code> --&gt; <code>安全设置</code> --&gt; <code>打开本地策略</code> --&gt; <code>安全选项</code> --&gt; <code>用户帐户控制</code></p>
+</li>
+<li>
+<p>点击 “<code>用于内置管理员账户的管理员批准模式</code>”；</p>
+</li>
+<li>
+<p>选中 “<code>已启用</code>”，保存退出。</p>
+</li>
+</ol>
+<h3>3. 如果 bcdedit /set 命令提示无修改权限</h3>
+<p>如果遇到 <code>bcdedit /set</code> 命令无修改权限的情况，先尝试使用管理员账号登陆，或者把 <code>Windows 10</code> 的 <code>UAC</code> 关掉或调到最低。
+如果还是解决不了，可以试试上面的 “<code>如果命令行无修改权限</code>” 的方法，这个问题我未实践解决过，
+以上方法都不行的话，可以 <code>百度</code> 或 <code>Google</code> 搜索一下出现的错误提示。</p>
+<p>&lt;.End.&gt;</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
