@@ -35,6 +35,15 @@ VK7JG-NPHTM-C97JM-9MPGT-3V66T
 
 可以永久联网激活的:     NXRQM-CXV6P-PBGVJ-293T4-R3KTY
 
+--------------------------------------------------------------------
+
+See: http://news.mydrivers.com/1/440/440540/htm/
+
+
+【Windows 10周年更新正式版】
+
+Anniversary Update，2016年8月2日发布，开发代号Redstone 1(RS1)，系统版本号Version 1607，编译版本号Build 14393。
+
 
 【Windows 10周年更新版64位简体中文家庭/专业版】
 
@@ -126,3 +135,58 @@ SHA1：89E415FEC5F4ED23D96CB543D3CEA838F57A10A0
 下载地址：
 ed2k://|file|en_windows_10_enterprise_version_1607_updated_jul_2016_x86_dvd_9060097.iso|2923022336|119793C52848CE539DF8CBFCCBC55DB2|/
 
+--------------------------------------------------------------------
+
+【Windows 10创意者更新正式版】
+
+Creators Update，2017年4月5日发布，开发代号Redstone 2(RS2)，系统版本号Version 1703，编译版本号Build 15063。
+此为最新的官方正式版，可取代此前的RS1周年更新版、TH2更新版，以及最初的RTM正式版，推荐更新。
+
+【64位简体中文专业/家庭版】
+文件名：cn_windows_10_multiple_editions_version_1703_updated_march_2017_x64_dvd_10194190.iso
+SH1：054C741DED8989F4D0D419946EB37182F20E4482
+文件大小：4.27GB
+下载地址：
+ed2k://|file|cn_windows_10_multiple_editions_version_1703_updated_march_2017_x64_dvd_10194190.iso|4587292672|373B263D307F6AA2486A74E557DD22C9|/
+
+【32位简体中文专业/家庭版】
+
+文件名：cn_windows_10_multiple_editions_version_1703_updated_march_2017_x86_dvd_10189569.iso
+SH1：08D8F230E516523AD80B9A8F69ADEA6F77F2836A
+文件大小：3.22GB
+下载地址：
+ed2k://|file|cn_windows_10_multiple_editions_version_1703_updated_march_2017_x86_dvd_10189569.iso|3456649216|945C69ABEE0EFE9B07CF5B4C6E141262|/
+
+【64位简体中文企业版】
+
+文件名：cn_windows_10_enterprise_version_1703_updated_march_2017_x64_dvd_10194191.iso
+SH1：F3ACA74FA2177C06EFF3C1F8FEB1B4F26BEA880B
+文件大小：4.19GB
+下载地址：
+1ed2k://|file|cn_windows_10_enterprise_version_1703_updated_march_2017_x64_dvd_10194191.iso|4498978816|98F0EAD4122B9B9D72FD08D22657AB45|/
+
+【32位简体中文企业版】
+
+文件名：cn_windows_10_enterprise_version_1703_updated_march_2017_x86_dvd_10189572.iso
+SH1：14CC045F0C885CBED0AE0B9EA4B8C6F2FF7DD854
+文件大小：3.16GB
+下载地址：
+ed2k://|file|cn_windows_10_enterprise_version_1703_updated_march_2017_x86_dvd_10189572.iso|3394940928|2E72355CDA5373B9F778D36CF03B86FD|/
+
+【64位英文专业/家庭版】
+
+文件名：en_windows_10_multiple_editions_version_1703_updated_march_2017_x64_dvd_10189288.iso
+SH1：CE8005A659E8DF7FE9B080352CB1C313C3E9ADCE
+文件大小：4.04GB
+下载地址：
+ed2k://|file|en_windows_10_multiple_editions_version_1703_updated_march_2017_x64_dvd_10189288.iso|4334315520|2F851DF742749C9AE7325C373A3C499A|/
+
+【32位英文专业/家庭版】
+
+文件名：en_windows_10_multiple_editions_version_1703_updated_march_2017_x86_dvd_10188977.iso
+SH1：1AF7B5B5914B718C3F2F6E58907F51C36F8A03C1
+文件大小：3.01GB
+下载地址：
+ed2k://|file|en_windows_10_multiple_editions_version_1703_updated_march_2017_x86_dvd_10188977.iso|3232196608|D4BC276AC913D425987E70EAF907F38C|/
+
+--------------------------------------------------------------------

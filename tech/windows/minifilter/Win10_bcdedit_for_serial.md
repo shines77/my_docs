@@ -13,11 +13,11 @@
 
 ## 一、设置新的启动项
 
-### 1. 复制启动项 
+### 1. 复制当前启动项 
 
 先复制一份当前的启动配置：
 
-    bcdedit /copy {current} /d "Windows 10 Debug With Serial"
+    bcdedit /copy {current} /d "Windows 10 Debug"
 
 会显示如下信息：
 
@@ -39,7 +39,7 @@
 
     bcdedit /default {前面copy命令返回的GUID值}
 
-把我们刚才添加的 "`Windows 10 Debug With Serial`" 设置为默认启动项。
+把我们刚才添加的 "`Windows 10 Debug`" 设置为默认启动项。
 
 例如：
 
@@ -51,7 +51,7 @@
 
 **关于顺序**
 
-（注：步骤 3、5、6、7 无先后顺序，但 `步骤 8` 必须在步骤 3、5、6、7 执行之后，重启系统，并确认登陆的是我们配置的 `Windows 10 Debug For Serial` 启动项以后才能执行。）
+（注：步骤 3、5、6、7 无先后顺序，步骤 4 可以忽略，但 `步骤 8` 必须在步骤 3、5、6、7 执行之后，重启系统，并确认登陆的是我们配置的 `Windows 10 Debug For Serial` 启动项以后才能执行。）
 
 ### 3. 启用内核调试模式
 
@@ -61,7 +61,7 @@
 
 注：这里的`{default}` 等价于 `{9f5cb028-144c-11e7-aa76-d7a47d59ad30}`，就是我们之前 `copy` 时看到的 `id` 。
 
-### 4. 设置调试的模式及参数
+### 4. 设置调试的模式及参数 (此步可忽略)
 
 调试的模式是 `串口`，端口是`COM1`，速率是 `115200`，命令如下：
 
@@ -96,7 +96,7 @@
 
 ### 8. 设置串口调试和参数
 
-设置完以上的内容后，重启系统，并选择 “`Windows 10 Debug With Serial`” 启动项，再执行下面的命令：
+设置完以上的内容后，重启系统，并选择 “`Windows 10 Debug`” 启动项，再执行下面的命令：
 
     bcdedit /dbgsettings SERIAL DEBUGPORT:1 BAUDRATE:115200
 

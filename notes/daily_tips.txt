@@ -440,10 +440,64 @@ https://www.zhihu.com/question/32058777?sort=created
 
 --------------------------------------------------------------------------------------------------
 
-Hack Font 详细介绍
+Hack Font 字体
 
     Hack 是一种专门用来显示编程语言的字体。
 
-https://www.oschina.net/p/hack-font
+官方更新地址：
+
+    https://github.com/chrissimpkins/Hack
+
+引用：
+
+    https://www.oschina.net/p/hack-font
 
 --------------------------------------------------------------------------------------------------
+
+漂亮的等宽字体 Inconsolata
+
+    Inconsolata 是一款看起来很漂亮的 monospace font（等宽字体），尤其适合在终端下和写代码的朋友使用。
+
+官方地址：
+
+    https://github.com/google/fonts/tree/master/ofl/inconsolata
+
+下载链接：
+
+    http://www.levien.com/type/myfonts/inconsolata.html
+
+Windows 系统下载：.otf 格式文件
+
+Linux 系统下载： .pfa 格式文件
+
+--------------------------------------------------------------------------------------------------
+
+最适合程序员编程的10款字体
+
+https://my.oschina.net/weichou/blog/359860
+
+排名如下：
+
+1. Inconsolata
+2. Consolas
+3. Deja Vu Sans Mono
+4. Droid Sans Mono
+5. Proggy
+6. Monofur
+7. Profont
+8. Monaco  （Mac的默认字体）
+9. Andale Mono
+10. Courier / Courier New
+
+具体可看帖子。
+
+原帖地址：（原帖图片已失效）
+
+http://blog.csdn.net/huangliangjie/article/details/6774356
+
+--------------------------------------------------------------------------------------------------
+
+
+
+
+
