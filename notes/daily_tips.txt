@@ -422,7 +422,7 @@ http://guokr.github.io/pattern-matching-problem.html
 
 --------------------------------------------------------------------------------------------------
 
-怎么在 C++ 里实现一个常量表达式的计数器
+怎么在 C++ 里实现一个常量表达式的计数器 （其实这个前面贴过，再贴一次）
 
 How to implement a constant-expression counter in C++
 
@@ -431,5 +431,19 @@ http://b.atch.se/posts/constexpr-counter/
 Non-constant constant-expressions in C++
 
 http://b.atch.se/posts/non-constant-constant-expressions/
+
+--------------------------------------------------------------------------------------------------
+
+写代码用哪种字体看起来最舒适？
+
+https://www.zhihu.com/question/32058777?sort=created
+
+--------------------------------------------------------------------------------------------------
+
+Hack Font 详细介绍
+
+    Hack 是一种专门用来显示编程语言的字体。
+
+https://www.oschina.net/p/hack-font
 
 --------------------------------------------------------------------------------------------------

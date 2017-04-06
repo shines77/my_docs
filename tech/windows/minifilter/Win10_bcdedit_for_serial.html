@@ -307,6 +307,7 @@ img {
 </head>
 <body>
 <h2>使用 bcdedit 开启 Windows 10 的内核调试模式</h2>
+<h1>摘要</h1>
 <p>注：因为 <code>Windows 10</code> 的 <code>bcdedit</code> 跟其他版本有一点小改动，所以其他系统的方法不一定完全通用。
 具体的区别，可以通过 <code>bcdedit /?</code> 和 <code>bcdedit -help xxxxx</code> 两个命令查询相应的命令格式。
 例如：<code>bcdedit -help copy</code>。此外，用 <code>bcdedit /enum</code> 可以枚举当前的 <code>bcd</code> 启动配置信息，建议修改前先浏览一遍，以便有个大致的了解。</p>
@@ -322,17 +323,25 @@ img {
 <pre><code>已将该项成功复制到 {9f5cb028-144c-11e7-aa76-d7a47d59ad30} 。
 </code></pre>
 
-<p>注：我们把 “<code>{9f5cb028-144c-11e7-aa76-d7a47d59ad30}</code>” 称为 <code>启动Id</code> ，<code>启动Id</code> 可以是 <code>GUID</code>，也可以选择下列的值：<code>{current}</code>, <code>{default}</code>。</p>
-<p>其中 <code>{current}</code> 表示当前的启动项，<code>{default}</code> 表示你设置的默认启动项（下次启动生效），
-而启动项对应的<code>{guid}</code> 值可以通过 <code>bcdedit /enum</code> 命令查看。</p>
+<p>我们把 “<code>{9f5cb028-144c-11e7-aa76-d7a47d59ad30}</code>” 称为 <code>启动Id</code> ，该值是随机生成的，每台机器每次执行 <code>copy</code> 命令得到的 <code>GUID</code> 都是不一样的，所以执行第 <code>2</code> 步的时候，不能直接复制教程写的 <code>GUID</code>，而是要改为 <code>copy</code> 命令返回的结果里的 <code>GUID</code> 。</p>
+<p><code>启动Id</code> 可以是 <code>GUID</code> 值，同时也可以是下列值：<code>{current}</code>, <code>{default}</code>。</p>
+<p>其中 <code>{current}</code> 表示当前的启动项，<code>{default}</code> 表示你设置的默认启动项（下次启动后生效），
+而各个启动项对应的<code>{guid}</code> 值可以通过 <code>bcdedit /enum</code> 命令来查看。</p>
 <h3>2. 设置默认启动项</h3>
-<p>我们把刚才 <code>copy</code> 的启动项 <code>{9f5cb028-144c-11e7-aa76-d7a47d59ad30}</code> 设置为 <code>{default}</code> (默认启动项), 
+<p>我们把刚才 <code>copy</code> 命令的得到的启动项 <code>{9f5cb028-144c-11e7-aa76-d7a47d59ad30}</code> （该值是每次随机生成的）设置为 <code>{default}</code> (默认启动项), 
 这样的话后面需要指定 <code>启动Id</code> 的地方，使用 <code>{default}</code> 代替即可，而不必使用 <code>GUID</code> ，简便很多。</p>
 <p>命令如下：</p>
-<pre><code>bcdedit /default {9f5cb028-144c-11e7-aa76-d7a47d59ad30}
+<pre><code>bcdedit /default {前面copy命令返回的GUID值}
 </code></pre>
 
 <p>把我们刚才添加的 &quot;<code>Windows 10 Debug With Serial</code>&quot; 设置为默认启动项。</p>
+<p>例如：</p>
+<pre><code>bcdedit /default {9f5cb028-144c-11e7-aa76-d7a47d59ad30}
+</code></pre>
+
+<p>注意：这里设置的 <code>GUID</code> 每台机器上都是不一样的，是随机生成的，具体的值要根据前面 <code>copy</code> 命令执行后返回的结果而得到，请改成相应的 <code>GUID</code> 。</p>
+<p><strong>关于顺序</strong></p>
+<p>（注：步骤 3、5、6、7 无先后顺序，但 <code>步骤 8</code> 必须在步骤 3、5、6、7 执行之后，重启系统，并确认登陆的是我们配置的 <code>Windows 10 Debug For Serial</code> 启动项以后才能执行。）</p>
 <h3>3. 启用内核调试模式</h3>
 <p>命令如下：</p>
 <pre><code>bcdedit /debug {default} ON
@@ -345,7 +354,7 @@ img {
 </code></pre>
 
 <p>执行上面的命令是会报错的，是由于 <code>Windows 10</code> 的 <code>/dbgsettings</code> 命令不再支持 <code>{id}</code> 参数，以前的系统是支持的，不知为何改了。</p>
-<p>所以这一步我们待第5、6、7步骤完成以后，重启系统后，再设置，具体请看<code>步骤 8</code>（需先完成第5、6、7步骤）。</p>
+<p>所以这一步可以跳过，待第5、6、7步骤完成以后，重启系统后，再执行 <code>步骤 8</code>（需先完成第5、6、7步骤）。</p>
 <h3>5. 设置允许测试驱动签名</h3>
 <p>即不强制检测是否为微软正规的驱动签名：</p>
 <pre><code>bcdedit /set {default} testsigning On
@@ -369,9 +378,8 @@ bcdedit /set {default} nointegritychecks on
 <pre><code>bcdedit /dbgsettings SERIAL DEBUGPORT:1 BAUDRATE:115200
 </code></pre>
 
-<h3>9. 检验是否正确开启了内核调试模式：</h3>
-<p>重启系统以后，如果 <code>Windows</code> 右下角有显示 “<code>测试模式</code>”，“<code>Windows 10 xxxxx 版</code>” 的字样，就说明开启成功了。</p>
-
+<h3>9. 检验是否正确开启了内核调试模式</h3>
+<p>重启系统以后，如果 <code>Windows 10</code> 的右下角有显示 “<code>测试模式</code>”，“<code>Windows 10 xxxxx 版</code>” 的字样，就说明开启成功了。</p>
 <h2>二、可能会遇到的问题</h2>
 <h3>1. 候补方法</h3>
 <p>如果以上设置不生效，可以试试下面的方法：</p>
