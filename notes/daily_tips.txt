@@ -414,6 +414,22 @@ http://www.csie.ntnu.edu.tw/~u91029/StringMatching.html
 
 --------------------------------------------------------------------------------------------------
 
+字符串模式匹配算法——BM、Horspool、Sunday、KMP、KR、AC算法一网打尽
+
+http://dsqiu.iteye.com/blog/1700312
+
+这个文章还算有一些参考价值, 可以一看.
+
+-------------------------------------------
+
+字符串匹配算法
+
+http://www.cnblogs.com/gaochundong/p/string_matching.html
+
+只介绍了朴素算法, KMP 和 BoyerMoore 算法, 参考价值一般.
+
+--------------------------------------------------------------------------------------------------
+
 敏感词项目中的柔性字符串匹配问题 (介绍了 KMP, BM, Horspool 算法, 多字符串匹配, 自动机等)
 
 http://guokr.github.io/pattern-matching-problem.html
@@ -512,17 +528,37 @@ https://my.oschina.net/weichou/blog/359860
 排名如下：
 
 1. Inconsolata (还不如 Inconsolata-g, 排第一完全是由于作者个人喜欢)
-2. Consolas  (字体大小为11时效果不错)
+2. Consolas  (字体大小为11时, 效果不错, 行间距比一般的字体稍大)
 3. Deja Vu Sans Mono (比 Droid Sans Mono 稍差一点, 两者很相似)
-4. Droid Sans Mono  (还不错)
+4. Droid Sans Mono  (还不错, 比第 3 的好那么一点)
 5. Proggy
 6. Monofur
 7. Profont
-8. Monaco  （Mac的默认字体,还不错）
+8. Monaco  （Mac的默认字体, 还不错, 但缺点(特点)是行间距比较大）
 9. Andale Mono
-10. Courier / Courier New
+10. Courier / Courier New (以前觉得还不错, 现在看的确不是最好的选择)
 
 具体可看帖子。
+
+我个人的排名是:
+
+1. Consolas
+2. Roboto Mono
+3. Droid Sans Mono
+4. HackFont
+5. Deja Vu Sans Mono
+6. 宋体/新宋体
+7. Monaco
+8. Fira Code/Fira Mono
+9. Menlo
+10. Inconsolata-g
+11. Courier / Courier New
+
+以上排名其实很难排的, 大体排名是这样, 当下会使用哪一个, 得看当时的心情和当下能忍受/接受某个字体缺点的程度,
+人的想法是会变的, 或许显示屏大小和点距大小也有所不同.
+
+几个基本的原则就是: 等宽, 字体美观, 清晰好辨认, 0, o, 1, i 容易区分, 行间距适中, 
+字体不要太瘦长(本人不太喜欢瘦长的字体, 也许有的人喜欢).
 
 原帖地址：（原帖图片已失效）
 
