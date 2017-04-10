@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Win10_bcdedit_for_serial</title>
+<title>Win7_bcdedit_for_serial</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style type="text/css">
 <style type="text/css">
@@ -306,18 +306,18 @@ img {
 <base href='file:\\\D:\Project\my_docs\tech\windows\minifilter\'/>
 </head>
 <body>
-<h2>使用 bcdedit 开启 Windows 10 的内核调试模式</h2>
+<h2>使用 bcdedit 开启 Windows 7 的内核调试模式</h2>
 <h1>前言</h1>
-<p>因为 <code>Windows 10</code> 的 <code>bcdedit</code> 跟其他版本有一点小改动，所以其他系统的方法不一定完全通用。
+<p>因为 <code>Windows 7</code> 的 <code>bcdedit</code> 跟其他版本有一点小改动，所以其他系统的方法不一定完全通用。
 具体的区别，可以通过 <code>bcdedit /?</code> 和 <code>bcdedit -help xxxxx</code> 两个命令查询相应的命令格式。
 例如：<code>bcdedit -help copy</code>。此外，用 <code>bcdedit /enum</code> 可以枚举当前的 <code>bcd</code> 启动配置信息，建议修改前先浏览一遍，以便有个大致的了解。</p>
 <p><strong>重要</strong></p>
-<p>下面的命令一定要在以 <code>管理员身份</code> 启动的命令行里执行，可以在 <code>Windows 10</code> 的
+<p>下面的命令一定要在以 <code>管理员身份</code> 启动的命令行里执行，可以在 <code>Windows 7</code> 的
  “<code>开始菜单</code>” 按钮上点鼠标右键，然后点击 “<code>命令行（超级管理员）</code>” 菜单项。目前发现使用 <code>Windows PowerShell</code> 命令行执行 <code>bcdedit</code> 可能会报错，此时可以手动打开 “<code>C:\Windows\System32</code>” 目录下面的 <code>cmd.exe</code>，并且以管理员身份运行，最好同时把这个链接发送到 “<code>桌面</code>”，这样就不用每次都进到这个文件夹才能运行 <code>cmd.exe</code> 了。</p>
 <h2>一、设置新的启动项</h2>
 <h3>1. 复制当前启动项</h3>
 <p>先复制一份当前的启动配置：</p>
-<pre><code>bcdedit /copy {current} /d &quot;Windows 10 Debug&quot;
+<pre><code>bcdedit /copy {current} /d &quot;Windows 7 Debug With Serial&quot;
 </code></pre>
 
 <p>会显示如下信息：</p>
@@ -335,14 +335,14 @@ img {
 <pre><code>bcdedit /default {前面copy命令返回的GUID值}
 </code></pre>
 
-<p>把我们刚才添加的 &quot;<code>Windows 10 Debug</code>&quot; 设置为默认启动项。</p>
+<p>把我们刚才添加的 &quot;<code>Windows 7 Debug With Serial</code>&quot; 设置为默认启动项。</p>
 <p>例如：</p>
 <pre><code>bcdedit /default {9f5cb028-144c-11e7-aa76-d7a47d59ad30}
 </code></pre>
 
 <p>注意：这里设置的 <code>GUID</code> 每台机器上都是不一样的，是随机生成的，具体的值要根据前面 <code>copy</code> 命令执行后返回的结果而得到，请改成相应的 <code>GUID</code> 。</p>
 <p><strong>关于顺序</strong></p>
-<p>（注：步骤 3、5、6、7 无先后顺序，步骤 4 可以忽略，但 <code>步骤 8</code> 必须在步骤 3、5、6、7 执行之后，重启系统，并确认登陆的是我们配置的 <code>Windows 10 Debug</code> 启动项以后才能执行。）</p>
+<p>（注：步骤 3、5、6、7 无先后顺序，步骤 4 可以忽略，但 <code>步骤 8</code> 必须在步骤 3、5、6、7 执行之后，重启系统，并确认登陆的是我们配置的 <code>Windows 7 Debug With Serial</code> 启动项以后才能执行。）</p>
 <h3>3. 启用内核调试模式</h3>
 <p>命令如下：</p>
 <pre><code>bcdedit /debug {default} ON
@@ -360,7 +360,7 @@ img {
 参数错误。
 </code></pre>
 
-<p>这是由于 <code>Windows 10</code> 的 <code>/dbgsettings</code> 命令不支持 <code>{id}</code> 参数，以前的某些 <code>Windows</code> 版本是支持的，但现在不行了。</p>
+<p>这是由于 <code>Windows 7</code> 的 <code>/dbgsettings</code> 命令不支持 <code>{id}</code> 参数，以前的某些 <code>Windows</code> 版本是支持的，但现在不行了。</p>
 <p>所以，这一步可以跳过，待第5、6、7步骤完成以后，重启系统后，再执行 <code>步骤 8</code>（需先完成第5、6、7步骤）。</p>
 <h3>5. 设置允许测试驱动签名</h3>
 <p>即不强制检测是否为微软正规的驱动签名：</p>
@@ -381,12 +381,12 @@ bcdedit /set {default} nointegritychecks on
 
 <p>设置开机菜单的等待时间为 <code>5</code> 秒，这里不需要指定 <code>{default}</code> 或别的 <code>启动Id</code>，因为这是全局设置，即所有启动项的等待时间都是统一的。</p>
 <h3>8. 设置串口调试和参数</h3>
-<p>设置完以上的内容后，重启系统，并选择 “<code>Windows 10 Debug</code>” 启动项，再执行下面的命令：</p>
+<p>设置完以上的内容后，重启系统，并选择 “<code>Windows 7 Debug With Serial</code>” 启动项，再执行下面的命令：</p>
 <pre><code>bcdedit /dbgsettings SERIAL DEBUGPORT:1 BAUDRATE:115200
 </code></pre>
 
 <h3>9. 检验是否正确开启了内核调试模式</h3>
-<p>重启系统以后，如果 <code>Windows 10</code> 的右下角有显示 “<code>测试模式</code>”，“<code>Windows 10 xxxxx 版</code>” 的字样，就说明开启成功了。</p>
+<p>重启系统以后，如果 <code>Windows 7</code> 的右下角有显示 “<code>测试模式</code>”，“<code>Windows 7</code>”，“<code>内部版本 xxxx</code>” 的字样，就说明开启成功了。</p>
 <h2>二、可能会遇到的问题</h2>
 <h3>1. 候补方法</h3>
 <p>如果以上设置不生效，可以试试下面的方法：</p>
@@ -421,7 +421,7 @@ bcdedit /set {default} nointegritychecks on
 </li>
 </ol>
 <h3>3. 如果 bcdedit /set 命令提示无修改权限</h3>
-<p>如果遇到 <code>bcdedit /set</code> 命令无修改权限的情况，先尝试使用管理员账号登陆，或者把 <code>Windows 10</code> 的 <code>UAC</code> 关掉或调到最低。
+<p>如果遇到 <code>bcdedit /set</code> 命令无修改权限的情况，先尝试使用管理员账号登陆，或者把 <code>Windows 7</code> 的 <code>UAC</code> 关掉或调到最低。
 如果还是解决不了，可以试试上面的 “<code>如果命令行无修改权限</code>” 的方法，这个问题我未实践解决过，
 以上方法都不行的话，可以 <code>百度</code> 或 <code>Google</code> 搜索一下出现的错误提示。</p>
 <p>&lt;.End.&gt;</p>
