@@ -190,3 +190,13 @@ SH1：1AF7B5B5914B718C3F2F6E58907F51C36F8A03C1
 ed2k://|file|en_windows_10_multiple_editions_version_1703_updated_march_2017_x86_dvd_10188977.iso|3232196608|D4BC276AC913D425987E70EAF907F38C|/
 
 --------------------------------------------------------------------
+
+【微软官方工具下载ISO并制作启动盘教程】
+
+除了直接下载ISO镜像然后自己制作启动盘，你还可以使用微软官方提供的 Windows 10 安装程序工具 Media Creation Tool，下载相应镜像，并直接得到启动盘。
+
+1、下载Windows 10安装程序工具：
+
+https://www.microsoft.com/zh-cn/software-download/windows10
+
+--------------------------------------------------------------------
