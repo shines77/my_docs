@@ -1,0 +1,14 @@
+
+Windows 7 SP1 旗舰版 64(bit)
+
+下载: http://pan.baidu.com/s/1kV0XD9l
+
+提取码: n4r6
+
+这是一个rar文件，里面是VirtualBox 的qcow2格式的磁盘文件，VirtualBox的版本是最新版 5.1.18，自己去VirtualBox官网下载即可。
+
+超管: skyinno, 密码为: （一个空格）
+
+默认会登陆用户: WDKRemoteUser，自动登录的，免密码。但是这个用户的密码是未知的，如果遇到要你输入用户密码的时候，又不想切换到 skyinno 用户，重启系统就会自动登陆到 WDKRemoteUser 用户。
+
+由于这个是qcow2格式的虚拟机磁盘文件，导致无法导出虚拟机文件。所以你只能新建一个Windows 7 (64bit)的虚拟机，选磁盘的时候，选择“现有的磁盘文件”，并选择这个文件作为磁盘文件，其他的请自己按喜好设置。
