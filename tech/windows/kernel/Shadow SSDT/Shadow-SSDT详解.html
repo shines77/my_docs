@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Shadow-SSDT详解_MdPad2</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code {
+  font-size: 14px;
+  margin: 0 0px;
+  padding: 3px 5px;
+  white-space: nowrap;
+  border: 1px solid #e0e0e0;
+  background-color: #f2f2f2;
+  border-radius: 3px;
+  text-decoration: none;
+  color: #880022;
+}
+
+tt {
+  margin: 0 0px;
+  padding: 3px 5px;
+  white-space: nowrap;
+  border: 1px solid #e0e0e0;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</style>
+<base href='file:\\\D:\Project\my_docs\tech\windows\kernel\Shadow SSDT\'/>
+</head>
+<body>
+<h1>Shadow SSDT 详解</h1>
+<h2>1. SDT、SST、KiServiceTbale 的关系</h2>
+<p>我们先来弄清系统服务描述表（SDT，Service Descriptor Table）、系统服务表（SST，System Service Table）、系统服务地址表（KiServiceTable）之间的关系。</p>
+<p>在 WindowsNT 系列操作系统中，有两种类型的系统服务，一种实现在内核文件中，是常用的系统服务；另一种实现在 <code>win32k.sys</code> 中，是一些与图形显示及用户界面相关的系统服务。这些系统服务在系统执行期间常驻于系统内存区中，并且他们的入口地址保存在两个系统服务地址表 KiServiceTable 和 Win32pServiceTable 中。而每个系统服务的入口参数所用的总字节数则分别保存在另外两个系统服务参数表（ArgumentTable）中。</p>
+<p>系统服务地址表和系统参数表是一一对应的，每个系统服务表（一下简称 SST ）都指向一个地址表和一个参数表。在 Windows 2000/XP/7 系统中，只有两个 SST 。一个 SST 指向了 KiServiceTable，而另一个 SST 则指向了 Win32pServiceTable 。</p>
+<p>所有的 SST 都保存在系统服务描述表（SDT）中。系统中一共有两个 SDT，一个是 ServiceDescriptorTable，另一个是 ServiceDescriptorTableShadow 。ServiceDescriptor 中只有指向 KiServiceTable 的 SST，而 ServiceDescriptorTableShadow 则包含了所有的两个 SST 。SSDT 是可以访问的，而 SSDTShadow 是不公开的。</p>
+<p>Windows 内核文件导出了一个公开的变量 KeServiceDecriptorTable，它指向了 SSDT 。在内核程序中可以直接使用这个变量，通过数据结构之间的关系，找到 KiServiceTable，然后从 KiServiceTable 中查找任何一个系统服务的入口地址。</p>
+<p>下面是关于这些数据结构的示意图：</p>
+<p><img src="./images/ssdt_structure.png" alt="SDT、SST、KiServiceTbale" /></p>
+<p>我想大家在看完上面这段解释之后，应该有了比较清晰的认识！！</p>
+<h2>2. 怎么获取 KiServerTable</h2>
+<p>我们虽然得到了 KeServiceDescriptorTable 的地址，但在文件中这个服务函数的入口地址是由 KiServiceTable 来保存的。</p>
+<p>那么我们应该如何获取 KiServiceTable 的地址呢？</p>
+<p>我们在 Windows 内核的源码中可以看到 KiInitSystem 这样的一个函数，这个函数初始化了一些比较重要也比较常见的内核数据结构，包括 SSDT 的初始化。所以我们可以从这里入手！！先来看看  KiInitSystem() 函数的源码：</p>
+<pre><code>VOID KiInitSystem(VOID)
+{
+  ULONG Index;
+
+  // 初始化调度队列链表头，每一个优先级都有一个独立的进程链表
+  for (Index = 0; Index &lt; MAXIMUM_PRIORITY; Index += 1) {
+    InitializeListHead(&amp;KiDispatcherReadyListHead[Index]);
+  }
+
+  // 初始化 BugCheck 回调函数链表，及其旋转锁
+  InitializeListHead(&amp;KeBugCheckCallbackListHead);
+  KeInitializeSpinLock(&amp;KeBugCheckCallbackLock);
+
+  // 初始化定时器过期的 DPC 对象
+  KeInitializeDpc(&amp;KiTimerExpireDpc,
+    (PKDEFERRED_ROUTINE)KiTimerExpiration, NIL);
+
+  // 初始化 profile 链表，及其旋转锁
+  KeInitializeSpinLock(&amp;KiProfileLock);
+  InitializeListHead(&amp;KiProfileListHead);
+
+  // 初始化当前活动的 profile 链表
+  InitializeListHead(&amp;KiProfileSourceListHead);
+
+  // 初始化定时器链表
+  for (Index = 0; Index &lt; TIMER_TABLE_SIZE; Index += 1) {
+    InitializeListHead(&amp;KiTimerTableListHead[Index]);
+  }
+
+  // 初始化 swap 通知事件
+  KeInitializeEvent(&amp;KiSwapEvent,SynchronizationEvent,FALSE);
+
+  InitializeListHead(&amp;KiProcessInSwapListHead);
+  InitializeListHead(&amp;KiProcessOutSwapListHead);
+  InitializeListHead(&amp;KiStackInSwapListHead);
+  InitializeListHead(&amp;KiWaitInListHead);
+  InitializeListHead(&amp;KiWaitOutListHead);
+
+  // 初始化 SSDT
+  KeServiceDescriptorTable[0].Base = &amp;KiServiceTable[0];
+  KeServiceDescriptorTable[0].Count = NULL;
+  KeServiceDescriptorTable[0].Limit = KiServiceLimit;
+#if defined(_IA64_)
+  KeServiceDescriptorTable[0].TableBaseGpOffset =
+    (LONG)(*(KiServiceTable-1) - (ULONG_PTR)KiServiceTable);
+#endif
+  KeServiceDescriptorTable[0].Number = &amp;KiArgumentTable[0];
+  for (Index = 1; Index &lt; NUMBER_SERVICE_TABLES; Index += 1) {
+    KeServiceDescriptorTable[Index].Limit = 0;
+  }
+
+  // 拷贝 SSDT 到 Shadow 服务表
+  RtlCopyMemory(KeServiceDescriptorTableShadow,
+    KeServiceDescriptorTable,
+    sizeof(KeServiceDescriptorTable));
+
+  // ……
+  return;
+}
+</code></pre>
+
+<p>上面我们注意到</p>
+<p><strong>KeServiceDescriptorTable[0].Base = &amp;KiServiceTable[0];</strong></p>
+<p>这句。因此，我们可以根据重定位信息和特征码来找到这句的地址，同时获取 KiServiceTable 的地址！！</p>
+<pre><code>DWORD FindKiServiceTable(HMODULE hModule, DWORD dwKSDT)
+{
+    PIMAGE_FILE_HEADER      pfh;
+    PIMAGE_OPTIONAL_HEADER  poh;
+    PIMAGE_SECTION_HEADER   psh;
+    PIMAGE_BASE_RELOCATION  pbr;
+    PIMAGE_FIXUP_ENTRY      pfe;
+
+    DWORD dwFixups = 0, i, dwPointerRva, dwPointsToRva, dwKiServiceTable;
+    BOOL  bFirstChunk;
+
+    GetHeader((PCHAR)hModule, &amp;pfh, &amp;poh, &amp;psh);
+    TRACE(&quot;hModule: %X&quot;, hModule);
+    // 存在重定位信息
+    if ((poh-&gt;DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress) &amp;&amp;
+        (!((pfh-&gt;Characteristics)&amp;IMAGE_FILE_RELOCS_STRIPPED))) {
+
+        pbr = (PIMAGE_BASE_RELOCATION)RVATOVA(
+                poh-&gt;DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC].VirtualAddress, hModule);
+
+        bFirstChunk = TRUE;
+
+        while (bFirstChunk || pbr-&gt;VirtualAddress) {
+            bFirstChunk = FALSE;
+            pfe = (PIMAGE_FIXUP_ENTRY)((DWORD)pbr + sizeof(IMAGE_BASE_RELOCATION));
+
+            // 遍历重定位项
+            for (i = 0; i &lt; ((pbr-&gt;SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) &gt;&gt; 1); i++, pfe++) {
+                // 重定位地址指向的双字的 32 位都需要被修正
+                if (pfe-&gt;type == IMAGE_REL_BASED_HIGHLOW) {
+                    dwFixups++;
+                    // 指向需要重定位地址的相对虚拟地址指针
+                    dwPointerRva = pbr-&gt;VirtualAddress + pfe-&gt;offset;
+
+                    // 需要修正的重定位项（RVA）
+                    dwPointsToRva = *(PDWORD)((DWORD)hModule + dwPointerRva) - (DWORD)poh-&gt;ImageBase;
+
+                    // KeServiceDescriptorTable 的重定位信息
+                    if (dwPointsToRva == dwKSDT) {
+                        if (*(PWORD)((DWORD)hModule + dwPointerRva - 2) == 0x05c7) {
+                            dwKiServiceTable = *(PDWORD)((DWORD)hModule + dwPointerRva + 4)
+                                                - poh-&gt;ImageBase;
+                            return dwKiServiceTable;
+                        }
+                    }
+                }
+            }
+            *(PDWORD)&amp;pbr += pbr-&gt;SizeOfBlock;
+        }
+    }
+
+    return 0;
+}
+</code></pre>
+
+<p>等一下。。。上面的特征码 <code>0x05c7</code> 是怎么来的？？？</p>
+<p>我们可以使用 IDA 对内核文件 ntoskrnl.exe 进行反反汇编，看看 KiInitSystem 这个函数的反汇编代码。</p>
+<p>首先我们找到这个函数所在的地方：</p>
+<p><img src="./images/ssdt_01.png" alt="ssdt_01" /></p>
+<p>然后我们继续往下看。。。</p>
+<p><img src="./images/ssdt_02.png" alt="ssdt_02" /></p>
+<p>nice，，，这里我们看到了对 SSDT 表进行初始化的反汇编代码，同时也看到了 <code>0x05c7</code>，KeServiceDescriptorTable 的地址和 KiServiceTable 的地址。</p>
+<p>为了验证一下 KiServiceTable 里面是不是保存的服务函数的入口地址，我们跟进看一下。</p>
+<p><img src="./images/ssdt_03.png" alt="ssdt_03" /></p>
+<p>果不其然，和我们预期的一样。。。</p>
+<p>到这里，我相信大家对 SSDT 的认识又更加深刻了一些。</p>
+<p>下面是在 Win7 32 位下面获取 SSDT 当前地址和原始地址的效果图：</p>
+<p><img src="./images/ssdt_04.png" alt="ssdt_04" /></p>
+<h2>3. 在 Ring3 中获取 SSDT 的原始地址</h2>
+<p>在内核下 SSDT 地址，可能被 SSDT hook 或者是 inline hook，如果我们的 SSDT 被别人 hook 了，怎么改会原来的 SSDT 地址呢？我们知道在内核文件中是保留了一份原始的 SSDT 表的，所以我们只要通过解析内核文件获取到原始的 SSDT 地址即可。</p>
+<p>首先我们得确认我们当前系统使用的内核文件是 ntoskrnl.exe、ntkrnlmp.exe 还是 ntkrnlpa.exe？这个问题好解决，调用 ZwQuerySystemInformation 传入 SystemModuleInformation（值为11）得到系统模块列表，第一个模块就是系统当前使用的内核模块了。</p>
+<pre><code>NtQuerySystemInformation = (long(__stdcall *)(DWORD,PVOID,DWORD,DWORD))GetProcAddress(GetModuleHandle(&quot;ntdll.dll&quot;), &quot;NtQuerySystemInformation&quot;);
+
+// 通过 NtQuerySystemInformation 取得系统内核文件，判断是 ntoskrnl.exe, ntkrnlmp.exe or ntkrnlpa.exe ?
+Status = NtQuerySystemInformation(SystemModuleInformation, pModules, 4, (ULONG)&amp;dwNeededSize);
+
+// 如果内存不够
+if (Status == STATUS_INFO_LENGTH_MISMATCH) {
+    // 重新分配内存
+    pModules = (PMODULES)GlobalAlloc(GPTR, dwNeededSize);
+    // 系统内核文件是总是在第一个，枚举 1 次
+    Status = NtQuerySystemInformation(SystemModuleInformation, pModules, dwNeededSize, NULL);
+}
+
+if (!NT_SUCCESS(Status)) {
+    // NtQuerySystemInformation 执行失败，检查当前进程权限
+    std::cout &lt;&lt; &quot;NtQuerySystemInformation() Failed !&quot; &lt;&lt; std::endl;
+    return 0;
+}
+
+// Image base
+dwKernelBase = (DWORD)pModules-&gt;smi.Base;
+pKernelName = pModules-&gt;smi.ModuleNameOffset + pModules-&gt;smi.ImageName;
+</code></pre>
+
+<p>这样我们就获得了系统当前使用的内核文件的名字，然后我们手动加载这个内核文件，找到 KeServiceDescriptorTable 的地址，然后通过重定位信息找到 KiServiceTable 的地址，而 KiServiceTable 保存的就是我们所要找的 SSDT 数组。</p>
+<pre><code>// 加载 NTOSKREL 的基址
+hKernel = LoadLibraryExA(pKernelName, 0, DONT_RESOLVE_DLL_REFERENCES);
+if (!hKernel)
+    return;
+
+// 在内核文件中查找 KeServiceDescriptorTable 地址，这里得到的是相对虚拟地址
+if(!(dwKSDT = (DWORD)GetProcAddress(hKernel, &quot;KeServiceDescriptorTable&quot;)))
+    return;
+
+dwKSDT -= (DWORD)hKernel;
+
+// 获取 KiServiceTable 地址 RVA
+if (!(dwKiServiceTable = FindKiServiceTable(hKernel, dwKSDT)))
+    return;
+
+GetHeader((PCHAR)hKernel, &amp;pfh, &amp;poh, &amp;psh);
+dwServices = 0;
+
+for (pService = (PDWORD)((DWORD)hKernel + dwKiServiceTable);
+     *pService - poh-&gt;ImageBase &lt; poh-&gt;SizeOfImage;
+     pService++, dwServices++) {
+    ((pSSDTSaveTable)((ULONG)pSSDTST + dwServices * sizeof(SSDTSaveTable)))-&gt;ulOriginalFunctionAddress =
+        *pService - poh-&gt;ImageBase + dwKernelBase;
+}
+
+FreeLibrary(hKernel);
+</code></pre>
+
+<h2>4. 如何获取 Shadow SSDT</h2>
+<p>从前面几个小节，我们知道，所有的 SST 都保存在系统服务描述表（SDT）中。系统中一共有两个 SDT，一个是 ServiceDescriptorTable ，另一个是 ServiceDescriptorTableShadow 。ServiceDescriptor 中只有指向 KiServiceTable 的 SST ，而 ServiceDescriptorTableShadow 则包含了所有的两个 SST 。SSDT 是可以访问的，而 SSDTShadow 是不公开的。</p>
+<p>所以结论是：ServiceDescriptorTable 是导出的，而 ServiceDescriptorTableShadow 是未导出的。那我们是不是就获取不了 ServiceDescriptorTableShadow 的地址呢？未导出未必就不能获取，其实在 KeAddSystemServiceTable 这个导出函数里面是有 ServiceDescriptorTableShadow 的地址的，我们来反汇编看一下。</p>
+<p><img src="./images/ssdt_05.png" alt="ssdt_05" /></p>
+<p>我们看到在这个函数里面 ServiceDescriptorTable 的地址和 ServiceDescriptorTableShadow 都是可以得到的。</p>
+<p>从前面数据结构的示意图我们知道，其实 KeServiceDescriptorTableShadow 包含 4 个子结构，其中第一个就是 ntoskrnl.exe ( native api )，与 KeServiceDescriptorTable 的指向一样，我们真正需要获得的是第二个 win32k.sys (gdi / user support)，第三个和第四个一般不使用。</p>
+<p>关于如何使用 windbg 查看 KeServiceDescriptorTable 的内容，可以使用如下命令：</p>
+<pre><code>kd&gt; dd KeServiceDescriptorTable
+
+8055c6e0  80504940 00000000 0000011c 80504db4
+8055c6f0  00000000 00000000 00000000 00000000
+8055c700  00000000 00000000 00000000 00000000
+8055c710  00000000 00000000 00000000 00000000
+</code></pre>
+
+<p>那么，如何定位 ServiceDescriptorTableShadow 呢？</p>
+<p>首先，我们需要定义一个全局变量：</p>
+<pre><code>extern PSERVICE_Descriptor_TABLE    KeServiceDescriptorTable;
+</code></pre>
+
+<p>这样就能够引用 KeServiceDescriptorTable 了，也就能够访问 ntoskrnel.exe 下面所导出的所有函数。但是因为还有一些函数是通过 win32k.sys 表导出的，这些函数都是 win32k.sys 的服务函数，所以要访问类似这些函数就得从 KeServiceDescriptorTableShadow 结构中读取 win32k.sys 表的 EntryPoint 。</p>
+<p>其中 KeServiceDescriptorTable 表的结构体定义如下：</p>
+<pre><code>#include &lt;ntddk.h&gt;
+
+//
+// KeServiceDescriptorTable 表定义
+//
+
+typedef struct _SERVICE_Descriptor_TABLE
+{
+  PVOID   ServiceTableBase;
+  PULONG  ServiceCounterTableBase;
+  ULONG   NumberOfService;
+  ULONG   ParamTableBase;
+} SERVICE_Descriptor_TABLE, * PSERVICE_Descriptor_TABLE;
+</code></pre>
+
+<p>因为 KeServiceDescriptorTableShadow 并不公开，所以需要从其他途径获取该结构表。常用的方法有两种，第一种是硬编码（偏移）法，第二种是搜索比较法。下面分别介绍这两种方法。</p>
+<h3>4.1 硬编码（偏移）</h3>
+<p>直接根据 KeServiceDescriptorTable 的地址做偏移，具体的偏移值需要使用 windbg 调试后获得：</p>
+<pre><code>// For WinXP
+if (gKernelVersion == WINXP)
+    KeServiceDescriptorTableShadow = KeServiceDescriptorTable - 0×40;
+
+// For Win2K
+if (gKernelVersion == WIN2K)
+    KeServiceDescriptorTableShadow = KeServiceDescriptorTable + 0xE0;
+
+// For Win7 (32bit)
+if (gKernelVersion == WIN7_X86)
+    KeServiceDescriptorTableShadow = KeServiceDescriptorTable + 0×40;
+</code></pre>
+
+<h3>4.2 搜索比较法</h3>
+<p>从前面的图可以看到，在 KeAddSystemServiceTable() 函数内有 KeServiceDescriptorTable 和 KeServiceDescriptorTableShadow 的值（指针），KeAddSystemServiceTable 的函数声明如下：</p>
+<pre><code>//
+// KeAddSystemService() 的函数声明
+//
+
+NTSYSAPI BOOLEAN NTAPI KeAddSystemServiceTable (
+          PVOID * ServiceTable,
+          ULONG Reserved,
+          ULONG Limit,
+          BYTE * Arguments,
+          ULONG NumOfDesc);
+</code></pre>
+
+<p>我们通过获取 KeAddSystemServiceTable() 函数入口，从该函数的起始地址开始遍历（一个字节一个字节的尝试），检查指针指向的内存是否为有效内存地址（使用MmIsAddressValid()函数），如果是，则比较其内容是否跟 KeServiceDescriptorTable 表的前 16 个字节内容一样。因为 KeServiceDescriptorTableShadow 是涵盖了 KeServiceDescriptorTable 表结构的，在查找的过程中，就是采用与 KeServiceDescriptorTable 表内存中的数据（4个指针，共16字节）进行比较的方式，如果前 16 个字节完全一致，并且两个表的起始地址不相同（否则为同一张表），那么该指针所指向的地址就是我们要找的 KeServiceDescriptorTableShadow 表。</p>
+<p>具体的实现代码如下：</p>
+<pre><code>ULONG GetAddressOfShadowTable()
+{
+    ULONG i;
+    UCHAR * p;
+    ULONG pShadowTable = NULL;
+    UNICODE_STRING usKeAddSystemServiceTable;
+
+    RtlInitUnicodeString(&amp;usKeAddSystemServiceTable, L&quot;KeAddSystemServiceTable&quot;);
+    p = (UCHAR *)MmGetSystemRoutineAddress(&amp;usKeAddSystemServiceTable);
+
+    for (i = 0; i &lt; 4096; i++, p++) {
+        __try {
+            pShadowTable = *(ULONG *)p;
+        }
+        __except(EXCEPTION_EXECUTE_HANDLER) {
+            return NULL;
+        }
+
+        if (MmIsAddressValid((PVOID)pShadowTable)) {
+            // 比较的是地址指向的内容 （前 16 个字节）
+            if (memcmp((PVOID)pShadowTable, KeServiceDescriptorTable, 16) == 0) {
+                if ((PVOID)pShadowTable == KeServiceDescriptorTable) {
+                    continue;
+                }
+                return pShadowTable;
+            }
+        }
+    }
+    return NULL;
+}
+</code></pre>
+
+<p>另一个版本：</p>
+<pre><code>PULONG GetAddressOfShadowTable2()
+{
+    PUCHAR pSSTable;
+    PUCHAR p;
+    UNICODE_STRING usKeAddSystemServiceTable;
+    PULONG pShadowTable = NULL;
+
+    RtlInitUnicodeString(&amp;usKeAddSystemServiceTable, L&quot;KeAddSystemServiceTable&quot;);
+    pSSTable = (PUCHAR)MmGetSystemRoutineAddress(&amp;usKeAddSystemServiceTable);
+    for (p = pSSTable; p &lt; pSSTable + PAGE_SIZE; p++)
+    {
+        if (MmIsAddressValid((PVOID)p))
+        {
+            if ((*(PUSHORT)p == 0x888D) &amp;&amp; (*(p + 6) == 0x83))
+            {
+                pShadowTable = (PULONG)(p + 2);
+                break;
+            }
+        }
+    }
+    return pShadowTable;
+}
+</code></pre>
+
+<p><strong>重要：此处省略了一部分内容，只写结论（这个结论还算比较重要的）</strong></p>
+<p>最终结论：也就是说，除了 System 进程和 Smss 进程，在其它任何一个属于某个 Session 进程内都可以访问 win32k.sys，并非只有 GUI 进程才能访问，一般会使用 “csrss.exe” 进程 (Session Leader) 。</p>
+<h2>5. 如何 Hook Shadow SSDT 的函数 ？</h2>
+<p>似乎这个问题并不大，ShadowSSDT 和 SSDT 本质上都是 1 个地址表，最为简单的方法是把你的函数替换地址表的对应项，具体 Hook 代码甚至可以完全照抄 SSDT 的，这里只说下几个遇到的小问题。</p>
+<p><strong>5.1</strong> Win32k.sys 不是常在内存的，如果不是 GUI 线程，Shadow SSDT 地址无效。</p>
+<p>解决办法：</p>
+<p>1) 在 DriverDispatch 中 hook DriverDispatch 是位于执行 DriverIoControl 的线程上下文的，我们使用 1 个 GUI 线程去 DriverIoControl；</p>
+<p>2) AttachToProcess 这里我们使用 explorer.exe 进程。</p>
+<pre><code>VOID KeAttachExporeer()
+{
+    NTSTATUS status;
+    PEPROCESS explorerEproc;
+    PKAPC_STATE ApcState;
+    ULONG i;
+
+    DbgPrint(&quot;GetExplorerIdByEnumProcess ==&gt; %d&quot;, GetExplorerIdByEnumProcess());
+
+    DbgPrint(&quot;KeServiceDescriptorTableShadow = %x \r\n&quot;, KeServiceDescriptorTableShadow);
+    DbgPrint(&quot;Count = x \r\n&quot;, KeServiceDescriptorTableShadow-&gt;win32k.NumberOfService);
+    DbgPrint(&quot;ServiceTableBase = %x \r\n&quot;, KeServiceDescriptorTableShadow-&gt;win32k.ServiceTableBase);
+
+    status = PsLookupProcessByProcessId((HANDLE)GetExplorerIdByEnumProcess(), &amp;explorerEproc);
+
+    if (!NT_SUCCESS(status))
+    {
+        DbgPrint(&quot;PsLookupProcessByProcessId() error\n&quot;);
+        return;
+    }
+
+    ApcState = (PKAPC_STATE)ExAllocatePool(NonPagedPool, sizeof(KAPC_STATE));
+    KeStackAttachProcess(explorerEproc, ApcState);
+
+    for (i = 0; i &lt; KeServiceDescriptorTableShadow-&gt;win32k.NumberOfService; i++)
+    {
+        DbgPrint(&quot;索引：%d, 地址：%x, 原始地址：%8x \r\n&quot;,
+                 i, KeServiceDescriptorTableShadow-&gt;win32k.ServiceTableBase[i],
+                 GetShadowSSDTFunctionOrigAddr(i));
+    }
+
+    KeUnstackDetachProcess(ApcState);
+    ExFreePool(ApcState);
+}
+</code></pre>
+
+<p>其中 GetExplorerIdByEnumProcess() 这个方法的实现，只需要简单的遍历进程活动链表即可。</p>
+<h2>6. 引用</h2>
+<ol>
+<li><a href="http://www.blogfshare.com/get-original-ssdt.html">R3获取SSDT的原始地址及SDT、SST、KiServiceTbale的关系</a></li>
+<li><a href="http://www.blogfshare.com/shadowssdt-explain-in-detail.html">Shadow SSDT详解、WinDbg查看Shadow SSDT</a></li>
+<li><a href="http://lwglucky.blog.51cto.com/1228348/342367/"> KeServiceDescriptorTableShadow的获取</a></li>
+</ol>
+<p>.</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
