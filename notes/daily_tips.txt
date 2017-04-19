@@ -582,3 +582,18 @@ http://blog.csdn.net/wirelessqa/article/details/19758479
 
 --------------------------------------------------------------------------------------------------
 
+The Undocumented Functions (Microsoft Windows NT/2000/XP/Win7)
+
+Currently includes: UserMode (Kernel Mode soon)
+
+This is an advanced, low-level programer's guide to Windows NT Kernel, Native API and drivers.
+All remarks, fixes and comments are very welcome.
+
+（Windows NT/2000/XP/Win7 未公开的函数，目前只包含用户态的函数）
+
+http://undocumented.ntinternals.net/index.html?page=title.html
+
+--------------------------------------------------------------------------------------------------
+
+
+
