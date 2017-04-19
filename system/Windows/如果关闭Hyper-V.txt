@@ -1,0 +1,10 @@
+
+Win10里如果关闭Hyper-V服务:
+
+用管理员身份执行:
+
+(在开始菜单找到Cmd终端的图标, 右键, 然后选"以管理员身份打开")
+
+然后输入:
+
+bcdedit /set hypervisorlaunchtype off

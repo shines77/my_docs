@@ -1,0 +1,5 @@
+
+运行里输入：
+
+regsvr32 /n /i:u shell32
+
