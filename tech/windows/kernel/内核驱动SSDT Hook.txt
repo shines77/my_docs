@@ -1,0 +1,22 @@
+-------------------------------------------------------
+
+关于Win7 x64 Shadow SSDT 的探索和 Inline HOOK
+
+http://bbs.pediy.com/thread-210481.htm
+
+-------------------------------------------------------
+
+R3获取SSDT的原始地址及SDT、SST、KiServiceTbale的关系
+
+http://www.blogfshare.com/get-original-ssdt.html
+
+
+Shadow SSDT详解、WinDbg查看Shadow SSDT
+
+http://www.blogfshare.com/shadowssdt-explain-in-detail.html
+
+
+我根据这两篇文章整理了一篇《Shadow SSDT 详解》的文章
+
+
+-------------------------------------------------------
