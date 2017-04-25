@@ -4,29 +4,33 @@ Shadow SSDT 详解
 
 ## 1. SDT、SST、KiServiceTbale 的关系 ##
 
-我们先来弄清系统服务描述表（SDT，Service Descriptor Table）、系统服务表（SST，System Service Table）、系统服务地址表（KiServiceTable）之间的关系。
+我们先来弄清系统服务描述表（SDT，Service Descriptor Table）、系统服务表（SST，System Service Table）、系统服务地址表（KiServiceTable）之间的关系，三者是一个顺连关系，如 `图 1` 所示。
 
-在 WindowsNT 系列操作系统中，有两种类型的系统服务，一种实现在内核文件中，是常用的系统服务；另一种实现在 `win32k.sys` 中，是一些与图形显示及用户界面相关的系统服务。这些系统服务在系统执行期间常驻于系统内存区中，并且他们的入口地址保存在两个系统服务地址表 KiServiceTable 和 Win32pServiceTable 中。而每个系统服务的入口参数所用的总字节数则分别保存在另外两个系统服务参数表（ArgumentTable）中。
+在 WindowsNT 系列操作系统中，有两种类型的系统服务，一种实现在内核文件 `Ntoskrnl.exe` 中，是（内核中）常用的系统服务；另一种实现在 `win32k.sys` 中，是一些与图形显示及用户界面相关的系统服务（多数是为用户态服务的）。这些系统服务在系统运行期间，常驻于系统内存区中，并且他们的入口地址保存在两个系统服务地址表 KiServiceTable 和 Win32pServiceTable 中，而入口参数所用的总字节数则分别保存在 两个 SST 中的系统服务参数表 ArgumentTable 中，从 `图 1` 可得知。
 
-系统服务地址表和系统参数表是一一对应的，每个系统服务表（一下简称 SST ）都指向一个地址表和一个参数表。在 Windows 2000/XP/7 系统中，只有两个 SST 。一个 SST 指向了 KiServiceTable，而另一个 SST 则指向了 Win32pServiceTable 。
+系统服务地址表（ServiceTable）和系统参数表（ArgumentTable）是一一对应的，每个系统服务表（以下简称 SST）都指向一个系统服务地址表和一个系统参数表。在 Windows 2000/XP/7 系统中，最多只有两个 SST（仅 ServiceDescriptorTableShadow 有两个 SST）。一个 SST 指向了 KiServiceTable 表，而另一个 SST 则指向了 Win32pServiceTable 表。
 
-所有的 SST 都保存在系统服务描述表（SDT）中。系统中一共有两个 SDT，一个是 ServiceDescriptorTable，另一个是 ServiceDescriptorTableShadow 。ServiceDescriptor 中只有指向 KiServiceTable 的 SST，而 ServiceDescriptorTableShadow 则包含了所有的两个 SST 。SSDT 是可以访问的，而 SSDTShadow 是不公开的。
+所有的 SST 都保存在一个系统服务描述表（ServiceDescriptorTable，SDT）中。系统一共有两个 SDT 表，一个是 ServiceDescriptorTable，另一个是 ServiceDescriptorTableShadow 。其中 ServiceDescriptorTable 中只包含了一个 SST 表，即 KiServiceTable；而 ServiceDescriptorTableShadow 则包含了所有的两个 SST 表，即 KiServiceTable 和 Win32pServiceTable 。
 
-Windows 内核文件导出了一个公开的变量 KeServiceDecriptorTable，它指向了 SSDT 。在内核程序中可以直接使用这个变量，通过数据结构之间的关系，找到 KiServiceTable，然后从 KiServiceTable 中查找任何一个系统服务的入口地址。
+SSDT（即 ServiceDescriptorTable）是可以访问的（公开的），而 SSDTShadow（即 ServiceDescriptorTableShadow）默认是不公开的。
+
+Windows 内核文件导出了一个公开的变量 KeServiceDecriptorTable，它指向了 SSDT（ServiceDescriptorTable）。在内核程序中可以直接使用这个变量，通过下图中（`图 1`）的数据结构之间的关系，可以找到 KiServiceTable，然后从 KiServiceTable 中查找任何一个系统服务的入口地址，如果你知道你要调用的服务的索引编号的话。
 
 下面是关于这些数据结构的示意图：
 
 ![SDT、SST、KiServiceTbale](./images/ssdt_structure.png)
 
-我想大家在看完上面这段解释之后，应该有了比较清晰的认识！！
+图 1，SSDT 数据结构的示意图
 
-## 2. 怎么获取 KiServerTable ##
+我想大家在看完上面这个图和解释之后，应该有了比较清晰的认识！！
 
-我们虽然得到了 KeServiceDescriptorTable 的地址，但在文件中这个服务函数的入口地址是由 KiServiceTable 来保存的。
+## 2. 如何在 Ring0 中获取 KiServerTable ##
 
-那么我们应该如何获取 KiServiceTable 的地址呢？
+我们虽然得到了 KeServiceDescriptorTable 表的地址（即 ServiceDescriptorTable 表的地址值），但在文件中这个服务函数的入口地址是由 KiServiceTable 表来保存的。
 
-我们在 Windows 内核的源码中可以看到 KiInitSystem 这样的一个函数，这个函数初始化了一些比较重要也比较常见的内核数据结构，包括 SSDT 的初始化。所以我们可以从这里入手！！先来看看  KiInitSystem() 函数的源码：
+那么我们应该如何获取 KiServiceTable 表的地址呢？
+
+我们在 Windows 内核的源码中可以看到 KiInitSystem() 这样的一个函数，这个函数初始化了一些比较重要也比较常见的内核数据结构，包括 SSDT （即 ServiceDescriptorTable）的初始化。所以我们可以从这里入手！先来看看  KiInitSystem() 函数的源码：
 
     VOID KiInitSystem(VOID)
     {
@@ -92,7 +96,7 @@ Windows 内核文件导出了一个公开的变量 KeServiceDecriptorTable，它
 
 **KeServiceDescriptorTable[0].Base = &KiServiceTable[0];**
 
-这句。因此，我们可以根据重定位信息和特征码来找到这句的地址，同时获取 KiServiceTable 的地址！！
+这句。因此，我们可以根据重定位信息和特征码来找到这句的地址，同时获取 KiServiceTable 的地址！
 
     DWORD FindKiServiceTable(HMODULE hModule, DWORD dwKSDT)
     {
@@ -148,9 +152,9 @@ Windows 内核文件导出了一个公开的变量 KeServiceDecriptorTable，它
         return 0;
     }
 
-等一下。。。上面的特征码 `0x05c7` 是怎么来的？？？
+等一下。。。上面的特征码 `0x05c7` 是怎么来的？？
 
-我们可以使用 IDA 对内核文件 ntoskrnl.exe 进行反反汇编，看看 KiInitSystem 这个函数的反汇编代码。
+我们可以使用 IDA 对内核文件 `ntoskrnl.exe` 进行反汇编，看看 KiInitSystem() 这个函数的反汇编代码。
 
 首先我们找到这个函数所在的地方：
 
@@ -160,7 +164,7 @@ Windows 内核文件导出了一个公开的变量 KeServiceDecriptorTable，它
 
 ![ssdt_02](./images/ssdt_02.png)
 
-nice，，，这里我们看到了对 SSDT 表进行初始化的反汇编代码，同时也看到了 `0x05c7`，KeServiceDescriptorTable 的地址和 KiServiceTable 的地址。
+Nice，这里我们看到了对 SSDT 表进行初始化的反汇编代码，同时也看到了 `0x05c7`，KeServiceDescriptorTable 的地址和 KiServiceTable 的地址。
 
 为了验证一下 KiServiceTable 里面是不是保存的服务函数的入口地址，我们跟进看一下。
 
@@ -168,19 +172,20 @@ nice，，，这里我们看到了对 SSDT 表进行初始化的反汇编代码�
 
 果不其然，和我们预期的一样。。。
 
-到这里，我相信大家对 SSDT 的认识又更加深刻了一些。
+到这里，我相信大家对 SSDT 的认识又更加深刻了一些吧。
 
-下面是在 Win7 32 位下面获取 SSDT 当前地址和原始地址的效果图：
+下面是在 Win7 （32 位）下，获取 SSDT 当前地址和原始地址的效果图：
 
 ![ssdt_04](./images/ssdt_04.png)
 
-## 3. 在 Ring3 中获取 SSDT 的原始地址 ##
+## 3. 如果 Ring3 中获取 SSDT 的原始地址 ##
 
 在内核下 SSDT 地址，可能被 SSDT hook 或者是 inline hook，如果我们的 SSDT 被别人 hook 了，怎么改会原来的 SSDT 地址呢？我们知道在内核文件中是保留了一份原始的 SSDT 表的，所以我们只要通过解析内核文件获取到原始的 SSDT 地址即可。
 
-首先我们得确认我们当前系统使用的内核文件是 ntoskrnl.exe、ntkrnlmp.exe 还是 ntkrnlpa.exe？这个问题好解决，调用 ZwQuerySystemInformation 传入 SystemModuleInformation（值为11）得到系统模块列表，第一个模块就是系统当前使用的内核模块了。
+首先我们得确认我们当前系统使用的内核文件是 ntoskrnl.exe、ntkrnlmp.exe 还是 ntkrnlpa.exe？这个问题好解决，调用 ZwQuerySystemInformation() 传入 SystemModuleInformation（值为11）得到系统模块列表，第一个模块就是系统当前使用的内核模块了。
 
-    NtQuerySystemInformation = (long(__stdcall *)(DWORD,PVOID,DWORD,DWORD))GetProcAddress(GetModuleHandle("ntdll.dll"), "NtQuerySystemInformation");
+    NtQuerySystemInformation = (long(__stdcall *)(DWORD,PVOID,DWORD,DWORD))
+                               GetProcAddress(GetModuleHandle("ntdll.dll"), "NtQuerySystemInformation");
 
     // 通过 NtQuerySystemInformation 取得系统内核文件，判断是 ntoskrnl.exe, ntkrnlmp.exe or ntkrnlpa.exe ?
     Status = NtQuerySystemInformation(SystemModuleInformation, pModules, 4, (ULONG)&dwNeededSize);
@@ -234,15 +239,19 @@ nice，，，这里我们看到了对 SSDT 表进行初始化的反汇编代码�
 
 ## 4. 如何获取 Shadow SSDT ##
 
-从前面几个小节，我们知道，所有的 SST 都保存在系统服务描述表（SDT）中。系统中一共有两个 SDT，一个是 ServiceDescriptorTable ，另一个是 ServiceDescriptorTableShadow 。ServiceDescriptor 中只有指向 KiServiceTable 的 SST ，而 ServiceDescriptorTableShadow 则包含了所有的两个 SST 。SSDT 是可以访问的，而 SSDTShadow 是不公开的。
+从前面几个小节，我们知道，所有的 SST 都保存在系统服务描述表（SDT）中。系统中一共有两个 SDT，一个是 ServiceDescriptorTable ，另一个是 ServiceDescriptorTableShadow 。ServiceDescriptorTable 中只有指向 KiServiceTable 的 SST ，而 ServiceDescriptorTableShadow 则包含了所有的两个 SST ，一个是 KiServiceTable，另一个是 Win32pServiceTable 。SSDT 是可以访问的，而 SSDTShadow 是不公开的。
 
-所以结论是：ServiceDescriptorTable 是导出的，而 ServiceDescriptorTableShadow 是未导出的。那我们是不是就获取不了 ServiceDescriptorTableShadow 的地址呢？未导出未必就不能获取，其实在 KeAddSystemServiceTable 这个导出函数里面是有 ServiceDescriptorTableShadow 的地址的，我们来反汇编看一下。
+所以结论是：
+
+ServiceDescriptorTable 是导出的，而 ServiceDescriptorTableShadow 是未导出的。
+
+那我们是不是就获取不了 ServiceDescriptorTableShadow 的地址呢？未导出未必就不能获取，其实在 KeAddSystemServiceTable() 这个导出函数里面是有 ServiceDescriptorTableShadow 的地址的，我们来反汇编看一下。
 
 ![ssdt_05](./images/ssdt_05.png)
 
-我们看到在这个函数里面 ServiceDescriptorTable 的地址和 ServiceDescriptorTableShadow 都是可以得到的。
+我们看到在这个函数里面 ServiceDescriptorTable 的地址和 ServiceDescriptorTableShadow 的地址都是可以得到的。
 
-从前面数据结构的示意图我们知道，其实 KeServiceDescriptorTableShadow 包含 4 个子结构，其中第一个就是 ntoskrnl.exe ( native api )，与 KeServiceDescriptorTable 的指向一样，我们真正需要获得的是第二个 win32k.sys (gdi / user support)，第三个和第四个一般不使用。
+从前面数据结构的示意图（`图 1`），我们知道，其实 KeServiceDescriptorTableShadow 包含 4 个子结构，其中第一个就是 ntoskrnl.exe ( native kernel api )，与 KeServiceDescriptorTable 的指向一样，我们真正需要获得的是第二个 win32k.sys (gdi / user support)，第三个和第四个一般未使用。
 
 关于如何使用 windbg 查看 KeServiceDescriptorTable 的内容，可以使用如下命令：
 
@@ -257,9 +266,9 @@ nice，，，这里我们看到了对 SSDT 表进行初始化的反汇编代码�
 
 首先，我们需要定义一个全局变量：
 
-    extern PSERVICE_Descriptor_TABLE    KeServiceDescriptorTable;
+    extern PSERVICE_DESCRIPTOR_TABLE    KeServiceDescriptorTable;
 
-这样就能够引用 KeServiceDescriptorTable 了，也就能够访问 ntoskrnel.exe 下面所导出的所有函数。但是因为还有一些函数是通过 win32k.sys 表导出的，这些函数都是 win32k.sys 的服务函数，所以要访问类似这些函数就得从 KeServiceDescriptorTableShadow 结构中读取 win32k.sys 表的 EntryPoint 。
+这样就能够直接引用 KeServiceDescriptorTable 了（内核文件导出了这个地址，公开的），也就能够访问 ntoskrnel.exe 下面所导出的所有函数。但是因为还有一些函数是通过 win32k.sys 表导出的，这些函数都是与图形显示及用户界面相关的，所以要访问类似这些函数就得从 KeServiceDescriptorTableShadow 结构中读取 win32k.sys 表的 EntryPoint 。
 
 其中 KeServiceDescriptorTable 表的结构体定义如下：
 
@@ -269,13 +278,13 @@ nice，，，这里我们看到了对 SSDT 表进行初始化的反汇编代码�
     // KeServiceDescriptorTable 表定义
     //
 
-    typedef struct _SERVICE_Descriptor_TABLE
+    typedef struct _SERVICE_DESCRIPTOR_TABLE
     {
       PVOID   ServiceTableBase;
-      PULONG  ServiceCounterTableBase;
+      PULONG  ServiceCounter;
       ULONG   NumberOfService;
       ULONG   ParamTableBase;
-    } SERVICE_Descriptor_TABLE, * PSERVICE_Descriptor_TABLE;
+    } SERVICE_DESCRIPTOR_TABLE, * PSERVICE_DESCRIPTOR_TABLE;
 
 因为 KeServiceDescriptorTableShadow 并不公开，所以需要从其他途径获取该结构表。常用的方法有两种，第一种是硬编码（偏移）法，第二种是搜索比较法。下面分别介绍这两种方法。
 
@@ -297,20 +306,20 @@ nice，，，这里我们看到了对 SSDT 表进行初始化的反汇编代码�
 
 ### 4.2 搜索比较法 ###
 
-从前面的图可以看到，在 KeAddSystemServiceTable() 函数内有 KeServiceDescriptorTable 和 KeServiceDescriptorTableShadow 的值（指针），KeAddSystemServiceTable 的函数声明如下：
+从前面的图可以看到，在 KeAddSystemServiceTable() 函数内有 KeServiceDescriptorTable 和 KeServiceDescriptorTableShadow 的值（指针），KeAddSystemServiceTable() 的函数声明如下：
 
     //
     // KeAddSystemService() 的函数声明
     //
 
-    NTSYSAPI BOOLEAN NTAPI KeAddSystemServiceTable (
+    NTSYSAPI BOOLEAN NTAPI KeAddSystemServiceTable(
               PVOID * ServiceTable,
               ULONG Reserved,
               ULONG Limit,
               BYTE * Arguments,
               ULONG NumOfDesc);
 
-我们通过获取 KeAddSystemServiceTable() 函数入口，从该函数的起始地址开始遍历（一个字节一个字节的尝试），检查指针指向的内存是否为有效内存地址（使用MmIsAddressValid()函数），如果是，则比较其内容是否跟 KeServiceDescriptorTable 表的前 16 个字节内容一样。因为 KeServiceDescriptorTableShadow 是涵盖了 KeServiceDescriptorTable 表结构的，在查找的过程中，就是采用与 KeServiceDescriptorTable 表内存中的数据（4个指针，共16字节）进行比较的方式，如果前 16 个字节完全一致，并且两个表的起始地址不相同（否则为同一张表），那么该指针所指向的地址就是我们要找的 KeServiceDescriptorTableShadow 表。
+我们通过获取 KeAddSystemServiceTable() 函数入口，从该函数的起始地址开始遍历（一个字节一个字节的尝试），检查指针指向的内存是否为有效内存地址（使用 MmIsAddressValid() 函数），如果是，则比较其内容是否跟 KeServiceDescriptorTable 表的前 16 个字节内容一样。因为 KeServiceDescriptorTableShadow 是涵盖了 KeServiceDescriptorTable 表结构的，在查找的过程中，就是采用与 KeServiceDescriptorTable 表内存中的数据（4个指针，共16字节）进行比较的方式，如果前 16 个字节完全一致，并且两个表的起始地址不相同（否则为同一张表），那么该指针所指向的地址就是我们要找的 KeServiceDescriptorTableShadow 表。
 
 具体的实现代码如下：
 
@@ -321,7 +330,7 @@ nice，，，这里我们看到了对 SSDT 表进行初始化的反汇编代码�
         ULONG pShadowTable = NULL;
         UNICODE_STRING usKeAddSystemServiceTable;
 
-        RtlInitUnicodeString(&usKeAddSystemServiceTable, L"KeAddSystemServiceTable");
+        RtlInitUnicodeString(&usKeAddSystemServiceTable, TEXT("KeAddSystemServiceTable"));
         p = (UCHAR *)MmGetSystemRoutineAddress(&usKeAddSystemServiceTable);
 
         for (i = 0; i < 4096; i++, p++) {
@@ -354,7 +363,7 @@ nice，，，这里我们看到了对 SSDT 表进行初始化的反汇编代码�
         UNICODE_STRING usKeAddSystemServiceTable;
         PULONG pShadowTable = NULL;
 
-        RtlInitUnicodeString(&usKeAddSystemServiceTable, L"KeAddSystemServiceTable");
+        RtlInitUnicodeString(&usKeAddSystemServiceTable, TEXT("KeAddSystemServiceTable"));
         pSSTable = (PUCHAR)MmGetSystemRoutineAddress(&usKeAddSystemServiceTable);
         for (p = pSSTable; p < pSSTable + PAGE_SIZE; p++)
         {
@@ -370,9 +379,9 @@ nice，，，这里我们看到了对 SSDT 表进行初始化的反汇编代码�
         return pShadowTable;
     }
 
-**重要：此处省略了一部分内容，只写结论（这个结论还算比较重要的）**
+**重要：此处省略了一部分内容，只写结论（这个结论还是比较重要的结论）**
 
-最终结论：也就是说，除了 System 进程和 Smss 进程，在其它任何一个属于某个 Session 进程内都可以访问 win32k.sys，并非只有 GUI 进程才能访问，一般会使用 “csrss.exe” 进程 (Session Leader) 。
+结论：也就是说，除了 System 进程和 Smss 进程外，在其它任何一个属于某个 Session 进程内都可以访问 `win32k.sys`，并非只有 GUI 进程才能访问，一般是使用 “`csrss.exe`” 进程 (Session Leader) 。
 
 ## 5. 如何 Hook Shadow SSDT 的函数 ？ ###
 
@@ -384,10 +393,10 @@ nice，，，这里我们看到了对 SSDT 表进行初始化的反汇编代码�
 
 1) 在 DriverDispatch 中 hook DriverDispatch 是位于执行 DriverIoControl 的线程上下文的，我们使用 1 个 GUI 线程去 DriverIoControl；
 
-2) AttachToProcess 这里我们使用 explorer.exe 进程。
+2) AttachToProcess() 这里我们使用 `explorer.exe` 进程。
 
 
-    VOID KeAttachExporeer()
+    VOID KeAttachExplorer()
     {
         NTSTATUS status;
         PEPROCESS explorerEproc;

@@ -595,5 +595,74 @@ http://undocumented.ntinternals.net/index.html?page=title.html
 
 --------------------------------------------------------------------------------------------------
 
+FileSpy (一个监控文件系统驱动IRP等请求的工具)
 
+http://www.zezula.net/en/fstools/filespy.html
+
+FileTest (张文骁推荐)
+
+A tool for interactive calling file system APIs (一个调用系统文件系统API函数的交互工具, 有源码)
+
+http://www.zezula.net/en/fstools/filetest.html
+
+源码: https://github.com/ladislav-zezula/FileTest
+
+--------------------------------------------------------------------------------------------------
+
+Spying a file system (一个利用系统API接口获得文件系统的一些常规消息通知的源码)
+
+https://www.codeproject.com/Articles/4997/Spying-a-file-system
+
+-----------------------------------------------------------------------
+
+Introduction
+
+Windows applications can do dynamic monitoring of any specified directory. Once changes have occurred and are detected, the spy application can run various tasks ( run antivirus, log activity, determine more information about changes, call other tasks etc).
+
+Win 32 API provides three functions that are based on the events:
+
+    FindFirstChangeNotification
+    FindNextChangeNotification
+    FindCloseChangeNotification
+    ReadDirectoryChangesW 
+
+These allow creating watchdog or spying applications.
+
+-----------------------------------------------------------------------
+
+Win32 API provides also ReadDirectoryChangesW that can operate with following filters (MSDN) :
+
+* FILE_NOTIFY_CHANGE_FILE_NAME	
+
+Any file name change in the watched directory or subtree causes a change notification wait operation to return. Changes include renaming, creating, or deleting a file.
+
+* FILE_NOTIFY_CHANGE_DIR_NAME	
+
+Any directory-name change in the watched directory or subtree causes a change notification wait operation to return. Changes include creating or deleting a directory.
+
+* FILE_NOTIFY_CHANGE_ATTRIBUTES	
+
+Any attribute change in the watched directory or subtree causes a change notification wait operation to return.
+
+* FILE_NOTIFY_CHANGE_SIZE	
+
+Any file-size change in the watched directory or subtree causes a change notification wait operation to return. The operating system detects a change in file size only when the file is written to the disk. For operating systems that use extensive caching, detection occurs only when the cache is sufficiently flushed.
+
+* FILE_NOTIFY_CHANGE_LAST_WRITE	
+
+Any change to the last write-time of files in the watched directory or subtree causes a change notification wait operation to return. The operating system detects a change to the last write-time only when the file is written to the disk. For operating systems that use extensive caching, detection occurs only when the cache is sufficiently flushed.
+
+* FILE_NOTIFY_CHANGE_LAST_ACCESS	
+
+Any change to the last access time of files in the watched directory or subtree causes a change notification wait operation to return.
+
+* FILE_NOTIFY_CHANGE_CREATION	
+
+Any change to the creation time of files in the watched directory or subtree causes a change notification wait operation to return.
+
+* FILE_NOTIFY_CHANGE_SECURITY	
+
+Any security-descriptor change in the watched directory or subtree causes a change notification wait operation to return.
+
+--------------------------------------------------------------------------------------------------
 
