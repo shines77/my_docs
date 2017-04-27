@@ -82,3 +82,51 @@ http://www.blogfshare.com/sysenter-inline-hook.html
 介绍了一种绕过一般的 rootkit 检测工具的 Inline Hook 方法。
 
 ---------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+[分享]老文章系列：过 Patchguard 的梗
+
+http://bbs.pediy.com/thread-187214.htm
+
+---------------------------------------------------------------------------------
+
+KeServiceDescriptorTable 结构及获取 (根据这篇文章更新了 x64 模式下 KeServiceDescriptorTable 的结构定义)
+
+http://blog.csdn.net/zkzqlove/article/details/21236243
+
+---------------------------------------------------------------------------------
+
+x64 下的 KeServiceDescriptorTable 结构定义
+
+See: http://www.fx114.net/qa-62-58850.aspx
+
+在64位系统，内核函数开头地址的低四位一般是0，形如: xxxxxxxx`xxxxxxx0，这一特征在SSDT表中有很强大的引用，SSDT表在64位系统于32位系统有较大的差别。
+
+以下是在64位系统下的 KeServiceDescriptorTable：
+
+kd> dp KeServiceDescriptorTable
+
+fffff800`0117bb80   fffff800`01076e00 00000000`00000000
+fffff800`0117bb90   00000000`00000128 00000000`00000000
+
+表的第二项于第四项都为0，这两项在32位系统下分别对应 ServiceCounterTableBase 与 ParamTableBase 。
+
+SSDT表还是同32位系统每4字节表示一项，由于函数的起始地址最低四位都是0，所以微软将SSDT中的低四位用来记录这个函数有多少个参数。
+并且由于表的每一项都为四个字节，保存的就不可能是绝对地址，而是相对KeServiceDescriptorTable表的地址。
+
+所以地址计算方法如下：
+
+FuncAddr=([KeServiceDescriptortable+index*4]+KeServiceDescriptortable)&0xFFFFFFF0
+
+用虾窝中的公式，尝试了一下，果然找到了正确的地址。
+
+---------------------------------------------------------------------------------
+
