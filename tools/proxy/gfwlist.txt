@@ -1,0 +1,16 @@
+
+SwitchyOmega
+---------------
+
+https://www.oschina.net/p/switchyomega
+
+
+Some gfwlist.txt on internet
+-------------------------------
+
+https://github.com/gfwlist/gfwlist/blob/master/gfwlist.txt
+https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt    (148KB)
+
+https://github.com/loarland/gfwlist2pac/blob/master/test/gfwlist.txt
+https://raw.githubusercontent.com/loarland/gfwlist2pac/master/test/gfwlist.txt (138KB)
+
