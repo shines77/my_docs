@@ -102,6 +102,8 @@ KeServiceDescriptorTable 结构及获取 (根据这篇文章更新了 x64 模式下 KeServiceDesc
 
 http://blog.csdn.net/zkzqlove/article/details/21236243
 
+以及介绍了三种改变 SSDT 内存保护的方法.
+
 ---------------------------------------------------------------------------------
 
 x64 下的 KeServiceDescriptorTable 结构定义
@@ -133,6 +135,88 @@ FuncAddr = (KeServiceDescriptortable + [KeServiceDescriptortable + index * 4]) &
 Shadow SSDT x64
 
 http://www.xuebuyuan.com/1858119.html
+
+---------------------------------------------------------------------------------
+
+SSDT
+
+http://uninformed.org/index.cgi?v=3&a=3&p=9
+
+------------------------------------------------------------------
+
+One of the areas most notorious for being hooked by third-party drivers is the System Service Descriptor Table, also known as the SSDT. This table contains information about the service tables that are used by the operating for dispatching system calls. On Windows x64 kernels, nt!KeServiceDescriptorTable conveys the address of the actual dispatch table and the number of entries in the dispatch table for the native system call interface. In this case, the actual dispatch table is stored as an array of relative offsets in nt!KiServiceTable. The offsets are relative to the array itself using relative addressing. To obtain the absolute address of system service routines, the following approach can be used:
+
+kd> u dwo(nt!KiServiceTable)+nt!KiServiceTable L1
+
+nt!NtMapUserPhysicalPagesScatter:
+fffff800`013728b0 488bc4           mov     rax,rsp
+
+kd> u dwo(nt!KiServiceTable+4)+nt!KiServiceTable L1
+
+nt!NtWaitForSingleObject:
+fffff800`012b83a0 4c89442418       mov     [rsp+0x18],r8
+
+The fact that the dispatch table now contains an array of relative addresses is one hurdle that driver developers who intend to port system call hooking code from 32-bit platforms to the x64 kernel will have to overcome. One solution to the relative address problem is fairly simple. There are plenty of places within the 2 GB of relative addressable memory that a trampoline could be placed for a hook routine. For instance, there is often alignment padding between symbols. This approach is rather hackish and it depends on the fact that PatchGuard is forcibly disabled. However, there are also other, more elegant approaches to accomplishing this that require neither.
+
+As far as protecting the system service table is concerned, PatchGuard protects both the native system service dispatch table stored in nt!KiServiceTable as well as the nt!KeServiceDescriptorTable structure itself. This is done by making use of the nt!PgCreateBlockChecksumSubContext routine that was mentioned in the section on system images ([*]). The following code shows how the block checksum routine is called for both items:
+
+PgCreateBlockChecksumSubContext(
+    ParentContext,
+    0,
+    KeServiceDescriptorTable->DispatchTable, // KiServiceTable
+    KiServiceLimit * sizeof(ULONG),
+    0,
+    NULL);
+
+PgCreateBlockChecksumSubContext(
+    ParentContext,
+    0,
+    &KeServiceDescriptorTable,
+    0x20,
+    0,
+    NULL);
+
+The reason the nt!KeServiceDescriptorTable structure is also protected is to prevent the modification of the attribute that points to the actual dispatch table.
+
+------------------------------------------------------------------
+
+Google翻译:
+
+系统服务描述符表（也称为SSDT）是与第三方驱动程序挂钩的最为臭名昭着的区域之一。 此表包含有关用于调度系统调用的操作使用的服务表的信息。 在Windows x64内核上，nt！KeServiceDescriptorTable传递实际分派表的地址和本机系统调用接口的调度表中的条目数。 在这种情况下，实际的分派表存储为nt！KiServiceTable中的相对偏移数组。 偏移量相对于阵列本身使用相对寻址。 要获取系统服务程序的绝对地址，可以使用以下方法：
+
+kd> u dwo(nt!KiServiceTable)+nt!KiServiceTable L1
+
+nt!NtMapUserPhysicalPagesScatter:
+fffff800`013728b0 488bc4           mov     rax,rsp
+
+kd> u dwo(nt!KiServiceTable+4)+nt!KiServiceTable L1
+
+nt!NtWaitForSingleObject:
+fffff800`012b83a0 4c89442418       mov     [rsp+0x18],r8
+
+调度表现在包含一个相对地址数组的事实是一个障碍，即将系统调用挂钩代码从32位平台迁移到x64内核的驱动程序开发人员将必须克服。 相对地址问题的一个解决方案是相当简单的。 2 GB的相对可寻址内存中有很多地方可以将蹦床放置在挂钩程序中。 例如，符号之间经常有对齐填充。 这种方法相当骇人听闻，这取决于PatchGuard被强制禁用的事实。 然而，还有其他更优雅的方法来实现这一点，既不需要。
+
+就保护系统服务表而言，PatchGuard保护存储在nt！KiServiceTable中的本机系统服务调度表以及nt！KeServiceDescriptorTable结构本身。 这是通过使用系统映像（[*]）部分中提到的nt！PgCreateBlockChecksumSubContext例程完成的。 以下代码显示了如何为两个项目调用块校验和例程：
+
+    BlockChecksumContext context;
+    context = PgCreateBlockChecksumSubContext(
+        ParentContext,
+        0,
+        KeServiceDescriptorTable->ntoskrnel.ServiceTableBase,   // KiServiceTable
+        KiServiceLimit * sizeof(ULONG),                         // KeServiceDescriptorTable->ntoskrnel.NumberOfService
+        0,
+        NULL);
+
+    context = PgCreateBlockChecksumSubContext(
+        ParentContext,
+        0,
+        &KeServiceDescriptorTable,
+        0x20,                           // sizeof(SERVICE_DESCRIPTOR_TABLE), 0x40
+                                        // (0x20 是其中的 ntoskrnel.exe 和 win32k.sys 两个 SYSTEM_SERVICE_TABLE 的大小, 因为后面两个SST表未使用)
+        0,
+        NULL);
+
+nt！KeServiceDescriptorTable结构也受到保护的原因是防止修改指向实际分派表的属性。
 
 ---------------------------------------------------------------------------------
 

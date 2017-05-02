@@ -666,3 +666,31 @@ Any security-descriptor change in the watched directory or subtree causes a chan
 
 --------------------------------------------------------------------------------------------------
 
+How to translate a virtual memory address to a physical address?
+
+http://stackoverflow.com/questions/366602/how-to-translate-a-virtual-memory-address-to-a-physical-address
+
+关于在内核态如果从虚拟内存地址转换为物理内存地址.
+
+--------------------------------------------------------------------------------------------------
+
+NtQueryVirtualMemory 枚举进程模块
+
+http://www.cnblogs.com/icew4y/p/3694984.html
+
+使用 NtQueryVirtualMemory() 函数在用户态驱动里枚举进程引用的所有模块.
+
+通过 KeServiceDescriptorTable 获取 NtQueryVirtualMemory() 的函数入口地址.
+
+NtQueryVirtualMemory = (PNtQueryVirtualMemory)KeServiceDescriptorTable->ntoskrnl.ServiceTableBase[uIndex];
+
+--------------------------------------------------------------------------------------------------
+
+SSSDT, SSDT HOOK 进程防护
+
+http://www.cnblogs.com/icew4y/p/3639064.html
+
+模仿 PCHunter，利用 SSSDT, SSDT HOOK 来对进程进行防护, 例如: Hook NtUserFindWindowEx(), NtUserPostMessage(), NtUserDestroyWindow() 函数.
+
+--------------------------------------------------------------------------------------------------
+
