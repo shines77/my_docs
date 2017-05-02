@@ -686,7 +686,7 @@ NtQueryVirtualMemory = (PNtQueryVirtualMemory)KeServiceDescriptorTable->ntoskrnl
 
 --------------------------------------------------------------------------------------------------
 
-SSSDT, SSDT HOOK 进程防护
+SSDT, Shadow SSDT HOOK 进程防护
 
 http://www.cnblogs.com/icew4y/p/3639064.html
 
