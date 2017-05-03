@@ -1,0 +1,213 @@
+
+windbg命令
+-------------
+
+-------------------------------------
+
+66. windbg - .process切换进程（内核）
+
+See: http://blog.csdn.net/hgy413/article/details/20314959
+
+显示当前进程的 EProcess
+
+kd> .process
+
+Implicit process is now 821f5da0
+
+显示当前进程的 EProcess 信息
+
+kd> !process 821f5da0 0
+
+PROCESS 821f5da0  SessionId: 0  Cid: 06e8    Peb: 7ffde000  ParentCid: 0620
+    DirBase: 02b40380  ObjectTable: e1112818  HandleCount:  20.
+    Image: test.exe
+
+kd> ? @$proc
+
+Evaluate expression: -2111873632 = 821f5da0
+
+可以通过 /r /p 来切换进程上下文:
+
+kd> .process /r /p 821f5da0
+
+Implicit process is now 821f5da0
+.cache forcedecodeuser done
+Loading User Symbols
+PEB is paged out (Peb.Ldr = 7ffdc00c).  Type ".hh dbgerr001" for details
+
+kd> db 1000000
+
+01000000  4d 5a 90 00 03 00 00 00-04 00 00 00 ff ff 00 00  MZ..............
+01000010  b8 00 00 00 00 00 00 00-40 00 00 00 00 00 00 00  ........@.......
+01000020  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................
+01000030  00 00 00 00 00 00 00 00-00 00 00 00 e0 00 00 00  ................
+01000040  0e 1f ba 0e 00 b4 09 cd-21 b8 01 4c cd 21 54 68  ........!..L.!Th
+01000050  69 73 20 70 72 6f 67 72-61 6d 20 63 61 6e 6e 6f  is program canno
+01000060  74 20 62 65 20 72 75 6e-20 69 6e 20 44 4f 53 20  t be run in DOS
+01000070  6d 6f 64 65 2e 0d 0d 0a-24 00 00 00 00 00 00 00  mode....$.......
+
+-------------------------------------
+
+65. windbg - !process显示进程（内核）
+
+http://blog.csdn.net/hgy413/article/details/20313911
+
+*) !process XXXX 显示指定进程的所有信息, !process XXXX 0 显示指定进程的基本信息.
+
+(XXXX 可以为 EPROCESS 或 进程ID)
+
+kd> !process @$proc 0
+
+PROCESS 825b7830  SessionId: none  Cid: 0004    Peb: 00000000  ParentCid: 0000
+    DirBase: 02b40020  ObjectTable: e1003e00  HandleCount: 254.
+    Image: System
+
+kd> !process 4 0
+
+Searching for Process with Cid == 4
+Cid Handle table at e1005000 with 366 Entries in use
+PROCESS 825b7830  SessionId: none  Cid: 0004    Peb: 00000000  ParentCid: 0000
+    DirBase: 02b40020  ObjectTable: e1003e00  HandleCount: 254.
+    Image: System
+
+*) !process 0 0 XXXX.exe 查找进程
+
+kd> !process 0 0 smss.exe
+
+PROCESS 8241d490  SessionId: none  Cid: 0178    Peb: 7ffdf000  ParentCid: 0004
+    DirBase: 02b40040  ObjectTable: e148a4a0  HandleCount:  19.
+    Image: smss.exe
+
+kd> !process 0 0 system
+
+PROCESS 825b7830  SessionId: none  Cid: 0004    Peb: 00000000  ParentCid: 0000
+    DirBase: 02b40020  ObjectTable: e1003e00  HandleCount: 254.
+    Image: System
+
+注意只有 system, 没有 system.exe !
+
+-------------------------------------
+
+64. windbg - !idt（内核）
+
+http://blog.csdn.net/hgy413/article/details/20310091
+
+kd> !idt
+
+Dumping IDT:
+
+37: 806e6864 hal!PicSpuriousService37
+3d: 806e7e2c hal!HalpApcInterrupt
+41: 806e7c88 hal!HalpDispatchInterrupt
+50: 806e693c hal!HalpApicRebootService
+62: 82494044 atapi!IdePortInterrupt (KINTERRUPT 82494008)
+63: 82506dd4 USBPORT!USBPORT_InterruptService (KINTERRUPT 82506d98)
+73: 824942cc SCSIPORT!ScsiPortInterrupt (KINTERRUPT 82494290)
+             USBPORT!USBPORT_InterruptService (KINTERRUPT 82500b28)
+82: 822c1b3c atapi!IdePortInterrupt (KINTERRUPT 822c1b00)
+83: 8208f82c *** ERROR: Symbol file could not be found.  Defaulted to export symbols for vmci.sys -
+vmci!DllUnload+0x80C (KINTERRUPT 8208f7f0)
+             VIDEOPRT!pVideoPortInterrupt (KINTERRUPT 82099548)
+             portcls!CKsShellRequestor::`scalar deleting destructor'+0x26 (KINTERRUPT 81f4f450)
+92: 82506844 serial!SerialCIsrSw (KINTERRUPT 82506808)
+93: 82073044 i8042prt!I8042KeyboardInterruptService (KINTERRUPT 82073008)
+a3: 82073364 i8042prt!I8042MouseInterruptService (KINTERRUPT 82073328)
+b1: 8253b85c ACPI!ACPIInterruptServiceRoutine (KINTERRUPT 8253b820)
+b4: 8248d57c NDIS!ndisMIsr (KINTERRUPT 8248d540)
+c1: 806e6ac0 hal!HalpBroadcastCallService
+d1: 806e5e54 hal!HalpClockInterrupt
+e1: 806e7048 hal!HalpIpiHandler
+e3: 806e6dac hal!HalpLocalApicErrorService
+fd: 806e75a8 hal!HalpProfileInterrupt
+fe: 806e7748 hal!HalpPerfInterrupt
+
+kd> !idt -a
+
+Dumping IDT:
+
+00: 805431a0 nt!KiTrap00
+01: 8054331c nt!KiTrap01
+02: Task Selector = 0x0058
+03: 80543730 nt!KiTrap03
+04: 805438b0 nt!KiTrap04
+05: 80543a10 nt!KiTrap05
+06: 80543b84 nt!KiTrap06
+07: 805441fc nt!KiTrap07
+08: Task Selector = 0x0050
+09: 80544600 nt!KiTrap09
+0a: 80544720 nt!KiTrap0A
+0b: 80544860 nt!KiTrap0B
+0c: 80544ac0 nt!KiTrap0C
+0d: 80544dac nt!KiTrap0D
+0e: 805454a8 nt!KiTrap0E
+0f: 805457e0 nt!KiTrap0F
+10: 80545900 nt!KiTrap10
+11: 80545a3c nt!KiTrap11
+12: Task Selector = 0x00A0
+13: 80545ba4 nt!KiTrap13
+14: 805457e0 nt!KiTrap0F
+15: 805457e0 nt!KiTrap0F
+16: 805457e0 nt!KiTrap0F
+17: 805457e0 nt!KiTrap0F
+
+也可以指定中断号显示：
+
+kd> !idt 3
+
+Dumping IDT:
+
+03: 80543730 nt!KiTrap03
+
+-------------------------------------
+
+Windbg 如何进入特定进程上下文?
+
+See: http://laokaddk.blog.51cto.com/368606/306109
+
+1. 列出所有进程(!process):
+
+>kd !process 0 0
+
+......
+
+PROCESS fffffa8002e6fb30
+    SessionId: 1  Cid: 06a8    Peb: 7fffffdf000  ParentCid: 0610
+    DirBase: 173f6000  ObjectTable: fffff8a0017f48c0  HandleCount: 1143.
+    Image: explorer.exe
+
+......
+
+2. 进入指定进程的进程空间(.process):
+
+>kd .process fffffa8002e6fb30
+
+Implicit process is now fffffa80`02e6fb30
+WARNING: .cache forcedecodeuser is not enabled
+
+3. 显示 KeServiceDescriptorTableShadow 的内容:
+
+0: kd> dd nt!KeServiceDescriptorTableShadow
+
+fffff800`03f19880  03ce9300 fffff800 00000000 00000000
+fffff800`03f19890  00000191 00000000 03ce9f8c fffff800
+fffff800`03f198a0  00121f00 fffff960 00000000 00000000
+fffff800`03f198b0  0000033b 00000000 00123c1c fffff960
+fffff800`03f198c0  77781206 00000000 00000000 00000000
+fffff800`03f198d0  00a01388 fffff800 00a01338 fffff800
+fffff800`03f198e0  00000002 00000000 00006c10 00000000
+fffff800`03f198f0  000793e0 00000000 00000000 00000000
+
+4. 显示 KeServiceDescriptorTableShadow.win32k.ServiceTable
+
+kd> dd fffff96000121f00
+
+fffff960`00121f00  fff3a740 fff0b501 000206c0 001021c0
+fffff960`00121f10  00096000 00022640 fff9a900 ffde0b03
+fffff960`00121f20  ffb7a7c7 00fc5200 ffed2e80 ffe50e00
+fffff960`00121f30  000c58c0 000af600 000e8bc0 fffeb300
+fffff960`00121f40  ffb1b480 0004ec80 ffa53180 000b9480
+fffff960`00121f50  000b2500 000fc200 00037cc0 000b3e40
+fffff960`00121f60  ffb1f2c0 000b58c0 000a1440 ffb28600
+fffff960`00121f70  ffa27303 ffa80500 0012b300 00094080
+
+-------------------------------------
