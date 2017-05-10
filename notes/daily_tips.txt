@@ -717,3 +717,15 @@ GPU异步V-Sync技术方案
 http://www.yiiyee.cn/Blog/vsync/
 
 --------------------------------------------------------------------------------------------------
+
+NSIS 静默安装VC运行库安装包
+
+http://blog.csdn.net/wwwwxhh/article/details/55210882
+
+ExecWait 'vcredist_x86.exe'             # 一般的安装
+ExecWait '"vcredist_x86.exe" /q'        # silent install 静默安装
+ExecWait '"vcredist_x86.exe" /q:a'      # silent install, display a progress dialog but requires no user interaction.
+ExecWait '"vcredist_x86.exe" /qb'       # unattended install 无人值守安装
+ExecWait 'vcredist_x86.exe /q:a /c:"msiexec /i vcredist.msi /qb! /l*v $TEMP\vcredist_x86.log" ' # suppress all UI during installation.
+
+--------------------------------------------------------------------------------------------------

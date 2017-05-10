@@ -146,12 +146,12 @@ http://uninformed.org/index.cgi?v=3&a=3&p=9
 
 One of the areas most notorious for being hooked by third-party drivers is the System Service Descriptor Table, also known as the SSDT. This table contains information about the service tables that are used by the operating for dispatching system calls. On Windows x64 kernels, nt!KeServiceDescriptorTable conveys the address of the actual dispatch table and the number of entries in the dispatch table for the native system call interface. In this case, the actual dispatch table is stored as an array of relative offsets in nt!KiServiceTable. The offsets are relative to the array itself using relative addressing. To obtain the absolute address of system service routines, the following approach can be used:
 
-kd> u dwo(nt!KiServiceTable)+nt!KiServiceTable L1
+kd> u dwo(nt!KiServiceTable) + nt!KiServiceTable L1
 
 nt!NtMapUserPhysicalPagesScatter:
 fffff800`013728b0 488bc4           mov     rax,rsp
 
-kd> u dwo(nt!KiServiceTable+4)+nt!KiServiceTable L1
+kd> u dwo(nt!KiServiceTable + 4) + nt!KiServiceTable L1
 
 nt!NtWaitForSingleObject:
 fffff800`012b83a0 4c89442418       mov     [rsp+0x18],r8
@@ -184,12 +184,12 @@ Google翻译:
 
 系统服务描述符表（也称为SSDT）是与第三方驱动程序挂钩的最为臭名昭着的区域之一。 此表包含有关用于调度系统调用的操作使用的服务表的信息。 在Windows x64内核上，nt！KeServiceDescriptorTable传递实际分派表的地址和本机系统调用接口的调度表中的条目数。 在这种情况下，实际的分派表存储为nt！KiServiceTable中的相对偏移数组。 偏移量相对于阵列本身使用相对寻址。 要获取系统服务程序的绝对地址，可以使用以下方法：
 
-kd> u dwo(nt!KiServiceTable)+nt!KiServiceTable L1
+kd> u dwo(nt!KiServiceTable) + nt!KiServiceTable L1
 
 nt!NtMapUserPhysicalPagesScatter:
 fffff800`013728b0 488bc4           mov     rax,rsp
 
-kd> u dwo(nt!KiServiceTable+4)+nt!KiServiceTable L1
+kd> u dwo(nt!KiServiceTable + 4) + nt!KiServiceTable L1
 
 nt!NtWaitForSingleObject:
 fffff800`012b83a0 4c89442418       mov     [rsp+0x18],r8
