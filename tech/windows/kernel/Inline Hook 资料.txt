@@ -182,21 +182,21 @@ The reason the nt!KeServiceDescriptorTable structure is also protected is to pre
 
 Google翻译:
 
-系统服务描述符表（也称为SSDT）是与第三方驱动程序挂钩的最为臭名昭着的区域之一。 此表包含有关用于调度系统调用的操作使用的服务表的信息。 在Windows x64内核上，nt！KeServiceDescriptorTable传递实际分派表的地址和本机系统调用接口的调度表中的条目数。 在这种情况下，实际的分派表存储为nt！KiServiceTable中的相对偏移数组。 偏移量相对于阵列本身使用相对寻址。 要获取系统服务程序的绝对地址，可以使用以下方法：
+系统服务描述符表（也称为SSDT）是与第三方驱动程序挂钩的最为臭名昭着的区域之一。 此表包含有关用于调度系统调用的操作使用的服务表的信息。 在Windows x64内核上，nt！KeServiceDescriptorTable传递实际分派表的地址和本机系统调用接口的调度表中的条目数。在这种情况下，实际的分派表存储为nt！KiServiceTable中的相对偏移数组。 偏移量相对于阵列本身使用相对寻址。 要获取系统服务程序的绝对地址，可以使用以下方法：
 
 kd> u dwo(nt!KiServiceTable) + nt!KiServiceTable L1
 
 nt!NtMapUserPhysicalPagesScatter:
-fffff800`013728b0 488bc4           mov     rax,rsp
+fffff800`013728b0 488bc4           mov     rax, rsp
 
 kd> u dwo(nt!KiServiceTable + 4) + nt!KiServiceTable L1
 
 nt!NtWaitForSingleObject:
-fffff800`012b83a0 4c89442418       mov     [rsp+0x18],r8
+fffff800`012b83a0 4c89442418       mov     [rsp + 0x18], r8
 
-调度表现在包含一个相对地址数组的事实是一个障碍，即将系统调用挂钩代码从32位平台迁移到x64内核的驱动程序开发人员将必须克服。 相对地址问题的一个解决方案是相当简单的。 2 GB的相对可寻址内存中有很多地方可以将蹦床放置在挂钩程序中。 例如，符号之间经常有对齐填充。 这种方法相当骇人听闻，这取决于PatchGuard被强制禁用的事实。 然而，还有其他更优雅的方法来实现这一点，既不需要。
+调度表现在包含一个相对地址数组的事实是一个障碍，即将系统调用挂钩代码从32位平台迁移到x64内核的驱动程序开发人员将必须克服。相对地址问题的一个解决方案是相当简单的。2 GB的相对可寻址内存中有很多地方可以将蹦床放置在挂钩程序中。例如，符号之间经常有对齐填充。这种方法相当骇人听闻，这取决于PatchGuard被强制禁用的事实。 然而，还有其他更优雅的方法来实现这一点，既不需要。
 
-就保护系统服务表而言，PatchGuard保护存储在nt！KiServiceTable中的本机系统服务调度表以及nt！KeServiceDescriptorTable结构本身。 这是通过使用系统映像（[*]）部分中提到的nt！PgCreateBlockChecksumSubContext例程完成的。 以下代码显示了如何为两个项目调用块校验和例程：
+就保护系统服务表而言，PatchGuard保护存储在nt！KiServiceTable中的本机系统服务调度表以及nt！KeServiceDescriptorTable结构本身。这是通过使用系统映像（[*]）部分中提到的nt！PgCreateBlockChecksumSubContext例程完成的。以下代码显示了如何为两个项目调用块校验和例程：
 
     BlockChecksumContext context;
     context = PgCreateBlockChecksumSubContext(
@@ -216,7 +216,7 @@ fffff800`012b83a0 4c89442418       mov     [rsp+0x18],r8
         0,
         NULL);
 
-nt！KeServiceDescriptorTable结构也受到保护的原因是防止修改指向实际分派表的属性。
+nt!KeServiceDescriptorTable 结构也受到保护的原因是防止修改指向实际分派表的属性。
 
 ---------------------------------------------------------------------------------
 
