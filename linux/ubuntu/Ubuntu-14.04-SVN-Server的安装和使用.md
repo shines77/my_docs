@@ -30,10 +30,16 @@ $ sudo mkdir -p /data/svn
 然后设置软连接，把 `/home/skyinno/svn` 软连接到 `/data/svn` 目录：
 
 ```shell
-$ sudo ln -s /data/svn/ /home/skyinno/svn/
+$ sudo ln -s /data/svn /home/skyinno/svn
 ```
 
-如果 `/home/skyinno/svn/` 文件已存在，如果里面是空的，则可以直接删除；如果不是空的，先将其改名，再做软连接，做完软连接，再把原来的 `svn` 目录里的内容都复制到 `/data/svn/` 里。
+如果 `/home/skyinno/svn` 文件夹已存在，如果里面是空的，则可以使用 rm 命令直接删除；如果不是空的，先把原来的 `svn` 目录里的内容都复制到 `/data/svn/` 下面，再将其改名，再做软连接。
+
+复制的 `/home/skyinno/svn/` 目录的命令是：
+
+```shell
+$ sudo cp -r /home/skyinno/svn/. /data/svn/
+```
 
 # 2. 配置和使用 SVN #
 

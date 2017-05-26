@@ -289,7 +289,7 @@ img {
   max-width: 100%
 }
 </style>
-<base href='file:\\\D:\Project\my_docs\linux\Ubuntu\'/>
+<base href='./'/>
 </head>
 <body>
 <h1>Ubuntu 14.04 SVN Server 的安装和使用</h1>
@@ -310,10 +310,10 @@ img {
 </code></pre>
 
 <p>然后设置软连接，把 <code>/home/skyinno/svn</code> 软连接到 <code>/data/svn</code> 目录：</p>
-<pre><code>$ sudo ln -s /data/svn/ /home/skyinno/svn/
+<pre><code>$ sudo ln -s /data/svn /home/skyinno/svn
 </code></pre>
 
-<p>如果 <code>/home/skyinno/svn/</code> 文件已存在，如果里面是空的，则可以直接删除；如果不是空的，先将其改名，再做软连接，做完软连接，再把原来的 <code>svn</code> 目录里的内容都复制到 <code>/data/svn/</code> 里。</p>
+<p>如果 <code>/home/skyinno/svn</code> 文件夹已存在，如果里面是空的，则可以使用 rm 命令直接删除；如果不是空的，先把原来的 <code>svn</code> 目录里的内容都复制到 <code>/data/svn/</code> 下面，再将其改名，再做软连接。</p>
 <h1>2. 配置和使用 SVN</h1>
 <h2>2.1. 创建 SVN 仓库</h2>
 <p>创建一个名为 <code>myrepo</code> 的仓库：</p>
