@@ -4,14 +4,24 @@
 
 ## 1. 需求 ##
 
-我们有一台阿里云服务器，这里简称 `文件服务器`，项目中由于上传的文件把系统盘 `40G` 已经占完了，没空间了。原来这台机器上还装有一个`200G` 的磁盘，但没有挂载使用（硬件上已经启用了的），其实也是虚拟云盘，不过使用上跟物理磁盘基本没什么区别。现在的需求是把一些文件或文件夹迁移到那未使用的 `200G` 磁盘上，以解决系统盘被占满的问题。
+我们的一台阿里云服务器，这里简称 `文件服务器`，由于一开始的疏忽，上传的文件已经把系统盘 `40G` 占满了，几乎没空闲磁盘空间了。这台机器上原本就准备了一个`200G` 的磁盘，只是没有挂载使用而已（硬件上已经启用了的），它跟 `40G` 的系统盘一样，也是一个虚拟云盘。我们需要做的是，把系统盘上的一些文件或文件夹迁移到那未使用的 `200G` 数据盘上，以缓解系统盘的存储容量压力。
 
-系统架构是这样的设计的，共有 `Web1`, `Web2`, `Web3`, `Web4` 四台 `Web服务器` 通过 `nfs` 的方式，都把本地的 `/var/lib/mrmsfiles` 文件夹映射到了后端的这台文件服务器上的同名文件夹上，例如：
+系统架构是这样的，有 `Web1`, `Web2`, `Web3`, `Web4` 共四台 `Web服务器` 通过 `nfs` 挂载的方式，都把本地的 `/var/lib/mrmsfiles` 文件夹映射到了后端的这台 `文件服务器` 上的同名文件夹上，挂载过程如下：
 
+    // 安装 nfs
     # apt-get install nfs-common
-    # mount 192.168.3.177:/var/lib/mrmsfiles /var/lib/mrmsfiles
 
-这里假设 `192.168.3.177` 是那个文件服务器的 `IP地址` 。
+    // 挂载命令
+    # mount 192.168.3.177:/var/lib/mrmsfiles /var/lib/mrmsfiles
+    // 或者
+    # mount 192.168.3.177:/data/var/lib/mrmsfiles /var/lib/mrmsfiles
+
+    // 卸载 /var/lib/mrmsfiles 的挂载
+    # umount /var/lib/mrmsfiles
+
+（注：上面 `mount` 命令中也可以加入 `-t nfs` 参数试试，但实际使用中好像加这个参数反而会 `mount` 失败，不会报错，但挂载不成功。）
+
+这里，假设 `192.168.3.177` 是那个 `文件服务器` 的 `IP地址` 。
 
 ## 2. 解决步骤 ##
 
@@ -30,22 +40,22 @@
     none            7.9G     0  7.9G   0% /run/shm
     none            100M     0  100M   0% /run/user
 
-可以看到 `/dev/vda1` 是那个 `40G` 磁盘的分区，使用率已经是 100%，磁盘的确是满了。
+可以看到 `/dev/vda1` 是那个 `40G` 磁盘的分区，使用率是 100%（四舍五入），磁盘空间的确是快用完了，还剩 `354` MB 。
 
-按照常理，我们搜索一下相似的磁盘设备：
+按照常理，我们搜索一下相似的磁盘设备名：
 
     # ls /dev/vd*
 
     /dev/vda  /dev/vda1  /dev/vdb
 
-可以看到一个叫 `/dev/vdb` 的设备，由此猜测是那个未挂载的 `200G` 磁盘。
+可以看到一个叫 `/dev/vdb` 的设备，由此猜测是那个未挂载的 `200G` 数据盘。
 
-后来通过阿里云的 Web 管理系统里看到这两个磁盘的设备名分别是：
+后来，通过阿里云的 `Web管理系统` 里看到这两个磁盘的设备名分别是：
 
     /dev/xvda  --  40G 的系统盘
     /dev/xvdb  --  200G 的数据盘
 
-但 `文件服务器` 的操作系统里的确找到不到这两个设备，由于 `40G` 的系统盘在系统里叫 `/dev/vda`，由此可以断定 `200G` 的数据盘就是 `/dev/vdb` 。
+但 `文件服务器` 的操作系统里的确找没有这两个设备，由于 `40G` 的系统盘在系统里叫 `/dev/vda`，由此可以断定 `200G` 的数据盘就是 `/dev/vdb` 。
 
 ### 2.1 分区和挂载 ###
 
@@ -87,7 +97,7 @@
 
 #### 2.1.2 格式化 ####
 
-现在我们需要对 `/dev/vdb1` 分区进行格式化，选择常用的 `ext4` 格式。
+现在我们需要对 `/dev/vdb1` 分区进行格式化，并格式化为常用的 `ext4` 格式。
 
     # mkfs.ext4 /dev/vdb1
 
@@ -112,19 +122,19 @@
     Creating journal (32768 blocks): done
     Writing superblocks and filesystem accounting information: done
 
-格式化一般磁盘小的话很快的，上面的输出信息仅供参考。
+格式化 `200G` 左右的磁盘，一般不到一秒即可完成，上面的输出信息仅供参考，不是实际的输出信息。
 
-注意：这里和前面的 `parted` 命令里的 `设备名` 和 `分区` 千万要检查清楚再回车，不然把原来的系统盘的数据弄没了就 `GG` 了。
+注意：前面的两个命令 “`parted /dev/vdb`” 和 “`mkfs.ext4 /dev/vdb1`” 中的 “`/dev/vdb`” 和 “`/dev/vdb1`” 一定不能敲错，回车之前检查一遍，如果写成了 `/dev/vda` 和 `/dev/vda1`，系统盘的数据瞬间就灰飞烟灭了，切记，我们要分区和格式化的对象是 `200G` 的数据盘！
 
 #### 2.1.3 挂载分区 ####
 
-我们把 `/dev/vdb1` 分区挂载到 `/data` 或者 `/mirror` 目录，名字随意，跟别的软件不冲突即可。
+我们准备把 `/dev/vdb1` 分区挂载到 `/data` 或者 `/mirror` 目录上，这个名字可以随意取，跟别的软件不冲突即可。
 
-先创建 `/data` 目录：
+先创建这个 `/data` 目录：
 
     # mkdir -p /data
 
-编辑系统的 `fstab` 配置文件：
+再编辑系统的 `/etc/fstab` 配置文件：
 
     # vim /etc/fstab
 
@@ -137,21 +147,21 @@
     # <file system> <mount point>   <type>  <options>       <dump>  <pass>
     UUID=af414ad8-9936-46cd-b074-528854656fcd / ext4 errors=remount-ro 0 1
 
-这里可以看到，阿里云是使用 `UUID` 作为标识来挂载 `/dev/vda1` 磁盘的分区的，但我在阿里云的 `Web` 管理系统里怎么也找不到 `云盘` 对应的 `UUID` 值是多少，所以这里就使用常用的设备名 `/dev/vdb1` 来挂载，在这个文件的后面添加下面这一行：
+这里可以看到，阿里云是使用 `UUID` 作为标识来挂载 `/dev/vda1` 分区的，但我们在阿里云的 `Web` 管理系统里怎么也找不到 `云盘` 所对应的 `UUID` 值在哪里定义的，所以这里就跟平常物理机里的一样，使用设备名 `/dev/vdb1` 来挂载，在这个文件的末尾添加下面这一行：
 
     /dev/vdb1       /data            ext4    defaults          0       1
 
-作用是系统开机的时候，把分区 `/dev/vdb1` 挂载到 `/data` 目录，挂载需要重启系统才能生效。
+它的作用是当系统启动的时候，把分区 `/dev/vdb1` 挂载到 `/data` 目录上，保存后需要重启系统才能生效。
 
 当然，我们也可以手动挂载（立即生效，无需重启），命令如下：
 
     # mount /dev/vdb1 /data
 
-但是使用这个命令挂载的话，重启以后是会失效的，所以必需要把挂载写到 `/etc/fstab` 配置文件里。
+但是使用这个命令挂载的话，重启以后该 `mount` 命令是会失效的，必须要把挂载配置写到 `/etc/fstab` 文件里才能保证每次启动都自动挂载。
 
-**是否挂载成功?**
+**是否挂载成功了?**
 
-要检查是否挂载成功了，进入 `/data` 目录一下就知道了，也可以这样：
+要检查是否挂载成功了，用 `cd` 命令进入 `/data` 目录看一下就知道了，也可以这样查看：
 
     # df -h
 
@@ -165,50 +175,50 @@
     none            100M     0  100M   0% /run/user
     /dev/vdb1       197G   59G  129G  32% /data
 
-最后一行就表明了 `/dev/vdb1` 成功挂载到了 `/data` 目录。
+最后一行，就表明了 `/dev/vdb1` 已成功挂载到了 `/data` 目录。
 
 ### 2.2 拷贝文件 ###
 
-为了方便以后扩展，我们把原来的文件结构照搬过来，这样比较灵活，也比较清晰一点。
+为了方便以后扩展，我们拷贝的时候，把原来的文件结构也照搬过来，这样比较灵活，也比较清晰一点。
 
-在 `/data` 文件夹下面创建 `/data/var/lib/mrmsfiles/` 目录，一个命令就可以搞定:
+（1） 在 `/data` 目录下面新建 `/data/var/lib/mrmsfiles/` 子目录，一个命令就可以搞定:
 
     # mkdir -p /data/var/lib/mrmsfiles/
 
-拷贝 `/var/lib/mrmsfiles/` 下面的所以文件和文件夹拷贝到 `/data/var/lib/mrmsfiles` 文件夹下面:
+（2） 把 `/var/lib/mrmsfiles/` 目录下面的所有文件和文件夹复制到 `/data/var/lib/mrmsfiles` 目录:
 
     # cp -p -r /var/lib/mrmsfiles/. /data/var/lib/mrmsfiles/
 
 注：`-p` 参数表示 `same as --preserve=mode,ownership,timestamps`，即保留源文件或文件夹的模式，归属关系，时间戳等。
 
-复制完成以后，我们先把原来的 `mrmsfiles` 文件夹改名：
+（3） 复制完成以后，先把原来的 `mrmsfiles` 文件夹改名为 `mrmsfiles_old`：
 
     # mv /var/lib/mrmsfiles /var/lib/mrmsfiles_old
 
 这样做的好处是，如果复制或者软链接失败，原来的文件和文件夹还是存在的，以免丢失，等确定都成功了，再把原来的目录删掉。
 
-下面把 `/data/var/lib/mrmsfiles` 目录软连接原来的 `/var/lib/mrmsfiles` 目录上，命令如下：
+（4） 把新建的目录 `/data/var/lib/mrmsfiles` 软链接原来的 `/var/lib/mrmsfiles` 目录上，命令如下：
 
     # ln -s /data/var/lib/mrmsfiles /var/lib/mrmsfiles
 
-查看软连接是否成功，命令如下：
+（5） 查看软连接是否成功，命令如下：
 
-    # ls /var/lib/mrms*
+    # ll /var/lib/mrms*
 
     lrwxrwxrwx 1 root root        23 May 26 17:56 mrmsfiles -> /data/var/lib/mrmsfiles/
     -rw-r--r-- 1 root root 881408246 Sep 23  2016 mrmsfiles.tar.gz
 
-如果看到 `mrmsfiles -> /data/var/lib/mrmsfiles/` 就说明软链接成功了，使用 `cd /var/lib/mrmsfiles` 进去看看文件是否正确就知道了。
+如果看到 `mrmsfiles -> /data/var/lib/mrmsfiles/` 就说明软链接成功了，使用 `cd /var/lib/mrmsfiles` 命令进去看看文件是否正确。
 
 ### 2.3 删除原目录 ###
 
-确定软链接和文件都正确以后，使用第 3 小节的方式验证，再删除原来的文件夹 `/var/lib/mrmsfiles_old`，命令如下：
+确定软链接和文件都正确以后，使用 `3. Web 验证` 小节的方式验证文件是否可以正常访问，再执行删除 `/var/lib/mrmsfiles_old` 目录的命令，命令如下：
 
     # rm -r -f /var/lib/mrmsfiles_old
 
-如果发现有文件被其他进程占用，无法完全删除，可以使用 `Ctrl+C` 暂停卡住的删除命令，重启系统，再执行一边该命令即可。
+如果发现有文件被其他进程占用，删除命令无法正常返回，可以在 `SSH` 终端里按下 `Ctrl + C` 来中断卡住的删除命令，重启系统，再执行一遍该命令即可。
 
-## 3. 验证 ##
+## 3. Web 验证 ##
 
 厦门马拉松官网：
 
@@ -220,11 +230,11 @@
 
 ## 4. 其他有用的命令 ##
 
-查看一个目录下所有文件和子文件夹的总大小:
+（1） 查看一个目录下所有文件和子文件夹的总大小，比如 `/home` 目录:
 
     $ sudo du -bsh /home
 
-查询一个目录下前 `10` 个最大的文件或文件夹：
+（2） 查询一个 `/var` 目录下前 `10` 个最大的文件或文件夹：
 
     // (文件大小以KB为单位)
     $ sudo du -a /var | sort -n -r | head -n 10
