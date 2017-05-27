@@ -6,18 +6,18 @@
 
 我们的一台阿里云服务器，这里简称 `文件服务器`，由于一开始的疏忽，上传的文件已经把系统盘 `40G` 占满了，几乎没空闲磁盘空间了。这台机器上原本就准备了一个`200G` 的磁盘，只是没有挂载使用而已（硬件上已经启用了的），它跟 `40G` 的系统盘一样，也是一个虚拟云盘。我们需要做的是，把系统盘上的一些文件或文件夹迁移到那未使用的 `200G` 数据盘上，以缓解系统盘的存储容量压力。
 
-系统架构是这样的，有 `Web1`, `Web2`, `Web3`, `Web4` 共四台 `Web服务器` 通过 `nfs` 挂载的方式，都把本地的 `/var/lib/mrmsfiles` 文件夹映射到了后端的这台 `文件服务器` 上的同名文件夹上，挂载过程如下：
+系统架构是这样的，有 `Web1`, `Web2`, `Web3`, `Web4` 共四台 `Web服务器` 通过 `nfs` 挂载的方式，都把本地的 `/var/lib/webfiles` 文件夹映射到了后端的这台 `文件服务器` 上的同名文件夹上，挂载过程如下：
 
     // 安装 nfs
     # apt-get install nfs-common
 
     // 挂载命令
-    # mount 192.168.3.177:/var/lib/mrmsfiles /var/lib/mrmsfiles
+    # mount 192.168.3.177:/var/lib/webfiles /var/lib/webfiles
     // 或者
-    # mount 192.168.3.177:/data/var/lib/mrmsfiles /var/lib/mrmsfiles
+    # mount 192.168.3.177:/data/var/lib/webfiles /var/lib/webfiles
 
-    // 卸载 /var/lib/mrmsfiles 的挂载
-    # umount /var/lib/mrmsfiles
+    // 卸载 /var/lib/webfiles 的挂载
+    # umount /var/lib/webfiles
 
 （注：上面 `mount` 命令中也可以加入 `-t nfs` 参数试试，但实际使用中好像加这个参数反而会 `mount` 失败，不会报错，但挂载不成功。）
 
@@ -181,52 +181,48 @@
 
 为了方便以后扩展，我们拷贝的时候，把原来的文件结构也照搬过来，这样比较灵活，也比较清晰一点。
 
-（1） 在 `/data` 目录下面新建 `/data/var/lib/mrmsfiles/` 子目录，一个命令就可以搞定:
+（1） 在 `/data` 目录下面新建 `/data/var/lib/webfiles/` 子目录，一个命令就可以搞定:
 
-    # mkdir -p /data/var/lib/mrmsfiles/
+    # mkdir -p /data/var/lib/webfiles/
 
-（2） 把 `/var/lib/mrmsfiles/` 目录下面的所有文件和文件夹复制到 `/data/var/lib/mrmsfiles` 目录:
+（2） 把 `/var/lib/webfiles/` 目录下面的所有文件和文件夹复制到 `/data/var/lib/webfiles` 目录:
 
-    # cp -p -r /var/lib/mrmsfiles/. /data/var/lib/mrmsfiles/
+    # cp -p -r /var/lib/webfiles/. /data/var/lib/webfiles/
 
 注：`-p` 参数表示 `same as --preserve=mode,ownership,timestamps`，即保留源文件或文件夹的模式，归属关系，时间戳等。
 
-（3） 复制完成以后，先把原来的 `mrmsfiles` 文件夹改名为 `mrmsfiles_old`：
+（3） 复制完成以后，先把原来的 `webfiles` 文件夹改名为 `webfiles_old`：
 
-    # mv /var/lib/mrmsfiles /var/lib/mrmsfiles_old
+    # mv /var/lib/webfiles /var/lib/webfiles_old
 
 这样做的好处是，如果复制或者软链接失败，原来的文件和文件夹还是存在的，以免丢失，等确定都成功了，再把原来的目录删掉。
 
-（4） 把新建的目录 `/data/var/lib/mrmsfiles` 软链接原来的 `/var/lib/mrmsfiles` 目录上，命令如下：
+（4） 把新建的目录 `/data/var/lib/webfiles` 软链接原来的 `/var/lib/webfiles` 目录上，命令如下：
 
-    # ln -s /data/var/lib/mrmsfiles /var/lib/mrmsfiles
+    # ln -s /data/var/lib/webfiles /var/lib/webfiles
 
 （5） 查看软连接是否成功，命令如下：
 
-    # ll /var/lib/mrms*
+    # ll /var/lib/web*
 
-    lrwxrwxrwx 1 root root        23 May 26 17:56 mrmsfiles -> /data/var/lib/mrmsfiles/
-    -rw-r--r-- 1 root root 881408246 Sep 23  2016 mrmsfiles.tar.gz
+    lrwxrwxrwx 1 root root        23 May 26 17:56 webfiles -> /data/var/lib/webfiles/
+    -rw-r--r-- 1 root root 881408246 Sep 23  2016 webfiles.tar.gz
 
-如果看到 `mrmsfiles -> /data/var/lib/mrmsfiles/` 就说明软链接成功了，使用 `cd /var/lib/mrmsfiles` 命令进去看看文件是否正确。
+如果看到 `webfiles -> /data/var/lib/webfiles/` 就说明软链接成功了，使用 `cd /var/lib/webfiles` 命令进去看看文件是否正确。
 
 ### 2.3 删除原目录 ###
 
-确定软链接和文件都正确以后，使用 `3. Web 验证` 小节的方式验证文件是否可以正常访问，再执行删除 `/var/lib/mrmsfiles_old` 目录的命令，命令如下：
+确定软链接和文件都正确以后，使用 `3. Web 验证` 小节的方式验证文件是否可以正常访问，再执行删除 `/var/lib/webfiles_old` 目录的命令，命令如下：
 
-    # rm -r -f /var/lib/mrmsfiles_old
+    # rm -r -f /var/lib/webfiles_old
 
 如果发现有文件被其他进程占用，删除命令无法正常返回，可以在 `SSH` 终端里按下 `Ctrl + C` 来中断卡住的删除命令，重启系统，再执行一遍该命令即可。
 
 ## 3. Web 验证 ##
 
-厦门马拉松官网：
-
-[http://www.xmim.org](http://www.xmim.org)
-
 图片验证的地址：
 
-[http://mrms.skyinno.com/AdvertisementImage/2016-12-31/33f2ad80b42d40da9cc2d9a9c82682a3.jpg](http://mrms.skyinno.com/AdvertisementImage/2016-12-31/33f2ad80b42d40da9cc2d9a9c82682a3.jpg)
+[http://www.example.com/AdvertisementImage/2016-12-31/33f2ad80b42d40da9cc2d9a9c82682a3.jpg](http://www.example.com/AdvertisementImage/2016-12-31/33f2ad80b42d40da9cc2d9a9c82682a3.jpg)
 
 ## 4. 其他有用的命令 ##
 

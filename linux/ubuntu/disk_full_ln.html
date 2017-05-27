@@ -123,11 +123,11 @@ ul, ol {
   padding-left: 30px;
 }
 
-ul li > :first-child,
-ol li > :first-child,
-ul li ul:first-of-type,
-ol li ol:first-of-type,
-ul li ol:first-of-type,
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
 ol li ul:first-of-type {
   margin-top: 0px;
 }
@@ -309,17 +309,17 @@ img {
 <h1>解决 Linux 服务器 nfs 挂载目录磁盘已满的问题</h1>
 <h2>1. 需求</h2>
 <p>我们的一台阿里云服务器，这里简称 <code>文件服务器</code>，由于一开始的疏忽，上传的文件已经把系统盘 <code>40G</code> 占满了，几乎没空闲磁盘空间了。这台机器上原本就准备了一个<code>200G</code> 的磁盘，只是没有挂载使用而已（硬件上已经启用了的），它跟 <code>40G</code> 的系统盘一样，也是一个虚拟云盘。我们需要做的是，把系统盘上的一些文件或文件夹迁移到那未使用的 <code>200G</code> 数据盘上，以缓解系统盘的存储容量压力。</p>
-<p>系统架构是这样的，有 <code>Web1</code>, <code>Web2</code>, <code>Web3</code>, <code>Web4</code> 共四台 <code>Web服务器</code> 通过 <code>nfs</code> 挂载的方式，都把本地的 <code>/var/lib/mrmsfiles</code> 文件夹映射到了后端的这台 <code>文件服务器</code> 上的同名文件夹上，挂载过程如下：</p>
+<p>系统架构是这样的，有 <code>Web1</code>, <code>Web2</code>, <code>Web3</code>, <code>Web4</code> 共四台 <code>Web服务器</code> 通过 <code>nfs</code> 挂载的方式，都把本地的 <code>/var/lib/webfiles</code> 文件夹映射到了后端的这台 <code>文件服务器</code> 上的同名文件夹上，挂载过程如下：</p>
 <pre><code>// 安装 nfs
 # apt-get install nfs-common
 
 // 挂载命令
-# mount 192.168.3.177:/var/lib/mrmsfiles /var/lib/mrmsfiles
+# mount 192.168.3.177:/var/lib/webfiles /var/lib/webfiles
 // 或者
-# mount 192.168.3.177:/data/var/lib/mrmsfiles /var/lib/mrmsfiles
+# mount 192.168.3.177:/data/var/lib/webfiles /var/lib/webfiles
 
-// 卸载 /var/lib/mrmsfiles 的挂载
-# umount /var/lib/mrmsfiles
+// 卸载 /var/lib/webfiles 的挂载
+# umount /var/lib/webfiles
 </code></pre>
 
 <p>（注：上面 <code>mount</code> 命令中也可以加入 <code>-t nfs</code> 参数试试，但实际使用中好像加这个参数反而会 <code>mount</code> 失败，不会报错，但挂载不成功。）</p>
@@ -464,43 +464,41 @@ none            100M     0  100M   0% /run/user
 <p>最后一行，就表明了 <code>/dev/vdb1</code> 已成功挂载到了 <code>/data</code> 目录。</p>
 <h3>2.2 拷贝文件</h3>
 <p>为了方便以后扩展，我们拷贝的时候，把原来的文件结构也照搬过来，这样比较灵活，也比较清晰一点。</p>
-<p>（1） 在 <code>/data</code> 目录下面新建 <code>/data/var/lib/mrmsfiles/</code> 子目录，一个命令就可以搞定:</p>
-<pre><code># mkdir -p /data/var/lib/mrmsfiles/
+<p>（1） 在 <code>/data</code> 目录下面新建 <code>/data/var/lib/webfiles/</code> 子目录，一个命令就可以搞定:</p>
+<pre><code># mkdir -p /data/var/lib/webfiles/
 </code></pre>
 
-<p>（2） 把 <code>/var/lib/mrmsfiles/</code> 目录下面的所有文件和文件夹复制到 <code>/data/var/lib/mrmsfiles</code> 目录:</p>
-<pre><code># cp -p -r /var/lib/mrmsfiles/. /data/var/lib/mrmsfiles/
+<p>（2） 把 <code>/var/lib/webfiles/</code> 目录下面的所有文件和文件夹复制到 <code>/data/var/lib/webfiles</code> 目录:</p>
+<pre><code># cp -p -r /var/lib/webfiles/. /data/var/lib/webfiles/
 </code></pre>
 
 <p>注：<code>-p</code> 参数表示 <code>same as --preserve=mode,ownership,timestamps</code>，即保留源文件或文件夹的模式，归属关系，时间戳等。</p>
-<p>（3） 复制完成以后，先把原来的 <code>mrmsfiles</code> 文件夹改名为 <code>mrmsfiles_old</code>：</p>
-<pre><code># mv /var/lib/mrmsfiles /var/lib/mrmsfiles_old
+<p>（3） 复制完成以后，先把原来的 <code>webfiles</code> 文件夹改名为 <code>webfiles_old</code>：</p>
+<pre><code># mv /var/lib/webfiles /var/lib/webfiles_old
 </code></pre>
 
 <p>这样做的好处是，如果复制或者软链接失败，原来的文件和文件夹还是存在的，以免丢失，等确定都成功了，再把原来的目录删掉。</p>
-<p>（4） 把新建的目录 <code>/data/var/lib/mrmsfiles</code> 软链接原来的 <code>/var/lib/mrmsfiles</code> 目录上，命令如下：</p>
-<pre><code># ln -s /data/var/lib/mrmsfiles /var/lib/mrmsfiles
+<p>（4） 把新建的目录 <code>/data/var/lib/webfiles</code> 软链接原来的 <code>/var/lib/webfiles</code> 目录上，命令如下：</p>
+<pre><code># ln -s /data/var/lib/webfiles /var/lib/webfiles
 </code></pre>
 
 <p>（5） 查看软连接是否成功，命令如下：</p>
-<pre><code># ll /var/lib/mrms*
+<pre><code># ll /var/lib/web*
 
-lrwxrwxrwx 1 root root        23 May 26 17:56 mrmsfiles -&gt; /data/var/lib/mrmsfiles/
--rw-r--r-- 1 root root 881408246 Sep 23  2016 mrmsfiles.tar.gz
+lrwxrwxrwx 1 root root        23 May 26 17:56 webfiles -&gt; /data/var/lib/webfiles/
+-rw-r--r-- 1 root root 881408246 Sep 23  2016 webfiles.tar.gz
 </code></pre>
 
-<p>如果看到 <code>mrmsfiles -&gt; /data/var/lib/mrmsfiles/</code> 就说明软链接成功了，使用 <code>cd /var/lib/mrmsfiles</code> 命令进去看看文件是否正确。</p>
+<p>如果看到 <code>webfiles -&gt; /data/var/lib/webfiles/</code> 就说明软链接成功了，使用 <code>cd /var/lib/webfiles</code> 命令进去看看文件是否正确。</p>
 <h3>2.3 删除原目录</h3>
-<p>确定软链接和文件都正确以后，使用 <code>3. Web 验证</code> 小节的方式验证文件是否可以正常访问，再执行删除 <code>/var/lib/mrmsfiles_old</code> 目录的命令，命令如下：</p>
-<pre><code># rm -r -f /var/lib/mrmsfiles_old
+<p>确定软链接和文件都正确以后，使用 <code>3. Web 验证</code> 小节的方式验证文件是否可以正常访问，再执行删除 <code>/var/lib/webfiles_old</code> 目录的命令，命令如下：</p>
+<pre><code># rm -r -f /var/lib/webfiles_old
 </code></pre>
 
-<p>如果发现有文件被其他进程占用，删除命令无法正常返回，可以在终端里按下 <code>Ctrl + C</code> 来中断卡住的删除命令，重启系统，再执行一遍该命令即可。</p>
+<p>如果发现有文件被其他进程占用，删除命令无法正常返回，可以在 <code>SSH</code> 终端里按下 <code>Ctrl + C</code> 来中断卡住的删除命令，重启系统，再执行一遍该命令即可。</p>
 <h2>3. Web 验证</h2>
-<p>厦门马拉松官网：</p>
-<p><a href="http://www.xmim.org">http://www.xmim.org</a></p>
 <p>图片验证的地址：</p>
-<p><a href="http://mrms.skyinno.com/AdvertisementImage/2016-12-31/33f2ad80b42d40da9cc2d9a9c82682a3.jpg">http://mrms.skyinno.com/AdvertisementImage/2016-12-31/33f2ad80b42d40da9cc2d9a9c82682a3.jpg</a></p>
+<p><a href="http://www.example.com/AdvertisementImage/2016-12-31/33f2ad80b42d40da9cc2d9a9c82682a3.jpg">http://www.example.com/AdvertisementImage/2016-12-31/33f2ad80b42d40da9cc2d9a9c82682a3.jpg</a></p>
 <h2>4. 其他有用的命令</h2>
 <p>（1） 查看一个目录下所有文件和子文件夹的总大小，比如 <code>/home</code> 目录:</p>
 <pre><code>$ sudo du -bsh /home
@@ -515,6 +513,7 @@ $ sudo du -am /var | sort -n -r | head -n 10
 </code></pre>
 
 <p>&lt;.End.&gt;</p>
+
 </body>
 </html>
 <!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
