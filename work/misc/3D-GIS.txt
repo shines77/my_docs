@@ -1,0 +1,50 @@
+
+-----------------------------------------------------------------------------
+
+https://cesiumjs.org
+
+https://cesiumjs.org/Cesium/Apps/Sandcastle/index.html?src=Hello%20World.html&label=All
+
+这个演示效果还可以，马马虎虎。
+
+-----------------------------------------------------------------------------
+
+13 Free GIS Software Options: Map the World in Open Source
+
+http://gisgeography.com/free-gis-software/
+
+13种开源的 GIS 软件，这不是 3D 的。
+
+-----------------------------------------------------------------------------
+
+Open Source GIS Software List for 3D Map
+
+http://grindgis.com/blog/open-source-gis-software-3d-map
+
+QGIS (QGIS2Threejs)
+
+GRASS GIS
+
+Blender
+
+SAGA Software
+
+MICRODEM
+
+TatukGIS
+
+-----------------------------------------------------------------------------
+
+http://www.geogeoglobal.com/blog/2015/1/13/creating-3d-worlds-using-open-source-gis
+
+http://geogeo.info/airborne/culzean.html
+
+第二个链接是演示地址
+
+-----------------------------------------------------------------------------
+
+景伟行
+
+http://www.gvitech.com
+
+-----------------------------------------------------------------------------
