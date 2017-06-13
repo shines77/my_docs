@@ -1414,3 +1414,44 @@ VC++ 创建Windows服务
 http://blog.csdn.net/liuzhihan209/article/details/8763266
 
 -------------------------------------------------------------------------------------------------
+
+reactos 源码
+
+https://download.reactos.org/reactos/ReactOS/0.4.4/
+
+ntoskrnl.exe -- /ntoskrnl/ps/query.c 源码
+
+NtQueryInformationProcess()
+
+https://doxygen.reactos.org/d8/d22/ntoskrnl_2ps_2query_8c_source.html
+
+--------------------------------------------------------------------------------------------------
+
+SFilter框架理解
+
+http://blog.csdn.net/zhuhuibeishadiao/article/details/51178901
+
+--------------------------------------------------------------------------------------------------
+
+Names in Minifilters - Using FltGetTunneledName() (可能要翻墙)
+
+http://fsfilters.blogspot.com/2011/03/names-in-minifilters-using.html
+
+可以使用  FltGetTunneledName() 函数获取 IRP_MJ_CREATE 里执行了 IRP_MJ_SET_INFORMATION 后的文件原始文件名.
+
+--------------------------------------------------------------------------------------------------
+
+PsReferenceProcessFilePointer() (硬编码)
+
+EPROCESS 取进程全路径(xp) 
+
+http://blog.csdn.net/sidyhe/article/details/43638651
+
+--------------------------------------------------------------------------------------------------
+
+get SectionObject by ObReferenceObjectByHandle in win8 X64
+
+http://osronline.com/showThread.CFM?link=239521
+
+--------------------------------------------------------------------------------------------------
+

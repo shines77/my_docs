@@ -747,3 +747,16 @@ RocketMQ实战（四）
 http://www.jianshu.com/p/6868ddceaa5b
 
 --------------------------------------------------------------------------------------------------
+
+reactos 源码
+
+https://download.reactos.org/reactos/ReactOS/0.4.4/
+
+ntoskrnl.exe -- /ntoskrnl/ps/query.c 源码
+
+NtQueryInformationProcess()
+
+https://doxygen.reactos.org/d8/d22/ntoskrnl_2ps_2query_8c_source.html
+
+--------------------------------------------------------------------------------------------------
+
