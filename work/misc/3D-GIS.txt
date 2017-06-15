@@ -3,9 +3,13 @@
 
 https://cesiumjs.org
 
+https://cesiumjs.org/demos.html
+
 https://cesiumjs.org/Cesium/Apps/Sandcastle/index.html?src=Hello%20World.html&label=All
 
-这个演示效果还可以，马马虎虎。
+第二个链接里有 NewYork City 的3DGIS浏览，Demos 效果都很强力。
+
+第三个链接是一些简单的例子（这个地址打开有点慢，可能还需要翻墙），演示效果还可以，例子的效果马马虎虎，有地形，也有其他模型的渲染。
 
 -----------------------------------------------------------------------------
 
@@ -13,7 +17,7 @@ https://cesiumjs.org/Cesium/Apps/Sandcastle/index.html?src=Hello%20World.html&la
 
 http://gisgeography.com/free-gis-software/
 
-13种开源的 GIS 软件，这不是 3D 的。
+13种开源的 GIS 软件，但是是 2D 的，不是 3D 的，也许可以顺藤摸瓜。
 
 -----------------------------------------------------------------------------
 
@@ -39,7 +43,7 @@ http://www.geogeoglobal.com/blog/2015/1/13/creating-3d-worlds-using-open-source-
 
 http://geogeo.info/airborne/culzean.html
 
-第二个链接是演示地址
+第二个链接是演示地址，马马虎虎，只有地形，没有建筑和其他物件。
 
 -----------------------------------------------------------------------------
 
