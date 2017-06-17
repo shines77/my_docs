@@ -4,6 +4,7 @@
 <title>Ubuntu-14.04-SVN-Server的安装和使用_MarkdownPad2</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style type="text/css">
+<style type="text/css">
 /* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
 /* Author: Nicolas Hery - http://nicolashery.com */
 /* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
@@ -23,7 +24,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 
 body {
   font-family: Helvetica, arial, freesans, clean, sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.6;
   color: #333;
   background-color: #fff;
@@ -122,11 +123,11 @@ ul, ol {
   padding-left: 30px;
 }
 
-ul li > :first-child, 
-ol li > :first-child, 
-ul li ul:first-of-type, 
-ol li ol:first-of-type, 
-ul li ol:first-of-type, 
+ul li > :first-child,
+ol li > :first-child,
+ul li ul:first-of-type,
+ol li ol:first-of-type,
+ul li ol:first-of-type,
 ol li ul:first-of-type {
   margin-top: 0px;
 }
@@ -180,12 +181,24 @@ pre, code, tt {
   font-family: Consolas, "Liberation Mono", Courier, monospace;
 }
 
-code, tt {
+code {
+  font-size: 14px;
   margin: 0 0px;
-  padding: 0px 0px;
+  padding: 3px 5px;
   white-space: nowrap;
-  border: 1px solid #eaeaea;
-  background-color: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  background-color: #f2f2f2;
+  border-radius: 3px;
+  text-decoration: none;
+  color: #880022;
+}
+
+tt {
+  margin: 0 0px;
+  padding: 3px 5px;
+  white-space: nowrap;
+  border: 1px solid #e0e0e0;
+  background-color: #f0f0f0;
   border-radius: 3px;
 }
 
@@ -289,13 +302,14 @@ img {
   max-width: 100%
 }
 </style>
+</style>
 <base href='./'/>
 </head>
 <body>
 <h1>Ubuntu 14.04 SVN Server 的安装和使用</h1>
 <h1>1. 安装 SVN</h1>
 <h2>1.1. SVN 的安装</h2>
-<pre><code>$ sudo apt-get install subversion 
+<pre><code>$ sudo apt-get install subversion
 </code></pre>
 
 <h2>1.2. SVN 根目录</h2>
@@ -303,8 +317,9 @@ img {
 <pre><code>$ mkdir -p /home/skyinno/svn
 </code></pre>
 
-<p>（下面这一步是笔者的特殊情况，正常情况下一般是不需要这么做的。）</p>
-<p>但由于服务器的系统盘容量比较小，不希望 <code>SVN</code> 仓库的目录占用系统盘的空间，所以可以把 <code>/home/skyinno/svn</code> 软连接到 <code>/data/svn</code> 目录。（<code>/data</code> 目录所在的磁盘容量比较大，35TB。）</p>
+<h3>1.2.1. 为 SVN 根目录软连接</h3>
+<p>（注：正常情况下是不需要做这一步的软链接的，这是笔者的特殊情况，请跳过此步。）</p>
+<p>由于服务器的 <code>系统盘</code> 容量比较小，不希望 <code>SVN</code> 仓库的目录占用 <code>系统盘</code> 的空间，所以我们把 <code>/home/skyinno/svn</code> 软连接到 <code>/data/svn</code> 目录。（这里 <code>/data</code> 目录所在的磁盘容量比较大，共有 <code>35TB</code>。）</p>
 <p>先在 <code>/data</code> 目录下创建 <code>svn</code> 目录：</p>
 <pre><code>$ sudo mkdir -p /data/svn
 </code></pre>
@@ -313,7 +328,12 @@ img {
 <pre><code>$ sudo ln -s /data/svn /home/skyinno/svn
 </code></pre>
 
-<p>如果 <code>/home/skyinno/svn</code> 文件夹已存在，如果里面是空的，则可以使用 rm 命令直接删除；如果不是空的，先把原来的 <code>svn</code> 目录里的内容都复制到 <code>/data/svn/</code> 下面，再将其改名，再做软连接。</p>
+<p>当然，这里要求 <code>/home/skyinno/svn</code> 不能存在，如果 <code>/home/skyinno/svn</code> 文件夹已经存在，上面的命令会报错。如果该文件夹里面是空的，什么都没有，则可以使用 <code>rm</code> 命令直接删除该目录；如果不是空的，先把原来的 <code>/home/skyinno/svn</code> 目录改名为 <code>/home/skyinno/svn.old</code>，再把 <code>/home/skyinno/svn.old</code> 目录里的内容复制到 <code>/data/svn/</code> 目录下面，再做软连接。具体步骤如下：</p>
+<pre><code>$ sudo mv /home/skyinno/svn /home/skyinno/svn.old
+$ sudo cp -r /home/skyinno/svn.old/. /data/svn/
+$ sudo ln -s /data/svn /home/skyinno/svn
+</code></pre>
+
 <h1>2. 配置和使用 SVN</h1>
 <h2>2.1. 创建 SVN 仓库</h2>
 <p>创建一个名为 <code>myrepo</code> 的仓库：</p>
@@ -342,40 +362,54 @@ $ ll -h
 -rw-r--r-- 1 root root 4002 Oct 21 14:28 svnserve.conf
 </code></pre>
 
-<p>其中 <code>svnserve.conf</code> 是仓库的一些设置，<code>passwd</code> 是验证用户的用户名和密码，是明文的，未加密。<code>authz</code> 是验证和读写权限相关的设置。</p>
+<p>其中 <code>svnserve.conf</code> 是 <code>SVN</code> 仓库的一些设置，<code>passwd</code> 是验证用户的用户名和密码，是明文的，未加密。<code>authz</code> 是验证和读写权限相关的设置。</p>
 <h2>2.2. 配置 SVN 仓库</h2>
 <p>我们只需要修改 <code>svnserve.conf</code> 和 <code>passwd</code> 文件即可，<code>authz</code> 的配置稍微复杂一点，此处不详细介绍。</p>
-<p>修改 <code>svnserve.conf</code> 的配置，把下面三行的注释去掉，记得顶格（最前面不能有空格）：</p>
-<pre><code>$ sudo vim /home/skyinno/svn/myrepo/conf/svnserve.conf
+<p>编辑 <code>svnserve.conf</code> 文件：</p>
+<pre><code>$ cd /home/skyinno/svn/myrepo
+$ cd conf
+$ sudo vim svnserve.conf
+</code></pre>
 
-anon-access = none
+<p>找到配置文件里分别包含以下三行的语句：</p>
+<pre><code># anon-access = read
+# auth-access = write
+
+# password-db = passwd
+</code></pre>
+
+<p>把前面的注释 “<code>#</code> ” 去掉，记得顶格（最前面不能有空格），并修改为如下形式，<code>read</code> 改为 <code>none</code>：</p>
+<pre><code>anon-access = none
 auth-access = write
+
 password-db = passwd
 </code></pre>
 
 <p>这里，我们不希望匿名用户浏览和访问仓库，所以 <code>anon-access</code> 设置为 <code>none</code>，一般默认设置为 <code>read</code> 。更详细的解释为：</p>
-<pre><code># 去掉#[general]前面的#号  
+<pre><code># 如果[general]前面有#号，则去掉#号（注释）
 [general]
 
-# 匿名访问的权限，可以是read, write, none, 默认为 read
+# 匿名访问的权限，可以是 read, write, none, 默认为 read。
 # 设置成 none 的意思就是不允许匿名用户访问（读/写）
 anon-access = none
 
-# 认证用户的权限，可以是read, write, none, 默认为 write
+# 认证用户的权限，可以是 read, write, none, 默认为 write。
 auth-access = write
 
-# 密码数据库的路径，去掉前面的#
+# 密码数据库的路径，去掉前面的 “# ”
 password-db = passwd
 </code></pre>
 
 <p>修改 <code>passwd</code> 文件，配置用户名和密码：</p>
-<pre><code>$ sudo vim /home/skyinno/svn/myrepo/conf/passwd
+<pre><code>$ cd /home/skyinno/svn/myrepo
+$ cd conf
+$ sudo vim passwd
 
 [users]
 # harry = harryssecret
 # sally = sallyssecret
 shines77 = abcd5678
-jicui = abcd1234
+xiaoji = abcd1234
 </code></pre>
 
 <p>最好按这个格式，前面顶格，<code>=</code> 号之间保留空格，以免出现不必要的错误。</p>
@@ -401,7 +435,7 @@ tcp     0     0 0.0.0.0:3690    0.0.0.0:*       LISTEN     16630/svnserve
 <p>如果想让 <code>SVN</code> 跟随系统开机自动启动，可以把 <code>svnserve</code> 的启动参数写到 <code>/etc/rc.local</code> 文件里，例如：</p>
 <pre><code>$ sudo vim /etc/rc.local
 
-# 此处省略......
+# 此处文件头若干内容省略 ......
 
 svnserve -d -r /home/skyinno/svn
 exit 0
@@ -479,13 +513,13 @@ $ sudo service apache2 restart
 
 <p>其中，<code>-c</code> 代表是新建 <code>passwd</code> 文件（会删掉旧的文件），所以这个参数只是在添加第一个用户的使用，否则旧的授权信息就被删掉了。，例如：</p>
 <pre><code>$ sudo htpasswd -c /etc/apache2/dav_svn.passwd shines77
-$ sudo htpasswd /etc/apache2/dav_svn.passwd jicui
-$ sudo htpasswd /etc/apache2/dav_svn.passwd zhangxiaojun
-$ sudo htpasswd /etc/apache2/dav_svn.passwd cailijuan
-$ sudo htpasswd /etc/apache2/dav_svn.passwd wuxiang
-$ sudo htpasswd /etc/apache2/dav_svn.passwd hanxianghui
-$ sudo htpasswd /etc/apache2/dav_svn.passwd dongzhe
-$ sudo htpasswd /etc/apache2/dav_svn.passwd guoxionghui
+$ sudo htpasswd /etc/apache2/dav_svn.passwd xiaoji
+$ sudo htpasswd /etc/apache2/dav_svn.passwd xiaoming
+$ sudo htpasswd /etc/apache2/dav_svn.passwd xiaocai
+$ sudo htpasswd /etc/apache2/dav_svn.passwd xiaowu
+$ sudo htpasswd /etc/apache2/dav_svn.passwd xiaohan
+$ sudo htpasswd /etc/apache2/dav_svn.passwd xiaodong
+$ sudo htpasswd /etc/apache2/dav_svn.passwd xiaoguo
 $ sudo htpasswd /etc/apache2/dav_svn.passwd guest
 </code></pre>
 
@@ -496,16 +530,25 @@ $ sudo htpasswd /etc/apache2/dav_svn.passwd guest
 
 <p>其中 <code>localhost</code> 改成你的 <code>SVN</code> 服务器的 <code>IP</code> 地址即可。</p>
 <h1>4. 参考文章</h1>
+<ol>
+<li>
 <p>Ubuntu 下 SVN 安装和配置<br/>
 <a href="http://zhan.renren.com/itbegin?gid=3602888498033631485&amp;checked=true">http://zhan.renren.com/itbegin?gid=3602888498033631485&amp;checked=true</a></p>
+</li>
+<li>
 <p>Ubuntu 下搭建 SVN 服务器（Subversion）<br/>
 <a href="https://my.oschina.net/huangsz/blog/176128">https://my.oschina.net/huangsz/blog/176128</a></p>
+</li>
+<li>
 <p>Ubuntu 安装和配置 SVN （里面有对如何配置 <code>authz</code> 文件更详细的说明）<br/>
 <a href="http://www.cnblogs.com/wuhou/archive/2008/09/30/1302471.html">http://www.cnblogs.com/wuhou/archive/2008/09/30/1302471.html</a></p>
+</li>
+<li>
 <p>SVN 命令使用详解<br/>
 <a href="http://blog.sina.com.cn/s/blog_963453200101eiuq.html">http://blog.sina.com.cn/s/blog_963453200101eiuq.html</a></p>
+</li>
+</ol>
 <p>.</p>
-
 </body>
 </html>
 <!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->

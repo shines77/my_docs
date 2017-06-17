@@ -5,7 +5,7 @@ Ubuntu 14.04 SVN Server 的安装和使用
 
 ## 1.1. SVN 的安装 ##
 
-    $ sudo apt-get install subversion 
+    $ sudo apt-get install subversion
 
 ## 1.2. SVN 根目录 ##
 
@@ -13,9 +13,11 @@ Ubuntu 14.04 SVN Server 的安装和使用
 
     $ mkdir -p /home/skyinno/svn
 
-（下面这一步是笔者的特殊情况，正常情况下一般是不需要这么做的。）
+### 1.2.1. 为 SVN 根目录软连接 ###
 
-但由于服务器的系统盘容量比较小，不希望 `SVN` 仓库的目录占用系统盘的空间，所以可以把 `/home/skyinno/svn` 软连接到 `/data/svn` 目录。（`/data` 目录所在的磁盘容量比较大，35TB。）
+（注：正常情况下是不需要做这一步的软链接的，这是笔者的特殊情况，请跳过此步。）
+
+由于服务器的 `系统盘` 容量比较小，不希望 `SVN` 仓库的目录占用 `系统盘` 的空间，所以我们把 `/home/skyinno/svn` 软连接到 `/data/svn` 目录。（这里 `/data` 目录所在的磁盘容量比较大，共有 `35TB`。）
 
 先在 `/data` 目录下创建 `svn` 目录：
 
@@ -23,9 +25,13 @@ Ubuntu 14.04 SVN Server 的安装和使用
 
 然后设置软连接，把 `/home/skyinno/svn` 软连接到 `/data/svn` 目录：
 
-    $ sudo ln -s /data/svn/ /home/skyinno/svn/
+    $ sudo ln -s /data/svn /home/skyinno/svn
 
-如果 `/home/skyinno/svn/` 文件已存在，如果里面是空的，则可以直接删除；如果不是空的，先将其改名，再做软连接，做完软连接，再把原来的 `svn` 目录里的内容都复制到 `/data/svn/` 里。
+当然，这里要求 `/home/skyinno/svn` 不能存在，如果 `/home/skyinno/svn` 文件夹已经存在，上面的命令会报错。如果该文件夹里面是空的，什么都没有，则可以使用 `rm` 命令直接删除该目录；如果不是空的，先把原来的 `/home/skyinno/svn` 目录改名为 `/home/skyinno/svn.old`，再把 `/home/skyinno/svn.old` 目录里的内容复制到 `/data/svn/` 目录下面，再做软连接。具体步骤如下：
+
+    $ sudo mv /home/skyinno/svn /home/skyinno/svn.old
+    $ sudo cp -r /home/skyinno/svn.old/. /data/svn/
+    $ sudo ln -s /data/svn /home/skyinno/svn
 
 # 2. 配置和使用 SVN #
 
@@ -39,7 +45,7 @@ Ubuntu 14.04 SVN Server 的安装和使用
 
     $ cd /home/skyinno/svn/myrepo
     $ ll -h
-    
+
     drwxr-xr-x 2 root root 4096 Oct 21 14:28 conf/
     drwxr-sr-x 6 root root 4096 Oct 21 14:29 db/
     -r--r--r-- 1 root root    2 Oct 21 14:28 format
@@ -51,50 +57,64 @@ Ubuntu 14.04 SVN Server 的安装和使用
 
     $ cd conf
     $ ll -h
-    
+
     -rw-r--r-- 1 root root 1080 Oct 21 14:28 authz
     -rw-r--r-- 1 root root  885 Oct 21 14:28 hooks-env.tmpl
     -rw-r--r-- 1 root root  309 Oct 21 14:28 passwd
     -rw-r--r-- 1 root root 4002 Oct 21 14:28 svnserve.conf
 
-其中 `svnserve.conf` 是仓库的一些设置，`passwd` 是验证用户的用户名和密码，是明文的，未加密。`authz` 是验证和读写权限相关的设置。
+其中 `svnserve.conf` 是 `SVN` 仓库的一些设置，`passwd` 是验证用户的用户名和密码，是明文的，未加密。`authz` 是验证和读写权限相关的设置。
 
 ## 2.2. 配置 SVN 仓库 ##
 
 我们只需要修改 `svnserve.conf` 和 `passwd` 文件即可，`authz` 的配置稍微复杂一点，此处不详细介绍。
 
-修改 `svnserve.conf` 的配置，把下面三行的注释去掉，记得顶格（最前面不能有空格）：
+编辑 `svnserve.conf` 文件：
 
-    $ sudo vim /home/skyinno/svn/myrepo/conf/svnserve.conf
-    
+    $ cd /home/skyinno/svn/myrepo
+    $ cd conf
+    $ sudo vim svnserve.conf
+
+找到配置文件里分别包含以下三行的语句：
+
+    # anon-access = read
+    # auth-access = write
+
+    # password-db = passwd
+
+把前面的注释 “`#` ” 去掉，记得顶格（最前面不能有空格），并修改为如下形式，`read` 改为 `none`：
+
     anon-access = none
     auth-access = write
+
     password-db = passwd
 
 这里，我们不希望匿名用户浏览和访问仓库，所以 `anon-access` 设置为 `none`，一般默认设置为 `read` 。更详细的解释为：
 
-    # 去掉#[general]前面的#号  
+    # 如果[general]前面有#号，则去掉#号（注释）
     [general]
-    
-    # 匿名访问的权限，可以是read, write, none, 默认为 read
+
+    # 匿名访问的权限，可以是 read, write, none, 默认为 read。
     # 设置成 none 的意思就是不允许匿名用户访问（读/写）
     anon-access = none
-    
-    # 认证用户的权限，可以是read, write, none, 默认为 write
+
+    # 认证用户的权限，可以是 read, write, none, 默认为 write。
     auth-access = write
-    
-    # 密码数据库的路径，去掉前面的#
+
+    # 密码数据库的路径，去掉前面的 “# ”
     password-db = passwd
 
 修改 `passwd` 文件，配置用户名和密码：
 
-    $ sudo vim /home/skyinno/svn/myrepo/conf/passwd
-    
+    $ cd /home/skyinno/svn/myrepo
+    $ cd conf
+    $ sudo vim passwd
+
     [users]
     # harry = harryssecret
     # sally = sallyssecret
     shines77 = abcd5678
-    jicui = abcd1234
+    xiaoji = abcd1234
 
 最好按这个格式，前面顶格，`=` 号之间保留空格，以免出现不必要的错误。
 
@@ -111,7 +131,7 @@ Ubuntu 14.04 SVN Server 的安装和使用
 检查 `SVN` 服务是否已经启动了，可以使用命令：
 
     $ netstat -ntlp | grep 3690
-    
+
     tcp     0     0 0.0.0.0:3690    0.0.0.0:*       LISTEN     16630/svnserve
 
 关闭服务的命令：
@@ -121,9 +141,9 @@ Ubuntu 14.04 SVN Server 的安装和使用
 如果想让 `SVN` 跟随系统开机自动启动，可以把 `svnserve` 的启动参数写到 `/etc/rc.local` 文件里，例如：
 
     $ sudo vim /etc/rc.local
-    
-    # 此处省略......
-    
+
+    # 此处文件头若干内容省略 ......
+
     svnserve -d -r /home/skyinno/svn
     exit 0
 
@@ -140,7 +160,7 @@ Ubuntu 14.04 SVN Server 的安装和使用
 在 `ReadMe.txt` 文件里随意输入几个字母即可，保存退出，然后执行下面的命令，把目录 `/home/skyinno/svn_repo/myrepo/` 导入到服务器上的 `myrepo` 仓库里：
 
     $ sudo svn import -m "first submit." /home/skyinno/svn_repo/myrepo/ file:///home/skyinno/svn/myrepo/
-    
+
     Adding         /home/skyinno/svn_repo/myrepo/ReadMe.txt
     Committed revision 1.
 
@@ -177,20 +197,20 @@ Ubuntu 14.04 SVN Server 的安装和使用
 然后修改 `/etc/apache2/mods-available/dav_svn.conf` 文件，在后面添加如下内容：
 
     $ sudo vim /etc/apache2/mods-available/dav_svn.conf
-    
+
     <Location /svn/myrepo>
-    
+
       DAV svn
       #SVNPath /home/skyinno/svn/myrepo
       SVNParentPath /home/skyinno/svn
       AuthType Basic
       AuthName "My Subversion Repository"
       AuthUserFile /etc/apache2/dav_svn.passwd
-    
+
       #<LimitExcept GET PROPFIND OPTIONS REPORT>
         Require valid-user
       #</LimitExcept>
-    
+
     </Location>
 
 注：如果需要用户每次登录时都进行用户密码验证，请将 `<LimitExcept GET PROPFIND OPTIONS REPORT>` 与 `</LimitExcept>` 两行注释掉。
@@ -212,13 +232,13 @@ Ubuntu 14.04 SVN Server 的安装和使用
 其中，`-c` 代表是新建 `passwd` 文件（会删掉旧的文件），所以这个参数只是在添加第一个用户的使用，否则旧的授权信息就被删掉了。，例如：
 
     $ sudo htpasswd -c /etc/apache2/dav_svn.passwd shines77
-    $ sudo htpasswd /etc/apache2/dav_svn.passwd jicui
-    $ sudo htpasswd /etc/apache2/dav_svn.passwd zhangxiaojun
-    $ sudo htpasswd /etc/apache2/dav_svn.passwd cailijuan
-    $ sudo htpasswd /etc/apache2/dav_svn.passwd wuxiang
-    $ sudo htpasswd /etc/apache2/dav_svn.passwd hanxianghui
-    $ sudo htpasswd /etc/apache2/dav_svn.passwd dongzhe
-    $ sudo htpasswd /etc/apache2/dav_svn.passwd guoxionghui
+    $ sudo htpasswd /etc/apache2/dav_svn.passwd xiaoji
+    $ sudo htpasswd /etc/apache2/dav_svn.passwd xiaoming
+    $ sudo htpasswd /etc/apache2/dav_svn.passwd xiaocai
+    $ sudo htpasswd /etc/apache2/dav_svn.passwd xiaowu
+    $ sudo htpasswd /etc/apache2/dav_svn.passwd xiaohan
+    $ sudo htpasswd /etc/apache2/dav_svn.passwd xiaodong
+    $ sudo htpasswd /etc/apache2/dav_svn.passwd xiaoguo
     $ sudo htpasswd /etc/apache2/dav_svn.passwd guest
 
 可以看到，创建第二个和第二个以后的用户信息时，都没有添加 `-c` 参数。
@@ -231,17 +251,16 @@ Ubuntu 14.04 SVN Server 的安装和使用
 
 # 4. 参考文章 #
 
-Ubuntu 下 SVN 安装和配置<br/>
+1. Ubuntu 下 SVN 安装和配置<br/>
 [http://zhan.renren.com/itbegin?gid=3602888498033631485&checked=true](http://zhan.renren.com/itbegin?gid=3602888498033631485&checked=true)
 
-Ubuntu 下搭建 SVN 服务器（Subversion）<br/>
+2. Ubuntu 下搭建 SVN 服务器（Subversion）<br/>
 [https://my.oschina.net/huangsz/blog/176128](https://my.oschina.net/huangsz/blog/176128)
 
-
-Ubuntu 安装和配置 SVN （里面有对如何配置 `authz` 文件更详细的说明）<br/>
+3. Ubuntu 安装和配置 SVN （里面有对如何配置 `authz` 文件更详细的说明）<br/>
 [http://www.cnblogs.com/wuhou/archive/2008/09/30/1302471.html](http://www.cnblogs.com/wuhou/archive/2008/09/30/1302471.html)
 
-SVN 命令使用详解<br/>
+4. SVN 命令使用详解<br/>
 [http://blog.sina.com.cn/s/blog_963453200101eiuq.html](http://blog.sina.com.cn/s/blog_963453200101eiuq.html)
 
 .
