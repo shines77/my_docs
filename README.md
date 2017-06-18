@@ -1,2 +1,2 @@
 # my_docs
-Some tech documents about Linux tips, my work or my favorites.
+Some documents or links about Linux tips, my job and my favorites.
