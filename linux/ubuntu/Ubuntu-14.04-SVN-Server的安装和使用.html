@@ -313,12 +313,12 @@ img {
 </code></pre>
 
 <h2>1.2. SVN 根目录</h2>
-<p>我们把 <code>/home/skyinno/svn/</code> 作为 <code>SVN</code> 仓库的根目录。</p>
+<p>例如，我们把 <code>/home/skyinno/svn/</code> 作为 <code>SVN</code> ，创建该目录，命令如下：</p>
 <pre><code>$ mkdir -p /home/skyinno/svn
 </code></pre>
 
 <h3>1.2.1. 为 SVN 根目录软连接</h3>
-<p>（注：正常情况下是不需要做这一步的软链接的，这是笔者的特殊情况，请跳过此步。）</p>
+<p>（注：一般情况下请跳过这一步，不是必须的，这是笔者的特殊需求。）</p>
 <p>由于服务器的 <code>系统盘</code> 容量比较小，不希望 <code>SVN</code> 仓库的目录占用 <code>系统盘</code> 的空间，所以我们把 <code>/home/skyinno/svn</code> 软连接到 <code>/data/svn</code> 目录。（这里 <code>/data</code> 目录所在的磁盘容量比较大，共有 <code>35TB</code>。）</p>
 <p>先在 <code>/data</code> 目录下创建 <code>svn</code> 目录：</p>
 <pre><code>$ sudo mkdir -p /data/svn
@@ -464,7 +464,7 @@ Committed revision 1.
 <h2>2.5. 导出 SVN 仓库</h2>
 <p>在远程的机器上安装 <code>SVN</code> 客户端，来测试 <code>SVN</code> 仓库的导出，例如：<code>Windows</code> 下安装 <code>TortoiseSVN</code>，下载地址是：<a href="http://tortoisesvn.tigris.org/">http://tortoisesvn.tigris.org/</a>。</p>
 <p>在需要导出的目录的空白处，点击鼠标右键，选出 <code>SVN 检出</code> (<code>SVN Checkout</code>)，然后输入 “<code>svn://192.168.3.225/myrepo/</code>”，回车确定，即可完成导出。</p>
-<p>如果没有 <code>GUI</code> 环境，也可以通过命令行来执行导出，如下所示：</p>
+<p>如果没有 <code>GUI</code> 环境，也可以通过命令行来导出：</p>
 <pre><code>$ svn checkout svn://192.168.3.225/myrepo --username=shines77
 </code></pre>
 

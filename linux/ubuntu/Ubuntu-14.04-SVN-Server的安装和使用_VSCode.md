@@ -11,7 +11,7 @@ $ sudo apt-get install subversion
 
 ## 1.2. SVN 根目录 ##
 
-我们把 `/home/skyinno/svn/` 作为 `SVN` 仓库的根目录。
+例如，我们把 `/home/skyinno/svn/` 作为 `SVN` 仓库的根目录，创建该目录，命令如下：
 
 ```shell
 $ mkdir -p /home/skyinno/svn
@@ -19,7 +19,7 @@ $ mkdir -p /home/skyinno/svn
 
 ### 1.2.1. 为 SVN 根目录软连接 ###
 
-（注：正常情况下是不需要做这一步的软链接的，这是笔者的特殊情况，请跳过此步。）
+（注：一般情况下请跳过这一步，不是必须的，这是笔者的特殊需求。）
 
 由于服务器的 `系统盘` 容量比较小，不希望 `SVN` 仓库的目录占用 `系统盘` 的空间，所以我们把 `/home/skyinno/svn` 软连接到 `/data/svn` 目录。（这里 `/data` 目录所在的磁盘容量比较大，共有 `35TB`。）
 
@@ -218,7 +218,7 @@ $ sudo svn import -m "本次提交的详细描述信息" {本地仓库的路径}
 
 在需要导出的目录的空白处，点击鼠标右键，选出 `SVN 检出` (`SVN Checkout`)，然后输入 “`svn://192.168.3.225/myrepo/`”，回车确定，即可完成导出。
 
-如果没有 `GUI` 环境，也可以通过命令行来执行导出，如下所示：
+如果没有 `GUI` 环境，也可以通过命令行来导出：
 
 ```shell
 $ svn checkout svn://192.168.3.225/myrepo --username=shines77
