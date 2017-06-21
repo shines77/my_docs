@@ -1,0 +1,56 @@
+
+------------------------------------------------
+适用与微星X370-KRAIT-GAMING主板的 DDR4 内存
+------------------------------------------------
+
+------------------------------------------------------------------------------
+
+MSI-X370-KRAIT-GAMING 内存兼容性列表
+
+http://cn.msi.com/Motherboard/support/X370-KRAIT-GAMING.html#down-bios
+
+
+MSI-X370-GAMING-PRO-CARBON 内存兼容性列表
+
+http://cn.msi.com/Motherboard/support/X370-GAMING-PRO-CARBON.html#down-bios
+
+------------------------------------------------------------------------------
+
+F4-3200C14D-16GTZ
+
+G.SKILL TridentZ Series 16GB (2 x 8GB) 288-Pin DDR4 SDRAM DDR4 3200 (PC4 25600) Desktop Memory Model F4-3200C14D-16GTZ
+
+https://www.newegg.com/Product/Product.aspx?Item=N82E16820232205
+
+$182.99
+
+------------------------------------------------------------------------------
+
+F4-3200C14D-16GTZ
+
+G.SKILL 16GB (2 x 8GB) TridentZ Series DDR4 PC4-25600 3200MHz Desktop Memory Model F4-3200C14D-16GTZ
+
+https://jet.com/product/detail/9e9b3ad353174a9fb104b6eb27e37ab5?jcmp=pla:ggl:NJ_dur_Cwin_Electronics_a1:Electronics_Computers_Accessories_Computer_Components_a1:na:PLA_785510854_39764706863_pla-306020132802:na:na:na:2&code=PLA15&pid=kenshoo_int&c=785510854&is_retargeting=true&clickid=d0598b0a-eb5c-4af1-a041-d468de450458
+
+$187.97
+
+------------------------------------------------------------------------------
+
+F4-3200C14D-16GTZ
+
+G.SKILL TridentZ Series 16GB (2 x 8GB) 288-Pin DDR4 SDRAM DDR4 3200 (PC4 25600) F4-3200C14D-16GTZ
+
+https://www.amazon.com/G-SKILL-TridentZ-288-Pin-SDRAM-F4-3200C14D-16GTZ/dp/B01ACODPHI
+
+$198.94
+
+------------------------------------------------------------------------------
+
+
+
+
+
+
+------------------------------------------------------------------------------
+
+
