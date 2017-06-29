@@ -17,3 +17,22 @@ http://bbs.bios.net.cn/thread-178464-1-1.html
 
 -------------------------------------------------------------
 
+Windows 7 安装包 集成 USB 3.0, Nvme 驱动, IE11
+
+http://bbs.mydigit.cn/read.php?tid=1990780&page=1
+
+用途： 方便100 系列的主板安装 Windows 7, 并支持 nvme 固态硬盘
+素材采用 msdn itellyou 下载的 iso文件里提取的 install.wim 文件包
+使用 dism++ 软件离线添加升级包和驱动
+
+Windows 7 64位 旗舰版  系统，整合 usb3.0驱动，nvme驱动，IE11 和 更新补丁
+
+下载地址： http://pan.baidu.com/s/1pL6lN31 密码: 1ksb
+
+
+使用方法：
+
+方法1. 改名为 install.wim, 替换 win8.1 以上安装优盘里的同名文件.
+方法2. Win8 以上 PE 启动后用 dism 命令部署.
+
+-------------------------------------------------------------
