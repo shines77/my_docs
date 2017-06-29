@@ -766,3 +766,13 @@ http://svn.saurik.com/repos/menes/branches/mobilesubstrate-3.1/
 
 --------------------------------------------------------------------------------------------------
 
+QT信号槽的六个优点
+
+http://www.cnblogs.com/findumars/p/6283424.html
+
+QT 信号槽(分类)
+
+http://www.cnblogs.com/findumars/category/727798.html
+
+--------------------------------------------------------------------------------------------------
+
