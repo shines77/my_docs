@@ -1,13 +1,17 @@
 
-搜索apt安装源
----------------
+Ubuntu 14.04 搜索 apt 安装源
+--------------------------------
+
+apt安装包查询功能的格式:
 
     $ apt-cache search ****
+
+例如:
 
     $ apt-cache search mysql-server
 
 Mysql 5.5
------------
+------------
 
     $ sudo apt-get install mysql-server-5.5
 
@@ -17,9 +21,13 @@ Mysql 5.6
     $ sudo apt-get install mysql-server-5.6
 
 Open JDK 7.0
---------------
+---------------
+
+搜索安装包:
 
     $ apt-cache search openjdk-7
+
+安装命令:
 
     $ sudo apt-get install openjdk-7-jdk
     $ sudo apt-get install openjdk-7-doc
@@ -32,9 +40,11 @@ Open JDK 7.0
     $ sudo apt-get install openjdk-7-jdk openjdk-7-doc openjdk-7-demo openjdk-7-dbg openjdk-7-source
 
 Tomcat 7.0
-------------
+-------------
 
     $ apt-cache search tomcat7
+
+可以查到一下结果:
 
     tomcat7 - Servlet and JSP engine
     tomcat7-admin - Servlet and JSP engine -- admin web applications
@@ -42,6 +52,8 @@ Tomcat 7.0
     tomcat7-docs - Servlet and JSP engine -- documentation
     tomcat7-examples - Servlet and JSP engine -- example web applications
     tomcat7-user - Servlet and JSP engine -- tools to create user instances
+
+安装命令:
 
     $ sudo apt-get install tomcat7
     $ sudo apt-get install tomcat7-admin
