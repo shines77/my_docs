@@ -27,6 +27,10 @@ Open JDK 7.0
     $ sudo apt-get install openjdk-7-dbg
     $ sudo apt-get install openjdk-7-source
 
+也可以写成一句:
+
+    $ sudo apt-get install openjdk-7-jdk openjdk-7-doc openjdk-7-demo openjdk-7-dbg openjdk-7-source
+
 Tomcat 7.0
 ------------
 
@@ -45,4 +49,8 @@ Tomcat 7.0
     $ sudo apt-get install tomcat7-docs
     $ sudo apt-get install tomcat7-examples
     $ sudo apt-get install tomcat7-user
+
+也可以写成一句:
+
+    $ sudo apt-get install tomcat7 tomcat7-admin tomcat7-common tomcat7-docs tomcat7-examples tomcat7-user
 
