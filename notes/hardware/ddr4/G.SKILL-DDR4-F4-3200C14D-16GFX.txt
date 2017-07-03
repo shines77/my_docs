@@ -1,0 +1,122 @@
+
+-------------------------------------------------------------------------------------------
+
+F4-3200C14D-16GFX
+
+https://gskill.com/en/product/f4-3200c14d-16gfx
+
+-------------------------------------------------------------------------------------------
+
+https://rog.asus.com/forum/showthread.php?93722-Flare-X-3200MHZ-16GB-2x8-F4-3200C14D-16GFX-Performance-amp-Guide&s=f7bd1ac24cfe2a2a8f47bdc0be79846b
+
+Testing is done with:
+
+Ryzen 1800X @ 40.75 Multiplier (4075Mhz The best overclock with overall stability in mind) 
+CPU FSB @ 100Mhz
+Flare X 16GB 2x8 3200Mhz: 
+Amazon: https://www.amazon.com/G-SKILL-Flare.../dp/B06XWKNMQQ
+Newegg: https://www.newegg.com/Product/Produ...82E16820232530
+
+Before we get into 3200Mhz and beyond; the numbers for 2400Mhz:
+
+Basic rundown:
+
+2400Mhz: 36263 MB/s @ 90.8 ns (Latency)
+3200Mhz: 48705 MB/s @ 73.3 ns (Latency)
+3466Mhz: 51551 MB/s @ 69.2 ns (Latency)
+3600Mhz: 38422 MB/s @ 67.3 ns (Latency) // Obviously issues to be resolved & excessive heat. Only improvement is in Write speeds.
+
+Choose your speed and using the following voltages: 1.35V (3200Mhz) 1.38V (3466Mhz) 1.40V (3600Mhz) The following screenshots are for use with a 3466Mhz setting. Also note: Bios voltages show 1.395 as the shots were grabbed when going from 3600Mhz to a 3466 w/o a reboot // you get the point, etc:
+
+-------------------------------------------------------------------------------------------
+
+Ryzen advice wanted
+
+http://www.overclock.net/t/1627310/ryzen-advice-wanted
+
+At Cincinnati Microcenter , X370 :
+
+$140 ($10 MIR) ASRock Fatal1ty X370 Gaming K4 ... depending on the variant of VRM you could get a dud , there's a version with PK618BA low side mosfets and no name high side instead of SM4336 + SM4337 , QVL
+$160 ASUS PRIME X370-PRO <--- solid midrange , newest BIOs has good support for memory (QVL)
+$195 Gigabyte AORUS GA-AX370-Gaming 5 <--- paying for LEDs basically , QVL
+$180 MSI X370 Gaming Pro Carbon (bit overpriced) , QVL
+$245 ASUS ROG CROSSHAIR VI HERO <--- top tier board , BCLK gen , QVL
+
+FlareX QVL https://gskill.com/en/product/f4-3200c14d-16gfx lists
+Asrock X370 Taichi
+ASUS ROG CROSSHAIR VI HERO
+GIGABYTE
+GA-AB350-GAMING 3
+GA-AX370-GAMING 5
+GA-AX370-Gaming K7
+MSI
+B350 PC MATE
+B350 TOMAHAWK
+B350 TOMAHAWK ARCTIC
+B350M BAZOOKA
+B350M GAMING PRO
+B350M MORTAR
+B350M MORTAR ARCTIC
+X370 GAMING PRO CARBON
+X370 KRAIT GAMING
+X370 SLI PLUS
+X370 XPOWER GAMING TITANIUM
+
+X370 Prime Pro thread on Hardwareluxx (https://www.hardwareluxx.de/community/f12/asus-prime-x370-pro-am4-1156996.html) lists
+
+DDR4-3000, CL14-14-14-34 (F4-3000C14D-16GTZ) @ DDR4-3200 (Reous 0504)
+DDR4-3200, CL14-14-14-34 (F4-3200C14D-16GTZ) @ DDR4-3200 (Chrissssssssss 0504)
+DDR4-3600, CL16-16-16-36 (F4-3600C16D-16GTZSW) @ DDR4-3200 (Why_Me 0504)
+DDR4-3600, CL16-16-16-36 (F4-3600C16D-16GTZ) @ DDR4-3200 CL14 (Moving 0504)
+
+-------------------------------------------------------------------------------------------
+
+https://pastebin.com/Uz6kfeWe
+
+Here is my setting.
+
+https://pastebin.com/Uz6kfeWe
+
+I basically just manually input the detected speed, seems to be working well 
+ran memtest for an hour and play games for 3+ hours
+
+-------------------------------------------------------------------------------------------
+
+I'm not sure of the issue, but if you are only getting 1.41v, I'd say thats hardly roasting your RAM. that isn't really enough volts to really hurt it I wouldn't think. I think the reading as F4-3200C14-8GFX is actually correct. The Kit is labeled, F4-3200C14D-16GFX, but two sticks of F4-3200C14-8GFX make up that kit that happened to be matched together. I have this kit and this is how each software sees mine, so that's normal. Now, I don't know why you can't manaully set your DRAM voltage, unless you are doing something wrong, or something is wrong with your MB. Why are you "toning" down all these settings? It runs super efficient as it is, and turning SMT off and everything can slow it down in a lot of applications. When I first setup mine, all I had to do was set DOCP to standard and it posted at 3200 MHz no problem and it automatically set the DRAM voltage to 1.35.. I've manually bumped it up to 1.4 and 1.45 when I was trying to run at 3466 and 3600. 
+
+Never used this "Eco" mode. Is that a setting in the Asus Software in Windows? If you are using software, its possible you are overriding your BIOS settings. I don't use the software, as I want full control via the BIOS, so I can't help ya there. I've never liked their software, as I find it buggy at times, plus I just don't have any need for it.
+
+-------------------------------------------------------------------------------------------
+
+AMD Ryzen 7 1700X @ 3924.09 MHz
+
+http://valid.x86.fr/ubf0w9
+
+Submitted by DESKTOP-9S78196 - 2017-04-13 18:19:03
+
+----------------------------
+
+Processor (CPU)
+
+CPU Name	AMD Ryzen 7 1700X Eight-Core Processor
+Threading	1 CPU - 8 Core - 16 Threads
+Frequency	3924.09 MHz (39.25 * 99.98 MHz) - Uncore: 1599.6 MHz
+Multiplier	Current: 39.25
+
+Vcore	1.416 Volts
+
+----------------------------
+
+Memory (RAM)
+
+Dual Channel (128 bit) DDR4-SDRAM 16384 MB
+
+Frequency	1599.6 MHz
+
+Timings	16-15-15-35-73-1 (tCAS-tRC-tRP-tRAS-tCS-tCR)
+
+Slot #1 Module	G.Skill 8192 MB (DDR4-2400) - XMP 2.0 - P/N: F4-3200C14-8GFX
+Slot #2 Module	G.Skill 8192 MB (DDR4-2400) - XMP 2.0 - P/N: F4-3200C14-8GFX
+
+-------------------------------------------------------------------------------------------
+
