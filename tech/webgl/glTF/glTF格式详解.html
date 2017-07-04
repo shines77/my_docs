@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>glTF格式详解_MarkDownPad2</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code {
+  font-size: 14px;
+  margin: 0 0px;
+  padding: 3px 5px;
+  white-space: nowrap;
+  border: 1px solid #e0e0e0;
+  background-color: #f2f2f2;
+  border-radius: 3px;
+  text-decoration: none;
+  color: #880022;
+}
+
+tt {
+  margin: 0 0px;
+  padding: 3px 5px;
+  white-space: nowrap;
+  border: 1px solid #e0e0e0;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</style>
+</head>
+<body>
+<h1>glTF 格式详解</h1>
+<h1>1. 简介</h1>
+<p><code>glTF</code>（<code>GL传输格式</code>）是 <code>khronos组织</code>（即 <code>OpenGL</code> 的发起组织）定义的一个文件格式，用于通过应用有效传输和加载 <code>3D</code> 场景和模型。主要的应用场景是互联网或移动设备上，用于展现 <code>3D</code> 内容，充分支持 <code>OpenGL</code>，<code>WebGL</code>，<code>OpenGLES</code> 等图形加速标准。<code>glTF</code> 最大限度地减少了 <code>3D</code> 资源的大小以及解包和使用这些资源所需的运行时间。<code>glTF</code> 为 <code>3D</code> 编辑工具和服务定义了一种可扩展的通用发布格式，可简化创作的工作流程，并实现业界对 <code>3D</code> 资源文件使用的互操作性。</p>
+<p>官网的地址：<a href="">https://www.khronos.org/gltf</a> 。</p>
+<p>目前 <code>glTF</code> 格式分为 <code>1.0</code> 和 <code>2.0</code> 两种版本。下面是 <code>2.0</code> 版本的场景描述结构图：</p>
+<p><img src="./images/glTF_2.0_structure.png" alt="glTF 2.0 Scene Description Structure" /></p>
+<p>使用 <code>glTF</code> 格式的应用库或引擎包括：<code>A-FRAME</code>，<code>three.js</code>，<code>cesium</code>，<code>xeoEngine</code>，<code>babylin.js</code>，<code>Sketchfab</code> 等。</p>
+<p>业界包括 <code>Adobe</code>，<code>Autodesk</code>，<code>Google</code>，<code>Microsoft</code>，<code>Blender</code>，<code>Unity</code>，<code>nVidia</code>，<code>oculus</code> 在内的大厂商均支持 <code>glTF</code> 格式。</p>
+<h1>2. 格式定义</h1>
+<p><code>glTF</code> 格式目前分为 <code>1.0</code>，<code>2.0</code>，同时还可以在其基础上扩展。</p>
+<p><code>glTF</code> 规范和 <code>JSON</code> 模式：</p>
+<ol>
+<li>
+<p><a href="https://github.com/KhronosGroup/glTF/blob/master/specification/1.0">glTF 1.0</a></p>
+</li>
+<li>
+<p><a href="https://github.com/KhronosGroup/glTF/blob/master/specification/2.0">glTF 2.0</a></p>
+</li>
+<li>
+<p><a href="https://github.com/KhronosGroup/glTF/blob/master/extensions">glTF Extension</a> （包括 <code>1.0</code> 和 <code>2.0</code> 的扩展）</p>
+</li>
+</ol>
+<p>以上所有的内容可以在 <a href="https://github.com/KhronosGroup/glTF/blob/master/specification/README.md">这里</a> 找到。</p>
+<p><code>glTF</code> 格式是由 <code>COLLADA</code> 格式（<code>.dae</code>）转换而来，支持两种方式，第一种是可以把所有资源打包在一个 “<code>.gltf</code>” 文件里；另外一种方式则可以把资源文件放在不同的文件里，把 <code>glTF</code> 场景描述文件放在 “<code>.json</code>” 文件里，把三维几何数据（顶点），动画，皮肤放在 “<code>.bin</code>” 文件里，把 <code>OpenGL</code> 的顶点着色语言 <code>glsl</code> 脚本放在 “<code>.glsl</code>” 文件里，而纹理或材质则可直接使用其原始的图像文件格式，比如 <code>png</code>、<code>jpg</code>、<code>tga</code>、<code>webp</code> 等格式，但一般这些文件都需要放置在同一个目录下面。</p>
+<p>除了 “<code>.gltf</code>” 格式以外，还支持二进制的 <code>glTF</code> 文件 (<code>Binary glTF</code>)，文件格式为 “<code>.glb</code>” 。</p>
+<p>以上内容可以在 <a href="https://github.com/KhronosGroup/glTF-Sample-Models">这里</a> 找到。</p>
+<h1>3. glTF 工具</h1>
+<h2>3.1 转换工具</h2>
+<ul>
+<li>
+<p><code>Assimp</code> → <code>glTF</code></p>
+<ul>
+<li><a href="http://www.assimp.org/">Assimp</a> - 具有 <code>glTF</code> 导入器/导出器管道的通用转换管道。请参阅 <a href="https://github.com/assimp/assimp#supported-file-formats">支持的导入格式列表</a> 。</li>
+<li>←</li>
+</ul>
+</li>
+<li>
+<p><code>COLLADA</code> → <code>glTF</code></p>
+<ul>
+<li><a href="https://github.com/KhronosGroup/COLLADA2GLTF/">COLLADA2GLTF</a> - 从 <code>COLLADA</code> 转换成 <code>glTF</code> 格式的命令行工具</li>
+<li><a href="https://hub.docker.com/r/winsent/collada2gltf/">Docker collada2gltf</a> - 在 <code>Docker</code> 容器中使用的能从 <code>COLLADA</code> 转换成 <code>glTF</code> 格式的 <code>Python</code> Web 服务</li>
+<li><a href="https://github.com/AnalyticalGraphicsInc/collada2gltf-web-service">collada2gltf-web-service</a> - 基于命令行工具 <code>COLLADA2GLTF</code> 的简单 <code>Node.js</code> web 服务</li>
+<li><a href="https://www.npmjs.com/package/collada2gltf">Node.js collada2gltf</a> - 使用 <code>Node.js</code> 包装的命令行工具 <code>COLLADA2GLTF</code></li>
+<li><a href="https://github.com/virtualcitySYSTEMS/colladaToBglTFConverter">colladaToBglTFConverter</a> - 从 <code>COLLADA</code> 格式转换到 <code>Binary glTF</code> 格式的 <code>Groovy</code>/<code>JavaScript</code> 工具</li>
+<li>←</li>
+</ul>
+</li>
+<li>
+<p><code>FBX</code> → <code>glTF</code></p>
+<ul>
+<li><a href="https://github.com/cyrillef/FBX-glTF">FBX-glTF</a> - 从 <code>FBX</code> 到 <code>glTF</code> 格式的导入/导出插件和转换工具</li>
+<li>←</li>
+</ul>
+</li>
+<li>
+<p><code>OBJ</code> (<code>Wavefront</code>) → <code>glTF</code></p>
+<ul>
+<li><a href="https://github.com/AnalyticalGraphicsInc/OBJ2GLTF">obj2gltf</a> - 从 <code>OBJ</code> 转换成 <code>glTF</code> 格式的命令行工具</li>
+<li><a href="https://github.com/javagl/JglTF/tree/master/jgltf-obj">jgltf-obj</a> - 从 <code>OBJ</code> 转换成 <code>glTF</code> 格式的 <code>Java</code> 库和应用程序</li>
+<li>←</li>
+</ul>
+</li>
+<li>
+<p><code>OSM</code> (<code>OpenStreetMap</code>) → <code>glTF</code></p>
+<ul>
+<li><a href="https://github.com/stirringhalo/osm2cesium">osm2cesium</a> - 在 <code>OpenStreetMap</code> 中提取建筑物并将其转换为 <code>glTF</code> 格式</li>
+<li>←</li>
+</ul>
+</li>
+<li>
+<p><code>Multiple formats</code></p>
+<ul>
+<li><a href="http://cesiumjs.org/convertmodel.html">COLLADA | OBJ to glTF</a> - 把 <code>COLLADA</code> 或 <code>OBJ</code> 格式转换成 <code>glTF</code> 格式的在线版（即拖即用）</li>
+</ul>
+</li>
+</ul>
+<h2>3.2 其他</h2>
+<h3>导出器</h3>
+<ul>
+<li><a href="https://github.com/KhronosGroup/glTF-Blender-Exporter">Blender glTF 2.0 Exporter</a> - work in progress</li>
+</ul>
+<h3>优化器</h3>
+<ul>
+<li><a href="https://github.com/AnalyticalGraphicsInc/gltf-pipeline">glTF Pipeline</a> - Node.js command-line tool and module for optimizing glTF assets</li>
+<li><a href="https://github.com/Geopipe/gltf2glb">gltf2glb</a> - Python tool to convert glTF to Binary glTF</li>
+<li><a href="https://github.com/Qantas94Heavy/binary-gltf-utils">binary-gltf-utils</a> - Node.js tool to convert glTF to Binary glTF</li>
+</ul>
+<h3>验证器</h3>
+<ul>
+<li><a href="https://github.com/KhronosGroup/glTF-Validator">glTF Validator</a> - open-source command-line and drag-and-top tool to validate glTF assets against the spec</li>
+</ul>
+<h3>编辑器</h3>
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=cesium.gltf-vscode">gltf-vscode</a> extension for <a href="https://code.visualstudio.com/">VSCode</a> - Open source, cross-platform JSON schema validation and previews for glTF 2.0 and 1.0</li>
+</ul>
+<h3>加载器和浏览工具</h3>
+<h4>WebGL 引擎</h4>
+<ul>
+<li>
+<a href="https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/GLTFLoader.js">glTF loader</a> in <a href="https://threejs.org/">Three.js</a>
+<ul>
+<li><a href="https://gltf-viewer.donmccurdy.com/">Drag and drop glTF viewer</a></li>
+<li><a href="https://github.com/mrdoob/model-tag">model-tag</a> - custom HTML Elements for displaying 3D models</li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/BabylonJS/Babylon.js/tree/master/loaders/src/glTF">glTF loader</a> in <a href="http://babylonjs.com/">BabylonJS</a>
+<ul>
+<li><a href="https://www.babylonjs.com/sandbox/">Sandbox</a> - drag and drop glTF assets</li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/AnalyticalGraphicsInc/cesium/blob/master/Source/Scene/Model.js">glTF loader</a> in <a href="http://cesiumjs.org/">Cesium</a>
+<ul>
+<li>The <a href="http://cesiumjs.org/convertmodel.html">COLLADA to glTF</a> converter also supports drag-and-drop viewing of glTF assets</li>
+<li><a href="https://cesiumjs.org/tutorials/3D-Models-Tutorial/">3D Models</a> tutorial</li>
+<li><a href="https://www.virtualgis.io/gltfviewer/">Drag and drop glTF Viewer</a> (<a href="https://github.com/virtualgis/gltfviewer">source</a>)</li>
+</ul>
+</li>
+<li>Initial <a href="https://github.com/pex-gl/pex-gltf">glTF loader</a> in <a href="http://vorg.github.io/pex/">PEX</a> (geometry and materials)</li>
+<li>
+Initial <a href="https://github.com/xeolabs/xeogl/tree/master/src/importing/gltf">glTF loader</a> in <a href="http://xeogl.org/">xeogl</a> (geometry and materials)
+<ul>
+<li><a href="https://github.com/xeolabs/xeogl/wiki/Importing-glTF">Importing glTF</a> tutorial</li>
+</ul>
+</li>
+<li><a href="https://aframe.io/docs/0.5.0/components/gltf-model.html">glTF loader</a> in <a href="https://aframe.io/">A-Frame</a></li>
+<li><a href="https://github.com/emadurandal/GLBoost/blob/master/src/js/middle_level/loader/GLTFLoader.js">glTF loader</a> in <a href="https://github.com/emadurandal/GLBoost">GLBoost</a> (<a href="https://gitcdn.xyz/repo/emadurandal/GLBoost/master/examples/index.html">examples</a>)</li>
+<li><a href="https://github.com/xml3d/xml3d-gltf-plugin">glTF plug-in</a> for <a href="http://xml3d.org">xml3d.js</a>  (geometry and materials)</li>
+<li><a href="https://github.com/cedricpinson/osgjs/blob/master/sources/osgPlugins/ReaderWriterGLTF.js">glTF reader/writer</a> in <a href="http://osgjs.org/">OSG.JS</a></li>
+<li><a href="https://github.com/x3dom/x3dom/blob/master/src/util/glTF/glTFLoader.js">glTF loader</a> in <a href="http://x3dom.org/">X3DOM</a></li>
+<li><a href="https://github.com/GrimoireGL/grimoirejs-gltf">grimoirejs-gltf</a> in <a href="https://github.com/GrimoireGL/GrimoireJS">Grimoire.js</a></li>
+</ul>
+<h4>WebGL 引擎比较</h4>
+<ul>
+<li><a href="https://github.com/cx20/gltf-test">Compare WebGL-based glTF loaders</a> from various engines</li>
+</ul>
+<h4>WebGL 例子</h4>
+<ul>
+<li><a href="https://github.com/moneimne/WebGL-PBR">WebGL-PBR</a> - barebones reference implementation for PBR in glTF 2.0 (in progress)</li>
+</ul>
+<h4>WebGL 应用程序</h4>
+<ul>
+<li><a href="https://blog.sketchfab.com/sketchfab-now-supports-gltf/">Sketchfab</a></li>
+<li><a href="https://spaces.archilogic.com/blog/gltf-import-export">Archilogic</a></li>
+<li><a href="https://wordpress.org/plugins/gltf-media-type/">glTF plugin</a> for WordPress</li>
+</ul>
+<h4>JavaScript / Node.js</h4>
+<ul>
+<li><a href="https://github.com/ksons/gltf-walker">gltf-walker</a> - convenience library for processing glTF</li>
+<li><a href="https://github.com/avgp/gltf-viewer">gltf-viewer</a> - web component to display glTF models on a website</li>
+<li><a href="https://github.com/amd/rest3d">rest3d</a> - serves glTF and other 3D assets via a REST API (glTF 0.8)</li>
+<li><a href="https://www.npmjs.com/package/gltf-viewer-element">gltf-viewer-element</a> - Node.js package for loading and rendering glTF (0.8)</li>
+<li><a href="http://amobee3d.s3.amazonaws.com/ads/Amobee3D_AdList.html">Amobee 3D</a> (0.8)</li>
+<li><a href="https://github.com/Reon90/redcube">RedCube.js</a> - glTF viewer without dependencies</li>
+</ul>
+<h4>C++</h4>
+<ul>
+<li><a href="https://github.com/nvpro-pipeline/pipeline">nvpro-pipeline</a> - research rendering pipeline by NVIDIA for minimizing CPU cost</li>
+<li>
+<a href="https://github.com/syoyo/tinygltfloader">Tiny glTF loader</a> - Header only C++ glTF parsing library
+<ul>
+<li><a href="https://github.com/syoyo/tinygltfloader/tree/master/examples/alembic_to_gltf">alembic_to_gltf</a> - Simple Alembic to glTF converter</li>
+<li><a href="https://github.com/syoyo/tinygltfloader/tree/master/examples/cyhair_to_gltf">cyhair_to_gltf</a> - Simple CyHair (hair curves) to glTF converter</li>
+</ul>
+</li>
+<li><a href="http://discourse.libcinder.org/t/gltf-initial-release-wip/212">Cinder</a> - Work-in-progress glTF importer</li>
+<li><a href="https://github.com/xelatihy/yocto-gl">yocto-gltf</a> - Single file, header only, C++ glTF loading/writing automatically generated from the spec.</li>
+<li><a href="http://zolnaitamas.blogspot.com/2014/08/3d-models-in-impress-libreoffice-43.html">LibreOffice</a> (glTF 0.8)</li>
+</ul>
+<h4>C++ and Vulkan</h4>
+<ul>
+<li><a href="https://github.com/jian-ru/laugh_engine#laugh-engine">Laugh Engine</a> - Vulkan PBR and IBL renderer</li>
+<li><a href="https://github.com/McNopper/Vulkan">VulKan ToolS</a> - Vulkan helper library supporting glTF 2.0 assets with PBR materials</li>
+</ul>
+<h4>C#</h4>
+<ul>
+<li><a href="https://github.com/KhronosGroup/glTF-CSharp-Loader">C# glTF loader</a> - C# reference loader for glTF</li>
+<li><a href="http://www.aspose.com/products/3d/net">Aspose.3D for .NET</a> - Import, export, and convert glTF</li>
+</ul>
+<h4>Go</h4>
+<ul>
+<li><a href="https://github.com/sturfeeinc/glTF">gltf</a> - A go library for marshaling and unmarshaling glTF</li>
+</ul>
+<h4>Rust</h4>
+<ul>
+<li><a href="https://github.com/Alteous/gltf">gltf</a> - Rust library for loading glTF</li>
+</ul>
+<h4>Haxe</h4>
+<ul>
+<li><a href="https://github.com/FuzzyWuzzie/haxe-gltf">haxe-gltf</a> - A Haxe library for reading glTF</li>
+</ul>
+<h4>Java</h4>
+<ul>
+<li>
+<a href="https://github.com/javagl/JglTF">JglTF</a> - Java libraries for glTF
+<ul>
+<li><a href="https://github.com/javagl/JglTF/tree/master/jgltf-impl">jgltf-impl</a> - Classes representing a glTF model, auto-generated from the schema</li>
+<li><a href="https://github.com/javagl/JglTF/tree/master/jgltf-model">jgltf-model</a> - Classes for reading, processing, converting and writing glTF</li>
+<li><a href="https://github.com/javagl/JglTF/tree/master/jgltf-obj">jgltf-obj</a> - A library for converting OBJ to glTF</li>
+<li>
+<a href="https://github.com/javagl/JglTF/tree/master/jgltf-viewer">jgltf-viewer</a> - A viewer for glTF, with different implementations:
+<ul>
+<li><a href="https://github.com/javagl/JglTF/tree/master/jgltf-viewer-jogl">jgltf-viewer-jogl</a> - A glTF viewer based on <a href="http://jogamp.org/jogl/www/">JOGL</a></li>
+<li><a href="https://github.com/javagl/JglTF/tree/master/jgltf-viewer-lwjgl">jgltf-viewer-lwjgl</a> - A glTF viewer based on <a href="http://legacy.lwjgl.org/">LWJGL version 2</a></li>
+</ul>
+</li>
+<li><a href="https://github.com/javagl/JglTF/tree/master/jgltf-browser">jgltf-browser</a> - An application combining the above libraries</li>
+</ul>
+</li>
+</ul>
+<h3>工具集</h3>
+<ul>
+<li><a href="https://github.com/AnalyticalGraphicsInc/gltf-utilities">gltf-utilities</a> - JavaScript utility library to help load glTF</li>
+</ul>
+<h2>Stack Overflow</h2>
+<ul>
+<li><a href="http://stackoverflow.com/questions/tagged/gltf">glTF tagged</a> questions</li>
+</ul>
+<h1>4. 范例</h1>
+<p>以下是一个 <code>glTF</code> 格式用于 <code>cesium</code> 的 <code>javascript</code> 例子：</p>
+<pre><code>var ellipsoid = viewer.scene.globe.ellipsoid;
+var cart3 = ellipsoid.cartographicToCartesian(Cesium.Cartographic.fromDegrees(lng, lat, height));
+var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(cart3);
+var quat = Cesium.Quaternion.fromAxisAngle(Cesium.Cartesian3.UNIT_Z, Cesium.Math.toRadians(rotate - 90));
+var mat3 = Cesium.Matrix3.fromQuaternion(quat);
+var mat4 = Cesium.Matrix4.fromRotationTranslation(mat3, Cesium.Cartesian3.ZERO);
+var m = Cesium.Matrix4.multiplyTransformation(modelMatrix, mat4); // 获得最终变换矩阵，参考笔者前面写的《坐标变换》篇
+var model = viewer.scene.primitives.add(Cesium.Model.fromGltf({
+        url : 'http://localhost:8080/gltf/tower.json',  // 转换后 4 个文件中的 json 文件
+        modelMatrix : m, // 添加模型的变换矩阵，才能显示在正确位置，否则打死也找不到，被放到地球的某个角落里
+        scale:1.0 // 缩放倍数
+}));
+
+// 模型加载后，如果有动画就播放
+model.readyToRender.addEventListener(function(model) {
+    // Play and loop all animations at half-spead
+    model.activeAnimations.addAll({
+            speedup : 0.5,
+            loop : Cesium.ModelAnimationLoop.REPEAT
+    });
+
+});
+</code></pre>
+
+<h1>5. 参考文章</h1>
+<ol>
+<li>
+<p><a href="https://www.khronos.org/gltf">glTF官网介绍（khronos.org）</a></p>
+</li>
+<li>
+<p><a href="https://my.oschina.net/u/1585572/blog/290604">cesiumjs 开发实践(七) 3D模型</a></p>
+</li>
+<li>
+<p><a href="https://github.com/KhronosGroup/glTF">glTF GitHub 首页</a></p>
+</li>
+<li>
+<p><a href="https://marketplace.visualstudio.com/items?itemName=cesium.gltf-vscode">
+glTF Extension for Visual Studio Code</a></p>
+</li>
+</ol>
+<p>&lt;.End.&gt;</p>
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
