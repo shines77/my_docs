@@ -73,118 +73,118 @@ glTF 格式详解
 
 ### 导出器
 
-    * [Blender glTF 2.0 Exporter](https://github.com/KhronosGroup/glTF-Blender-Exporter) - work in progress
+* [Blender glTF 2.0 Exporter](https://github.com/KhronosGroup/glTF-Blender-Exporter) - work in progress
 
 ### 优化器
 
-    * [glTF Pipeline](https://github.com/AnalyticalGraphicsInc/gltf-pipeline) - Node.js command-line tool and module for optimizing glTF assets
-    * [gltf2glb](https://github.com/Geopipe/gltf2glb) - Python tool to convert glTF to Binary glTF
-    * [binary-gltf-utils](https://github.com/Qantas94Heavy/binary-gltf-utils) - Node.js tool to convert glTF to Binary glTF
+* [glTF Pipeline](https://github.com/AnalyticalGraphicsInc/gltf-pipeline) - Node.js command-line tool and module for optimizing glTF assets
+* [gltf2glb](https://github.com/Geopipe/gltf2glb) - Python tool to convert glTF to Binary glTF
+* [binary-gltf-utils](https://github.com/Qantas94Heavy/binary-gltf-utils) - Node.js tool to convert glTF to Binary glTF
 
 ### 验证器
 
-    * [glTF Validator](https://github.com/KhronosGroup/glTF-Validator) - open-source command-line and drag-and-top tool to validate glTF assets against the spec
+* [glTF Validator](https://github.com/KhronosGroup/glTF-Validator) - open-source command-line and drag-and-top tool to validate glTF assets against the spec
 
 ### 编辑器
 
-    * [gltf-vscode](https://marketplace.visualstudio.com/items?itemName=cesium.gltf-vscode) extension for [VSCode](https://code.visualstudio.com/) - Open source, cross-platform JSON schema validation and previews for glTF 2.0 and 1.0
+* [gltf-vscode](https://marketplace.visualstudio.com/items?itemName=cesium.gltf-vscode) extension for [VSCode](https://code.visualstudio.com/) - Open source, cross-platform JSON schema validation and previews for glTF 2.0 and 1.0
 
 ### 加载器和浏览工具
 
-    #### WebGL 引擎
+#### WebGL 引擎
 
-        * [glTF loader](https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/GLTFLoader.js) in [Three.js](https://threejs.org/)
-            * [Drag and drop glTF viewer](https://gltf-viewer.donmccurdy.com/)
-            * [model-tag](https://github.com/mrdoob/model-tag) - custom HTML Elements for displaying 3D models
-        * [glTF loader](https://github.com/BabylonJS/Babylon.js/tree/master/loaders/src/glTF) in [BabylonJS](http://babylonjs.com/)
-            * [Sandbox](https://www.babylonjs.com/sandbox/) - drag and drop glTF assets
-        * [glTF loader](https://github.com/AnalyticalGraphicsInc/cesium/blob/master/Source/Scene/Model.js) in [Cesium](http://cesiumjs.org/)
-            * The [COLLADA to glTF](http://cesiumjs.org/convertmodel.html) converter also supports drag-and-drop viewing of glTF assets
-            * [3D Models](https://cesiumjs.org/tutorials/3D-Models-Tutorial/) tutorial
-            * [Drag and drop glTF Viewer](https://www.virtualgis.io/gltfviewer/) ([source](https://github.com/virtualgis/gltfviewer))
-        * Initial [glTF loader](https://github.com/pex-gl/pex-gltf) in [PEX](http://vorg.github.io/pex/) (geometry and materials)
-        * Initial [glTF loader](https://github.com/xeolabs/xeogl/tree/master/src/importing/gltf) in [xeogl](http://xeogl.org/) (geometry and materials)
-            * [Importing glTF](https://github.com/xeolabs/xeogl/wiki/Importing-glTF) tutorial
-        * [glTF loader](https://aframe.io/docs/0.5.0/components/gltf-model.html) in [A-Frame](https://aframe.io/)
-        * [glTF loader](https://github.com/emadurandal/GLBoost/blob/master/src/js/middle_level/loader/GLTFLoader.js) in [GLBoost](https://github.com/emadurandal/GLBoost) ([examples](https://gitcdn.xyz/repo/emadurandal/GLBoost/master/examples/index.html))
-        * [glTF plug-in](https://github.com/xml3d/xml3d-gltf-plugin) for [xml3d.js](http://xml3d.org)  (geometry and materials)
-        * [glTF reader/writer](https://github.com/cedricpinson/osgjs/blob/master/sources/osgPlugins/ReaderWriterGLTF.js) in [OSG.JS](http://osgjs.org/)
-        * [glTF loader](https://github.com/x3dom/x3dom/blob/master/src/util/glTF/glTFLoader.js) in [X3DOM](http://x3dom.org/)
-        * [grimoirejs-gltf](https://github.com/GrimoireGL/grimoirejs-gltf) in [Grimoire.js](https://github.com/GrimoireGL/GrimoireJS)
+* [glTF loader](https://github.com/mrdoob/three.js/blob/master/examples/js/loaders/GLTFLoader.js) in [Three.js](https://threejs.org/)
+    * [Drag and drop glTF viewer](https://gltf-viewer.donmccurdy.com/)
+    * [model-tag](https://github.com/mrdoob/model-tag) - custom HTML Elements for displaying 3D models
+* [glTF loader](https://github.com/BabylonJS/Babylon.js/tree/master/loaders/src/glTF) in [BabylonJS](http://babylonjs.com/)
+    * [Sandbox](https://www.babylonjs.com/sandbox/) - drag and drop glTF assets
+* [glTF loader](https://github.com/AnalyticalGraphicsInc/cesium/blob/master/Source/Scene/Model.js) in [Cesium](http://cesiumjs.org/)
+    * The [COLLADA to glTF](http://cesiumjs.org/convertmodel.html) converter also supports drag-and-drop viewing of glTF assets
+    * [3D Models](https://cesiumjs.org/tutorials/3D-Models-Tutorial/) tutorial
+    * [Drag and drop glTF Viewer](https://www.virtualgis.io/gltfviewer/) ([source](https://github.com/virtualgis/gltfviewer))
+* Initial [glTF loader](https://github.com/pex-gl/pex-gltf) in [PEX](http://vorg.github.io/pex/) (geometry and materials)
+* Initial [glTF loader](https://github.com/xeolabs/xeogl/tree/master/src/importing/gltf) in [xeogl](http://xeogl.org/) (geometry and materials)
+    * [Importing glTF](https://github.com/xeolabs/xeogl/wiki/Importing-glTF) tutorial
+* [glTF loader](https://aframe.io/docs/0.5.0/components/gltf-model.html) in [A-Frame](https://aframe.io/)
+* [glTF loader](https://github.com/emadurandal/GLBoost/blob/master/src/js/middle_level/loader/GLTFLoader.js) in [GLBoost](https://github.com/emadurandal/GLBoost) ([examples](https://gitcdn.xyz/repo/emadurandal/GLBoost/master/examples/index.html))
+* [glTF plug-in](https://github.com/xml3d/xml3d-gltf-plugin) for [xml3d.js](http://xml3d.org)  (geometry and materials)
+* [glTF reader/writer](https://github.com/cedricpinson/osgjs/blob/master/sources/osgPlugins/ReaderWriterGLTF.js) in [OSG.JS](http://osgjs.org/)
+* [glTF loader](https://github.com/x3dom/x3dom/blob/master/src/util/glTF/glTFLoader.js) in [X3DOM](http://x3dom.org/)
+* [grimoirejs-gltf](https://github.com/GrimoireGL/grimoirejs-gltf) in [Grimoire.js](https://github.com/GrimoireGL/GrimoireJS)
 
-    #### WebGL 引擎比较
+#### WebGL 引擎比较
 
-        * [Compare WebGL-based glTF loaders](https://github.com/cx20/gltf-test) from various engines
+* [Compare WebGL-based glTF loaders](https://github.com/cx20/gltf-test) from various engines
 
-    #### WebGL 例子
+#### WebGL 例子
 
-        * [WebGL-PBR](https://github.com/moneimne/WebGL-PBR) - barebones reference implementation for PBR in glTF 2.0 (in progress)
+* [WebGL-PBR](https://github.com/moneimne/WebGL-PBR) - barebones reference implementation for PBR in glTF 2.0 (in progress)
 
-    #### WebGL 应用程序
+#### WebGL 应用程序
 
-        * [Sketchfab](https://blog.sketchfab.com/sketchfab-now-supports-gltf/)
-        * [Archilogic](https://spaces.archilogic.com/blog/gltf-import-export)
-        * [glTF plugin](https://wordpress.org/plugins/gltf-media-type/) for WordPress
+* [Sketchfab](https://blog.sketchfab.com/sketchfab-now-supports-gltf/)
+* [Archilogic](https://spaces.archilogic.com/blog/gltf-import-export)
+* [glTF plugin](https://wordpress.org/plugins/gltf-media-type/) for WordPress
 
-    #### JavaScript / Node.js
+#### JavaScript / Node.js
 
-        * [gltf-walker](https://github.com/ksons/gltf-walker) - convenience library for processing glTF
-        * [gltf-viewer](https://github.com/avgp/gltf-viewer) - web component to display glTF models on a website
-        * [rest3d](https://github.com/amd/rest3d) - serves glTF and other 3D assets via a REST API (glTF 0.8)
-        * [gltf-viewer-element](https://www.npmjs.com/package/gltf-viewer-element) - Node.js package for loading and rendering glTF (0.8)
-        * [Amobee 3D](http://amobee3d.s3.amazonaws.com/ads/Amobee3D_AdList.html) (0.8)
-        * [RedCube.js](https://github.com/Reon90/redcube) - glTF viewer without dependencies
+* [gltf-walker](https://github.com/ksons/gltf-walker) - convenience library for processing glTF
+* [gltf-viewer](https://github.com/avgp/gltf-viewer) - web component to display glTF models on a website
+* [rest3d](https://github.com/amd/rest3d) - serves glTF and other 3D assets via a REST API (glTF 0.8)
+* [gltf-viewer-element](https://www.npmjs.com/package/gltf-viewer-element) - Node.js package for loading and rendering glTF (0.8)
+* [Amobee 3D](http://amobee3d.s3.amazonaws.com/ads/Amobee3D_AdList.html) (0.8)
+* [RedCube.js](https://github.com/Reon90/redcube) - glTF viewer without dependencies
 
-    #### C++
+#### C++
 
-        * [nvpro-pipeline](https://github.com/nvpro-pipeline/pipeline) - research rendering pipeline by NVIDIA for minimizing CPU cost
-        * [Tiny glTF loader](https://github.com/syoyo/tinygltfloader) - Header only C++ glTF parsing library
-           * [alembic_to_gltf](https://github.com/syoyo/tinygltfloader/tree/master/examples/alembic_to_gltf) - Simple Alembic to glTF converter
-           * [cyhair_to_gltf](https://github.com/syoyo/tinygltfloader/tree/master/examples/cyhair_to_gltf) - Simple CyHair (hair curves) to glTF converter
-        * [Cinder](http://discourse.libcinder.org/t/gltf-initial-release-wip/212) - Work-in-progress glTF importer
-        * [yocto-gltf](https://github.com/xelatihy/yocto-gl) - Single file, header only, C++ glTF loading/writing automatically generated from the spec.
-        * [LibreOffice](http://zolnaitamas.blogspot.com/2014/08/3d-models-in-impress-libreoffice-43.html) (glTF 0.8)
+* [nvpro-pipeline](https://github.com/nvpro-pipeline/pipeline) - research rendering pipeline by NVIDIA for minimizing CPU cost
+* [Tiny glTF loader](https://github.com/syoyo/tinygltfloader) - Header only C++ glTF parsing library
+    * [alembic_to_gltf](https://github.com/syoyo/tinygltfloader/tree/master/examples/alembic_to_gltf) - Simple Alembic to glTF converter
+    * [cyhair_to_gltf](https://github.com/syoyo/tinygltfloader/tree/master/examples/cyhair_to_gltf) - Simple CyHair (hair curves) to glTF converter
+* [Cinder](http://discourse.libcinder.org/t/gltf-initial-release-wip/212) - Work-in-progress glTF importer
+* [yocto-gltf](https://github.com/xelatihy/yocto-gl) - Single file, header only, C++ glTF loading/writing automatically generated from the spec.
+* [LibreOffice](http://zolnaitamas.blogspot.com/2014/08/3d-models-in-impress-libreoffice-43.html) (glTF 0.8)
 
-    #### C++ and Vulkan
+#### C++ and Vulkan
 
-        * [Laugh Engine](https://github.com/jian-ru/laugh_engine#laugh-engine) - Vulkan PBR and IBL renderer
-        * [VulKan ToolS](https://github.com/McNopper/Vulkan) - Vulkan helper library supporting glTF 2.0 assets with PBR materials
+* [Laugh Engine](https://github.com/jian-ru/laugh_engine#laugh-engine) - Vulkan PBR and IBL renderer
+* [VulKan ToolS](https://github.com/McNopper/Vulkan) - Vulkan helper library supporting glTF 2.0 assets with PBR materials
 
-    #### C# #
+#### C# #
 
-        * [C# glTF loader](https://github.com/KhronosGroup/glTF-CSharp-Loader) - C# reference loader for glTF
-        * [Aspose.3D for .NET](http://www.aspose.com/products/3d/net) - Import, export, and convert glTF
+* [C# glTF loader](https://github.com/KhronosGroup/glTF-CSharp-Loader) - C# reference loader for glTF
+* [Aspose.3D for .NET](http://www.aspose.com/products/3d/net) - Import, export, and convert glTF
 
-    #### Go
+#### Go
 
-        * [gltf](https://github.com/sturfeeinc/glTF) - A go library for marshaling and unmarshaling glTF
+* [gltf](https://github.com/sturfeeinc/glTF) - A go library for marshaling and unmarshaling glTF
 
-    #### Rust
+#### Rust
 
-        * [gltf](https://github.com/Alteous/gltf) - Rust library for loading glTF
+* [gltf](https://github.com/Alteous/gltf) - Rust library for loading glTF
 
-    #### Haxe
+#### Haxe
 
-        * [haxe-gltf](https://github.com/FuzzyWuzzie/haxe-gltf) - A Haxe library for reading glTF
+* [haxe-gltf](https://github.com/FuzzyWuzzie/haxe-gltf) - A Haxe library for reading glTF
 
-    #### Java
+#### Java
 
-        * [JglTF](https://github.com/javagl/JglTF) - Java libraries for glTF
-            * [jgltf-impl](https://github.com/javagl/JglTF/tree/master/jgltf-impl) - Classes representing a glTF model, auto-generated from the schema
-            * [jgltf-model](https://github.com/javagl/JglTF/tree/master/jgltf-model) - Classes for reading, processing, converting and writing glTF
-            * [jgltf-obj](https://github.com/javagl/JglTF/tree/master/jgltf-obj) - A library for converting OBJ to glTF
-            * [jgltf-viewer](https://github.com/javagl/JglTF/tree/master/jgltf-viewer) - A viewer for glTF, with different implementations:
-                * [jgltf-viewer-jogl](https://github.com/javagl/JglTF/tree/master/jgltf-viewer-jogl) - A glTF viewer based on [JOGL](http://jogamp.org/jogl/www/)
-                * [jgltf-viewer-lwjgl](https://github.com/javagl/JglTF/tree/master/jgltf-viewer-lwjgl) - A glTF viewer based on [LWJGL version 2](http://legacy.lwjgl.org/)
-            * [jgltf-browser](https://github.com/javagl/JglTF/tree/master/jgltf-browser) - An application combining the above libraries
+* [JglTF](https://github.com/javagl/JglTF) - Java libraries for glTF
+    * [jgltf-impl](https://github.com/javagl/JglTF/tree/master/jgltf-impl) - Classes representing a glTF model, auto-generated from the schema
+    * [jgltf-model](https://github.com/javagl/JglTF/tree/master/jgltf-model) - Classes for reading, processing, converting and writing glTF
+    * [jgltf-obj](https://github.com/javagl/JglTF/tree/master/jgltf-obj) - A library for converting OBJ to glTF
+    * [jgltf-viewer](https://github.com/javagl/JglTF/tree/master/jgltf-viewer) - A viewer for glTF, with different implementations:
+        * [jgltf-viewer-jogl](https://github.com/javagl/JglTF/tree/master/jgltf-viewer-jogl) - A glTF viewer based on [JOGL](http://jogamp.org/jogl/www/)
+        * [jgltf-viewer-lwjgl](https://github.com/javagl/JglTF/tree/master/jgltf-viewer-lwjgl) - A glTF viewer based on [LWJGL version 2](http://legacy.lwjgl.org/)
+    * [jgltf-browser](https://github.com/javagl/JglTF/tree/master/jgltf-browser) - An application combining the above libraries
 
-    ### 工具集
+### 工具集
 
-        * [gltf-utilities](https://github.com/AnalyticalGraphicsInc/gltf-utilities) - JavaScript utility library to help load glTF
+* [gltf-utilities](https://github.com/AnalyticalGraphicsInc/gltf-utilities) - JavaScript utility library to help load glTF
 
-    ## Stack Overflow
+## Stack Overflow
 
-        * [glTF tagged](http://stackoverflow.com/questions/tagged/gltf) questions
+* [glTF tagged](http://stackoverflow.com/questions/tagged/gltf) questions
 
 # 4. 范例 #
 
