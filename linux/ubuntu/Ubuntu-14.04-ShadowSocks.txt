@@ -48,7 +48,7 @@ server, server_port, password 需要自行根据自己的实际情况修改。
     $ sudo vim /etc/rc.local
 
     if [ $(id -u) -eq 0 ]; then
-        ssserver -c /etc/shadowsocks.json -d start
+        /usr/local/bin/ssserver -c /etc/shadowsocks.json -d start
     fi
 
     exit 0
