@@ -1,0 +1,19 @@
+#!/usr/bin/expect -f
+## Save this file to sudo-source.cmd file(保存这些内容到 sudo-source.cmd 文件)
+spawn su root
+expect -nocase "password: "
+send "skyinno251\r"
+interact
+
+
+
+## call script file(调用上面的cmd文件)
+/usr/bin/expect -f ./sudo-source.cmd
+
+
+---------------
+安装 expect
+---------------
+
+sudo apt-get install expect
+

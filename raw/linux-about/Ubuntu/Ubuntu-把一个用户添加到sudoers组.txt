@@ -1,0 +1,11 @@
+
+把 git 用户添加到 sudoers 组，先切换到 root 用户，使用 visudo 命令，如下：
+
+    # visudo -f /etc/sudoers
+
+找到 root ALL=(ALL) ALL 这么一行，添加下面内容：
+
+    git ALL=(ALL) ALL
+
+因为 /etc/sudoers 文件是只读的，即使是在 root 用户下，编辑以后也是不能直接保存的，除非先去掉该文件的只读属性再编辑，所以还是使用 sudo visudo 命令比较方便一点。
+

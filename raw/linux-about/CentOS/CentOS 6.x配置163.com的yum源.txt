@@ -1,0 +1,25 @@
+
+CentOS 6.x配置163.com的yum源
+-------------------------------
+
+首先要安装wget，使用下面命令：
+
+yum install wget -y
+
+然后：
+
+cd /etc/yum.repos.d
+wget -O CentOS6-Base-163.repo http://mirrors.163.com/.help/CentOS6-Base-163.repo
+mv CentOS-Base.repo CentOS-Base.repo.bak
+cp CentOS6-Base-163.repo CentOS-Base.repo
+
+yum clean all
+yum makecache
+yum update
+yum upgrade
+
+参考：
+
+http://blog.chinaunix.net/uid-23683795-id-3477603.html
+http://www.hiceon.com/topic/centos-6-config-163-yum/
+

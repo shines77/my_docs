@@ -1,0 +1,21 @@
+
+Ubuntu 14.04:
+
+安装selinux管理工具
+
+    $ sudo apt-get install selinux-utils
+
+查看selinux当前状态
+
+    $ getenforce
+
+设置selinux状态, 临时打开/关闭（不用重启机器）
+
+    $ sudo setenforce 1
+
+修改配置文件(需要重启机器)
+
+    $ sudo vim /etc/selinux/config
+
+    将 SELINUX=enforcing 改为 SELINUX=disabled
+

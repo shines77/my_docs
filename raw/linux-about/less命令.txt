@@ -1,0 +1,13 @@
+
+less命令实现命令行翻页
+------------------------
+
+less vim /etc/resolv.conf
+
+或者
+
+vim /etc/reslov.conf | less
+
+如果要退出less的翻页状态，可以使用 :q 命令。
+
+此外，命令行默认状态可以使用 Shift + PageUp/PageDown 翻页。

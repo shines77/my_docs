@@ -1,0 +1,53 @@
+
+如何安装 screen
+--------------------
+
+Ubuntu:  sudo apt-get -y install screen
+CentOS:  yum -y install screen
+
+
+screen 相关命令
+--------------------
+
+screen -ls 或 screen -list  显示当前打开的 socket 终端名或 pid 列表.
+
+1. screen -S name 创建一个名为 name 的 socket 一组窗口终端.
+
+   例如: screen -S lnmp (lnmp是一个自己定义的名称, 方便下次重新登录)
+
+2. screen -r name 恢复登录(reattach)到名为 name 的一组终端窗口.
+
+   例如: screen -r lnmp  即可重复登录之前窗口的 lnmp 所打开的一组终端窗口.
+
+   注: 这个命令不能重复登录, 同一时间只能有一个用户登录.
+
+3. screen -X name 恢复登录到(force reattach)名为 name 的一组终端窗口.
+
+   例如: screen -X lnmp
+
+   这个命令可以重复登录多次, 不限登录用户数量, 可以用来做远程教学或演示.
+
+4. screen -d name 退出(detach)名为 name 的一组终端窗口.
+
+   例如: screen -d lnmp   使用这个命令后, 名为 lnmp 的session窗口就全部销毁了.
+
+更多命令可以用 screen --help 查询。
+
+
+screen 终端窗口的快捷键一览
+-----------------------------------
+
+必须以 Ctrl + A 开头, 按下 Ctrl + A 后, 紧接着按下后面一个键, 不必三个键一起按, 也不能间隔太久才按.
+
+Ctrl + A, ?  查看所有快捷键定义
+
+Ctrl + A, C  创建一个新的子终端窗口(create)
+
+Ctrl + A, N  切换到下一个子终端窗口(next)
+
+Ctrl + A, P  切换到前一个子终端窗口(previous)
+
+Ctrl + A, /  退出(quit)所有终端窗口(即使是远程共享的), 需要按y或n确认是否退出.
+
+如果想关闭某个子终端窗口, 在该窗口内输入 exit 命令即可.
+

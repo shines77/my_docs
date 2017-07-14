@@ -1,0 +1,165 @@
+
+Ubuntu 14.04 安装 Boost 的方法
+---------------------------------
+
+一. apt-get 安装
+
+# apt-cache search boost
+
+可以看到一个 libboost-dev 的
+
+# apt-get install mpi-default-dev　　 # 安装mpi库
+# apt-get install libicu-dev　　　　　# 支持正则表达式的UNICODE字符集
+# apt-get install python-dev　　　　　# 需要python的话
+# apt-get install libbz2-dev
+
+# apt-get install libboost-dev
+
+直接拷贝lib文件到系统文件夹.
+
+二. 编译安装
+
+要先安装 libbz2 :
+
+$ sudo apt-get install libbz2-dev
+
+1. 解压, 我的 boost 源代码文件放在 /root/downloads/ 目录下:
+
+    # cd /usr/local/src
+    # tar -zxvf /root/downloads/boost_1_60_0.tar.gz
+
+    如果是7z格式, 先安装7z:
+
+    sudo apt-get install p7zip-full
+
+    # cd /usr/local/src
+    # 7z x /root/downloads/boost_1_60_0.7z
+
+2. 初始化
+
+    # cd boost_1_60_0/
+    # ./bootstrap.sh    // 这个命令类似于配好环境, 默认安装到 /usr/local/ 目录下面.
+
+    或
+
+    # ./bootstrap.sh --prefix=/usr/local/boost_1_60_0/      // 安装到 /usr/local/boost_1_60_0/ 目录下
+      ./bootstrap.sh --prefix=/usr/local/boost_1_59_0/ 
+
+    生成bjam，上述命令可以带有各种选项，具体可参考帮助文档：./bootstrap.sh --help。其中--prefix参数，可以指定安装路径，如果不带--prefix参数的话（推荐），默认路径是 /usr/local/include 和 /usr/local/lib，分别存放头文件和各种库。执行完成后，会生成bjam，已经存在的脚本将会被自动备份。注意，boost 1.59会在当前目录下，生成两个文件bjam和b2，这两个是一样的，
+
+3. 编译
+
+    # ./bjam -j8 stage link=static runtime-link=static           // 这里需要十几分钟，完成后就代表安装成功了。
+
+    也可以加入下列参数不编译相应的模块: --without-graph --without-graph_parallel --without-mpi --without-wave
+
+    例如: ./bjam stage link=static runtime-link=static --without-graph --without-graph_parallel --without-mpi --without-wave
+
+    --layout=tagged --layout=versioned --layout=system --build-type=comple‌​te  --without-context --without-coroutine --without-test
+
+
+    sudo ./b2 stage -j24 toolset=gcc variant=release link=static runtime-link=static threading=multi warnings=all --layout=tagged --address-model=64 --architecture=x86 --without-graph --without-graph_parallel --without-mpi --without-wave
+
+    sudo ./b2 install -j24 toolset=gcc variant=release link=static runtime-link=static threading=multi warnings=all --layout=tagged --address-model=64 --architecture=x86 --without-graph --without-graph_parallel --without-mpi --without-wave
+    sudo ./b2 install -j24 toolset=gcc variant=release link=static runtime-link=shared threading=multi warnings=all --layout=tagged --address-model=64 --architecture=x86 --without-graph --without-graph_parallel --without-mpi --without-wave
+
+    sudo ./b2 install -j24 toolset=gcc variant=release link=static runtime-link=static threading=multi warnings=all --layout=system --address-model=64 --architecture=x86 --without-graph --without-graph_parallel --without-mpi --without-wave
+
+    sudo ./b2 install -j24 toolset=gcc variant=release link=shared runtime-link=shared threading=multi warnings=on --layout=tagged --address-model=64 --architecture=x86 --without-graph --without-graph_parallel --without-mpi --without-wave
+
+    sudo ./b2 install -j24 toolset=gcc variant=release warnings=all --address-model=64 --architecture=x86 --without-graph --without-graph_parallel --without-mpi --without-wave
+
+    sudo ./b2 install -j24 --prefix=/usr/local/boost_1_59_0/ variant=release link=static runtime-link=static threading=multi warnings=all --address-model=64 --architecture=x86 --without-graph --without-graph_parallel --without-mpi --without-wave
+
+    sudo ./b2 -j24 link=static runtime-link=static threading=multi warnings=all --address-model=64 --architecture=x86 --without-graph --without-graph_parallel --without-mpi --without-wave
+
+    sudo ./b2 -j24 link=static runtime-link=shared threading=multi --address-model=64 --architecture=x86 --without-graph --without-graph_parallel --without-mpi --without-wave
+
+4. 安装: 编译完成后，进行安装，也就是将头文件和生成的库，放到指定的路径（--prefix）下
+
+    # ./bjam install --prefix=/usr/local/boost_1_60_0/   // b2 命令 和 bjam 命令是一样的
+
+    或者: ./bjam install --prefix=/usr/local/boost_1_60_0/ --without-graph --without-graph_parallel --without-mpi --without-wave
+
+    对 boost 头文件做一下软链接:
+
+    # ln -s /usr/local/boost_1_60_0/include/boost /usr/local/include/boost
+
+    # ln -s /usr/local/boost_1_60_0/lib /usr/local/lib/boost
+
+    # ln -sf /usr/local/boost_1_60_0/lib/* /usr/local/lib
+
+    # rm -f ./libboost_system.so  // 如果需要删除local的软链接, 可以执行这个命令
+
+5. 修改系统环境变量
+
+vim /etc/rc.local
+
+vim /etc/profile  (系统启动时读取该配置, 需要重启才生效)
+或
+vim /etc/bash.bashrc   (每新建或启动一个bash终端时读取该配置)
+或
+vim ~/.bashrc
+
+export BOOST_ROOT=/usr/local
+export BOOST_INCLUDEDIR=/usr/local/include
+export BOOST_LIBRARYDIR=/usr/local/lib
+
+export C_INCLUDE_PATH=/usr/local/include:$C_INCLUDE_PATH
+export CPLUS_INCLUDE_PATH=/usr/local/include:$CPLUS_INCLUDE_PATH
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH
+
+
+export BOOST_ROOT=/usr/local/boost_1_59_0/
+export BOOST_INCLUDEDIR=/usr/local/boost_1_59_0/include
+export BOOST_LIBRARYDIR=/usr/local/boost_1_59_0/lib
+
+export C_INCLUDE_PATH=/usr/local/boost_1_59_0/include:$C_INCLUDE_PATH
+export CPLUS_INCLUDE_PATH=/usr/local/boost_1_59_0/include:$CPLUS_INCLUDE_PATH
+export LD_LIBRARY_PATH=/usr/local/boost_1_59_0/lib:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/usr/local/boost_1_59_0/lib:$LIBRARY_PATH
+
+
+export BOOST_ROOT=/usr/local/boost_1_60_0/
+export BOOST_INCLUDEDIR=/usr/local/boost_1_60_0/include
+export BOOST_LIBRARYDIR=/usr/local/boost_1_60_0/lib
+
+export C_INCLUDE_PATH=/usr/lib/boost-1.60/include/boost-1_60:$C_INCLUDE_PATH
+export CPLUS_INCLUDE_PATH=/usr/lib/boost-1.60/include/boost-1_60:$CPLUS_INCLUDE_PATH
+export LD_LIBRARY_PATH=/usr/lib/boost-1.60/lib:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/usr/lib/boost-1.60/lib:$LIBRARY_PATH
+
+6. 检验安装成功否
+
+cd /home/shines77   // 或任意目标
+
+vim boost_test.cpp
+
+输入以下代码:
+
+#include <string>
+#include <iostream>
+#include <boost/lexical_cast.hpp>
+
+int main(int argn, char * argv[])           
+{
+    int a = boost::lexical_cast<int>("123456");
+    std::cout << a << std::endl;
+    return 0;                               
+}
+
+编译:
+
+g++ boost_test.cpp -o boost_test
+或
+g++ boost_test.cpp -o boost_test -I/usr/local/boost_1_60_0/include
+
+运行:
+
+./boost_test
+
+输出:
+
+123456
+

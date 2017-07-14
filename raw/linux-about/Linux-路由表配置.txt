@@ -1,0 +1,210 @@
+
+查看路由表配置
+
+$ route -n
+
+skyinno@Ubuntu64:~$ route -n
+
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         192.168.2.254   0.0.0.0         UG    0      0        0 eth0
+10.0.0.0        192.168.2.1     255.255.255.0   UG    0      0        0 eth0
+192.168.2.0     0.0.0.0         255.255.255.0   U     0      0        0 eth0
+192.168.2.0     0.0.0.0         255.255.255.0   U     0      0        0 eth1
+192.168.2.0     0.0.0.0         255.255.255.0   U     0      0        0 br-ex
+192.168.122.0   0.0.0.0         255.255.255.0   U     0      0        0 virbr0
+
+删除 192.168.2.0 eth1 这一条记录:
+
+$ sudo route del -net 192.168.2.0 netmask 255.255.255.0 gw 0.0.0.0 dev eth0
+或
+$ sudo ip route del 192.168.2.0/24 dev eth0
+
+$ sudo route del -net 10.0.0.0 netmask 255.255.255.0 gw 0.0.0.0 dev eth0
+或
+$ sudo ip route del 10.0.0.0/24 gw 0.0.0.0 dev eth0
+
+添加一个路由记录:
+
+$ sudo route add -net 10.0.0.0 netmask 255.255.255.0 gw 192.168.27.1 metric 0 dev eth0
+或
+$ sudo ip route add 10.0.0.0/24 metric 0 dev eth0
+
+$ sudo ip route add 192.168.27.0/24 metric 0 dev br-ex
+
+$ sudo route add -net 192.168.2.0 netmask 255.255.255.0 gw 192.168.2.254 metric 0 dev br-ex
+
+
+
+$ sudo route del -net 0.0.0.0 gw 192.168.2.254 metric 0 netmask 0.0.0.0 dev eth1
+$ sudo route del -net 0.0.0.0 gw 192.168.2.221 metric 0 netmask 255.255.255.0 dev eth1
+$ sudo route del -net 192.168.2.0 gw 0.0.0.0 metric 0 netmask 255.255.255.0 dev eth1
+
+$ sudo route add -net 0.0.0.0 gw 192.168.2.254 metric 0 netmask 0.0.0.0 dev eth0
+$ sudo route add -net 0.0.0.0 gw 192.168.2.221 metric 0 netmask 255.255.255.0 dev eth0
+$ sudo route add -net 192.168.2.0 gw 0.0.0.0 metric 0 netmask 255.255.255.0 dev eth0
+
+
+重启网络服务:
+
+$ sudo /etc/init.d/networking restart
+
+可以在这里添加路由配置:
+
+sudo vim /etc/rc.local
+
+或者写到 /etc/network/interfaces 里:
+
+iface eth0 inet static
+        address 192.168.1.1
+        netmask 255.255.255.0
+        network 192.168.1.0
+        broadcast 192.168.1.255
+
+        up route add -net 172.16.0.0 netmask 255.240.0.0 gw 192.168.1.254
+        down route del -net 172.16.0.0 netmask 255.240.0.0
+
+
+ip路由表操作:
+
+$ sudo iptables -L -t nat
+
+$ sudo iptables -L
+
+检查网卡和网络设置:
+
+1. sudo lshw -numeric -class network
+2. sudo ifconfig -a
+3. sudo route -nv
+4. sudo dhclient -v
+
+-----------------------------------
+
+sudo iptables -A OUTPUT -p udp --sport 53 -j ACCEPT
+sudo iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
+sudo iptables -A OUTPUT -p icmp -j ACCEPT
+
+
+# list/显示当前路由配置
+$ sudo iptables -L --line-numbers
+
+# 显示所有路由配置的命令
+$ sudo iptables -S
+
+清空所有iptables设置:
+
+    $ sudo iptables -P INPUT ACCEPT
+    $ sudo iptables -P FORWARD ACCEPT
+    $ sudo iptables -P OUTPUT ACCEPT
+    $ sudo iptables -F
+
+关于怎么配置 iptables:
+
+如何配置Ubuntu 14.04中的IPTables防火墙
+http://www.tuicool.com/articles/QvQNZbu
+
+Linux防火墙iptables学习笔记（三）iptables命令详解和举例
+http://blog.chinaunix.net/uid-9950859-id-98279.html
+
+完整命令应该是这样的：
+
+$ sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+大多朋友可能会觉得看起来怎么这么复杂，那我们来逐一分拆说明下:
+
+    -A INPUT ：表明我们要将此规则追加到某个链的最后，由于我们要操作INPUT链接，所以这么写。
+    -m conntrack ：iptables除了自己的核心功能外还只有一些实用的扩展和模块，这个参数表明添加conntrack模块提供的能力。（conntrack模块可以根据先前的连接来确定数据包之间的关系）
+    –ctstate ：该参数是conntrack模块提供的，它可以确定如何用现在的数据包去匹配先前获得的数据包。ESTABLISHED值将自动允许现有连接的数据包，RELATED值将允许已建立连接的相关数据包。（这样就与SSH会话特性相匹配上了）
+    -j ACCEPT ：这个参数用于指定匹配的数据包的目标。用在这里表示接受和允许符合上述标准的数据包通过。
+
+接受其它必要连接(端口)
+
+sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
+
+把“回环”打开，以免有不必要的麻烦:
+
+sudo iptables -I INPUT 1 -i lo -j ACCEPT
+sudo iptables -I OUTPUT 1 -o lo -j ACCEPT
+
+sudo iptables -A INPUT -i lo -j ACCEPT
+sudo iptables -A OUTPUT -o lo -j ACCEPT
+
+查看详细配置
+
+    $ sudo iptables -L --line-numbers
+
+保存配置
+
+    $ sudo apt-get update
+    $ sudo apt-get install iptables-persistent
+
+该命令脚本下载执行后会询问我们是否对IPTables配置进行保存，如果确定的话选择“是”即可。保存后下次重启系统也不会造成配置丢失了。
+
+编辑完iptables后，将其保存到特定位置：
+
+    $ sudo service iptables-persistent save
+
+    或
+    $ sudo iptables-save > /etc/iptables/rules
+
+    注意: 这条语句必须用 root 账户才能成功执行.
+
+-------------------------------
+
+sysctel看下
+
+# nat
+
+net.nf_conntrack_max=237680
+
+net.netfilter.nf_conntrack_max=237680
+
+net.netfilter.nf_conntrack_tcp_timeout_established=21600
+
+----------------------------------------
+
+$ brctl show
+
+bridge name bridge id STP enabled interfaces
+
+br100 8000.782bcb5f5af2 no em2
+                                                        vnet0
+virbr0 8000.525400610089 yes virbr0-nic
+
+
+This is the configuration details in /etc/nova/nova.conf
+
+[DEFAULT]
+firewall_driver = nova.virt.libvirt.firewall.IptablesFirewallDriver
+compute_driver = libvirt.LibvirtDriver
+flat_interface = em2
+flat_network_bridge = br100
+vlan_interface = eth0
+public_interface = br100
+network_manager = nova.network.manager.FlatDHCPManager
+default_floating_pool = public
+fixed_range =
+
+
+
+http://barakme.tumblr.com/post/70895539608/openstack-in-a-box-setting-up-devstack-havana-on
+
+su root
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv4/conf/eth0/proxy_arp
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE 
+
+See more at: 
+
+http://barakme.tumblr.com/post/70895539608/openstack-in-a-box-setting-up-devstack-havana-on#sthash.nOuevqqD.dpuf
+
+
+nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0
+nova secgroup-add-rule default tcp 22 22 0.0.0.0/0 
+
+https://gist.github.com/djoreilly/db9c2d32a473c6643551
+
+http://stackoverflow.com/questions/11795057/openstack-networking-cant-ping-ssh-from-to-vms

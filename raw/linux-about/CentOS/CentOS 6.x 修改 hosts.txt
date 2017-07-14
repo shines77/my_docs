@@ -1,0 +1,57 @@
+
+修改两个地方：
+
+/etc/sysconfig/network
+
+/etc/hosts
+
+1. vim /etc/sysconfig/network
+
+如果你选择的是默认设置，则为：
+
+NETWORKING=yes
+HOSTNAME=localhost.localdomain
+
+把 localhost.localdomain 修改成你的 hostname 即可。
+
+如果你安装时已经设置了hostname，例如为“CentOS6”，则为：
+
+NETWORKING=yes
+HOSTNAME=CentOS6
+
+把 CentOS6 修改成你的 hostname 即可。
+
+2. vim /etc/hosts
+
+默认的设置为：
+
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain
+
+添加你的hostname，例如你的hostname为“centos6”，则为：
+
+127.0.0.1   localhost centos6 localhost.localdomain localhost4 localhost4.localdomain
+::1         localhost centos6 localhost.localdomain localhost6 localhost6.localdomain
+
+使用 sudo reboot -f 重启机器，
+
+重启后查看主机名 uname -n
+
+--------------------------------
+
+CentOS Linux hosts 文件为什么每次启动都被修改
+
+See: http://zhidao.baidu.com/link?url=ZIZWKugCl5MduG9D5Jr0KUblo-qZB9lXs9UVtPqd9Zp-tjZiLLFj_ZAXp0dbZiXOU19ReskWkPoAbazrEcEdKs6TGHv5YkygpcxJJ8zYdta
+
+
+关闭networkmanager服务即可。
+
+临时关闭：
+
+service  NetworkManager stop
+
+永久关闭：
+
+chkconfig NetworkManager off
+
+在centos6.x版本修改完/etc/hosts之后重启被修改，是由于NetworkManager服务，关闭后再修改hosts文件，重启就不会变不回去了。

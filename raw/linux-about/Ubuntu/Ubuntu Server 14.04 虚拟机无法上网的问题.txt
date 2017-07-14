@@ -1,0 +1,20 @@
+
+修改网络配置:
+
+$ sudo vi /etc/network/interfaces
+
+文件修改为如下:
+
+# The loopback network interface
+
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+
+auto eth0
+iface eth0 inet dhcp
+
+然后, 执行下面的命令重启网络:
+
+$ sudo /etc/init.d/networking restart

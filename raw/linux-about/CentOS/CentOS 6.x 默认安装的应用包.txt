@@ -1,0 +1,6 @@
+
+yum -y install git
+yum -y install make gcc gcc-c++ glibc-static
+
+yum -y screen
+

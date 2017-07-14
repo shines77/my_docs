@@ -1,0 +1,21 @@
+
+Ubunutu 防火墙 ufw 的使用
+---------------------------
+
+Docker使用桥接技术来管理各容器的网络访问。但是Ubuntu默认是关闭对外网络访问的，所以在安装之前你需要启用防火墙的网络访问功能。
+
+    $ sudo nano /etc/default/ufw
+
+# Change:
+# DEFAULT_FORWARD_POLICY="DROP"
+# to
+DEFAULT_FORWARD_POLICY="ACCEPT"
+
+修改完成后，我们需要重新加载UFW。
+
+    $ sudo ufw reload
+
+UFW默认存在一套网络访问规则，如果你需要其他服务器可以访问到你的虚拟容器，那么就需要修改一下UFW的访问规则(Docker默认端口是2375，所以需要UFW允许2375的数据访问)。
+
+    $ sudo ufw allow 2375/tcp
+

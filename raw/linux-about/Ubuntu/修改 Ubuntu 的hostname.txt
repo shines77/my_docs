@@ -1,0 +1,18 @@
+修改 Ubutun 的hostname
+------------------------
+
+sudo vim /etc/hosts
+
+127.0.0.1   ubuntu64
+
+
+sudo vim /etc/hostname
+
+ubuntu64
+
+
+重启网络:
+
+sudo /etc/init.d/networking restart
+
+sudo service networking restart  (这个命令据说在Ubuntu 14.04上失效了)

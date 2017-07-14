@@ -1,0 +1,25 @@
+
+创建一个可登录并且创建Home目录的超级管理员(系统用户)：
+
+$ sudo useradd -r -m -s /bin/bash -g sudo guozi
+
+$ sudo passwd guozi
+
+
+创建一个不可登录并且不创建Home目录的用户：
+
+$ sudo useradd -M -s /sbin/nologin -g www www
+
+$ sudo passwd www
+
+
+
+   创建一个可登录并且创建Home目录的超级管理员(系统用户)：
+
+    $ sudo groupadd -f -r -g 20 ubuntu
+
+    $ sudo useradd -r -m -s /bin/bash -g ubuntu ubuntu
+
+    $ sudo passwd ubuntu
+
+    $ sudo gpasswd -a ubuntu sudo

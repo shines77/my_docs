@@ -1,0 +1,8 @@
+
+Ubuntu Sources List Generator
+
+See:
+
+https://repogen.simplylinux.ch/
+
+

@@ -1,0 +1,37 @@
+
+1. ps 主要是对进程和线程的状态做一个快照.
+
+ps -ef
+
+    -e : 在命令执行后显示环境
+　　-f : 完整显示输出
+
+ps -efm    可以查看进程下的线程
+
+    -m : 在进程后面显示他的子线程
+
+2. top
+
+按1  可以切换显示CPU的多内核信息
+按w  可以保存配置
+按f  可以选择显示的列表项
+按q  退出
+
+
+3. lsof
+
+# lsof 高级用法
+$ lsof -a -c bash -u root
+
+
+# 每5秒刷新一次
+$ lsof -c init -a -r5
+
+
+linux 查看进程 ps top 区别
+http://blog.chinaunix.net/uid-24958038-id-3148301.html
+
+
+监控Linux文件系统
+http://www.netkiller.cn/monitoring/sys.lsof.html#idm45123930346320
+

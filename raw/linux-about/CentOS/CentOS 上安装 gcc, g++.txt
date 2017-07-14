@@ -1,0 +1,7 @@
+
+yum install make gcc gcc-g++ glibc-static
+
+再装上函数手册
+
+yum install manpages-dev
+

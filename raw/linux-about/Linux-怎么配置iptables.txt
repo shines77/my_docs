@@ -1,0 +1,87 @@
+
+[Ubuntu] 关于怎么配置 iptables
+--------------------------------
+
+参考
+
+如何配置Ubuntu 14.04中的IPTables防火墙
+http://www.tuicool.com/articles/QvQNZbu
+
+Linux防火墙iptables学习笔记（三）iptables命令详解和举例
+http://blog.chinaunix.net/uid-9950859-id-98279.html
+
+完整命令应该是这样的：
+
+    $ sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+大多朋友可能会觉得看起来怎么这么复杂，那我们来逐一分拆说明下:
+
+    -A INPUT ：表明我们要将此规则追加到某个链的最后，由于我们要操作INPUT链接，所以这么写。
+    -m conntrack ：iptables除了自己的核心功能外还只有一些实用的扩展和模块，这个参数表明添加conntrack模块提供的能力。（conntrack模块可以根据先前的连接来确定数据包之间的关系）
+    –ctstate ：该参数是conntrack模块提供的，它可以确定如何用现在的数据包去匹配先前获得的数据包。ESTABLISHED值将自动允许现有连接的数据包，RELATED值将允许已建立连接的相关数据包。（这样就与SSH会话特性相匹配上了）
+    -j ACCEPT ：这个参数用于指定匹配的数据包的目标。用在这里表示接受和允许符合上述标准的数据包通过。
+
+接受其它必要连接(端口):
+
+    $ sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+    $ sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+    $ sudo iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
+
+实施Drop规则:
+
+    防火墙的2种常用模式，一种是明确定义允许通过防火墙的规则，不匹配的都丢弃; 另外一种是明确定义拒绝通过防火墙的规则，其余的都允许。
+    如果我们将INPUT链的默认规则更改为“Drop”, 即丢弃, 则:
+
+    $ sudo iptables -P INPUT DROP
+
+把“回环”打开，以免有不必要的麻烦:
+
+    $ sudo iptables -I INPUT 1 -i lo -j ACCEPT
+    $ sudo iptables -I OUTPUT 1 -o lo -j ACCEPT
+
+    $ sudo iptables -A INPUT -i lo -j ACCEPT
+    $ sudo iptables -A OUTPUT -o lo -j ACCEPT
+
+查看详细配置:
+
+    $ sudo iptables -L --line-numbers
+
+如何保存配置:
+
+    虽然iptables的命令执行后会立即生效，但这个生效过程其实是临时的，系统在重启之后便会丢失。
+
+    $ sudo apt-get update
+    $ sudo apt-get install iptables-persistent
+
+    该命令脚本下载执行后会询问我们是否对iptables配置进行保存，如果确定的话选择“是”即可。保存后下次重启系统也不会造成配置丢失了。
+
+    编辑完iptables后，将其保存到特定位置：
+
+    $ sudo service iptables-persistent save
+
+    或
+    $ sudo iptables-save > /etc/iptables/rules
+
+    注意: 这条语句必须用 root 账户才能成功执行.
+
+list/显示当前路由配置:
+
+    $ sudo iptables -L
+
+显示所有路由配置的命令:
+
+    $ sudo iptables -S
+
+清空所有iptables设置:
+
+    $ sudo iptables -P INPUT ACCEPT
+    $ sudo iptables -P FORWARD ACCEPT
+    $ sudo iptables -P OUTPUT ACCEPT
+    $ sudo iptables -F
+
+    可以使用“-F”参数来清空已有的规则集, 但它并不会对链的默认策略进行更改。 所以清空所有规则前, 先将INPUT和OUTPUT链的默认策略恢复到ACCEPT.
+
+添加 80 端口跳转到 8080 规则:
+
+    $ sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+

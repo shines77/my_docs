@@ -1,0 +1,82 @@
+
+Linux教程:SSH免密码登录的方法
+-------------------------------
+
+http://be-evil.org/linux-ssh-login-without-using-password.html
+http://haitao.iteye.com/blog/1744272
+
+公司里有N台服务器需要经常登录，每次ssh的时候都要输入密码实在太不爽了，今天有空一口气全部改为公钥/私钥认证，登录再也不用任何密码了。
+
+实现步骤：
+
+1. 在你的自己的机器下面使用ssh-keygen命令来实现创建公钥
+
+    使用 ssh-keygen -t rsa 来创建密钥，程序会问你存放的目录，如果不需要修改，直接回车两次即可
+
+2. 将你~/.ssh目录中的id_rsa.pub这个文件拷贝到你要登录的服务器的~/.ssh目录中，然后再运行以下命令来将公钥导入到~/.ssh/authorized_keys这个文件中
+
+    $ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys，注意是管道符是 >>
+
+    另外要注意请务必要将服务器上
+
+    ~/.ssh权限设置为700
+
+    ~/.ssh/authorized_keys的权限设置为600
+
+    $ chmod 700 ~/.ssh
+
+    $ chmod 600 ~/.ssh/authorized_keys
+
+    这是linux的安全要求，如果权限不对，自动登录将不会生效
+
+    完毕之后，退出服务器的登录，再使用ssh登录，你就会发现服务器不会再向你询问密码了.
+
+补充：
+
+    有读者提出拷贝公钥文件到服务器上这个过程可以用ssh-copy-id命令来完成，下面是命令使用列表.
+
+
+先确保所有主机的防火墙处于关闭状态。
+
+在主机A上执行如下：
+
+    1.　$ cd ~/.ssh
+
+    2.　$ ssh-keygen -t rsa  --------------------然后一直按回车键，就会按照默认的选项将生成的密钥保存在.ssh/id_rsa文件中。
+
+    3.　$ cp id_rsa.pub authorized_keys 
+
+         这步完成后，正常情况下就可以无密码登录本机了，即ssh localhost，无需输入密码。
+
+    4.　$ scp authorized_keys summer@10.0.5.198:/home/summer/.ssh   ------把刚刚产生的authorized_keys文件拷一份到主机B上.　　
+
+    5.　$ chmod 600 authorized_keys       
+
+        进入主机B的.ssh目录，改变authorized_keys文件的许可权限。
+
+        (4和5可以合成一步，执行: $ ssh-copy-id -i summer@10.0.5.198)
+
+默认用法：
+
+    $ ssh-copy-id user@server
+
+自定义用法：
+
+    $ ssh-copy-id -i 公钥文件路径 user@server
+
+    $ ssh-copy-id -p 服务器SSH服务端口 user@server
+
+
+用密钥登录SSH
+---------------
+
+  你使用密钥来登录SSH：
+
+    $ sudo ssh -i skyinno.key <username>@<instance_ip>
+
+  例如:
+
+    $ sudo ssh -i ~/.ssh/skyinno.key cirros@10.0.0.3
+
+    注意: 这个 skyinno.key 是密钥, 不是公钥!!
+

@@ -1,0 +1,64 @@
+
+Linux，du、df统计的硬盘使用情况不一致问题
+
+http://blog.linezing.com/?p=2136
+
+2. 幻影文件(phantom file)
+
+du是统计被文件系统记录到的每个文件的大小，然后进行累加得到的大小，这是通过文件系统获取到的。而df主要是从超级块（superblock）中读入硬盘使用信息，df获取到的是磁盘块被使用的情况。当一个文件被删除时，如果有别的进程正在使用它（占有句柄）， 这个文件将不会被du统计到，但是这个文件被占用的磁盘空间却依然会被df统计到。这些文件，以及正在使用这些文件的进程可以通过 lsof | grep deleted 查到。当进程停止或者被kill时，这些空间将被释放。
+
+查询各硬盘和挂载点的分配和使用情况：
+
+$ df -h
+
+Filesystem      Size  Used Avail Use% Mounted on
+udev            1.7G   12K  1.7G   1% /dev
+tmpfs           351M  900K  350M   1% /run
+/dev/sda9        69G   26G   39G  41% /
+none            4.0K     0  4.0K   0% /sys/fs/cgroup
+none            5.0M     0  5.0M   0% /run/lock
+none            1.8G  160K  1.8G   1% /run/shm
+none            100M   48K  100M   1% /run/user
+/dev/sda8       3.9G  320K  3.5G   1% /hdd-btrfs
+/dev/sda7       3.9G   33M  3.8G   1% /hdd-xfs
+/dev/sda1       226M   80M  130M  39% /boot
+/dev/sda5        19G  1.2G   17G   7% /home
+
+显示更详细的信息:
+
+$ df -lh
+
+文件系统              容量  已用 可用 已用% 挂载点
+
+/dev/hdb2              75G   75G     0 100% /
+/dev/hdb1              99M  9.2M   85M  10% /boot
+none                  251M     0  251M   0% /dev/shm
+
+
+查询单个目录的信息：
+
+例如: 查找/home目录的大小
+
+$ sudo du -bsh /home
+
+$ sudo du -sh /home
+
+
+查询跟目录下的所以文件夹的空间占用大小：
+
+$ du -hs /*
+
+
+查询一个目录下前10个最大的文件：
+
+(文件大小以KB为单位)
+$ sudo du -a /var | sort -n -r | head -n 10
+
+(文件大小以MB为单位)
+$ sudo du -am /var | sort -n -r | head -n 10
+
+
+显示一个文件的尾部信息：
+
+$ tail ./php5.conf
+

@@ -1,0 +1,13 @@
+
+rocksdb的编译:
+
+make install DEBUG_LEVEL=0
+
+然后:
+
+install -C -m 755 librocksdb.a /usr/local/lib -e librocksdb.so.4.6.0 && make install-shared DEBUG_LEVEL=0
+
+然后:
+
+install -C -m 755 librocksdb.so.4.6.0 /usr/local/lib && ln -fs librocksdb.so.4.6.0 /usr/local/lib/librocksdb.so.4.6 && ln -fs librocksdb.so.4.6.0 /usr/local/lib/librocksdb.so.4 && ln -fs librocksdb.so.4.6.0 /usr/local/lib/librocksdb.so
+

@@ -1,0 +1,68 @@
+
+VirtualBox虚拟机安装CentOS6.7无法上网的问题
+---------------------------------------------
+
+由于默认CentOS 6.x只有vi，没有vim，所以下面将使用vi编辑文件。
+
+我是以为root身份登陆的，但好像有时候有点问题，为了避免未知的问题，大部分命令前将使用sudo开头来保证是已管理员身份执行。
+
+首先，默认CentOS安装好是没有设置DNS的，使用下面的命令：
+
+sudo vi /etc/resolv.conf
+
+如果文件为空，则添加下面内容：
+
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+search localdomain
+
+如果不为空，则添加以上DNS设置即可。
+
+再查看:
+
+sudo vi /etc/sysconfig/network-scripts/ifcfg-eth0
+
+内容大致如下：
+
+#============================================
+# Intel Corporation 82540EM Gigabit Ethernet Controller
+DEVICE=eth0 #连接名称
+BOOTPROTO=dhcp #自动获取IP
+ONBOOT=no #开机自动连接
+HWADDR=08:00:27:BB:8E:13
+MM_CONTROLLED=yes
+UUID=xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx
+#============================================
+
+把 ONBOOT=no 改为 ONBOOT=yes .
+检查是否设置为自动获取ip： BOOTPROTO=dhcp
+
+使用下列命令重新启动网络：
+
+service network restart
+
+试一下是否可以ping通：
+
+ping www.163.com
+
+如果还是不行，使用命令 sudo shutdown now -r 重启服务器看看。
+
+如果能ping通，那么上网应该没有问题，赶紧试试yum update吧。
+
+-----------------------------------
+
+附：
+
+如果你复制虚拟机以后报错上不了网，
+
+ethXXX: 设备 ethXXX 似乎不存在, 初始化操作将被延迟
+
+可是试试这个命令：
+
+rm -rf  /etc/udev/rules.d/70-persistent-net.rules
+
+然后重新服务器看看。
+
+--------------------------------------------
+
+参考自：http://blog.baiduola.com/475/

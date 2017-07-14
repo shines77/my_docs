@@ -1,0 +1,55 @@
+
+CMake编译cloud_backup:
+
+先情况CMake的make缓存.
+
+cd ./build/linux/debug
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug --build "./" ../../../
+
+make --include-dir=../../../src/
+
+cd ./build/linux/release
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release --build "./" ../../../
+
+
+查看glibc的版本号:
+
+ldd --version
+
+安装glibc:
+
+apt-get install glibc  (Ubuntu 14.04 无效)
+
+更新gloibc:
+
+apt-get upgrade glibc  (Ubuntu 14.04 无效)
+
+查看glibc支持的版本:
+
+strings /lib64/libc.so.6 | grep GLIBC_
+
+安装一系列的开发包:
+
+apt-get install build-essential
+
+The build package should also install the libc6-devel package for you as a dependency.
+
+  ca-certificates chromium-browser chromium-browser-l10n
+  chromium-codecs-ffmpeg-extra cpio cpp-4.8 g++-4.8 gcc-4.8 gcc-4.8-base
+  gir1.2-gudev-1.0 glib-networking glib-networking-common
+  glib-networking-services grub-common grub-pc grub-pc-bin grub2-common
+  ifupdown initramfs-tools initramfs-tools-bin libasan0 libcloog-isl4
+  libgcc-4.8-dev libgnutls-dev libgnutls-openssl27 libgnutls26 libgnutlsxx27
+  libgudev-1.0-0 libjasper1 libobjc-4.8-dev libobjc4 liboxideqt-qmlplugin
+  liboxideqtcore0 liboxideqtquick0 libpam-systemd libperl5.18 libpixman-1-0
+  libsmbclient libssh-4 libssl-dev libssl-doc libssl1.0.0 libstdc++-4.8-dev
+  libsystemd-daemon0 libsystemd-journal0 libsystemd-login0 libudev-dev
+  libudev1 libwbclient0 linux-libc-dev openssl oxideqt-codecs perl perl-base
+  perl-modules python-samba samba-common samba-common-bin samba-libs smbclient
+  systemd-services thunderbird thunderbird-gnome-support thunderbird-locale-en
+  thunderbird-locale-en-us thunderbird-locale-zh-cn thunderbird-locale-zh-hans
+  udev
+
+apt-get upgrade libc6-dev
+
+

@@ -1,0 +1,50 @@
+
+Ubuntu 14.04 安装 docker
+--------------------------
+
+http://www.tuicool.com/articles/jIN7f27
+http://my.oschina.net/jk409/blog/309396
+
+安装方法一:
+
+    $ sudo apt-get update
+    $ sudo apt-get upgrade
+    $ sudo apt-get install docker.io
+    $ sudo ln -sf /usr/bin/docker.io /usr/local/bin/docker
+    $ sudo sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker  # 这句现在好像失效了
+
+docker的版本升级:
+
+1. 确认 /usr/lib/apt/methods/https 是否存在，如果不存在，那么先安装 apt-transport-https :
+
+    $ sudo apt-get install apt-transport-https
+
+2. 将Docker官方资料库的访问Key添加到你本地系统:
+
+    $ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
+
+3. 上面一步执行成功后，就开始安装Lxc-docker包。
+
+    $ sudo sh -c "echo deb https://get.docker.io/ubuntu docker main > /etc/apt/sources.list.d/docker.list"
+    $ sudo apt-get install lxc-docker
+
+安装方法二:
+
+    如果觉得上面的方法太繁琐, 那么可以:
+
+    $ curl -sSL https://get.docker.io/ubuntu/ | sudo sh
+
+    如果执行不成功, 报warnning, 好像较新的版本已经改为这样了:
+
+    $ curl -sSL https://get.docker.com/ | sudo sh
+
+    使用方法二时，启动docker若出现下面错误，请安装apparmor软件即可:
+
+      FATA[0000] Error loading docker apparmor profile: fork/exec /sbin/apparmor_parser: no such file or directory().
+	
+    $ sudo apt-get install apparmor
+
+
+运行 docker 容器:
+
+    $ sudo docker run -i -t ubuntu /bin/bash

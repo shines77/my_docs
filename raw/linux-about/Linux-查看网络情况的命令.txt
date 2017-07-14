@@ -1,0 +1,94 @@
+
+首先安装 sysstat 包：
+
+$ sudo apt-get install sysstat 
+
+$ ps -ef | grep ceph
+
+root     26821 26650  0 13:47 pts/31   00:00:00 screen -S ceph
+root     26822 26821  0 13:47 ?        00:00:00 SCREEN -S ceph
+root     30669     1  3 15:56 ?        00:00:00 ./ceph-osd -i 2 -c /work/git/ceph/src/ceph.conf
+root     30763 29517  0 15:56 pts/27   00:00:00 grep --color=auto ceph
+
+
+$ netstat -anp | grep 192.168.1.106
+
+tcp        0      0 192.168.1.136:40621     192.168.1.106:6801      TIME_WAIT   -               
+tcp        0      0 192.168.1.136:44322     192.168.1.106:6803      ESTABLISHED 30669/ceph-osd  
+tcp        0      0 192.168.1.136:43757     192.168.1.106:6789      ESTABLISHED 30669/ceph-osd  
+tcp        0      0 192.168.1.136:6801      192.168.1.106:58413     ESTABLISHED 30669/ceph-osd  
+tcp        0      0 192.168.1.136:6803      192.168.1.106:37417     ESTABLISHED 30669/ceph-osd  
+tcp        0      0 192.168.1.136:57374     192.168.1.106:6802      ESTABLISHED 30669/ceph-osd  
+tcp        0      0 192.168.1.136:6802      192.168.1.106:42585     ESTABLISHED 30669/ceph-osd  
+
+
+监控网络收发：$ sar -n DEV 1
+
+监控网络tcp连接数：$ sar -n SOCK 1
+
+监控磁盘IO性能：$ iostat -d -x -m 1
+
+
+http://blog.csdn.net/grublinux/article/details/29487231
+
+$ iostat -d -x -m 1
+
+Device:    rrqm/s   wrqm/s     r/s     w/s    rMB/s    wMB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
+sda          0.00   267.00    0.00   67.50     0.00     1.32    40.18     0.00    0.06    0.00    0.06   0.06   0.40
+sdb          0.00     0.00    0.00    0.00     0.00     0.00     0.00     0.00    0.00    0.00    0.00   0.00   0.00
+
+-------------------------------------------
+
+-x 选项拓展输出信息：
+
+rrqm/s：每秒进行merge(多个io的合并)读操作的数量
+
+wrqm/s：每秒进行merge(多个io的合并)写操作的数量
+
+r/s：每秒完成读io设备的次数
+
+w/s：每秒完成写io设备的次数
+
+rsec/s：每秒读扇区的次数
+
+wsec/s：每秒写扇区的次数            注：激活 -k|-m 将变成 rkb/s wkb/s | rmb/s wmb/s
+
+avgrq-sz：平均每次io设备的大小（以扇区为单位），因为有merge读或写，所以每次io大小需要计算
+
+avgqu-sz：平均I/O队列长度
+
+await：每次io设备的等待时间，也包括io服务时间（毫秒）。
+
+await的大小一般取决于服务时间(svctm) 以及 I/O 队列的长度和 I/O 请求的发出模式。
+
+-------------------------------------------
+
+基本 cpu 输出信息：
+
+%user：用户进程消耗cpu的比例
+
+%nice：用户进程优先级调整消耗的cpu比例
+
+%sys：系统内核消耗的cpu比例
+
+%iowait：等待磁盘io所消耗的cpu比例
+
+%idle：闲置cpu的比例（不包括等待磁盘io的s）
+
+-------------------------------------------
+
+基本 device 输出信息：
+
+Device：设备的名称
+
+Tps：设备上每秒的io传输（可能多个io被组成一个io）的次数
+
+Blk_read/s：每秒从设备读取block（kernel 2.4以上，block=512byte）的数量
+
+Blk_wrtn/s：每秒写到设备block（kernel 2.4以上，block=512byte）的数量
+
+Blk_read：间隔时间内，从设备读取总的block数量
+
+Blk_wrtn：间隔时间内，写到设备总的block数量
+
+-------------------------------------------

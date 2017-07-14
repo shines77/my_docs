@@ -1,0 +1,8 @@
+
+ Ubuntu:
+
+$ sudo apt-get install openssh-server -y
+
+CentOS:
+
+$ sudo yum install ssh-server -y

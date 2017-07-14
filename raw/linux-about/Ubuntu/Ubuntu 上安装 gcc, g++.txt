@@ -1,0 +1,16 @@
+
+sudo apt-get install build-essential
+
+
+执行完后，完成了gcc,g++,make的安装。 build-essential 是一整套工具，gcc，libc等等.
+
+------------------------------------------
+
+sudo apt-get install make gcc libc6-dev
+
+其中 glibc-static 好像在ubuntu上没有，正确的是 libc6-dev 。
+
+再装上函数手册
+
+sudo apt-get install manpages-dev
+

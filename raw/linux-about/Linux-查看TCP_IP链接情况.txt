@@ -1,0 +1,7 @@
+
+查看TCP/IP的具体链接情况
+
+watch ss -s
+
+ss -anltp 看看mysql是不是监听了 127.0.0.1 ？
+

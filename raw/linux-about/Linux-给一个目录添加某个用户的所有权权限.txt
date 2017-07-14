@@ -1,0 +1,7 @@
+
+$ sudo chown -R guozi:guozi /work
+
+$ sudo chown -R skyinno:skyinno ./ceph
+
+$ sudo chown -R skyinno:skyinno /work/git/ceph
+

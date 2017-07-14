@@ -1,0 +1,17 @@
+
+Linux-性能监测-top命令
+
+原文地址：http://www.cnblogs.com/txw1958/archive/2012/07/25/linux-top-command.html
+
+top命令是Linux下常用的性能分析工具，能够实时显示系统中各个进程的资源占用状况，类似于Windows的任务管理器。
+top可以显示CPU占用率为前几位的进程，并提供CPU的实时活动情况。
+
+语法：top [-s time] [-d count] [-q] [-u] [-h] [-n number] [-f filename]
+
+-s time 设置屏幕刷新的延时，单位为秒，默认值5秒
+-d count 设置屏幕刷新的次数，刷新显示完count次后退出
+-q 如果经过nice授权，使用-q可以使top运行的更快一些
+-u 用显示User ID代替username，提高命令运行速度 -h 当系统由多个CPU时，个别CPU的状态信息被隐藏，只显示平均状态值
+-n number 设置每一屏幕显示的进程数目，number值超过进程最大数目，则设置无效
+-f filename 输出重定向到给定的文件名，默认为16个进程信息 
+

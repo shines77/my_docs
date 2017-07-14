@@ -1,0 +1,76 @@
+
+Linux高精度计时器
+
+http://m.ctocio.com.cn/os/0/12591500_m.shtml
+
+
+1. 在linux下通常可用的精度最高的时间接口是gettimeofday()，它返回一个timeval结构，其精度为us，即10^(-6) 秒，
+
+
+2. 在librt库中，提供了高精度的时间函数，分别是：
+
+
+ 1) long clock_gettime(clockid_t, struct timespec *);
+
+　　获取特定时钟的时间，时间通过fp结构传回，目前定义了6种时钟，分别是:
+
+　　CLOCK_REALTIME 系统当前时间，从1970年1.1日算起
+
+　　CLOCK_MONOTONIC 系统的启动时间，不能被设置
+
+　　CLOCK_PROCESS_CPUTIME_ID 进程运行时间
+
+　　CLOCK_THREAD_CPUTIME_ID 线程运行时间
+
+　　CLOCK_REALTIME_HR CLOCK_REALTIME的高精度版本
+
+　　CLOCK_MONOTONIC_HR CLOCK_MONOTONIC的高精度版本
+
+
+ 2) 获取特定时钟的时间精度：
+
+    long clock_getres(clockid_t );
+
+
+ 3) 设置特定时钟的时间：
+
+    long clock_settime(clockid_t, struct timespec*);
+
+
+ 4) 休眠time中指定的时间，如果遇到信号中断而提前返回，则由left_time返回剩余的时间：
+
+    long clock_nanosleep(clockid_t, int flag, timespec* time, timespec* left_time);
+
+
+
+Linux系统为每个进程提供了三个间隔定时器，精度为us。定时器到期时将触发相应的信号，定时器可能会重新开始，值得注意的是，fork生成的子进程并不继承父进程的定时器。
+
+　　int getitimer(int type, itimerval* val)
+
+　　int setitimer(int type, itimerval* nval, itimerval* oval)
+
+
+  itimerval 有两个成员，it_interval和it_value，均为timeval类型，前者保存的是下次定时器的定时间隔，后者为本次超时时的定时间隔。也就是说，定时器将从it_value减少，当变为0时，发送信号，并从it_interval取值，重新开始定时器。如果val被置为0，则停止定时器。
+
+  getitimer()用于设置一个定时器，而setitimer用于修改已经设置的定时器，如果在设置时定时器尚未超时，则剩余时间保存于oval。
+
+  定时器定时器三个定时器分别是：
+
+　　ITIMER_REAL 以系统时间递减，超时时投递SIGALRM信号
+
+　　ITIMER_VIRTUAL 以进程执行时间递减，超时时投递
+
+　　SIGVTALRM ITIMER_PROF 当进程执行或进程执行系统调用时均递减，超时时投递SIGPROF信号。
+
+
+
+此外 Posix1.b 中为我们提供了实时高精度的定时工具，精度可以达到纳秒。不过每个进程只能有一个。
+
+　　int timer_create();
+
+　　int timer_delete();
+
+　　int timer_gettime();
+
+　　int timer_settime();
+

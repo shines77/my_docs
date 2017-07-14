@@ -1,0 +1,7 @@
+修改 Ubutun 的语言环境
+------------------------
+
+sudo vim /etc/default/locale
+
+LANG="en_US.UTF-8"
+LANGUAGE="en_US:en"

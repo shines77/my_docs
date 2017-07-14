@@ -1,0 +1,50 @@
+
+Ubuntu 14.04 如何修改 root 密码
+---------------------------------
+
+以你默认的超管账号登陆 Ubuntu, 然后输入:
+
+sudo passwd root
+
+用这个命令修改 root 的密码, 这里要先输入你当前登陆用户的密码, 然后再输入两遍你要设置 root 的密码.
+总共要输入 3 次密码.
+
+虽然这样改了 root 密码, 但是使用 PuTTy (SSH)登陆 root 用户的时候, 会出现密码不对的情况,
+这种情况按如下方法解决:
+
+如果Ubuntu安装时还没有安装ssh-server，可以使用下面的命令先安装SSH-Server:
+
+sudo apt-get install openssh-server
+
+用下面这个命令检查ssh是否启动了：
+
+sudo ps -e | grep ssh
+
+如果没有任何显示则代表没有启动，则用下列命令启动 ssh-server:
+
+sudo service ssh start
+
+然后，编辑下面的配置文件即可:
+
+sudo vim /etc/ssh/sshd_config
+
+----------------------------------------
+
+# Authentication:
+LoginGraceTime 120
+#PermitRootLogin without-password    # 找到这里，把它注释
+PermitRootLogin yes                  # 改为yes  然后重启ssh
+StrictModes yes
+
+----------------------------------------
+
+把 PermitRootLogin without-password 这句注释掉, 然后添加下面这句 PermitRootLogin yes, 存盘退出,
+
+然后使用下面命令重新启动 SSH 服务, 即可, 大功告成.
+
+sudo service ssh restart
+
+
+参考自:
+
+http://www.21ops.com/linux/25393.html

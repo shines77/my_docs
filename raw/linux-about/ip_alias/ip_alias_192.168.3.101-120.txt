@@ -1,0 +1,147 @@
+
+$ sudo vim /etc/network/interfaces
+
+auto eth0:0
+iface eth0:0 inet static
+name Ethernet alias LAN card
+address 192.168.3.101
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:1
+iface eth0:1 inet static
+address 192.168.3.102
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:2
+iface eth0:2 inet static
+address 192.168.3.103
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:3
+iface eth0:3 inet static
+address 192.168.3.104
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:4
+iface eth0:4 inet static
+address 192.168.3.105
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:5
+iface eth0:5 inet static
+address 192.168.3.106
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:6
+iface eth0:6 inet static
+address 192.168.3.107
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:7
+iface eth0:7 inet static
+address 192.168.3.108
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:8
+iface eth0:8 inet static
+address 192.168.3.109
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:9
+iface eth0:9 inet static
+address 192.168.3.110
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:10
+iface eth0:10 inet static
+address 192.168.3.111
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:11
+iface eth0:11 inet static
+address 192.168.3.112
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:12
+iface eth0:12 inet static
+address 192.168.3.113
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:13
+iface eth0:13 inet static
+address 192.168.3.114
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:14
+iface eth0:14 inet static
+address 192.168.3.115
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:15
+iface eth0:15 inet static
+address 192.168.3.116
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:16
+iface eth0:16 inet static
+address 192.168.3.117
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:17
+iface eth0:17 inet static
+address 192.168.3.118
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:18
+iface eth0:18 inet static
+address 192.168.3.119
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+auto eth0:19
+iface eth0:19 inet static
+address 192.168.3.120
+netmask 255.255.255.0
+broadcast 192.168.3.255
+network 192.168.3.0
+
+
+$ sudo /etc/init.d/networking restart
+

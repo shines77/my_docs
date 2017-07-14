@@ -1,0 +1,145 @@
+
+Linux下时间机制
+
+clock()、time()、clock_gettime()和gettimeofday()函数的用法和区别
+
+http://www.cnblogs.com/krythur/archive/2013/02/25/2932647.html
+
+原帖: http://blog.sina.com.cn/s/blog_790f5ae10100rwd3.html
+
+
+一) ANSI clock()函数
+
+clock 函数的返回值类型是clock_t, 它除以CLOCKS_PER_SEC来得出时间,一般用两次clock函数来计算进程自身运行的时间.
+
+ANSI clock有三个问题:
+
+1) 如果超过一个小时, 将要导致溢出.
+2) 函数clock没有考虑CPU被子进程使用的情况.
+3) 也不能区分用户空间和内核空间.
+
+所以clock()函数在linux系统上变得没有意义.
+
+(3)clock()函数返回值是一个相对时间，而不是绝对时间.
+(4)CLOCKS_PER_SEC是系统定义的宏，由GNU标准库定义为1000000.
+
+
+二) times()时间函数
+
+1) 概述:
+
+原型如下：
+
+clock_t times(struct tms *buf);
+
+tms结构体如下:
+
+strace tms{
+ clock_t tms_utime;
+ clock_t tms_stime;
+ clock_t tms_cutime;
+ clock_t tms_cstime;
+}
+
+注释:
+tms_utime记录的是进程执行用户代码的时间.
+tms_stime记录的是进程执行内核代码的时间.
+tms_cutime记录的是子进程执行用户代码的时间.
+tms_cstime记录的是子进程执行内核代码的时间.
+
+
+(1) (double)clktck是通过clktck = sysconf(_SC_CLK_TCK)来取的, 也就是要得到user-cpu所占用的时间,就要用:
+
+(tmsend->tms_utime - tmsstart->tms_utime)/(double)clktck);
+
+(2) clock_t times(struct tms *buf); 返回值是过去一段时间内时钟嘀嗒的次数.
+(3) times()函数返回值也是一个相对时间.
+
+
+sysconf(_SC_CLK_TCK) 的值是由系统设定的, LINUX可以选择(100,250,1000)HZ, 而DOS的频率是55HZ.
+
+默认的Linux时钟周期是100HZ,而现在最新的内核时钟周期默认为250HZ.
+内核的标准时间是jiffy, 一个jiffy就是一个内部时钟周期,而内部时钟周期是由250HZ的频率所产生中的,也就是一个时钟滴答,间隔时间是4毫秒(ms).
+
+所以 times() 的精度可能是 sysconf(_SC_CLK_TCK) 的值决定的, 不是很高.
+
+
+三) 实时函数clock_gettime()
+
+
+clock_gettimeint clock_gettime(clockid_t clk_id, struct timespec *tp);
+
+在函数原型中我们可以看到，这个函数中使用timespec作为时间参数。这要比gettimeofday要精确的多。
+关于clockid_t参数，一般选择CLOCK_MONOTONIC就好，其它的参数一般都不在计算时间间隔中使用。
+
+
+
+四) 时间函数gettimeofday()
+
+
+
+五)四种时间函数的比较
+
+1)精确度比较:
+
+以下是各种精确度的类型转换:
+1秒=1000毫秒(ms), 1毫秒=1/1000秒(s)；
+1秒=1000000 微秒(μs), 1微秒=1/1000000秒(s)；
+1秒=1000000000 纳秒(ns),1纳秒=1/1000000000秒(s)；
+
+
+2)
+clock()函数的精确度是10毫秒(ms)
+times()函数的精确度是10毫秒(ms)
+gettimofday()函数的精确度是微秒(μs)
+clock_gettime()函数的计量单位为十亿分之一，也就是纳秒(ns)
+
+
+六) 内核时钟
+
+
+
+七) 为应用程序计时
+
+1) bash内置命令time
+
+例如:
+
+time sleep 1
+
+real    0m1.016s
+user    0m0.000s
+sys     0m0.004s
+
+2) /usr/bin/time的一般命令行
+
+  /usr/bin/time -v sleep 1
+
+    Command being timed: "sleep 1"
+    User time (seconds): 0.00
+    System time (seconds): 0.00
+    Percent of CPU this job got: 0%
+    Elapsed (wall clock) time (h:mm:ss or m:ss): 0:01.00
+    Average shared text size (kbytes): 0
+    Average unshared data size (kbytes): 0
+    Average stack size (kbytes): 0
+    Average total size (kbytes): 0
+    Maximum resident set size (kbytes): 0
+    Average resident set size (kbytes): 0
+    Major (requiring I/O) page faults: 0
+    Minor (reclaiming a frame) page faults: 178
+    Voluntary context switches: 2
+    Involuntary context switches: 0
+    Swaps: 0
+    File system inputs: 0
+    File system outputs: 0
+    Socket messages sent: 0
+    Socket messages received: 0
+    Signals delivered: 0
+    Page size (bytes): 4096
+    Exit status: 0
+       
+这里的输出更多来源于结构体rusage.
+
+最后，我们看到real time大于user time和sys time的总和，这说明进程不是在系统调用中阻塞,就是得不到运行的机会.
+而sleep()的运用，也说明了这一点.
