@@ -4,7 +4,7 @@ Ubuntu 14.04 安装和配置 Cisco AnyConnect VPN Server
 
 # 1. 简介 #
 
-`Cisco AnyConnect VPN` 是 `Cisco（思科公司）` 的安全远程接入解决方案，隐蔽性要更好一些，穿透性和稳定性也不错，一般不太会掉线。传统的 `VPN` (LPTP, PPTP, IPSec等方式)，以及 `OpenVPN`，受到干扰可能性比较大，比较容易被 `GFW` 探知，如果流量大的话还会被 `GFW` 直接屏蔽。
+`Cisco AnyConnect VPN` 是 `Cisco（思科公司）` 的安全远程接入解决方案，隐蔽性要更好一些，穿透性和稳定性也不错，一般不太会掉线。传统的 `VPN` ( `LPTP`, `PPTP`, `IPSec` 等方式)，以及 `OpenVPN`，受到干扰可能性比较大，比较容易被 `GFW` 探知，如果流量大的话还会被 `GFW` 直接屏蔽。
 
 `Cisco AnyConnect VPN` 还具有下列优势：
 
