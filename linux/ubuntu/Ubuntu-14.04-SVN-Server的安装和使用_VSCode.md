@@ -179,7 +179,7 @@ $ sudo vim /etc/rc.local
 
 # 此处省略......
 
-svnserve -d -r /home/skyinno/svn
+/usr/bin/svnserve -d -r /home/skyinno/svn
 exit 0
 ```
 

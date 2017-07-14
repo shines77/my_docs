@@ -144,7 +144,7 @@ Ubuntu 14.04 SVN Server 的安装和使用
 
     # 此处文件头若干内容省略 ......
 
-    svnserve -d -r /home/skyinno/svn
+    /usr/bin/svnserve -d -r /home/skyinno/svn
     exit 0
 
 ## 2.4. 导入 SVN 仓库 ##

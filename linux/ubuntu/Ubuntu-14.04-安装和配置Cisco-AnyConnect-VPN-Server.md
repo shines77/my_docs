@@ -4,7 +4,7 @@ Ubuntu 14.04 安装和配置 Cisco AnyConnect VPN Server
 
 # 1. 简介 #
 
-`Cisco AnyConnect VPN` 是 `Cisco（思科公司）` 的安全远程接入解决方案，隐蔽性要更好一些，穿透性和稳定性也不错，一般不太会掉线。传统的 `VPN` ( `LPTP`, `PPTP`, `IPSec` 等方式)，以及 `OpenVPN`，受到干扰可能性比较大，比较容易被 `GFW` 探知，如果流量大的话还会被 `GFW` 直接屏蔽。
+`Cisco AnyConnect VPN` 是 `Cisco（思科公司）` 的安全远程接入解决方案，隐蔽性要更好一些，穿透性和稳定性也不错，一般不太会掉线。传统的 `VPN` （`LPTP`, `PPTP`, `IPSec` 等方式），以及 `OpenVPN`，受到干扰可能性比较大，比较容易被 `GFW` 探知，如果流量大的话还会被 `GFW` 直接屏蔽。
 
 `Cisco AnyConnect VPN` 还具有下列优势：
 
@@ -109,12 +109,14 @@ encryption_key
 tls_www_server
 ```
 
-例如，修改成这样，如果你的服务器没有域名则，则 `cn` 字段必须使用服务器的 `IP` 地址：
+例如，修改成这样，如果你的服务器没有域名则，则 `cn` 字段必须使用服务器的 `IP` 地址，例如：
 
 ```bash
 cn = "202.103.108.20"
 organization = "Microsoft Inc."
+
 或者
+
 cn = "www.example.com"
 organization = "Cisco AnyConnect"
 ```
@@ -139,10 +141,10 @@ $ sudo cp server-cert.pem server-key.pem /etc/ocserv
 
 ## 3.4 ocserv 配置文件 ##
 
-`ocserv` 源码里有一个简单的配置范例文件：`/ocserv-0.9.2/doc/sample.config`，把它复制到 `/etc/ocserv/` 目录下：
+在 `ocserv` 源代码里有一个简单的配置范例文件：`/ocserv-0.9.2/doc/sample.config`，把它复制到 `/etc/ocserv/` 目录下：
 
 ```shell
-$ sudo cp ~/ocserv-0.9.2/doc/sample.config /etc/ocserv/ocserv.conf
+$ sudo cp ~/ocserv/ocserv-0.9.2/doc/sample.config /etc/ocserv/ocserv.conf
 ```
 
 编辑这个配置文件 `/etc/ocserv/ocserv.conf`，找到与下文相同的配置选项，并修改成下文里展示的内容，找到那几个关于 `route` 的配置项，像下面展示的一样，把它们都注释掉。最后一项 “`cisco-client-compat = true`” 在文件比较后面的地方，原本是被注释了的，将其注释去掉。
@@ -155,6 +157,16 @@ $ sudo vim ./ocserv.conf
 # ocserv 还支持证书认证，可以通过 Pluggable Authentication Modules (PAM) 使用 radius 等认证方式
 auth = "plain[/etc/ocserv/ocpasswd]"
 
+# 最大用户数量
+max-clients = 16
+
+# 同一个用户最多同时登陆数，默认值是 2
+max-same-clients = 10
+
+# tcp 和 udp 端口，默认值是 443，可以不用改
+tcp-port = 443
+udp-port = 443
+
 # 默认是 false, 修改为 true
 try-mtu-discovery = true
 
@@ -162,17 +174,7 @@ try-mtu-discovery = true
 server-cert = /etc/ocserv/server-cert.pem
 server-key = /etc/ocserv/server-key.pem
 
-# 最大用户数量
-max-clients = 16
-
-# 同一个用户最多同时登陆数
-max-same-clients = 10
-
-# tcp 和 udp 端口
-tcp-port = 4433
-udp-port = 4433
-
-# 运行用户和组
+# 运行用户和组，默认值是 nobody 和 daemon
 run-as-user = ocserv
 run-as-group = ocserv
 
@@ -187,6 +189,15 @@ dns = 8.8.4.4
 #no-route = 192.168.5.0/255.255.255.0
 
 cisco-client-compat = true
+```
+
+由于我们的配置文件里指定了 `ocserv` 用户和 `ocserv` 组，所以我们要添加这个用户和组，命令如下：
+
+```shell
+$ sudo groupadd -f -r -g 21 ocserv
+$ sudo useradd -M -s /sbin/nologin -g ocserv ocserv
+$ sudo passwd ocserv
+$ sudo gpasswd -a ocserv sudo
 ```
 
 # 4. 其他配置 #
@@ -231,14 +242,37 @@ $ sudo /sbin/sysctl -p /etc/sysctl.conf
 $ sudo iptables -t nat -A POSTROUTING -j MASQUERADE
 ```
 
-保存 `iptables` 的配置到 `/etc/iptables` 文件：
+可以通过下面的命令查看 `NAT` 的设置：
+
+```shell
+$ sudo iptables -t nat --list
+
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination         
+MASQUERADE  all  --  anywhere             anywhere  
+```
+
+其中最后一条就是我们刚才添加的路由规则。
+
+由于路由配置重启了会失效，所以我们要把它保存到一个文件里，然后在重启的时候，再从这个文件来恢复路由配置。
+
+下面的命令即是保存 `iptables` 的配置到 `/etc/iptables` 文件里：
 
 ```shell
 $ sudo touch /etc/iptables
 $ sudo iptables-save > /etc/iptables
 ```
 
-在系统启动时恢复 `iptables` 的配置，编辑 `/etc/rc.local` 文件，恢复 `iptables` 的命令必须写在 `exit 0` 语句之前：
+在系统启动时，恢复 `iptables` 的配置，编辑 `/etc/rc.local` 文件，恢复 `iptables` 的命令必须写在 `exit 0` 语句之前：
 
 ```shell
 $ sudo vim /etc/rc.local
@@ -254,7 +288,7 @@ exit 0
 启动的命令如下：
 
 ```shell
-$ ocserv -c /etc/ocserv/ocserv.conf -f -d 1
+$ sudo ocserv -c /etc/ocserv/ocserv.conf -f -d 1
 ```
 
 如果想在系统启动的时候就启动 `ocserv` 服务，可以编辑 `/etc/rc.local` 文件，把上面的启动命令写在 `exit 0` 语句之前：
@@ -264,11 +298,11 @@ $ sudo vim /etc/rc.local
 
 ......... (前面的内容省略)
 
-ocserv -c /etc/ocserv/ocserv.conf -f -d 1
+/usr/local/sbin/ocserv -c /etc/ocserv/ocserv.conf -f -d 1
 exit 0
 ```
 
-Enjoy it!!
+搞定，Enjoy it now !!
 
 # 6. 参考文章 #
 
