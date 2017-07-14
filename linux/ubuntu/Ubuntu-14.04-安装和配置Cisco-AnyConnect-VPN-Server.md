@@ -157,11 +157,11 @@ $ sudo vim ./ocserv.conf
 # ocserv 还支持证书认证，可以通过 Pluggable Authentication Modules (PAM) 使用 radius 等认证方式
 auth = "plain[/etc/ocserv/ocpasswd]"
 
-# 最大用户数量
+# 最大客户端连接数，默认值是 10
 max-clients = 16
 
-# 同一个用户最多同时登陆数，默认值是 2
-max-same-clients = 10
+# 同一个用户名最大同时登陆连接数，默认值是 2
+max-same-clients = 8
 
 # tcp 和 udp 端口，默认值是 443，可以不用改
 tcp-port = 443
