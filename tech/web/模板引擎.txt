@@ -1,0 +1,30 @@
+
+PHP：Smarty
+
+Java：Velocity, Thymeleaf, Smarty4j, CommonTemplate, XMLTemplate, FreeMarker, taglib, Snake, HTTL, Webit Script, jetbrick-template, beetl
+
+C#: 
+
+------------------------------------------------------------------------
+
+See:
+
+Java 几款模板引擎的性能对比 ( http://www.iteye.com/topic/291280 )
+
+XMLTemplate:     3498 
+Velocity:        2422 
+CommonTemplate:  153280 
+FreeMarker:      7124 
+Smarty4j:        1142 
+
+CODE:            1027(优化后940)
+
+------------------------------------------------------------------------
+
+比 Velocity 快 10 倍的模板引擎
+
+http://www.iteye.com/topic/1114669
+
+
+------------------------------------------------------------------------
+
