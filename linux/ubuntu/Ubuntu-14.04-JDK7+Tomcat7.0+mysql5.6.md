@@ -65,4 +65,28 @@ Tomcat 7.0
 也可以写成一句:
 
     $ sudo apt-get install tomcat7 tomcat7-admin tomcat7-common tomcat7-docs tomcat7-examples tomcat7-user
+    
+    
+
+tomcat修改帐号密码：
+
+找到配置文件“tomcat-users.xml”的路径，例如D:\soft\tomcat6\tomcat6\conf\tomcat-users.xml，用文本编辑器打开配置文件tomcat-users.xml，找到下面的信息并进行修改：
+
+    <tomcat-users>  
+    <!--  
+      <role rolename="tomcat"/>  
+      <role rolename="role1"/>  
+      <user username="tomcat" password="tomcat" roles="tomcat"/>  
+      <user username="both" password="tomcat" roles="tomcat,role1"/>  
+      <user username="role1" password="tomcat" roles="role1"/>  
+    -->  
+      <role rolename="manager"/>  
+      <user username="tomcat" password="tomcat" roles="manager"/>  
+    </tomcat-users>  
+
+注意要改成这样：
+  <role rolename="manager"/>
+  <user username="tomcat" password="123" roles="manager"/>
+  <role rolename="manager-gui"/>
+  <user username="tomcat" password="123" roles="manager-gui"/>
 
