@@ -85,8 +85,16 @@ tomcat修改帐号密码：
     </tomcat-users>  
 
 注意要改成这样：
-  <role rolename="manager"/>
-  <user username="tomcat" password="123" roles="manager"/>
-  <role rolename="manager-gui"/>
-  <user username="tomcat" password="123" roles="manager-gui"/>
-
+    <tomcat-users>  
+    <!--  
+      <role rolename="tomcat"/>  
+      <role rolename="role1"/>  
+      <user username="tomcat" password="tomcat" roles="tomcat"/>  
+      <user username="both" password="tomcat" roles="tomcat,role1"/>  
+      <user username="role1" password="tomcat" roles="role1"/>  
+    -->  
+        <role rolename="manager"/>
+        <user username="tomcat" password="123" roles="manager"/>
+        <role rolename="manager-gui"/>
+        <user username="tomcat" password="123" roles="manager-gui"/>
+    </tomcat-users>  
