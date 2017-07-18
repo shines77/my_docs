@@ -13,7 +13,7 @@
 
 [Syncing a fork](https://link.zhihu.com/?target=https%3A//help.github.com/articles/syncing-a-fork/)
 
-以上两个链接是 `GitHub` 官方的帮助文档中关于 `fork同步` 的说明，中文的链接请看文末的 `X. 参考文章` 小节。
+以上两个链接是 `GitHub` 官方的帮助文档中关于 `fork同步` 的说明，中文的链接请看文末的 `5. 参考文章` 小节。
 
 # 3. 具体方法 #
 
