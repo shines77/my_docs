@@ -1,0 +1,30 @@
+查看远程状态:
+
+git remote -v
+
+确定一个将被同步给 fork 远程的上游仓库 
+
+git remote add upstream https://github.com/shines77/my_docs.git
+
+再次查看状态确认是否配置成功:
+
+git remote -v
+
+同步fork
+1.从上游仓库fetch分支和提交点，提交给本地master，并会被存储在一个本地分支upstream/master
+
+git fetch upstream
+
+2.切换到本地主分支（如果不在的话）
+
+git checkout master
+
+3.把upstream/master分支合并到本地master上，这样就完成了同步，并且不会丢掉本地修改的内容。
+
+git merge upstream/master
+
+4.如果想更新到 GitHub 的 fork 上，直接 
+
+git push origin master
+
+就好了。
