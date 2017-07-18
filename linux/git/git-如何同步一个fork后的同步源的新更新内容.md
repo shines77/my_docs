@@ -64,10 +64,10 @@ $ git remote add upstream https://github.com/ORIGINAL_OWNER/ORIGINAL_REPOSITORY.
 ```shell
 $ git remote -v
 
-origin  	https://github.com/hwf452/my_docs.git (fetch)
-origin  	https://github.com/hwf452/my_docs.git (push)
-upstream	https://github.com/shines77/my_docs.git (fetch)
-upstream	https://github.com/shines77/my_docs.git (push)
+origin    https://github.com/hwf452/my_docs.git (fetch)
+origin    https://github.com/hwf452/my_docs.git (push)
+upstream  https://github.com/shines77/my_docs.git (fetch)
+upstream  https://github.com/shines77/my_docs.git (push)
 ```
 
 ## 3.2. 同步一个 fork ##
@@ -121,7 +121,7 @@ Fast-forward
 ```shell
 $ git push origin master
 
-......(此处推送的结果省略)
+(此处推送的结果省略......)
 ```
 
 即把本地合并后的 `master` 分支推送到远端的 `origin/master` 分支上，即你自己的仓库，以此完成更新。
@@ -137,3 +137,5 @@ $ git push origin master
 2. [同步一个 fork （中文博客）](https://gaohaoyang.github.io/2015/04/12/Syncing-a-fork/)
 
 3. [github.com 官方文档：Syncing a fork (英文)](https://help.github.com/articles/syncing-a-fork/)
+
+<.End.>
