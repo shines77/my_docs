@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 在 CentOS 7 上搭建 Cisco AnyConnect VPN · ifreedomlife</title><meta name="description" content="在 CentOS 7 上搭建 Cisco AnyConnect VPN - Kun Wang"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="%E5%9C%A8%20CentOS%207%20%E4%B8%8A%E6%90%AD%E5%BB%BA%20Cisco%20AnyConnect%20VPN%20%C2%B7%20ifreedomlife_files/favicon.png"><link rel="stylesheet" href="%E5%9C%A8%20CentOS%207%20%E4%B8%8A%E6%90%AD%E5%BB%BA%20Cisco%20AnyConnect%20VPN%20%C2%B7%20ifreedomlife_files/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://ifreedomlife.com/atom.xml" title="ifreedomlife"><script src="%E5%9C%A8%20CentOS%207%20%E4%B8%8A%E6%90%AD%E5%BB%BA%20Cisco%20AnyConnect%20VPN%20%C2%B7%20ifreedomlife_files/analytics.js"></script><script type="text/javascript" async="" src="%E5%9C%A8%20CentOS%207%20%E4%B8%8A%E6%90%AD%E5%BB%BA%20Cisco%20AnyConnect%20VPN%20%C2%B7%20ifreedomlife_files/embed.js"></script><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1px; bottom: 2px; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head><body><div id="MathJax_Message" style="display: none;"></div><div class="wrap"><header><a href="http://ifreedomlife.com/" class="logo-link"><img src="%E5%9C%A8%20CentOS%207%20%E4%B8%8A%E6%90%AD%E5%BB%BA%20Cisco%20AnyConnect%20VPN%20%C2%B7%20ifreedomlife_files/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="http://ifreedomlife.com/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="http://ifreedomlife.com/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a target="_self" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/ifreedom" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="http://ifreedomlife.com/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">在 CentOS 7 上搭建 Cisco AnyConnect VPN</h1><div class="post-info">Apr 20, 2015</div><div class="post-content"><p>因
+为最近的干扰力度变大，考虑到 AnyConnect 是思科的安全远程接入解决方案，隐蔽性要好一些，所以决定在服务器上搭建 AnyConnect 
+以提供给 iOS 设备使用，原来的 Cisco IPSec VPN 废弃，Shadowsocks 保留用于安卓和PC的连接。</p>
+<p>AnyConnect 有以下优势：</p>
+<ol>
+<li>待机不会断开</li>
+<li>能够下发路由表给客户端（未测试）</li>
+<li>稳定</li>
+<li>耗电量较低</li>
+</ol>
+<p>2015-11-26 更新：添加证书登录方式</p>
+<p>2015-12-02 更新：更新转发规则</p>
+<a id="more"></a>
+<h3 id="1-安装-ocserv-OpenConnect-server"><a href="#1-%E5%AE%89%E8%A3%85-ocserv-OpenConnect-server" class="headerlink" title="1. 安装 ocserv (OpenConnect server)"></a>1. 安装 ocserv (OpenConnect server)</h3><p>ocserv 是一个 OpenConnect SSL VPN 协议服务端，0.3.0 版后兼容使用 AnyConnect SSL VPN 协议的终端。<br>官方主页：<a href="http://www.infradead.org/ocserv/" target="_blank" rel="external">http://www.infradead.org/ocserv/</a></p>
+<p>ocserv 已经在 epel 仓库中提供了，所以可以直接通过 yum 安装</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ yum install epel-release</div><div class="line">$ yum install ocserv</div></pre></td></tr></tbody></table></figure>
+<h3 id="2-生成证书"><a href="#2-%E7%94%9F%E6%88%90%E8%AF%81%E4%B9%A6" class="headerlink" title="2. 生成证书"></a>2. 生成证书</h3><p>这里你需要先仔细阅读<a href="http://www.infradead.org/ocserv/manual.html#heading5" target="_blank" rel="external">官方文档</a>，简单的来说，如下几步</p>
+<h5 id="1-创建工作文件夹"><a href="#1-%E5%88%9B%E5%BB%BA%E5%B7%A5%E4%BD%9C%E6%96%87%E4%BB%B6%E5%A4%B9" class="headerlink" title="1. 创建工作文件夹"></a>1. 创建工作文件夹</h5><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ mkdir anyconnect</div><div class="line">$ <span class="built_in">cd</span> anyconnect</div></pre></td></tr></tbody></table></figure>
+<h5 id="2-生成-CA-证书"><a href="#2-%E7%94%9F%E6%88%90-CA-%E8%AF%81%E4%B9%A6" class="headerlink" title="2. 生成 CA 证书"></a>2. 生成 CA 证书</h5><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">$ certtool --generate-privkey --outfile ca-key.pem</div><div class="line">$ cat &gt;ca.tmpl &lt;&lt;EOF</div><div class="line">cn = <span class="string">"VPN CA"</span></div><div class="line">organization = <span class="string">"Big Corp"</span></div><div class="line">serial = 1</div><div class="line">expiration_days = 3650</div><div class="line">ca</div><div class="line">signing_key</div><div class="line">cert_signing_key</div><div class="line">crl_signing_key</div><div class="line">EOF</div><div class="line"></div><div class="line">$ certtool --generate-self-signed --load-privkey ca-key.pem \</div><div class="line">--template ca.tmpl --outfile ca-cert.pem</div></pre></td></tr></tbody></table></figure>
+<p>把生成的 <code>ca-cert.pem</code> 放到 <code>/etc/ocserv/</code> 中</p>
+<h5 id="3-生成本地服务器证书"><a href="#3-%E7%94%9F%E6%88%90%E6%9C%AC%E5%9C%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%AF%81%E4%B9%A6" class="headerlink" title="3. 生成本地服务器证书"></a>3. 生成本地服务器证书</h5><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">$ certtool --generate-privkey --outfile server-key.pem</div><div class="line">$ cat &gt;server.tmpl &lt;&lt;EOF</div><div class="line">cn = <span class="string">"www.example.com"</span></div><div class="line">organization = <span class="string">"MyCompany"</span></div><div class="line">serial = 2</div><div class="line">expiration_days = 3650</div><div class="line">encryption_key</div><div class="line">signing_key</div><div class="line">tls_www_server</div><div class="line">EOF</div><div class="line"></div><div class="line">$ certtool --generate-certificate --load-privkey server-key.pem \</div><div class="line">--load-ca-certificate ca-cert.pem --load-ca-privkey ca-key.pem \</div><div class="line">--template server.tmpl --outfile server-cert.pem</div></pre></td></tr></tbody></table></figure>
+<p>把生成的 <code>server-cert.pem</code> 和 <code>server-key.pem</code> 放到 <code>/etc/ocserv/</code> 中</p>
+<h5 id="4-生成客户端证书"><a href="#4-%E7%94%9F%E6%88%90%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%81%E4%B9%A6" class="headerlink" title="4. 生成客户端证书"></a>4. 生成客户端证书</h5><p>创建 gen-client-cert.sh<br></p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">$ cat &gt;gen-client-cert.sh &lt;&lt;EOF</div><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"></div><div class="line">USER=<span class="variable">$1</span></div><div class="line">CA_DIR=<span class="variable">$2</span></div><div class="line">SERIAL=`date +%s`</div><div class="line"></div><div class="line">certtool --generate-privkey --outfile <span class="variable">$USER</span>-key.pem</div><div class="line"></div><div class="line">cat &lt;&lt; _EOF_ &gt;user.tmpl</div><div class="line">cn = <span class="string">"<span class="variable">$USER</span>"</span></div><div class="line">unit = <span class="string">"users"</span></div><div class="line">serial = <span class="string">"<span class="variable">$SERIAL</span>"</span></div><div class="line">expiration_days = 9999</div><div class="line">signing_key</div><div class="line">tls_www_client</div><div class="line">_EOF_</div><div class="line"></div><div class="line">certtool --generate-certificate --load-privkey <span class="variable">$USER</span>-key.pem --load-ca-certificate <span class="variable">$CA_DIR</span>/ca-cert.pem --load-ca-privkey <span class="variable">$CA_DIR</span>/ca-key.pem --template user.tmpl --outfile <span class="variable">$USER</span>-cert.pem</div><div class="line"></div><div class="line">openssl pkcs12 -export -inkey <span class="variable">$USER</span>-key.pem -in <span class="variable">$USER</span>-cert.pem -name <span class="string">"<span class="variable">$USER</span> VPN Client Cert"</span> -certfile <span class="variable">$CA_DIR</span>/ca-cert.pem -out <span class="variable">$USER</span>.p12</div><div class="line">EOF</div></pre></td></tr></tbody></table></figure><p></p>
+<p>创建用户文件夹并调用 gen-client-cert.sh 生成证书<br></p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ mkdir user</div><div class="line">$ <span class="built_in">cd</span> user</div><div class="line"><span class="comment"># user 指的是用户名，.. 指的是 ca 证书所在的目录</span></div><div class="line">$ ../gen-client-cert.sh user ..</div><div class="line"><span class="comment"># 按提示设置证书使用密码，或直接回车不设密码</span></div></pre></td></tr></tbody></table></figure><p></p>
+<p>最后，通过 http 服务器或其他方式将 <code>user.p12</code> 传输给客户端导入即可</p>
+<h3 id="3-配置-ocserv"><a href="#3-%E9%85%8D%E7%BD%AE-ocserv" class="headerlink" title="3. 配置 ocserv"></a>3. 配置 ocserv</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo vim /etc/ocserv/ocserv.conf</div></pre></td></tr></tbody></table></figure>
+<p>主要修改以下部分</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">#ocserv支持多种认证方式，这是自带的密码认证，使用ocpasswd创建密码文件</div><div class="line">#ocserv还支持证书认证，可以通过Pluggable Authentication Modules (PAM)使用radius等认证方式</div><div class="line">auth = "plain[passwd=/etc/ocserv/ocpasswd]"</div><div class="line"></div><div class="line">#指定替代的登录方式，这里使用证书登录作为第二种登录方式</div><div class="line">enable-auth = "certificate"</div><div class="line"></div><div class="line">#证书路径</div><div class="line">server-cert = /etc/ocserv/server-cert.pem</div><div class="line">server-key = /etc/ocserv/server-key.pem</div><div class="line"></div><div class="line">#ca路径</div><div class="line">ca-cert = /etc/ocserv/ca-cert.pem</div><div class="line"></div><div class="line">#从证书中提取用户名的方式，这里提取的是证书中的 CN 字段作为用户名</div><div class="line">cert-user-oid = 2.5.4.3</div><div class="line"></div><div class="line">#最大用户数量</div><div class="line">max-clients = 16</div><div class="line"></div><div class="line">#同一个用户最多同时登陆数</div><div class="line">max-same-clients = 10</div><div class="line"></div><div class="line">#tcp和udp端口</div><div class="line">tcp-port = 4433</div><div class="line">udp-port = 4433</div><div class="line"></div><div class="line">#运行用户和组</div><div class="line">run-as-user = ocserv</div><div class="line">run-as-group = ocserv</div><div class="line"></div><div class="line">#虚拟设备名称</div><div class="line">device = vpns</div><div class="line"></div><div class="line">#分配给VPN客户端的IP段</div><div class="line">ipv4-network = 10.12.0.0</div><div class="line">ipv4-netmask = 255.255.255.0</div><div class="line"></div><div class="line">#DNS</div><div class="line">dns = 8.8.8.8</div><div class="line">dns = 8.8.4.4</div><div class="line"></div><div class="line">#注释掉route的字段，这样表示所有流量都通过 VPN 发送</div><div class="line">#route = 192.168.1.0/255.255.255.0</div><div class="line">#route = 192.168.5.0/255.255.255.0</div></pre></td></tr></tbody></table></figure>
+<h3 id="4-创建用户"><a href="#4-%E5%88%9B%E5%BB%BA%E7%94%A8%E6%88%B7" class="headerlink" title="4. 创建用户"></a>4. 创建用户</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#username为你要添加的用户名</span></div><div class="line">$ sudo ocpasswd -c /etc/ocserv/ocpasswd username</div></pre></td></tr></tbody></table></figure>
+<h3 id="5-配置系统设置"><a href="#5-%E9%85%8D%E7%BD%AE%E7%B3%BB%E7%BB%9F%E8%AE%BE%E7%BD%AE" class="headerlink" title="5. 配置系统设置"></a>5. 配置系统设置</h3><ol>
+<li>开启内核转发</li>
+</ol>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sudo sed -i <span class="string">'s/net.ipv4.ip_forward = 0/net.ipv4.ip_forward = 1/g'</span> /etc/sysctl.conf</div><div class="line">$ sudo sysctl -p</div></pre></td></tr></tbody></table></figure>
+<ol>
+<li>配置 iptables 规则</li>
+</ol>
+<p>你可以参考<a href="https://library.linode.com/securing-your-server#sph_creating-a-firewall" target="_blank" rel="external">Linode 的文章</a>来配置 iptables</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#IP段和eth0接口和vpns类接口要根据自己的情况修改</span></div><div class="line">$ sudo iptables -t nat -A POSTROUTING <span class="_">-s</span> 10.12.0.0/24 -o eth0 -j MASQUERADE</div><div class="line">$ sudo iptables -A FORWARD -i vpns+ -j ACCEPT</div><div class="line">$ sudo iptables -A FORWARD -o vpns+ -j ACCEPT</div><div class="line">$ sudo iptables-save &gt; /etc/sysconfig/iptables</div></pre></td></tr></tbody></table></figure>
+<h3 id="6-测试"><a href="#6-%E6%B5%8B%E8%AF%95" class="headerlink" title="6. 测试"></a>6. 测试</h3><p>现在我们可以开启服务器试试了</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo ocserv -c /etc/ocserv/ocserv.conf <span class="_">-f</span> <span class="_">-d</span> 1</div></pre></td></tr></tbody></table></figure>
+<p>拿起你的 iOS 设备，下载思科的 AnyConnect 客户端，连接你的服务器。</p>
+<p>出现问题可以看debug的返回信息，如果信息不详细，可以把 1 改成 10。</p>
+<p>如果没有问题，那么就可以配置成开机运行了。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ sudo systemctl <span class="built_in">enable</span> ocserv</div><div class="line">$ sudo systemctl start ocserv</div></pre></td></tr></tbody></table></figure>
+<h3 id="a-下发路由"><a href="#a-%E4%B8%8B%E5%8F%91%E8%B7%AF%E7%94%B1" class="headerlink" title="a. 下发路由"></a>a. 下发路由</h3><p>我想这个功能是最激动人心的，因为我们手机如果长期连接，那么肯定是某些服务走 VPN，而国内的网站可以走手机自己的网络体验最好。</p>
+<p>但是这里的一个问题是，AnyConnect 有下发路由表的 64 条数限制。</p>
+<p>所以我们只能保证下某几个常用的服务是可用的，比如 Google Facebook 以及 Twitter</p>
+<p>编辑配置文件</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ sudo vim /etc/ocserv/ocserv.conf</div></pre></td></tr></tbody></table></figure>
+<p>添加 route = 的字段即可</p>
+<h3 id="参考"><a href="#%E5%8F%82%E8%80%83" class="headerlink" title="#. 参考"></a>#. 参考</h3><p><a href="http://imkevin.me/post/80157872840/anyconnect-iphone" target="_blank" rel="external">AnyConnect 带来 iPhone 上的新生活</a><br><a href="https://www.stunnel.info/%E5%9C%A8centos-6-5%E4%B8%8A%E9%85%8D%E7%BD%AEcisco-anyconnect-vpn/" target="_blank" rel="external">在CentOS 6.5上配置Cisco AnyConnect VPN</a></p>
+<h3 id="2015-12-02-更新"><a href="#2015-12-02-%E6%9B%B4%E6%96%B0" class="headerlink" title="2015-12-02 更新"></a>2015-12-02 更新</h3><p>不知道为什么，原有的转发规则在启用防火墙后有问题，配置 iptables 后查询 dmesg 输出发现从设备发来的包正常，但是发回设备的包全部被 reject 了，最后干脆放过了所有 ocserv 创建的虚拟网络设备的浏览。</p>
+</div></article></div></section><footer><div class="paginator"><a href="http://ifreedomlife.com/2015/04/25/Speed-up-DNS-with-pdnsd-and-dnsmasq-on-MacOSX/" class="prev">PREV</a><a href="http://ifreedomlife.com/2015/01/19/Setup-Cisco-IPSec-VPN-on-CentOS-7/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'ifreedomlife';
+var disqus_identifier = '2015/04/20/Setup-Cisco-AnyConnect-VPN-on-CentOS7/';
+var disqus_title = '在 CentOS 7 上搭建 Cisco AnyConnect VPN';
+var disqus_url = 'http://ifreedomlife.com/2015/04/20/Setup-Cisco-AnyConnect-VPN-on-CentOS7/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="%E5%9C%A8%20CentOS%207%20%E4%B8%8A%E6%90%AD%E5%BB%BA%20Cisco%20AnyConnect%20VPN%20%C2%B7%20ifreedomlife_files/count.js" async=""></script><div class="copyright"><p>© 2014 - 2016 <a href="http://ifreedomlife.com/">Kun Wang</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async="" src="%E5%9C%A8%20CentOS%207%20%E4%B8%8A%E6%90%AD%E5%BB%BA%20Cisco%20AnyConnect%20VPN%20%C2%B7%20ifreedomlife_files/MathJax.js"></script><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-57760982-1",'auto');ga('send','pageview');</script></body></html>
