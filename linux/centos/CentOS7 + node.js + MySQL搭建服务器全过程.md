@@ -96,7 +96,7 @@
   `CREATE USER demo IDENTIFIED BY “123456” `
 
   配置远程连接:
-  `mysql>GRANT ALL PRIVILEGES ON shandong.* TO 'demo'@'%'WITH GRANT OPTION`
+  `mysql>GRANT ALL PRIVILEGES ON edao.* TO 'root'@'%'WITH GRANT OPTION`
 
   赋予任何主机访问数据的权限，也可以如下操作:
   `GRANT ALL PRIVILEGES ON shandong.* TO 'demo'@'%'IDENTIFIED BY '123456' WITH GRANT OPTION; `
