@@ -22,7 +22,7 @@ Ubuntu 14.04 安装和配置 Cisco AnyConnect VPN Server
 
 （注：本文是基于 `Ubuntu 14.04 x64` 而写的）
 
-## 2.1 下载 ocserv ##
+## 2.1. 下载 ocserv ##
 
  由于 `Ubuntu 14.04` 没有提供 `ocserv` 的源安装，所以我们要下载源码然后自己编译安装，这里使用的版本是 `ocserv 0.9.2`，最新的版本是 `0.11.8` ，但依赖的组件不一样，`0.9.2` 也挺好用，有兴趣的朋友可以自行研究一下 `0.11.8` 如何编译安装。
 
@@ -37,7 +37,7 @@ $ tar -xf ocserv-0.9.2.tar.xz
 $ cd ocserv-0.9.2
  ```
 
-## 2.2 依赖组件 ##
+## 2.2. 依赖组件 ##
 
 接下来，安装 `ocserv` 的依赖组件：
 
@@ -45,7 +45,7 @@ $ cd ocserv-0.9.2
 $ sudo apt-get install build-essential pkg-config libgnutls28-dev libwrap0-dev libpam0g-dev libseccomp-dev libreadline-dev libnl-route-3-dev
 ```
 
-## 2.3 编译安装 ##
+## 2.3. 编译安装 ##
 
 开始配置和编译源码，然后安装 `ocserv`：
 
@@ -57,7 +57,7 @@ $ make install
 
 # 3. 配置 ocserv #
 
-## 3.1 安装证书工具 ##
+## 3.1. 安装证书工具 ##
 
 先安装一下证书生成工具（`certtool`），并创建一个目录，来存放生成的证书：
 
@@ -70,7 +70,7 @@ $ cd certificates
 
 （其中的 `gnutls-bin` 安装包中包含 `certtool` 工具。）
 
-## 3.2 CA 证书 ##
+## 3.2. CA 证书 ##
 
 我们创建一个 `CA` 模板文件（`ca.tmpl`），其中内容如下，你可以修改其中的 `cn` 和 `organization` 字段：
 
@@ -94,7 +94,7 @@ $ certtool --generate-privkey --outfile ca-key.pem
 $ certtool --generate-self-signed --load-privkey ca-key.pem --template ca.tmpl --outfile ca-cert.pem
 ```
 
-## 3.2 Server 证书 ##
+## 3.3. Server 证书 ##
 
 接下来，我们创建一个 `server` 证书模板（`server.tmpl`），内容如下。请注意其中的 `cn` 字段，它必须是你的服务器的域名或者 `IP` 地址。
 
@@ -109,7 +109,7 @@ encryption_key
 tls_www_server
 ```
 
-例如，修改成这样，如果你的服务器没有域名则，则 `cn` 字段必须使用服务器的 `IP` 地址，例如：
+例如，修改成这样，如果你的服务器没有域名，则 `cn` 字段必须使用服务器的 `IP` 地址（这里一定要写正确，否则是连不上的），例如：
 
 ```bash
 cn = "202.103.108.20"
@@ -130,7 +130,7 @@ $ certtool --generate-privkey --outfile server-key.pem
 $ certtool --generate-certificate --load-privkey server-key.pem --load-ca-certificate ca-cert.pem --load-ca-privkey ca-key.pem --template server.tmpl --outfile server-cert.pem
 ```
 
-## 3.3 拷贝证书 ##
+## 3.4. 拷贝证书 ##
 
 新建一个 `/etc/ocserv` 目录，拷贝 `server 证书` 和 `server key` 到 `/etc/ocserv` 目录下：
 
@@ -139,7 +139,51 @@ $ sudo mkdir -p /etc/ocserv
 $ sudo cp server-cert.pem server-key.pem /etc/ocserv
 ```
 
-## 3.4 ocserv 配置文件 ##
+## 3.5. 生成客户端证书 ##
+
+跟前面一样，我们创建一个客户端证书模板 “`user.tmpl`”，这里需要先输入一个命令获得当前的时间戳（数值），例如：
+
+```bash
+$ date +%s
+
+1500541096
+```
+
+把该命令返回的时间戳 “`1500541096`” 填到 `user.tmpl` 模板的 `serial` 字段里，如下所示：
+
+```bash
+$ vim user.tmpl
+
+cn = "Your UserName"
+unit = "users"
+serial = "1500541096"
+expiration_days = 3650
+signing_key
+tls_www_server
+```
+
+其中 `cn` 字段是你的客户端证书的用户名，名字可以随意取。注意，这个用户名不是你登录 `Cisco AnyConnect VPN` 的用户名。
+
+然后生成客户端证书 `user-cert.pem`，命令如下：
+
+```bash
+$ certtool --generate-privkey --outfile user-key.pem
+$ certtool --generate-certificate --load-privkey user-key.pem --load-ca-certificate ca-cert.pem --load-ca-privkey ca-key.pem --template user.tmpl --outfile user-cert.pem
+```
+
+最后把客户端证书 `user-cert.pem` 转换成 `pkcs12` 格式，生成的客户端证书文件是 `user.p12`，命令如下：
+
+```bash
+$ openssl pkcs12 -export -inkey user-key.pem -in user-cert.pem -name "User VPN Client Cert" -certfile ca-cert.pem -out user.p12
+```
+
+通过 `http` 服务器或其他方式将客户端证书 `user.p12` 文件传输到客户端，导入即可。
+
+其中 `"User VPN Client Cert"` 的名字是可以自定义的，`User` 可以改为 `user.tmpl` 模板里你設置的 `UserName` 的值。
+
+（注：如果你的系统没有安装 `openssl`，需要先安装 `openssl`，以便执行相关命令。）
+
+## 3.6. ocserv 配置文件 ##
 
 在 `ocserv` 源代码里有一个简单的配置范例文件：`/ocserv-0.9.2/doc/sample.config`，把它复制到 `/etc/ocserv/` 目录下：
 
@@ -182,7 +226,10 @@ run-as-group = ocserv
 dns = 8.8.8.8
 dns = 8.8.4.4
 
-# 注释掉 route 的字段，这样表示所有流量都通过 VPN 发送
+# 请参考下面，注释掉所有的 route, noroute 的定义，这样的效果是 VPN 客户端所有的访问都通过 VPN 代理转发。
+# 其中 route 字段表示使用 VPN 代理转发的网段，noroute 字段表示不使用 VPN 代理转发的网段。
+# 注：最多仅支持 60 条 route 规则或 60 条 noroute 规则。这些路由规则是下发到 VPN 客户端的。
+
 #route = 10.10.10.0/255.255.255.0
 #route = 192.168.0.0/255.255.0.0
 #route = fef4:db8:1000:1001::/64
@@ -200,9 +247,11 @@ $ sudo passwd ocserv
 $ sudo gpasswd -a ocserv sudo
 ```
 
+其中第三步的时候会让你输入两遍密码，该密码不是很重要，但由于是系统用户，最好记得密码，且密码不能过于简单。
+
 # 4. 其他配置 #
 
-## 4.1 创建 ocserv 用户 ##
+## 4.1. 创建 ocserv 用户 ##
 
 创建 `ocserv` 用户的命令格式是：
 
@@ -218,7 +267,7 @@ $ sudo ocpasswd -c /etc/ocserv/ocpasswd test
 
 接着它会要求你输入两次密码，以便确认。
 
-## 4.2 打开 IP 转发 ##
+## 4.2. 打开 IP 转发 ##
 
 由于 `VPN` 内部需要 `NAT` 功能，所以必须打开 `ipv4` 的转发，设置为如下值：
 
@@ -234,7 +283,7 @@ net.ipv4.ip_forward = 1
 $ sudo /sbin/sysctl -p /etc/sysctl.conf
 ```
 
-## 4.3 配置 iptables 规则 ##
+## 4.3. 配置 iptables 规则 ##
 
 打开了 `IP` 转发，还需要启用和配置 `NAT`：
 
@@ -288,7 +337,7 @@ exit 0
 启动的命令如下：
 
 ```shell
-$ sudo ocserv -c /etc/ocserv/ocserv.conf -f -d 1
+$ sudo /usr/local/sbin/ocserv -c /etc/ocserv/ocserv.conf -f -d 1
 ```
 
 如果想在系统启动的时候就启动 `ocserv` 服务，可以编辑 `/etc/rc.local` 文件，把上面的启动命令写在 `exit 0` 语句之前：
