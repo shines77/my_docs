@@ -340,14 +340,14 @@ exit 0
 $ sudo /usr/local/sbin/ocserv -c /etc/ocserv/ocserv.conf -f -d 1
 ```
 
-如果想在系统启动的时候就启动 `ocserv` 服务，可以编辑 `/etc/rc.local` 文件，把上面的启动命令写在 `exit 0` 语句之前：
+如果想在系统启动的时候就启动 `ocserv` 服务，可以编辑 `/etc/rc.local` 文件，把上面的启动命令写在 `exit 0` 语句之前（但是要记得去掉 `-f` 参数，否则你的系统重启时会卡在启动 `ocserv`，无法完全进入系统，切记！）：
 
 ```shell
 $ sudo vim /etc/rc.local
 
 ......... (前面的内容省略)
 
-/usr/local/sbin/ocserv -c /etc/ocserv/ocserv.conf -f -d 1
+/usr/local/sbin/ocserv -c /etc/ocserv/ocserv.conf -d 1
 exit 0
 ```
 
