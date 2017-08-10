@@ -205,3 +205,31 @@ port hybrid allow-pass vlan [vlanid-list] { tagged | untagged }
 ```
 
 注：`vlanid-list` 如果有多个 `vlanid`，`vlanid` 之间使用 “`,`“ 间隔，例如：`1,3,7,10` 。
+
+
+show running-config 显示当前系统配置
+
+show startup-config 显示当前配置文件信息
+
+show version 显示当前设备q 的版本信息
+
+show system 显示系统配置
+
+show interface [<1-64>] 显示端口信息
+
+show vlan [<1-4094>] 显示vlan信息
+
+show dynamic-mac AA:BB:CC:DD:EE:FF
+
+已知某一mac地址，查找交换机连接端口号
+
+show logging history 显示历史记录
+
+show history 显示之前的输入命令
+
+ls 显示文件系统
+
+write file 保存配置文件
+
+show cpu statistic 显示CPU统计信息。
+
