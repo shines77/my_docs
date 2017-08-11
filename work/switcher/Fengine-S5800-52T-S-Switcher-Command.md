@@ -108,7 +108,6 @@ show interface verbose
 switch { gigaethernet | xgigaethernet } [interface-number]
 ```
 
-
 ## 4.2. VLAN设置
 
 ### 4.2.1. 创建/进入 VLANIF 接口视图
@@ -149,7 +148,7 @@ switch vlan [vlan-id]
 
 注：`vlan-id` 的取值范围是 0 ~ 4094 。
 
-# 4.3. 配置基于接口的 VLAN
+## 4.3. 配置基于接口的 VLAN
 
 进入相应的接口的命令：
 
@@ -162,19 +161,19 @@ interface eth-trunk [trunk-number]
 
 注：以下命令都是基于以上两台命令，先进入相应的接口。
 
-# 4.3.1. 配置接口的链路类型
+### 4.3.1. 配置接口的链路类型
 
 ```
 port link-type { access | trunk | hybrid | default }
 ```
 
-# 4.3.2. 配置接口的默认 VLAN 并同时进入该 VLAN
+### 4.3.2. 配置接口的默认 VLAN 并同时进入该 VLAN
 
 ```
 port default vlan [vlan-id]
 ```
 
-# 4.3.3. 配置 trunk 类型接口的默认 VLAN
+### 4.3.3. 配置 trunk 类型接口的默认 VLAN
 
 ```
 port trunk pvid { vlan-id | default }
@@ -182,7 +181,7 @@ port trunk pvid { vlan-id | default }
 
 注：指定为 `default` 的时候，`VLAN` 默认值是 1 。
 
-# 4.3.4. 配置 trunk 类型接口所属 VLAN
+### 4.3.4. 配置 trunk 类型接口所属 VLAN
 
 ```
 port trunk allow-pass vlan [vlanid-list]
@@ -190,7 +189,7 @@ port trunk allow-pass vlan [vlanid-list]
 
 注：`vlanid-list` 如果有多个 `vlanid`，`vlanid` 之间使用 “`,`“ 间隔，例如：`1,3,7,10` 。
 
-# 4.3.5. 配置 hybrid 类型接口的默认 VLAN
+### 4.3.5. 配置 hybrid 类型接口的默认 VLAN
 
 ```
 port hybrid pvid { vlan-id | default }
@@ -198,7 +197,7 @@ port hybrid pvid { vlan-id | default }
 
 注：指定为 `default` 的时候，`VLAN` 默认值是 1 。
 
-# 4.3.6. 配置 hybrid 类型接口所属 VLAN
+### 4.3.6. 配置 hybrid 类型接口所属 VLAN
 
 ```
 port hybrid allow-pass vlan [vlanid-list] { tagged | untagged }
@@ -206,6 +205,10 @@ port hybrid allow-pass vlan [vlanid-list] { tagged | untagged }
 
 注：`vlanid-list` 如果有多个 `vlanid`，`vlanid` 之间使用 “`,`“ 间隔，例如：`1,3,7,10` 。
 
+# 5. 一些常用命令
+
+```shell
+ls 显示文件系统
 
 show running-config 显示当前系统配置
 
@@ -219,17 +222,51 @@ show interface [<1-64>] 显示端口信息
 
 show vlan [<1-4094>] 显示vlan信息
 
-show dynamic-mac AA:BB:CC:DD:EE:FF
-
-已知某一mac地址，查找交换机连接端口号
+show dynamic-mac AA:BB:CC:DD:EE:FF 已知某一mac地址，查找交换机连接端口号
 
 show logging history 显示历史记录
 
 show history 显示之前的输入命令
 
-ls 显示文件系统
-
-write file 保存配置文件
+write file 保存配置文件，需退出到最顶层，无任何视图
 
 show cpu statistic 显示CPU统计信息。
 
+erase startup-config 清空交换机的启动配置文件
+```
+
+# 6. Web 管理配置方法
+
+IP配置命令主要包括：
+
+```shell
+management vlan 配置管理vlan
+
+gateway 配置王冠
+
+ip address 配置ip地址
+
+out-band ip change
+
+out-band ip address 配置交换机带外网管接口的IP地址
+```
+
+例如：
+
+```
+management vlan 1
+
+ip address 10.18.33.112/24
+
+gateway 0.0.0.0
+
+out-band ip address 192.168.2.1/24
+```
+
+![Web 管理配置方法](./images/fengine_switcher_webui_config.png)
+
+# 7. 参考文章
+
+1. [烽火 2008mfb 配置教程](https://wenku.baidu.com/view/f21903115f0e7cd18425360b.html)
+
+2. [烽火PoE交换机WEB界面配置](http://www.docin.com/p-574222186.html)
