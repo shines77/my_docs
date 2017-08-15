@@ -200,10 +200,21 @@ port hybrid pvid { vlan-id | default }
 ### 4.3.6. 配置 hybrid 类型接口所属 VLAN
 
 ```
-port hybrid allow-pass vlan [vlanid-list] { tagged | untagged }
+port hybrid vlan [vlanid-list] { tagged | untagged }
 ```
 
 注：`vlanid-list` 如果有多个 `vlanid`，`vlanid` 之间使用 “`,`“ 间隔，例如：`1,3,7,10` 。
+
+例如：
+
+```
+port hybrid vlan 1,2,3,4,5,100,101,102,200 tagged
+
+port hybrid pvid 101
+port hybrid vlan 101 tagged
+
+port trunk allow-pass vlan 1,2,3,4,5,100,101,102,200
+```
 
 # 5. 一些常用命令
 
