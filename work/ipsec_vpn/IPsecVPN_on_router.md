@@ -104,6 +104,8 @@
 
 2. [TP路由器的L2tp与IPsec VPN的配置](http://blog.csdn.net/sxlwzl/article/details/41683897)
 
-3. [Cisco路由器实现IPSEC VPN配置（站点到站点）](http://blog.163.com/hlz_2599/blog/static/1423784742013622104314138/)
+3. [企业路由器应用——IPSEC VPN配置实例](http://service.tp-link.com.cn/detail_article_166.html)
+
+4. [Cisco路由器实现IPSEC VPN配置（站点到站点）](http://blog.163.com/hlz_2599/blog/static/1423784742013622104314138/)
 
 .
