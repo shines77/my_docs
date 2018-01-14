@@ -1,35 +1,36 @@
 
-git ÉèÖÃ²»ĞèÒªÊäÈëÃÜÂë
+# git-push æ—¶ä¸éœ€è¦è¾“å…¥å¯†ç ï¼Œè‡ªåŠ¨ä¿å­˜å¯†ç  #
 
-http://my.oschina.net/amath0312/blog/389775
-http://my.oschina.net/u/244918/blog/393642
+å‚è€ƒè‡ªï¼š
 
-¼Ç×¡ÃÜÂë(Ä¬ÈÏÖ»±£´æ 15 ·ÖÖÓ):
+[http://my.oschina.net/amath0312/blog/389775]()
+
+[http://my.oschina.net/u/244918/blog/393642]()
+
+è®°ä½å¯†ç ï¼ˆé»˜è®¤åªä¿å­˜ 15 åˆ†é’Ÿï¼‰:
 
     $ git config --global credential.helper cache
 
-Èç¹ûÏë×Ô¼ºÉèÖÃÊ±¼ä£¬¿ÉÒÔÕâÑù×ö:
+å¦‚æœæƒ³è‡ªå·±è®¾ç½®æ—¶é—´ï¼Œå¯ä»¥è¿™æ ·åšï¼š
 
     $ git config credential.helper 'cache --timeout=3600'
 
-ÓÀ¾Ã´æ´¢ÃÜÂë(ÎŞÊ±¼äÏŞÖÆ, ²»Ê§Ğ§):
+æ°¸ä¹…å­˜å‚¨å¯†ç (æ— æ—¶é—´é™åˆ¶ï¼Œä¸å¤±æ•ˆï¼Œå¼ºçƒˆæ¨èï¼)ï¼š
 
     $ git config --global credential.helper store
 
-push µÄÊ±ºò×Ô¶¯Ñ¡Ôñ·ÖÖ§: (Since Git 1.7.11)
+push çš„æ—¶å€™è‡ªåŠ¨é€‰æ‹©åˆ†æ”¯ï¼šï¼ˆSince Git 1.7.11ï¼‰
 
     $ git config --global push.default matching
     $ git config --global push.default simple
 
-Ôö¼ÓÔ¶³ÌµØÖ·µÄÊ±ºò´øÉÏÃÜÂëÒ²ÊÇ¿ÉÒÔµÄ: (ÍÆ¼ö)
+å¢åŠ è¿œç¨‹åœ°å€çš„æ—¶å€™å¸¦ä¸Šå¯†ç ä¹Ÿæ˜¯å¯ä»¥çš„ï¼šï¼ˆæ¨èï¼‰
 
     http://yourname:password@git.oschina.net/name/project.git
 
-Ôö¼ÓhttpsÔ¶³Ì²Ö¿âµØÖ·:
+å¢åŠ  `https` è¿œç¨‹ä»“åº“åœ°å€ï¼š
 
     $ git remote add origin http://yourname:password@git.oschina.net/name/project.git
 
-
     $ git config --global user.email "gz_shines@msn.com"
     $ git config --global user.name  "shines77"
-
