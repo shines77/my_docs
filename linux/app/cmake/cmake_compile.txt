@@ -1,8 +1,8 @@
 
-è‡ªç¼–è¯‘ cmake 3.0.3
+×Ô±àÒë cmake 3.0.3
 -----------------------
 
-å¦å¤–ä¸¤ä¸ªå¸¸ç”¨çš„ç‰ˆæœ¬: 
+ÁíÍâÁ½¸ö³£ÓÃµÄ°æ±¾: 
 https://cmake.org/files/v2.8/cmake-2.8.11.tar.gz
 https://cmake.org/files/v2.8/cmake-2.8.12.2.tar.gz
 

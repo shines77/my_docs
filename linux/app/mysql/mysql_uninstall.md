@@ -46,4 +46,3 @@ http://192.168.3.163/latest/meta-data/public-hostname
 [EL Info]: 2016-11-22 11:59:22.412--ServerSession(1011246983)-- EclipseLink, version: Eclipse Persistence Services - 2.6.2.v20151217-774c696
 [EL Info]: 2016-11-22 11:59:22.859--ServerSession(1011246983)-- /file:/usr/lib/ambari-server/ambari-server-2.2.2.0.460.jar_ambari-server_nonJtaDataSource=1833788346_url=jdbc:mysql://localhost:3306/ambari_user=ambari login successful
 
-
