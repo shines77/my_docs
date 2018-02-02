@@ -1,5 +1,5 @@
 
-Ubuntu 14.04 Éı¼¶µ½ GCC 4.9.2
+Ubuntu 14.04 å‡çº§åˆ° GCC 4.9.2
 
 http://blog.sina.com.cn/s/blog_54dd80920102vvt6.html
 
@@ -7,7 +7,7 @@ $ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 $ sudo apt-get update
 $ sudo apt-get install gcc-4.9 g++-4.9
 
-(±£ÁôÔ­À´µÄ4.8.2°æ±¾£¬±ãÓÚ¿ìËÙÇĞ»»)
+(ä¿ç•™åŸæ¥çš„4.8.2ç‰ˆæœ¬ï¼Œä¾¿äºå¿«é€Ÿåˆ‡æ¢)
 
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 10
 
@@ -19,23 +19,23 @@ $ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 20
 
 $ sudo update-alternatives --config gcc
 
-ÓĞ 2 ¸öºòÑ¡Ïî¿ÉÓÃÓÚÌæ»» gcc (Ìá¹© /usr/bin/gcc)¡£
+æœ‰ 2 ä¸ªå€™é€‰é¡¹å¯ç”¨äºæ›¿æ¢ gcc (æä¾› /usr/bin/gcc)ã€‚
 
-  Ñ¡Ôñ       Â·¾¶            ÓÅÏÈ¼¶  ×´Ì¬
+  é€‰æ‹©       è·¯å¾„            ä¼˜å…ˆçº§  çŠ¶æ€
 ------------------------------------------------------------
-* 0            /usr/bin/gcc-4.9   20        ×Ô¶¯Ä£Ê½
-  1            /usr/bin/gcc-4.8   10        ÊÖ¶¯Ä£Ê½
-  2            /usr/bin/gcc-4.9   20        ÊÖ¶¯Ä£Ê½
+* 0            /usr/bin/gcc-4.9   20        è‡ªåŠ¨æ¨¡å¼
+  1            /usr/bin/gcc-4.8   10        æ‰‹åŠ¨æ¨¡å¼
+  2            /usr/bin/gcc-4.9   20        æ‰‹åŠ¨æ¨¡å¼
 
 $ sudo update-alternatives --config g++
 
-ÓĞ 2 ¸öºòÑ¡Ïî¿ÉÓÃÓÚÌæ»» g++ (Ìá¹© /usr/bin/g++)¡£
+æœ‰ 2 ä¸ªå€™é€‰é¡¹å¯ç”¨äºæ›¿æ¢ g++ (æä¾› /usr/bin/g++)ã€‚
 
-  Ñ¡Ôñ       Â·¾¶            ÓÅÏÈ¼¶  ×´Ì¬
+  é€‰æ‹©       è·¯å¾„            ä¼˜å…ˆçº§  çŠ¶æ€
 ------------------------------------------------------------
-* 0            /usr/bin/g++-4.9   20        ×Ô¶¯Ä£Ê½
-  1            /usr/bin/g++-4.8   10        ÊÖ¶¯Ä£Ê½
-  2            /usr/bin/g++-4.9   20        ÊÖ¶¯Ä£Ê½
+* 0            /usr/bin/g++-4.9   20        è‡ªåŠ¨æ¨¡å¼
+  1            /usr/bin/g++-4.8   10        æ‰‹åŠ¨æ¨¡å¼
+  2            /usr/bin/g++-4.9   20        æ‰‹åŠ¨æ¨¡å¼
 
 
 ==================================================
