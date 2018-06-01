@@ -1,0 +1,538 @@
+/* 一般の設定 */
+
+BODY {
+  color: #000000;
+  layout-grid-line: 6px;
+  line-height: 1.4em;
+}
+
+A:hover {
+  background-color:#CC0000;
+}
+
+H1 {
+  /* font-size: xx-large; */
+  font-weight: bold;
+  text-align: center; 
+}
+
+H2 {
+  font-weight: bold;
+  font-size: 1.5em;
+
+  border: 1px none #8888f8;
+  border-top: 0px solid #ccccff;
+  border-right: 0px solid #0000cd;
+  border-bottom: 4px solid #0000cd;
+  border-left: 10px solid #0000cd;
+  padding: 4px 2px 2px 0.5em;
+
+  margin-top: 2em; 
+}
+
+H2 IMG { border: none; }
+H2 U   { text-decoration: none; }
+
+H3 {
+  font-weight: bold;
+  font-size: 1.2em;
+
+  border: 1px none #8888f8;
+  border-top: 0px solid #ccccff;
+  border-right: 0px solid #4169e1;
+  border-bottom: 3px solid #4169e1;
+  border-left: 7px solid #4169e1;
+  padding: 3px 2px 2px 0.5em;
+
+  margin-top: 1em;
+}
+
+H3 IMG { border: none;   }
+H3 U   { text-decoration: none; }
+
+H4 {
+  padding: 3px 2px 2px 0.5em;
+
+  border-bottom: 2px solid #4682b4;
+  border-left: 4px solid #4682b4;
+}
+
+H5 {
+  font-size: 1em;
+  text-decoration: underline;
+} 
+
+P {
+  margin-right: 2em; 
+  /* text-indent: 1em; */
+}
+
+DL {
+  margin-bottom: 2em; 
+}
+
+DT {
+  margin-left:  0.5em;
+  margin-right: 2em;
+}
+
+UL {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding-left: 2em;
+}
+
+UL LI {
+  margin-bottom: 0.5em;
+}
+
+BLOCKQUOTE {
+  border: 2px solid #888888;
+  padding: 8px 8px 8px 8px;
+  background-color: #faebd7;
+}
+
+BLOCKQUOTE CITE {
+  margin-top: 0.5em;
+  display: block;
+  text-align: right;
+}
+
+Q {
+  background-color: #faebd7;
+}
+
+OL {
+  margin-top: 4px;
+}
+
+OL LI {
+  margin-bottom: 0.5em;
+}
+
+TT, CODE {
+  font-family: 'Lucida Console', 'Courier', 'Courier New', 'ヒラギノ角ゴ3等幅', monospace;
+  padding: 2px 2px 2px 2px;
+  background-color: #d0d0d0;
+}
+
+SAMP {
+  font-family: 'Lucida Console', 'Courier', 'Courier New', 'ヒラギノ角ゴ3等幅', monospace;
+  padding: 3px 2px 2px 2px;
+  background-color: #d2b48c;
+}
+
+DFN {
+  font-style: normal;
+  font-weight: bold;
+  text-decoration: underline;
+
+}
+
+KBD {
+  font-style: normal;
+  font-weight: bold;
+  padding: 2px 2px 2px 2px;
+  background-color: #e0e0e0;
+}
+
+/*
+DT {
+  width: 93%;	
+  margin-left: 0.5em;
+  font-weight: bold;
+  font-size: 1.1em;
+
+  padding: 4px 2px 2px 0.5em;
+  background-color: #faebd7; 
+  border-bottom: 2px solid #000000;
+  border-left:   5px solid #CC6600;
+}
+*/
+
+DD {
+  margin-left:   2em;
+  margin-top:    0.5em;
+  margin-bottom: 1em; 
+  text-indent:   0px;
+}
+
+UL LI {
+  margin-bottom: 0.3em;
+}
+
+OL LI {
+  margin-bottom: 0.3em;
+}
+
+/* */
+
+BIG {
+  font-weight: bold;
+}
+
+BIG.large {
+  font-size: 1.8em;
+  font-weight: bold;
+}
+
+BIG.middle {
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+P.ps {
+  text-indent: 0px;
+  margin: 1em 0em 0em 0em;
+  ruby-position: above;
+}
+
+DL.ul DT {
+  text-decoration: underline;
+}
+
+DL.ul DD {
+  margin-top: 0.5em;
+  margin-bottom: 1em;
+}
+
+LI.ul {
+  text-decoration: underline;
+}
+
+DL.list DT {
+  margin-left:  0.5em;
+  margin-right: 2em;
+  font-weight: bold;
+  font-size: 1.1em;
+  border-bottom: #000000 2px solid;
+  border-left: #000000 2px solid;
+  padding: 4px 0px 2px 0.5em;
+  background-color: #bee4ba;
+}
+
+DL.list DD {
+  margin-left:   2em;
+  margin-top:    0.5em;
+  margin-bottom: 1em; 
+  text-indent:   0px;
+}
+
+DT.list {
+  background-color: red;
+}
+
+DD.list {
+  background-color: red;
+}
+
+DT.item {
+  background-color: red;
+}
+
+DD.item {
+  background-color: red;
+}
+
+DL.item DT {
+  margin: 0px 3em 0px 2em;
+  border-bottom: #000000 2px solid;
+  border-left:   #000000 1px solid;
+  border-right:  #000000 1px solid;
+  border-top:    #000000 1px solid;
+  padding: 4px 0px 2px 0.5em;
+  background-color: #f0c0c0;
+  font-weight: bold;
+  font-size: 1em;
+  clear: both;
+}
+
+DL.item DD {
+  margin: 0px 3em 1em 2em;
+  border-bottom: #000000 1px solid;
+  border-left:   #000000 1px solid;
+  border-right:  #000000 1px solid;
+  padding: 4px 0.5em 4px 0.5em;
+  background-color: #c0d0c0;
+}
+
+BLOCKQUOTE.cite {
+  border: 2px solid #888888;
+  padding: 8px 8px 8px 8px;
+  background-color: #faebd7;
+}
+
+PRE.program {
+  border: 2px solid #888888;
+  white-space: pre;
+  margin-top: 1em;
+  margin-right: 7px;
+  margin-left: 7px;
+  background-color: whitesmoke;
+  padding: 8px 8px 8px 8px;
+  word-wrap: break-word;
+}
+
+PRE.program2 {
+  border: 2px solid #888888;
+  white-space: pre;
+  margin-top: 1em;
+  margin-right: 7px;
+  margin-left: 7px;
+  background-color: whitesmoke;
+  padding: 8px 8px 8px 8px;
+  word-wrap: break-word;
+}
+
+PRE.output {
+  border: 2px solid #888888;
+  background-color: #ececec;
+  white-space: pre;
+  margin-top: 1em;
+  margin-right: 7px;
+  margin-left: 7px;
+  padding: 8px 8px 8px 8px;
+  word-wrap: break-word;
+}
+
+/* アスキーアート*/
+PRE.aa {
+  font-family: 'ＭＳ Ｐゴシック';
+}
+
+UL.medskip LI {
+  margin-bottom: 0.5em;
+  clear: both;
+}
+
+OL.medskip LI {
+  margin-bottom: 0.5em;
+  clear: both;
+}
+
+DD.medskip {
+  margin-bottom: 0.5em;
+  clear: both;
+}
+
+SPAN.keyword {
+  font-weight: bold;
+  text-decoration: underline;
+
+}
+
+SPAN.kw {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+SPAN.aa {
+  white-space : pre;
+  font-size : 12pt;
+  font-family: 'ＭＳ Ｐゴシック';
+  white-space : pre;
+  word-spacing : 1em;
+}
+
+SPAN.macro {
+  text-decoration: underline;
+}
+
+FIGURE {
+  text-align: center;
+}
+
+FIGURE.right {
+  text-align: center;
+  float: right;
+}
+
+FIGCAPTION {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+DIV.main {
+  padding-left: 4em;
+  padding-right: 4em;
+}
+
+DIV.main H2 {
+  position: relative;
+  left: -1em;
+}
+
+DIV.main H3 {
+  position: relative;
+  left: -1em;
+}
+
+DIV.main H4 {
+  position: relative;
+  left: -0.5em;
+}
+
+DIV.column {
+  padding: 0em 0em 0em 1em;
+  margin: 1em 0em 0em 1em;
+  background-color: #f5f5dc;
+  border-radius: 8px;
+  border: solid 2px #dedfa7;
+  box-shadow: 3px 3px 6px #dfdfdf;
+}
+
+CAPTION {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+TABLE {
+}
+
+TABLE TR TH {
+  background-color: skyblue;
+  padding: 0.5ex 0.5ex;
+}
+
+TABLE TR TD {
+  padding: 0.5ex 0.5ex;
+}
+
+SPAN.thumb1 {
+  margin:  0px 0px 0px 0px;
+  padding: 8px 12px 4px 4px;
+  float: left;
+}
+
+SPAN.thumb2 {
+  margin:  0px 0px 0px 0px;
+  padding: 12px 12px 12px 12px;
+  float: right;
+}
+
+DIV.clear {
+  clear: both;
+}
+
+/* 文字の小さいテーブル */
+TABLE.smallfont {
+}
+
+TABLE.smallfont TR TD {
+  vertical-align: text-top;
+  font-size: 80%;      
+}
+
+TABLE.smallfont TR TH {
+  font-size: 90%;
+}
+
+/* くっつきBBS用 */
+DIV.commentregion {
+  margin:  0.5em 0px 0.5em 1em;
+} 
+
+DIV.comment {
+  width: 90%;
+  background-color: #d8ebd4;
+  margin:  4px 0px 0px 1em;
+  padding: 2px 2px 2px 2px;
+}
+
+SPAN.commentator {
+  font-weight: bold;
+}
+
+DIV.commentbody {
+  margin-left: 1em;
+}
+
+DIV.trackbackregion {
+  margin:  0.5em 0px 0.5em 1em;
+} 
+
+DIV.trackback {
+  width: 90%;
+  background-color: #eee;
+  margin:  4px 0px 0px 1em;
+  padding: 2px 2px 2px 2px;
+}
+
+SPAN.tbblogname {
+  font-weight: bold;
+}
+
+DIV.tbexcerpt {
+  font-size: 9pt;
+  margin-left: 1em;
+}
+
+DIV.indent {
+  margin-top: 1em;
+  margin-left: 2em;
+  margin-right: 2em;
+}
+
+DIV.box {
+  margin-left: 2em;
+  margin-right: 2em;
+  border-top: 1px solid #000000;
+  border-right: 1px solid #000000; 
+  border-bottom: 1px solid #000000; 
+  border-left: 1px solid #000000;
+  padding-left: 1em;
+}
+
+DIV.scroll {
+  margin-left: 1em; 
+  margin-right: 1em; 
+  height: 20em;
+  overflow:scroll;
+  background-color: #f0f0f0;
+  border-top: 1px solid #000000;
+  border-right: 1px solid #000000; 
+  border-bottom: 1px solid #000000; 
+  border-left: 1px solid #000000;
+  padding: 2px 2px 2px 2px;
+}
+
+/* 色 */
+.red {
+  color: red;
+}
+
+.blue {
+  color: blue;
+}
+
+.green {
+  color: green;
+}
+
+.cyan {
+  color: cyan;
+}
+
+.darkcyan {
+  color: darkcyan;
+}
+
+.gray {
+  color: gray;
+}
+
+.pink {
+  color: pink;
+}
+
+.violet {
+  color: violet;
+}
+
+.purple {
+  color: purple;
+}
+
+.aqua {
+  color: aqua;
+}
