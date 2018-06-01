@@ -260,7 +260,7 @@ bool Comparator(Element2, i) {
 </pre>
 
 为了更简单，我们正在做下面的比较。
-这是通过<code> strcmp </code>或<code> memcmp </code>完成的比较。
+这是通过 <code>strcmp</code> 或 <code>memcmp</code> 完成的比较。
 
 <pre class="program">
 UpperBound = imm8[0] ? 7 : 15;
@@ -325,7 +325,7 @@ IntRes1[0] 到 IntRes1[3] 变为0。
 
   </td>
 
-  <td>子串搜索，KMP，strstr </td>
+ <td>子串搜索，KMP，strstr </td>
  </tr>
 </table>
 </div>
@@ -372,7 +372,7 @@ PCMP<span class="red">I</span>STRx 指令范围（imm8[3:2] 条件 = 01b）的<i
 </ul>
 
 <p>
-注意下面掩蔽的极性（ - ）: 如果（imm8[5:4] = 11b）的，由于<i> xmm2 </i> 是 IntRes1[] 的无效元件的位反转判断是少（实际上整个比特在这个上反过来）。
+注意下面掩蔽的极性(-): 如果（imm8[5:4] = 11b）的，由于<i> xmm2 </i> 是 IntRes1[] 的无效元件的位反转判断是少（实际上整个比特在这个上反过来）。
 </p>
 
 <div class="ndent">
@@ -410,13 +410,13 @@ PCMP<span class="red">I</span>STRx 指令范围（imm8[3:2] 条件 = 01b）的<i
  <tr><td>00b</td><td>Positive Polarity(+)</td><td>No change</td><td>IntRes2[i] = IntRes1[i]</td></tr>
  <tr><td>01b</td><td>Negative Polarity(-)</td><td>Invert</td><td>IntRes2[i] = ~IntRes1[i]</td></tr>
  <tr><td>10b</td><td>Masked(+)</td><td>No change</td><td>IntRes2[i] = IntRes1[i]</td></tr>
- <tr><td>11b</td><td>Masked(-)</td><td>Mask Negative</td><td>基本上 IntRes2[i] =~ IntRes1[i]，但是如果 xmm2 的第i个元素无效，则让 IntRes2[i] = IntRes1[i]。
+ <tr><td>11b</td><td>Masked(-)</td><td>Mask Negative</td><td>基本上 IntRes2[i] =~ IntRes1[i]，但是如果 xmm2 的第 i 个元素无效，则让 IntRes2[i] = IntRes1[i]。
 </table>
 </div>
 
 <p>
 在 PCMPESTRI 和 PCMPISTRI 于极性 %rcx 上收到一个指数，无论是作为一个结果 "元​​素匹配的第一个索引" 你想，做的就是无论是的 "第一指数的不匹配因素" 变得重要。
-IntRes11[] 是匹配的结果为的一部分，并且具有部分地0是一个不匹配。
+IntRes11[] 是匹配的结果为的一部分，并且具有部分地 0 是一个不匹配。
 在接下来的有输出选择 IntRes2[] 是从最显著比特1或它的至少显著位寻找那些与一个位置站立。
 </p>
 
@@ -440,7 +440,7 @@ IntRes2[] 解释 %rcx 或 %XMM0 到设定的值。
 </div>
 
 <p>
-如果不存在，其中1被设置 IntRes2[] 是 %rcx 返回 16部分。
+如果不存在，其中1被设置 IntRes2[] 是 %rcx 返回 16 部分。
 </p>
 
 <h4>返回 Mask</h4>
@@ -485,7 +485,7 @@ for (i = 0; i &lt; 8; i++) {
  <tr> <th> EFLAG </th> <th>描述</th> </tr>
  <tr> <td> CF </td> <td> IntRes2[] 毗邻0对于所有0，否则为1。 </td> </tr>
  <tr> <td> ZF </td> <td> <i> xmm2 </i> 0，如果该元素是有效的整体，否则为1，PCMPESTRx 的 %rdx 小于16（8）它变成0。结果，在 PCMPISTRx 的<i> xmm2 </i>的如果有一个0元件在变为零。 </td> </tr>
- <tr> <td> SF </td> <td> <i> xmm1</i> 0，如果该元素是有效的整体，否则为1，PCMPESTRx 的 %rax 小于16（8）它变成0。结果，在 PCMPISTRx 的<i> xmm1 </i>的如果有一个0元件在变为零。 </td> </tr>
+ <tr> <td> SF </td> <td> <i> xmm1 </i> 0，如果该元素是有效的整体，否则为1，PCMPESTRx 的 %rax 小于16（8）它变成0。结果，在 PCMPISTRx 的<i> xmm1 </i>的如果有一个0元件在变为零。 </td> </tr>
  的<tr> <td>的值</td> <td> IntRes2[0] 被复制。 </td> </tr>
 </table>
 </div>
@@ -525,11 +525,11 @@ AVX2 是使用 YMM 寄存器 256 位的可能的操作，但是操作码映射 V
 </div>
 
 <hr>
-<a href="/~nminoru/"><img src="/icons/back.png" width=20 height=22>TOP</a>
+<a href="http://www.nminoru.jp/~nminoru/"><img src="./back.png" width=20 height=22>TOP</a>
 &nbsp;&nbsp;
-<a href="/cgi-bin/minibbs/bbs.cgi"><img src="/icons/back.png" width=20 height=22>公告板</a>
+<a href="http://www.nminoru.jp/cgi-bin/minibbs/bbs.cgi"><img src="./back.png" width=20 height=22>公告板</a>
 &nbsp;&nbsp;
-<a href="/~nminoru/programming/"><img src="/icons/back.png" width=20 height=22>返回</a>
+<a href="http://www.nminoru.jp/~nminoru/programming/"><img src="./back.png" width=20 height=22>返回</a>
 
 <hr>
 <address>Written by NAKAMURA Minoru, Email: nminoru atmark nminoru dot jp, Twitter:<a href="https://twitter.com/#!/nminoru_jp">@nminoru_jp</a></address>
