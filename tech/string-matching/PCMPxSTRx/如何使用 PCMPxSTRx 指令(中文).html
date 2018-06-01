@@ -362,7 +362,7 @@ PCMP<span class="red">I</span>STRx 指令范围（imm8[3:2] 条件 = 01b）的<i
 </p>
 
 <ul>
- <li>Equal Anay，则确定是否在比较对象的<i> xmm2 </i>的字符匹配任何字符的<i> xmm1 </i>的。如果<x> 2 </i>是无效的，应该判断它不匹配，所以它是假的。如果<i> xmm1 </i>中的字符是无效的，它自然是错误的。假如两者都是无效的，那么将是合理的。</li>
+ <li>Equal Anay，则确定是否在比较对象的<i> xmm2 </i>的字符匹配任何字符的<i> xmm1 </i>的。如果<x> xmm2 </i>是无效的，应该判断它不匹配，所以它是假的。如果<i> xmm1 </i>中的字符是无效的，它自然是错误的。假如两者都是无效的，那么将是合理的。</li>
  <li>Ranges 类似于 Equal Any。</li>
  <li>对于 Equal Each 的场合，比较 strcmp 类型。 xmm1 和 xmm2 是等价的，如果两个字符串中的任何一个结束，应该被认为是不匹配的。因此（2）和（3）是假的。<br/>
 另一方面，如果两端的位置相同，我们认为这是匹配。 &quot;ABC<span class="red">\0hoge</span>&quot; 和 &quot;ABC<span class="red">\0moge</span>&quot; 具有确定的顺序是一致的（4）真需要有。</li>
