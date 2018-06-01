@@ -96,3 +96,9 @@
 
     一篇介绍 PCMPxSTRx 指令详细用法的日文文章，还不错，我已经翻译成中文了。
 
+* `strstr() 与 Intel SSE 指令集优化`
+
+    [https://www.jianshu.com/p/d718c1ea5f22]()
+
+    还不错，做个各个版本的性能比较。
+

@@ -77,7 +77,7 @@ PCMPxSTRx 指令有四种变化。
 这决定了要使用哪一种 PCMPESTRI，PCMPESTRM，PCMPISTRI，PCMPISTRM 指令。
 </p>
 
-<div class ="ndent">
+<div class="ndent">
 <table border="1">
  <tr><th>&nbsp; </th><th>返回索引<br/>返回匹配字符串的<br/>索引值到%rcx<br/></th><th>返回Mask<br/>返回字符比较结果的<br/>bitmask到%xmm0</th></tr>
  <tr><th>显式的指定字符串的长度，<br/>xmm1的长度保存在%rdx<br/>xmm2的长度保存在%rax</th><td align="center">PCMP<span class="red">E</span>STR<span class="red">I</span></td><td align="center">PCMP<span class="red">E</span>STR<span class="red">M</span></td></tr>
@@ -92,7 +92,7 @@ PCMPESTRI 和 PCMPISTRI 作为输出目的地的 <span class="kw">%rcx</span>，
 在 32 位模式下，分别获得 %eax，%eax，%ecx。
 </p>
 
-<div class ="ndent">
+<div class="ndent">
 <small>
 虽然以64位模式描述以下说明，但在32位模式下也可以做到这一点。
 </small>
@@ -167,12 +167,12 @@ IntRes1[] 是作为保持中间结果 PCMPxSTRx 指令的结果的暂时寄存�
 IntRes1[] 的值无法从外部获知。
 </p>
 
-<div class ="ndent">
+<div class="ndent">
 <pre class="program">
 UpperBound =imm8[0] ? 7 : 15;
 
-for（i = 0; i &lt; Upper Bound; i ++）{
-    IntRes1[I] = <i>Comparator</i>(Operand2[I], i);
+for（i = 0; i &lt; Upper Bound; i++）{
+    IntRes1[I] = <i>Comparator</i>(Operand2[I], i);
 }
 </pre>
 </div>
@@ -186,13 +186,13 @@ for（i = 0; i &lt; Upper Bound; i ++）{
 其他人正在比较"匹配"，所以签名和无签名之间的差异并不重要。
 </p>
 
-<div class ="ndent">
+<div class="ndent">
 <small>
 第i个以下的说明中的元件操作数 [i] 为的 <i>xmm1</i> 中的，Operand2[j] 的装置，以检索的<i> xmm2 </i>的第j个元素。
 </small>
 </div>
 
-<div class ="ndent">
+<div class="ndent">
 <table border="1">
  <tr>
   <th>imm8[3:2]</th>
@@ -347,7 +347,7 @@ PCMP<span class="red">I</span>STRx 指令范围（imm8[3:2] 条件 = 01b）的<i
 在另一方面，PCMP<span class="red">E</span>STRx 是指定在字符长度 %rax 和 %rdx，也使上限和下限，例如含有0那些，包含零比较这也是可能的。
 </p>
 
-<div class ="ndent">
+<div class="ndent">
 <table border="1">
   <tr> <th>&nbsp; </th> <th><i> xmm1 </i>的元素</th> <th><i> xmm2 </i>的元素</th><th>Equal Any<br/>(00b) </th><th>Ranges<br/>(01b)</th><th>Equal Each<br/>(10b)</th><th>Equal Ordered<br/>(11b)</th></tr>
   <tr><td>(1)</td><td>Valid</td><td>Valid</td><td>Compare</td><td>Compare</td><td>Comapre</td><td>Compare</td>
@@ -358,15 +358,15 @@ PCMP<span class="red">I</span>STRx 指令范围（imm8[3:2] 条件 = 01b）的<i
 </div>
 
 <p>
-乍一看，上表很复杂，但合理完成。
+乍一看，表面上看很复杂，但其实很合理。
 </p>
 
 <ul>
- <li>Equal Anay，则确定是否在比较对象的<i> xmm2 </i>的字符匹配任何字符的<i> xmm1 </i>的。如果<x> xmm2 </i>是无效的，应该判断它不匹配，所以它是假的。如果<i> xmm1 </i>中的字符是无效的，它自然是错误的。假如两者都是无效的，那么将是合理的。</li>
- <li>Ranges 类似于 Equal Any。</li>
- <li>对于 Equal Each 的场合，比较 strcmp 类型。 xmm1 和 xmm2 是等价的，如果两个字符串中的任何一个结束，应该被认为是不匹配的。因此（2）和（3）是假的。<br/>
+  <li>Equal Any，则确定是否在比较对象的<i> xmm2 </i>的字符匹配任何字符的<i> xmm1 </i>的。如果<x> xmm2 </i>是无效的，应该判断它不匹配，所以它是假的。如果<i> xmm1 </i>中的字符是无效的，它自然是错误的。假如两者都是无效的，那么将是合理的。</li>
+  <li>Ranges 类似于 Equal Any。</li>
+  <li>对于 Equal Each 的场合，比较 strcmp 类型。 xmm1 和 xmm2 是等价的，如果两个字符串中的任何一个结束，应该被认为是不匹配的。因此（2）和（3）是假的。<br/>
 另一方面，如果两端的位置相同，我们认为这是匹配。 &quot;ABC<span class="red">\0hoge</span>&quot; 和 &quot;ABC<span class="red">\0moge</span>&quot; 具有确定的顺序是一致的（4）真需要有。</li>
- <li>对于 = 的场合，针对部分匹配比较的 "xmm2" 和 "xmm1" 不是均匀的。<br/>
+  <li>对于 Equal Ordered 的场合，针对部分匹配比较的 "xmm2" 和 "xmm1" 不是均匀的。<br/>
 如果关键字的 xmm1 很短，我们要判断匹配，所以（3）和（4）是真实的。<br/>
 在另一方面，因为它要确定不匹配如果比较的<i> xmm2 </i>的比<i> xmm1 </i>的关键字（2）的更短的已成为假。</li>
 </ul>
@@ -400,7 +400,7 @@ PCMP<span class="red">I</span>STRx 指令范围（imm8[3:2] 条件 = 01b）的<i
 </p>
 
 <p>
-11b 是基本上 IntRes2[I] =~ IntRes1[I] 然而，如果 IntRes2 的<i> xmm2 </i>[I] = IntRes1[I] 无效的第i个元素。
+11b 是基本上 IntRes2[I] = ~IntRes1[I] 然而，如果<i> xmm2 </i>的 IntRes2[i] = IntRes1[i] 无效的第i个元素。
 <i> xmm2 </i>的是 "无效" 的意思的第i个元素的<i> xmm2 </i>的终止和串的后续元素。
 </p>
 
@@ -410,13 +410,13 @@ PCMP<span class="red">I</span>STRx 指令范围（imm8[3:2] 条件 = 01b）的<i
  <tr><td>00b</td><td>Positive Polarity(+)</td><td>No change</td><td>IntRes2[i] = IntRes1[i]</td></tr>
  <tr><td>01b</td><td>Negative Polarity(-)</td><td>Invert</td><td>IntRes2[i] = ~IntRes1[i]</td></tr>
  <tr><td>10b</td><td>Masked(+)</td><td>No change</td><td>IntRes2[i] = IntRes1[i]</td></tr>
- <tr><td>11b</td><td>Masked(-)</td><td>Mask Negative</td><td>基本上 IntRes2[i] =~ IntRes1[i]，但是如果 xmm2 的第 i 个元素无效，则让 IntRes2[i] = IntRes1[i]。
+ <tr><td>11b</td><td>Masked(-)</td><td>Mask Negative</td><td>基本上 IntRes2[i] = ~IntRes1[i]，但是如果 xmm2 的第 i 个元素无效，则让 IntRes2[i] = IntRes1[i]。
 </table>
 </div>
 
 <p>
 在 PCMPESTRI 和 PCMPISTRI 于极性 %rcx 上收到一个指数，无论是作为一个结果 "元​​素匹配的第一个索引" 你想，做的就是无论是的 "第一指数的不匹配因素" 变得重要。
-IntRes11[] 是匹配的结果为的一部分，并且具有部分地 0 是一个不匹配。
+IntRes1[] 是匹配的结果为的一部分，并且具有部分地 0 是一个不匹配。
 在接下来的有输出选择 IntRes2[] 是从最显著比特1或它的至少显著位寻找那些与一个位置站立。
 </p>
 
@@ -428,19 +428,20 @@ IntRes2[] 解释 %rcx 或 %xmm0 到设定的值。
 
 <h4>返回索引</h4>
 <p>
-虽然已经在 PCMPESTRI 和 PCMPISTRI 的情况下被确定为 %rcx 输出目的地，该专利的内容取决于imm8[6]。
+在 PCMPESTRI 和 PCMPISTRI 的情况下，%rcx 输出指定的索引值，该操作的内容取决于 imm8[6]。
 </p>
 
-<div class ="ndent">
+<div class="ndent">
 <table border="1">
- <tr><th>imm8[6] </th> <th>操作</th><th>描述</th> </tr>
- <tr><td> 0b </td>从元件的眼睛观察到的第一个的位置是站在元件 %rcx 当穿上<td>最小显著索引</td><td> IntRes2[] 0。 </td></tr>
- <tr><td> 1b </td>穿上<td>最显著索引</td><td> IntRes2[] 作为从第一个的位置的最后一个元素看出站立元件 %rcx 。</td> </tr>
+ <tr><th>imm8[6]</th><th>操作</th><th>描述</th></tr>
+ <tr><td> 0b </td><td>Least significant index</td><td>IntRes2[] 从低位（0-15）开始搜索第一个为 1 的元素的索引值，输出到 %rcx</tr>
+ <tr><td> 1b </td><td>Most significant index</td><td>IntRes2[] 从高位（15-0）开始搜索第一个为 1 的元素的索引值，输出到 %rcx</td>
+ </tr>
 </table>
 </div>
 
 <p>
-如果不存在，其中1被设置 IntRes2[] 是 %rcx 返回 16 部分。
+其中在 1b 的情况下，如果为 1 的索引值不存在，IntRes2[] 的 %rcx 返回的索引值被设置为 16。
 </p>
 
 <h4>返回 Mask</h4>
@@ -448,7 +449,7 @@ IntRes2[] 解释 %rcx 或 %xmm0 到设定的值。
 对于 PCMPESTRM 和 PCMPISTRM 输出目的地 %xmm0 但是由于其内容imm8[6]。
 </p>
 
-<div class ="ndent">
+<div class="ndent">
 <table border="1">
  <tr><th>imm8[6] </th><th>操作</th><th>描述</th></tr>
  <tr>存储在<td> 0b </td><td>位掩码</td><td> IntRes2[] 上的内容 %xmm0 的低位比特。高位比特剩余是零扩展。</td></tr>
@@ -480,24 +481,24 @@ for (i = 0; i &lt; 8; i++) {
 计算结果如下。
 </p>
 
-<div class ="ndent">
+<div class="ndent">
 <table border="1">
  <tr> <th> EFLAG </th> <th>描述</th> </tr>
- <tr> <td> CF </td> <td> IntRes2[] 毗邻0对于所有0，否则为1。 </td> </tr>
- <tr> <td> ZF </td> <td> <i> xmm2 </i> 0，如果该元素是有效的整体，否则为1，PCMPESTRx 的 %rdx 小于16（8）它变成0。结果，在 PCMPISTRx 的<i> xmm2 </i>的如果有一个0元件在变为零。 </td> </tr>
- <tr> <td> SF </td> <td> <i> xmm1 </i> 0，如果该元素是有效的整体，否则为1，PCMPESTRx 的 %rax 小于16（8）它变成0。结果，在 PCMPISTRx 的<i> xmm1 </i>的如果有一个0元件在变为零。 </td> </tr>
- 的<tr> <td>的值</td> <td> IntRes2[0] 被复制。 </td> </tr>
+ <tr> <td> CF </td> <td>IntRes2[] 全为 0 的时候，CF 为 0，否则为 1。 </td> </tr>
+ <tr> <td> ZF </td> <td>如果<i> xmm2 </i> 是有效的字符串，ZF 为 0，否则为 1。PCMPESTRx 的 %rdx 小于16（8），它变成0。结果，PCMPISTRx 的<i> xmm2 </i>如果包含任何一个 0，则 SF 变为 0。 </td> </tr>
+ <tr> <td> SF </td> <td>如果<i> xmm1 </i> 是有效的字符串，SF 为 0，否则为 1。PCMPESTRx 的 %rax 小于16（8），它变成0。结果，PCMPISTRx 的<i> xmm1 </i>如果包含任何一个 0，则 SF 变为 0。 </td> </tr>
+ <tr> <td> OF </td> <td> IntRes2[0] 被复制。 </td> </tr>
 </table>
 </div>
 
 <p>
-AF和PF始终重置。
+AF 和 PF 始终重置。
 </p>
 
 <h2 id="btw">题外话</h2>
 <p>
-AVX2 是使用 YMM 寄存器 256 位的可能的操作，但是操作码映射 VPCMPESTRM，VPCMESTRI，VPCMPISTRM，VPCMPISTRI 限定。
-它是在未来 256位（32字节）PCMPxSTRx 说明宽将能够使用。
+AVX2 是使用 256 位的 YMM 寄存器的指令集，类似的，字符串指令记包含 VPCMPESTRM，VPCMESTRI，VPCMPISTRM，VPCMPISTRI 等。
+这是未来的 256位（32字节）PCMPxSTRx 指令，很快将能使用。
 </p>
 
 <h2 id="comment">评论</h2>
@@ -535,14 +536,16 @@ AVX2 是使用 YMM 寄存器 256 位的可能的操作，但是操作码映射 V
 <address>Written by NAKAMURA Minoru, Email: nminoru atmark nminoru dot jp, Twitter:<a href="https://twitter.com/#!/nminoru_jp">@nminoru_jp</a></address>
 <br/>
 <div align="center">
-<script  language="JavaScript" type="text/javascript"><!--
+<script  language="JavaScript" type="text/javascript">
+<!--
 google_ad_client = "pub-7704885636194627";
 google_ad_width = 728;
 google_ad_height = 90;
 google_ad_format = "728x90_as";
 google_ad_channel ="";
 google_ad_type = "text";
-//--></script>
+//-->
+</script>
 <script  language="JavaScript" type="text/javascript"
   src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>
