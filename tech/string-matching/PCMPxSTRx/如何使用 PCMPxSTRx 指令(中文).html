@@ -169,10 +169,10 @@ IntRes1[] 的值无法从外部获知。
 
 <div class="ndent">
 <pre class="program">
-UpperBound =imm8[0] ? 7 : 15;
+UpperBound = imm8[0] ? 7 : 15;
 
 for（i = 0; i &lt; Upper Bound; i++）{
-    IntRes1[I] = <i>Comparator</i>(Operand2[I], i);
+    IntRes1[i] = Comparator(Operand2[i], i);
 }
 </pre>
 </div>
@@ -208,7 +208,7 @@ for（i = 0; i &lt; Upper Bound; i++）{
 如果匹配，则 IntRes1[i] 变为1，如果不匹配，则变为0。
 
 <pre class="program">
-bool Comparator(Element2, ) {
+bool Comparator(Element2, i) {
     for (j = 0; j &lt; Upper Bound; j++) {
         if (Element2 == Operand1[j]) {
             return true;
@@ -230,7 +230,7 @@ xmm1 中的元素与偶数编号的元素和奇数编号的元素配对，并记
 IntRes1[i] 在任何一个设定范围内为1，如果不在任何范围内则为0。
 
 <pre class="program">
-bool Comparator(Element2, ) {
+bool Comparator(Element2, i) {
     for (j = 0; j &lt; UpperBound; j += 2) {
         if (Operand1[j] &lt;= Element2 &amp;&amp; Element2 &lt;= Operand1[j+1]) {
             return true;
@@ -263,7 +263,7 @@ bool Comparator(Element2, i) {
 这是通过 <code>strcmp</code> 或 <code>memcmp</code> 完成的比较。
 
 <pre class="program">
-UpperBound =imm8[0] ? 7 : 15;
+UpperBound = imm8[0] ? 7 : 15;
 IntRes1 = 0;
 for (i = 0; i &lt; UpperBound; i++) {
     IntRes1[i] = (Operand1[i] == Operand2[i]);
@@ -282,7 +282,7 @@ for (i = 0; i &lt; UpperBound; i++) {
 如果它们匹配，则 IntRes1[i] 变为 1，如果它们不匹配，则变为 0。
 
 <pre class="program">
-bool Comparator(, i) {
+bool Comparator(Element2, i) {
     for (k = i, j = 0; k &lt; UpperBound && j &lt; UpperBound - i; k++, j++) {
         if (Operand2[k] != Operand1[j]) {
             return false;
