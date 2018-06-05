@@ -113,3 +113,35 @@
     [http://www.ruanyifeng.com/blog/2013/05/boyer-moore_string_search_algorithm.html]()
 
     Boyer-Moore 算法不仅效率高，而且构思巧妙，容易理解。1977年，德克萨斯大学的 Robert S. Boyer 教授和 J Strother Moore 教授发明了这种算法。
+
+* `从头到尾彻底理解KMP（2014年8月22日版）`
+
+    [https://blog.csdn.net/v_JULY_v/article/details/7041827#t17]()
+
+    介绍了 KMP 算法、BM 算法和 Sunday 算法，图片貌似取自阮一峰的文章，但对 KMP 的算法介绍比阮一峰更为详细。。
+
+* `字符串匹配——Sunday算法`
+
+    [https://blog.csdn.net/q547550831/article/details/51860017]()
+
+    Sunday 算法由 Daniel M.Sunday 在 1990 年提出，它的思想跟 BM 算法很相似。只不过 Sunday 算法是从前往后匹配，在匹配失败时关注的是主串中参加匹配的最末位字符的下一位字符。
+
+    本文还提供了 Sunday 算法的 C++ 实现。
+
+* `Boyer–Moore–Horspool文本匹配算法(BM 算法的简化版)`
+
+    [https://blog.csdn.net/ljsspace/article/details/6554555]
+
+    本文介绍 Boyer-Moore 算法的一个简化版本，叫做 Boyer–Moore–Horspool 算法或直接叫做 Horspool 算法。
+
+    英语里有句习语叫 "find a needle in a haystack"，译成中文叫 "大海捞针"（原意是在一堆干草中寻找一根针）。计算机中的文本匹配 (string matching) 就是要解决怎样在一段很长的文本中找到符合要求的一个子串，该子串通常叫模式串 (pattern)，也就是对应我们要找的 “针”。常用的文本精确匹配 (exact string matching) 算法有蛮力法 (brute-force)，Boyer-Moore 算法和 KMP 算法。
+
+    BM 算法和本文中介绍的它的简化版本 Horspool 算法，在最佳情况下的时间复杂度是 O(n/m)，因此对模式串比较长的情况（比如长度大于 5）应用该算法比较有效。
+
+* `字符串模式匹配算法——BM、Horspool、Sunday、KMP、KR、AC算法一网打尽`
+
+    [http://dsqiu.iteye.com/blog/1700312]()
+
+    介绍了多种字符串匹配算法，虽然可能不够经典，但相对来说一个比较全面的文章。
+
+
