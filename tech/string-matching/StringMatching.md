@@ -102,3 +102,14 @@
 
     还不错，做个各个版本的性能比较。
 
+* `字符串匹配的KMP算法`
+
+    [http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html]()
+
+    Knuth-Morris-Pratt 算法（简称KMP）是最常用的之一。它以三个发明者命名，起头的那个 K 就是著名科学家 Donald Knuth。
+
+* `字符串匹配的Boyer-Moore算法`
+
+    [http://www.ruanyifeng.com/blog/2013/05/boyer-moore_string_search_algorithm.html]()
+
+    Boyer-Moore 算法不仅效率高，而且构思巧妙，容易理解。1977年，德克萨斯大学的 Robert S. Boyer 教授和 J Strother Moore 教授发明了这种算法。
