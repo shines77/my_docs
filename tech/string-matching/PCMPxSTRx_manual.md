@@ -7,7 +7,9 @@
 
     关于 `pcmpistri`，`pcmpistrm`，`pcmpestri`，`pcmpestrm` 指令的详细说明等。
 
+    * 
     * `pcmpistri` 指令
+    * 
 
     ```c
     Intel syntax:
@@ -38,7 +40,9 @@
         6. PF is reset
     ```
 
+    * 
     * `pcmpistrm` 指令
+    * 
 
     ```c
     Intel syntax:
@@ -69,7 +73,9 @@
         6. PF is reset
     ```
 
+    * 
     * `pcmpestri` 指令
+    * 
 
     ```c
     Intel syntax:
@@ -98,14 +104,16 @@
     Modified flags
 
         1. CF is reset if IntRes2 is zero, set otherwise
-        2. ZF is set if EDX is < 16(for bytes) or 8(for words), reset otherwise
-        3. SF is set if EAX is < 16(for bytes) or 8(for words), reset otherwise
+        2. ZF is set if EDX is < 16 (for bytes) or 8 (for words), reset otherwise
+        3. SF is set if EAX is < 16 (for bytes) or 8 (for words), reset otherwise
         4. OF is set to IntRes2[0]
         5. AF is reset
         6. PF is reset
     ```
 
+    * 
     * `pcmpestrm` 指令
+    * 
 
     ```c
     Intel syntax:
@@ -134,9 +142,9 @@
     Modified flags
 
         1. CF is reset if IntRes2 is zero, set otherwise
-        2. ZF is set if EDX is < 16(for bytes) or 8(for words), reset otherwise
-        3. ZSF is set if EAX is < 16(for bytes) or 8(for words), reset otherwise
-        4. ZOF is set to IntRes2[0]
-        5. ZAF is reset
-        6. ZPF is reset
+        2. ZF is set if EDX is < 16 (for bytes) or 8 (for words), reset otherwise
+        3. SF is set if EAX is < 16 (for bytes) or 8 (for words), reset otherwise
+        4. OF is set to IntRes2[0]
+        5. AF is reset
+        6. PF is reset
     ```
