@@ -20,14 +20,14 @@
 
     Operands
 
-    arg1:
+      arg1:
         * XMM Register
         * Memory
 
-    arg2:
+      arg2:
         * XMM Register
 
-    IMM8:
+      IMM8:
         * 8-bit Immediate value
 
     Modified flags
@@ -53,14 +53,14 @@
 
     Operands
 
-    arg1:
+      arg1:
         * XMM Register
 
-    arg2:
+      arg2:
         * XMM Register
         * Memory
 
-    IMM8:
+      IMM8:
         * 8-bit Immediate value
 
     Modified flags
@@ -86,14 +86,14 @@
 
     Operands
 
-    arg1:
+      arg1:
         * XMM Register
 
-    arg2:
+      arg2:
         * XMM Register
         * Memory
 
-    IMM8:
+      IMM8:
         * 8-bit Immediate value
 
     Implicit Operands
@@ -124,14 +124,14 @@
 
     Operands
 
-    arg1:
+      arg1:
         * XMM Register
 
-    arg2:
+      arg2:
         * XMM Register
         * Memory
 
-    IMM8:
+      IMM8:
         * 8-bit Immediate value
 
     Implicit Operands
