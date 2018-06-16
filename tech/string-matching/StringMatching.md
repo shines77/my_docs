@@ -1,4 +1,4 @@
-
+=
 # String Matching (字符串匹配算法)
 
 * `EXACT STRING MATCHING ALGORITHMS (Animation in Java)`
@@ -150,3 +150,19 @@
 
     还不错的SIMD指令一览表，可惜是日文的，不过日语里不少汉字，所以基本也能看懂个大概，如果看不懂的话可以用Google翻译。
 
+* `PC平台主要SIMD扩展发展简史`
+
+    [http://www.cnblogs.com/TaigaCon/p/7835340.html]()
+
+    Single Instruction Multiple Data，简称 SIMD 。SIMD 描述的是微处理器中单条指令能完成对数据的并行处理。SIMD 所使用的是特殊的寄存器，一个寄存器上存储有多个数据，在进行 SIMD 运算时，这些数据会被分别进行处理，以此实现了数据的并行处理。
+
+    * MMX
+    * SSE
+    * SSE2
+    * SSE3
+    * SSSE3
+    * SSE4
+    * AVX
+    * AVX2
+    * AVX-512
+    * AESNI & SHA Extensions
