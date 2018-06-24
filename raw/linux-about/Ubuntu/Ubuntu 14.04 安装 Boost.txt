@@ -23,6 +23,13 @@ Ubuntu 14.04 安装 Boost 的方法
 
 $ sudo apt-get install libbz2-dev
 
+下载 boost 源代码包，地址如下：
+
+    # cd /root/downloads/
+    # wget -c https://dl.bintray.com/boostorg/release/1.63.0/source/boost_1_63_0.tar.gz
+    或者
+    # wget -c https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.tar.gz
+
 1. 解压, 我的 boost 源代码文件放在 /root/downloads/ 目录下:
 
     # cd /usr/local/src
@@ -77,7 +84,7 @@ $ sudo apt-get install libbz2-dev
 
 4. 安装: 编译完成后，进行安装，也就是将头文件和生成的库，放到指定的路径（--prefix）下
 
-    # ./bjam install --prefix=/usr/local/boost_1_60_0/   // b2 命令 和 bjam 命令是一样的
+    # ./bjam install --prefix=/usr/local/boost_1_60_0/ warnings=all --layout=tagged --address-model=64 --architecture=x86 --without-graph --without-graph_parallel --without-mpi --without-wave   // b2 命令 和 bjam 命令是一样的
 
     或者: ./bjam install --prefix=/usr/local/boost_1_60_0/ --without-graph --without-graph_parallel --without-mpi --without-wave
 
@@ -89,7 +96,9 @@ $ sudo apt-get install libbz2-dev
 
     # ln -sf /usr/local/boost_1_60_0/lib/* /usr/local/lib
 
-    # rm -f ./libboost_system.so  // 如果需要删除local的软链接, 可以执行这个命令
+    如果需要删除local的软链接, 可以执行这个命令
+
+    # rm -f ./libboost_system.so
 
 5. 修改系统环境变量
 
@@ -110,6 +119,7 @@ export CPLUS_INCLUDE_PATH=/usr/local/include:$CPLUS_INCLUDE_PATH
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 export LIBRARY_PATH=/usr/local/lib:$LIBRARY_PATH
 
+-------------------------------------------------------------
 
 export BOOST_ROOT=/usr/local/boost_1_59_0/
 export BOOST_INCLUDEDIR=/usr/local/boost_1_59_0/include
@@ -120,6 +130,7 @@ export CPLUS_INCLUDE_PATH=/usr/local/boost_1_59_0/include:$CPLUS_INCLUDE_PATH
 export LD_LIBRARY_PATH=/usr/local/boost_1_59_0/lib:$LD_LIBRARY_PATH
 export LIBRARY_PATH=/usr/local/boost_1_59_0/lib:$LIBRARY_PATH
 
+-------------------------------------------------------------
 
 export BOOST_ROOT=/usr/local/boost_1_60_0/
 export BOOST_INCLUDEDIR=/usr/local/boost_1_60_0/include
