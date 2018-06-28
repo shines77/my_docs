@@ -80,11 +80,11 @@ https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test
 
 	sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 49 --slave /usr/bin/g++-ar g++-ar /usr/bin/g++-ar-4.9 --slave /usr/bin/g++-nm g++-nm /usr/bin/g++-nm-4.9 --slave /usr/bin/g++-ranlib g++-ranlib /usr/bin/g++-ranlib-4.9
 
-5.4:
+5.5:
 
-	sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 54 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-5 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-5 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-5
+	sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 55 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-5 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-5 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-5
 
-	sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 54 --slave /usr/bin/g++-ar g++-ar /usr/bin/g++-ar-5 --slave /usr/bin/g++-nm g++-nm /usr/bin/g++-nm-5 --slave /usr/bin/g++-ranlib g++-ranlib /usr/bin/g++-ranlib-5
+	sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 55 --slave /usr/bin/g++-ar g++-ar /usr/bin/g++-ar-5 --slave /usr/bin/g++-nm g++-nm /usr/bin/g++-nm-5 --slave /usr/bin/g++-ranlib g++-ranlib /usr/bin/g++-ranlib-5
 
 切换 `gcc` 的版本:
 
@@ -97,7 +97,7 @@ https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test
 	* 0            /usr/bin/gcc-4.9   49        自动模式
 	  1            /usr/bin/gcc-4.8   48        手动模式
 	  2            /usr/bin/gcc-4.9   49        手动模式
-  	  3            /usr/bin/gcc-5     54        手动模式
+  	  3            /usr/bin/gcc-5     55        手动模式
 
 	$ sudo update-alternatives --config g++
 
@@ -108,7 +108,7 @@ https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test
 	* 0            /usr/bin/g++-4.9   49        自动模式
 	  1            /usr/bin/g++-4.8   48        手动模式
 	  2            /usr/bin/g++-4.9   49        手动模式
-  	  3            /usr/bin/g++-5     54        手动模式
+  	  3            /usr/bin/g++-5     55        手动模式
 
 ==============================================================
 
