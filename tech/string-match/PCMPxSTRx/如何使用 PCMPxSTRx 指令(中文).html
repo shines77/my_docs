@@ -232,7 +232,7 @@ IntRes1[i] 在任何一个设定范围内为1，如果不在任何范围内则�
 <pre class="program">
 bool Comparator(Element2, i) {
     for (j = 0; j &lt; UpperBound; j += 2) {
-        if (Operand1[j] &lt;= Element2 &amp;&amp; Element2 &lt;= Operand1[j+1]) {
+        if (Element2 &gt;=  Operand1[j] &amp;&amp; Element2 &lt;= Operand1[j+1]) {
             return true;
         } 
     }
