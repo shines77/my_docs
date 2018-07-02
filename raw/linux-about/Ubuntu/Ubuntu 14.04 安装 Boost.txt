@@ -64,6 +64,7 @@ $ sudo apt-get install libbz2-dev
 
     --layout=tagged --layout=versioned --layout=system --build-type=comple‌​te  --without-context --without-coroutine --without-test
 
+    sudo ./b2 install --prefix=/usr/local/boost_1_63_0/ toolset=gcc variant=release link=static runtime-link=static threading=multi warnings=all --layout=tagged --address-model=64 --architecture=x86 --without-graph --without-graph_parallel --without-mpi --without-wave
 
     sudo ./b2 stage -j24 toolset=gcc variant=release link=static runtime-link=static threading=multi warnings=all --layout=tagged --address-model=64 --architecture=x86 --without-graph --without-graph_parallel --without-mpi --without-wave
 
