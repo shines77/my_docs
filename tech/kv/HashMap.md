@@ -23,6 +23,20 @@
 
     HashMap里面实现一个静态内部类Entry，其重要的属性有 key , value, next，从属性key,value我们就能很明显的看出来Entry就是HashMap键值对实现的一个基础bean，我们上面说到HashMap的基础就是一个线性数组，这个数组就是Entry[]，Map里面的内容都保存在Entry[]里面。
 
+* `上古时代 Objective-C 中哈希表的实现`
+
+    [https://segmentfault.com/a/1190000005075494](https://segmentfault.com/a/1190000005075494)
+
+    ```
+    文章介绍 Mac OS 上的 Objective-C 哈希表，也就是 NXHashTable ：
+
+    NXHashTable 的实现
+    NXHashTable 的性能分析
+    NXHashTable 的作用
+
+    NXHashTable 的实现有着将近 30 年的历史，不过仍然作为重要的底层数据结构存储整个应用中的类。
+    ```
+
 * `知乎: HashMap底层实现原理（上）`
 
     [https://zhuanlan.zhihu.com/p/28501879](https://zhuanlan.zhihu.com/p/28501879)
