@@ -8,12 +8,15 @@ Ubuntu 14.04 安装 Boost 的方法
 
 可以看到一个 libboost-dev 的
 
-# apt-get install mpi-default-dev　　 # 安装mpi库
+# apt-get install mpi-default-dev　　# 安装mpi库
 # apt-get install libicu-dev　　　　　# 支持正则表达式的UNICODE字符集
 # apt-get install python-dev　　　　　# 需要python的话
 # apt-get install libbz2-dev
 
 # apt-get install libboost-dev
+
+# apt-get install libboost-all-dev  # 默认版本是 boost v1.54
+
 
 直接拷贝lib文件到系统文件夹.
 
