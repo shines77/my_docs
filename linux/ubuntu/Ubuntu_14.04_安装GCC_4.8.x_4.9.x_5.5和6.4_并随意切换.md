@@ -33,8 +33,6 @@ sudo: add-apt-repository: command not found
 
 `Ubuntu 14.04` 系统更新源默认安装的版本是 `gcc-4.8`，但现在都什么年代了，可以先安装默认的版本，接着再安装 `gcc-4.9`、`gcc-5` 之类的！
 
-（注意：目前 `gcc-5` 实际上已经更新到了 `5.5.0`，没有 `5.1` 或 `5.2` 可供选择，`gcc-6` 版本已经更新到了 `6.4.0`。最后验证日期是：`2018` 年 `7` 月 `19` 日。）
-
 ```shell
 $ sudo apt-get upgrade   # 这句可以不执行
 
@@ -44,7 +42,9 @@ $ sudo apt-get install gcc-5 g++-5
 $ sudo apt-get install gcc-6 g++-6
 ```
 
-（非必须）现在可以考虑刷新一下，否则 `locate` 等命令，是找不到新版本文件所在目录的：
+（注意：`gcc-4.8` 安装的版本是 `4.8.5`，比 `Ubuntu 14.04` 系统默认安装的版本 `4.8.4` 略高。 `gcc-5` 目前已经更新到了 `5.5.0`，且没有 `5.1`、`5.2` 或 `5.3` 之类的选择，`gcc-6` 目前则已经更新到了 `6.4.0` 版本。最后验证日期是：`2018` 年 `7` 月 `19` 日。）
+
+现在可以考虑刷新一下设置，否则，使用 `locate` 等命令，是找不到新版本文件所在目录的：
 
 ```shell
 $ sudo updatedb && sudo ldconfig
@@ -52,15 +52,19 @@ $ sudo updatedb && sudo ldconfig
 $ locate gcc
 ```
 
-你会发现 `gcc -v` 显示出来的版本还是 `gcc-4.8` 的，因此需要更新一下链接。
+（注意：此步不是必须的，可以跳过）
+
+你会发现 `gcc -v` 显示出来的版本还是你原来装的 `gcc` 的版本，因此需要更新一下软链接，命令如下。
 
 ## 3. 设置 gcc 的链接，便于切换 ##
 
-(保留原来的 `4.8.x` 版本，便于快速切换)
+(下面是配置快速切换的命令，可保留原来的 `4.8.x` 版本。)
 
-下面是单行命令的版本（推荐使用单行命令）：
+### 3.1. 单命令行的版本 ###
 
-gcc 4.8.x：
+（推荐使用！）
+
+`gcc 4.8.x`：
 
 ```shell
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 48 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-4.8 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-4.8 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-4.8
@@ -68,7 +72,7 @@ $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 48 --slav
 $ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 48
 ```
 
-gcc 4.9.x：
+`gcc 4.9.x`：
 
 ```shell
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 49 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-4.9 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-4.9 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-4.9
@@ -76,7 +80,7 @@ $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 49 --slav
 $ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 49
 ```
 
-gcc 5.5.0：
+`gcc 5.5.0`：
 
 ```shell
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 55 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-5 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-5 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-5
@@ -84,7 +88,7 @@ $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 55 --slave 
 $ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 55
 ```
 
-gcc 6.4.0：
+`gcc 6.4.0`：
 
 ```shell
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 64 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-6 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-6 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-6
@@ -92,9 +96,11 @@ $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 64 --slave 
 $ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 64
 ```
 
-多行命令版本（一样的，只是多加了换行符 "\\"）：
+### 3.2. 多命令行的版本 ###
 
-gcc 4.8.x：
+（跟上面一样的，只是加了换行符 "\\"）
+
+`gcc 4.8.x`：
 
 ```shell
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 48 \
@@ -105,7 +111,7 @@ $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 48 \
 $ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 48
 ```
 
-gcc 4.9.x：
+`gcc 4.9.x`：
 
 ```shell
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 49 \
@@ -116,7 +122,7 @@ $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 49 \
 $ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 49
 ```
 
-gcc 5.5.0：
+`gcc 5.5.0`：
 
 ```shell
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 55 \
@@ -127,7 +133,7 @@ $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 55 \
 $ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 55
 ```
 
-gcc 6.4.0：
+`gcc 6.4.0`：
 
 ```shell
 $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 64 \
@@ -138,7 +144,7 @@ $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 64 \
 $ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 64
 ```
 
-## 4. 切换 gcc 版本 ##
+## 4. 快速切换 gcc 版本 ##
 
 ### 4.1. 切换 `gcc` 版本的命令 ###
 
