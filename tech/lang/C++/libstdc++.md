@@ -3,8 +3,6 @@
 
 * `GCC mirror on github.com`
 
-    [https://github.com/mirrors/gcc](https://github.com/mirrors/gcc)
-
     [https://github.com/gcc-mirror/gcc](https://github.com/gcc-mirror/gcc)
 
     ```
@@ -17,6 +15,8 @@
     ```
 
     Mirrored from [git://gcc.gnu.org/git/gcc.git](git://gcc.gnu.org/git/gcc.git)
+
+    此外，[https://github.com/mirrors/gcc](https://github.com/mirrors/gcc) 会自动转向到上面的 github.com 地址。
 
 * `GCC GIT mirror`
 
