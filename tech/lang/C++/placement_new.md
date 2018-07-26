@@ -1,7 +1,38 @@
 
 # Placement New 的用法
 
-* `理解 C++ placement new 语法`
+* `[知乎]：C++ 中为什么没有placement delete？`
+
+    [https://www.zhihu.com/question/22947192](https://www.zhihu.com/question/22947192)
+
+    作者：`fly.chen`
+
+    对于 `placement new operator`：
+
+    ```cpp
+    void bar()
+    {
+        void * buf = operator new(sizeof(Fuck));    // alloc memory
+        Fuck * fuck = new (buf) Fuck();             // call Fuck::Fuck()
+        fuck->~Fuck();
+        operator delete(buf);                       // dealloc memory
+    }
+    ```
+
+    作者：`知乎用户（无名）`
+
+    ```
+    平时：
+        new + delete
+
+    使用 placement new 时：
+
+        operator new + placement new + placement delete + operator delete ...
+        
+    记得 placement new 和 placement delete 要成对。
+    ```
+
+* `[简书] 理解 C++ placement new 语法`
 
     [https://www.jianshu.com/p/4af119c44086]()
 
