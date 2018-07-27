@@ -99,7 +99,7 @@
     $ sudo apt-get update
     ```
 
-3) 如果只想安装 `clang` 和 `lldb` (5.0 release)
+3) 如果只想安装 `clang` 和 `lldb` (6.0 release)
 
     ```
     $ sudo apt-get install clang-6.0 lldb-6.0 lld-6.0
