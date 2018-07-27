@@ -83,6 +83,18 @@
     $ sudo apt-get install clang-5.0 clang-tools-5.0 clang-5.0-doc libclang-common-5.0-dev libclang-5.0-dev libclang1-5.0 libllvm5.0 lldb-5.0 llvm-5.0 llvm-5.0-dev llvm-5.0-doc llvm-5.0-examples llvm-5.0-runtime clang-format-5.0 python-clang-5.0 libfuzzer-5.0-dev
     ```
 
+5) 如果需要安装 `clang` 的 `C++` 标准库的 `libc++` 和 `libc++abi` 安装包：
+
+    ```shell
+    $ sudo apt-get install libc++1 libc++abi1 libc++-dev libc++abi-dev libc++-helpers libgc-dev
+    ```
+
+    注：以上安装包是使用下列命令找到的。
+
+    ```shell
+    $ apt-cache search libc++ | less
+    ```
+
 ### 2.2 安装 stable branch (clang 6.0) ###
 
 1) 获取安装包的签名
@@ -109,6 +121,18 @@
 
     ```shell
     $ sudo apt-get install clang-6.0 clang-tools-6.0 clang-6.0-doc libclang-common-6.0-dev libclang-6.0-dev libclang1-6.0 libllvm-6.0-ocaml-dev libllvm6.0 lldb-6.0 llvm-6.0 llvm-6.0-dev llvm-6.0-doc llvm-6.0-examples llvm-6.0-runtime clang-format-6.0 python-clang-6.0 lldb-6.0-dev lld-6.0 libfuzzer-6.0-dev
+    ```
+
+5) 如果需要安装 `clang` 的 `C++` 标准库的 `libc++` 和 `libc++abi` 安装包：
+
+    ```shell
+    $ sudo apt-get install libc++1 libc++abi1 libc++-dev libc++abi-dev libc++-helpers libgc-dev
+    ```
+
+    注：以上安装包是使用下列命令找到的。
+
+    ```shell
+    $ apt-cache search libc++ | less
     ```
 
 ### 2.3 安装 development branch (clang 7.0) ###
