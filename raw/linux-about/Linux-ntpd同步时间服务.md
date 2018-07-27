@@ -1,20 +1,19 @@
 
-参考: NTP服务及时间同步(CentOS6.x 和 Ubuntu 14.04)
 
-[http://acooly.iteye.com/blog/1993484](http://acooly.iteye.com/blog/1993484)
+在 `Ubuntu 14.04` 上安装和使用 `NTP` 服务
+---------------------------------------------
 
-在 Ubuntu 14.04 上
---------------------
+## 1. 安装与配置 ##
 
-先安装ntp:
+先安装 `ntp`：
 
     # sudo apt-get install ntp
 
-配置ntp:
+配置 `ntp`：
 
     # sudo vim /etc/ntp.conf
 
-内容为:
+内容为：
 
     # /etc/ntp.conf, configuration for ntpd;
     # For more information about this file, see the man pages
@@ -109,11 +108,11 @@
 
 配置参数和命令简单说明请参考: http://linux.vbird.org/linux_server/0440ntp.php#server_ntp.conf
 
-配置文件修改完成，保存退出，启动服务:
+配置文件修改完成，保存退出，启动服务：
 
     # sudo service ntp start
 
-启动后，一般需要5-10分钟左右的时候才能与外部时间服务器开始同步时间。可以通过命令查询NTPD服务情况:
+启动后，一般需要 `5-10` 分钟左右的时候才能与外部时间服务器开始同步时间。可以通过命令查询 `NTPD` 服务情况：
 
   1) 查看服务连接和监听:
 
@@ -127,9 +126,9 @@
     udp        0      0 ::1:123                     :::*                                    23103/ntpd
     udp        0      0 :::123                      :::*                                    23103/ntpd
 
-  看红色加粗的地方，表示连接和监听已正确，采用UDP方式
+  看红色加粗的地方，表示连接和监听已正确，采用 `UDP` 方式。
 
-  2) ntpq -p 查看网络中的NTP服务器，同时显示客户端和每个服务器的关系
+  2) `ntpq -p` 查看网络中的 `NTP` 服务器，同时显示客户端和每个服务器的关系：
 
     # sudo ntpq -p
 
@@ -142,29 +141,29 @@
 	 golem.canonical 140.203.204.77   2 u   34   64    3  241.382  173.716 150.142
 	 192.168.2.193   .STEP.          16 u  356   64    0    0.000    0.000   0.000
 
-  3) ntpstat 命令查看时间同步状态, 一般需要5-10分钟(Ubuntu 14.04里好像没有这个命令):
+  3) `ntpstat` 命令查看时间同步状态, 一般需要5-10分钟(Ubuntu 14.04里好像没有这个命令)：
 
     # sudo ntpstat
 
-使用 ntpdate 跟指定的ip同步时间, 如果提示ntp已启动并占用端口, 需先停止ntp服务:
+使用 `ntpdate` 跟指定的 `ip` 同步时间, 如果提示 `ntp` 已启动并占用端口, 需先停止 `ntp` 服务：
 
     # sudo service ntp stop
 
-然后执行:
+然后执行：
 
     # sudo ntpdate -u 0.cn.pool.ntp.org
 
-检查 ntpd 服务是否启动成功了? :
+检查 `ntpd` 服务是否启动成功了? ：
 
     # sudo service --status-all
 
-如果看到 ntp 并且它所在的行显示 "[+]", 即代表已经启动.
+如果看到 `ntp` 并且它所在的行显示 `"[+]"`, 即代表已经启动。
 
 
-在 CentOS 6.x 上
+在 `CentOS 6.x` 上
 ------------------
 
-先检查是否安装了ntp:
+先检查是否安装了 `ntp`：
 
     # sudo rpm -q ntp
 
@@ -172,11 +171,11 @@
     
 这表示已安装了, 如果没有安装, 这是空白.
 
-如果没有安装, 则执行:
+如果没有安装, 则执行：
 
     # sudo yum install ntp
 
-完成后，都需要配置NTP服务为自启动
+完成后，都需要配置 `NTP` 服务为自启动：
 
     # sudo chkconfig ntpd on
 
@@ -184,34 +183,51 @@
 
     # sudo chkconfig --list ntpd
 
-使用 ntpdate 跟指定的ip同步时间, 如果提示ntp已启动并占用端口, 需先停止ntp服务:
+使用 `ntpdate` 跟指定的 `ip` 同步时间, 如果提示 `ntp` 已启动并占用端口, 需先停止 `ntp` 服务:
 
     # sudo ntpdate -u 0.cn.pool.ntp.org
 
-其它类似于Ubuntu 14.04, 请参考前面的内容.
+其它类似于 `Ubuntu 14.04`, 请参考前面的内容。
 
 -----------------------------------------
-ntpd既是服务器端，也是客户端
+
+`ntpd` 既是服务器端，也是客户端。
 
 作为服务器运行时：
 
-1) 修改 /etc/ntp.conf 增加
+1) 修改 `/etc/ntp.conf` 并添加：
 
+    ```
 	restrict 127.0.0.1
 	restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap
+    ```
 
-2) 运行：
+2) 启动 `ntpd` 服务：
 
-	# sudo service ntpd start
+    ```
+    # sudo service ntpd start
+    ```
 
 作为客户端运行时：
 
-1) 修改 /etc/ntp.conf 增加
+1) 修改 `/etc/ntp.conf` 并添加：
 
+    ```
 	server 192.168.1.1
+    ```
 
-2) 运行：
+2) 启动 `ntpd` 服务：
 
+    ```
 	# sudo service ntpd start
+    ```
 
 -----------------------------------------
+
+## 2. 参考文章:  ##
+
+`NTP 服务及时间同步 (CentOS6.x 和 Ubuntu 14.04)`
+
+[http://acooly.iteye.com/blog/1993484](http://acooly.iteye.com/blog/1993484)
+
+<.end.>
