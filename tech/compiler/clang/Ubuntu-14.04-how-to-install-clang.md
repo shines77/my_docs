@@ -47,12 +47,10 @@
     $ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     ```
 
-5) 执行 update 更新源
-
-    添加了源以后，必须执行一次 “`apt-get update`” 命令后，源才能生效：
+    如果出现 `add-apt-repository` 命令未找到之类的错误提示，则执行下面命令，先安装 `add-apt-repository` 的支持：
 
     ```
-    $ sudo apt-get update
+    $ sudo apt-get install -y software-properties-common
     ```
 
 ## 2. 安装 clang ##
@@ -62,16 +60,24 @@
 1) 获取安装包的签名
 
     ```
-    $ wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add - # Fingerprint: 6084 F3CF 814B 57C1 CF12 EFD5 15CF 4D18 AF4F 7421
+    $ wget --no-check-certificate -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add - # Fingerprint: 6084 F3CF 814B 57C1 CF12 EFD5 15CF 4D18 AF4F 7421
     ```
 
-2) 如果只想安装 `clang` 和 `lldb` (5.0 release)
+2) 执行 `update` 更新 `dep` 源
+
+    添加了 `dep` 源和 `安装包签名` 以后，必须执行一次 “`apt-get update`” 命令后，源才能生效：
+
+    ```
+    $ sudo apt-get update
+    ```
+
+3) 如果只想安装 `clang` 和 `lldb` (5.0 release)
 
     ```
     $ sudo apt-get install clang-5.0 lldb-5.0
     ```
 
-3) 如果需要安装 `clang 5.0` 所有的包
+4) 如果需要安装 `clang 5.0` 所有的包
 
     ```
     $ sudo apt-get install clang-5.0 clang-tools-5.0 clang-5.0-doc libclang-common-5.0-dev libclang-5.0-dev libclang1-5.0 libllvm5.0 lldb-5.0 llvm-5.0 llvm-5.0-dev llvm-5.0-doc llvm-5.0-examples llvm-5.0-runtime clang-format-5.0 python-clang-5.0 libfuzzer-5.0-dev
@@ -82,16 +88,24 @@
 1) 获取安装包的签名
 
     ```
-    $ wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add - # Fingerprint: 6084 F3CF 814B 57C1 CF12 EFD5 15CF 4D18 AF4F 7421
+    $ wget --no-check-certificate -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add - # Fingerprint: 6084 F3CF 814B 57C1 CF12 EFD5 15CF 4D18 AF4F 7421
     ```
 
-2) 如果只想安装 `clang` 和 `lldb` (5.0 release)
+2) 执行 `update` 更新 `dep` 源
+
+    添加了 `dep` 源和 `安装包签名` 以后，必须执行一次 “`apt-get update`” 命令后，源才能生效：
+
+    ```
+    $ sudo apt-get update
+    ```
+
+3) 如果只想安装 `clang` 和 `lldb` (5.0 release)
 
     ```
     $ sudo apt-get install clang-6.0 lldb-6.0 lld-6.0
     ```
 
-3) 如果需要安装 `clang 6.0` 所有的包
+4) 如果需要安装 `clang 6.0` 所有的包
 
     ```
     $ sudo apt-get install clang-6.0 clang-tools-6.0 clang-6.0-doc libclang-common-6.0-dev libclang-6.0-dev libclang1-6.0 libllvm-6.0-ocaml-dev libllvm6.0 lldb-6.0 llvm-6.0 llvm-6.0-dev llvm-6.0-doc llvm-6.0-examples llvm-6.0-runtime clang-format-6.0 python-clang-6.0 lldb-6.0-dev lld-6.0 libfuzzer-6.0-dev
@@ -102,16 +116,24 @@
 1) 获取安装包的签名
 
     ```
-    $ wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add - # Fingerprint: 6084 F3CF 814B 57C1 CF12 EFD5 15CF 4D18 AF4F 7421
+    $ wget --no-check-certificate -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add - # Fingerprint: 6084 F3CF 814B 57C1 CF12 EFD5 15CF 4D18 AF4F 7421
     ```
 
-2) 如果只想安装 `clang`、`lld` 和 `lldb` (7.0 release)
+2) 执行 `update` 更新 `dep` 源
+
+    添加了 `dep` 源和 `安装包签名` 以后，必须执行一次 “`apt-get update`” 命令后，源才能生效：
+
+    ```
+    $ sudo apt-get update
+    ```
+
+3) 如果只想安装 `clang`、`lld` 和 `lldb` (7.0 release)
 
     ```
     $ sudo apt-get install apt-get install clang-7 lldb-7 lld-7
     ```
 
-3) 如果需要安装 `clang 7.0` 所有的包
+4) 如果需要安装 `clang 7.0` 所有的包
 
     ```
     $ sudo apt-get install clang-7 clang-tools-7 clang-7-doc libclang-common-7-dev libclang-7-dev libclang1-7 libllvm-7-ocaml-dev libllvm7 lldb-7 llvm-7 llvm-7-dev llvm-7-doc llvm-7-examples llvm-7-runtime clang-format-7 python-clang-7 lld-7 libfuzzer-7-dev
