@@ -34,14 +34,14 @@
     deb-src http://apt.llvm.org/trusty/ llvm-toolchain-trusty-6.0 main
 
     # Also add the following for the appropriate libstdc++
-    deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu trusty main
+    # deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu trusty main
     ```
 
     其他 `Linux` 发行版本的源信息可查阅上面的官网。 
 
-    注：`libc++` 是针对 `clang` 特别重写的 `C++` 标准库，也算是 `clang` 的 “御用” 库了。这就像 `libstdc++` 和 `gcc` 的关系，但 `clang` 也可以用 `libstdc++`。如果不想使用 `libstdc++`，可以把上面的 `libstdc++` 的源注释掉。
+    注：`libc++` 是针对 `clang` 特别重写的 `C++` 标准库，也算是 `clang` 的 “御用” 库了。这就像 `libstdc++` 和 `gcc` 的关系一样，但 `clang` 也可以使用 `libstdc++`。如果想使用 `libstdc++`，可以把上面的 `libstdc++` 源的注释去掉。推荐使用 `clang` 的 `C++` 标准库 `libc++`，毕竟你使用的是 `clang` 而不是 `gcc`。
 
-1) 可能还需要添加一下 `ppa` 的支持：
+4) 如果要使用 `gcc` 的 `C++` 标准库 `libstdc++`，可能还需要添加一下 `ppa` 的支持：
 
     ```
     $ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
