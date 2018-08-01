@@ -52,7 +52,7 @@
     // 标准版本
     void * operator new (std::size_t) throw(std::bad_alloc);
     // nothrow 版本
-    void * operator new (std::size_t, const std::nothrow_t &) throw();
+    void * operator new (std::size_t, const std::nothrow_t & nt) throw();
     // 标准版本
     void operator delete (void * pMemory) throw();
     // nothrow 版本
