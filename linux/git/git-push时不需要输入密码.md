@@ -41,3 +41,20 @@ push 的时候自动选择分支：（Since Git 1.7.11）
     $ git config --global user.email "wokss@163.com"
 
     $ git pull
+
+显示 config 信息，该信息可以通过 `vim .git/config` 命令编辑：
+
+    $ git config --list
+
+    credential.helper=store
+    user.email=wokss@163.com
+    user.name=shines77
+    push.default=matching
+    core.repositoryformatversion=0
+    core.filemode=true
+    core.bare=false
+    core.logallrefupdates=true
+    remote.origin.url=https://git.oschina.net/shines77/jlang.git
+    remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+    branch.master.remote=origin
+    branch.master.merge=refs/heads/master
