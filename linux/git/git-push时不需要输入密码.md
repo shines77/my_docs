@@ -34,3 +34,10 @@ push 的时候自动选择分支：（Since Git 1.7.11）
 
     $ git config --global user.email "gz_shines@msn.com"
     $ git config --global user.name  "shines77"
+
+当 git 账号的密码修改以后，重新设置仓库的用户名和email，下次pull就会重新要求输入密码啦：
+
+    $ git config --global user.name "shines77"
+    $ git config --global user.email "wokss@163.com"
+
+    $ git pull
