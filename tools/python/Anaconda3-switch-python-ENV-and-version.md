@@ -10,7 +10,13 @@
 
 至于安装 `Anaconda2` 还是 `Anaconda3`，都可以，反正后面还可以安装另一个版本的 `python` 。两者的区别是，`Anaconda2` 默认安装的是 `python 2.x` 版本，而 `Anaconda3` 默认安装的是 `python 3.x` 版本。
 
-下面我们以安装 `Anaconda3` 为例。
+下面以安装 `Anaconda3` 为例。
+
+下文所使用的命令需在 `Anaconda` 的控制台环境下，即 `Anaconda Prompt` 环境，提示符如下所示：
+
+```
+(C:\Anaconda3) C:\Users\shines77>
+```
 
 ### 2.1 检查版本
 
@@ -156,7 +162,50 @@ deactivate python27
 conda remove --name python27 --all
 ```
 
-## 4. 参考文章
+## 4. 其他相关
+
+### 4.1 `python2` 设置 utf-8
+
+`python2` 的默认编码是 `ASCII`，修改为 `utf-8` 的方法：在 `Anaconda\Lib\site-packages` 目录下添加一个名字为 `sitecustomize.py` 文件，文件内容：
+
+```
+import sys  
+sys.setdefaultencoding('utf-8')
+```
+
+### 4.2 设置国内源
+
+在更新包的时候，默认源速度较慢，可以使用国内源：
+
+```
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+conda config --set show_channel_urls yes
+```
+
+### 4.3 安装指定版本的 TensorFlow
+
+
+1. 首先在 `Anaconda` 的库中查找所有的相关的 `repository`：
+
+```
+anaconda search -t conda tensorflow
+```
+ 
+2. 根据自己的环境选择安装对应的版本，查看 `repository` 中的信息，`Anaconda` 会返回供安装的版本号以及安装方法：
+
+```
+anaconda show anaconda/tensorflow
+```
+ 
+3. 根据返回的内容进行安装：
+
+```
+# 在 Linux 上面亲测通过，Windowns 下面未找到包
+
+conda install --channel https://conda.anaconda.org/anaconda tensorflow=1.6.0
+```
+
+## 5. 参考文章
 
 1. [`Anaconda3 不同版本 python 环境的安装及切换`](https://blog.csdn.net/wz947324/article/details/80228679)
 
