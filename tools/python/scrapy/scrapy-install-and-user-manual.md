@@ -14,7 +14,7 @@
 python -m pip install --upgrade pip
 ```
 
-然后，直接使用下面命令安装：
+然后，直接使用下面命令安装 `scrapy`：
 
 ```
 pip install scrapy
@@ -22,7 +22,7 @@ pip install scrapy
 
 注：笔者是在 `Anaconda3` 环境下使用 `python 2.7.x` 版本，操作系统是 `Windows 10`，测试通过，安装过程很顺畅，没有出现问题。
 
-查看一下 `scrapy` 的版本号，并且测试一下 `scrapy` 命令时候生效：
+查看一下 `scrapy` 的版本号，并且测试一下 `scrapy` 命令是否生效：
 
 ```
 scrapy version
