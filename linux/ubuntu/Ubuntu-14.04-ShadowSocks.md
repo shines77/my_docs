@@ -14,7 +14,7 @@ sudo pip install shadowsocks
 
 注：`pip` 是 `python` 中安装和更新软件包的工具，类似于 `Ubuntu` 的 `apt-get`。
 
-全部执行完毕，且没有报错的话，我们的 `shadowsocks` 就算是装完了，接下来就是配置了。
+全部执行完毕，且没有报错的话，我们的 `ShadowSocks` 就算是装完了，接下来就是配置了。
 
 ### 1.2. 配置
 
