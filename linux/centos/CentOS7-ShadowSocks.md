@@ -166,7 +166,7 @@ https://ipcheck.need.sh/
 
 `simple-obfs` 官网：[https://github.com/shadowsocks/simple-obfs](https://github.com/shadowsocks/simple-obfs)
 
-`GoQuite` 官网: [https://github.com/cbeuw/GoQuiet/releases](https://github.com/cbeuw/GoQuiet/releases)
+`GoQuite` 官网: [https://github.com/cbeuw/GoQuiet](https://github.com/cbeuw/GoQuiet)
 
 本文仅介绍如何使用和配置 `simple-obfs` 来做混淆。
 
