@@ -1,10 +1,124 @@
 # C# 的 MSIL 简介
 
-## 1. 1
+## 1. 前言
 
-## 2. 2
+### 1.1. `MSIL` 是什么？
 
-## X. IL指令大全
+ `Microsoft Intermediate Language` （MSIL）：微软中间语言。
+
+### 1.2. `C#` 代码编译过程？
+
+`C#` 源代码通过 `LC` (Language Complier) 转为 `IL` 代码，`IL` 主要包含一些元数据和中间语言指令；
+
+`JIT 编译器` 把 `IL` 代码转为物理 `CPU` 能识别的机器代码。
+
+如下图：
+
+![C# IL 编译流程图](./images/cs-msil/cs_msil_workflow_chart.png)
+
+* `Language Complier`（语言编译器）的作用：无论是 `VB code` 还是 `C# code` 都会被 `Language Compiler` 转换为 `MSIL`。
+
+* `MSIL`（微软中间语言）的作用：`MSIL` 包含一些元数据和中间语言指令。
+
+* `JIT Complier`（JIT编译器）的作用：根据系统环境将 `MSIL` 中间语言指令转换为机器码（`Native Code`）。
+
+## 2. MSIL 的框架
+
+![C# IL 编译流程图](./images/cs-msil/MSIL_framework.jpg)
+
+* `Managed Heap`（托管堆）：这就是 `NET` 中的托管堆，用来存放引用类型，它是由 `GC`（垃圾回收器自动进行回收）管理；
+
+* `Evaluation Stack`（计算堆栈）：每个线程都有自己的线程栈，`IL` 里面的任何计算，都发生在 `Evaluation Stack` 上，其实就是一个 `Stack` 结构。可以 `Push`，也可以 `Pop`。
+
+* `Call Stack`（调用堆栈）：也是一个 `Stack` 结构，调用堆栈是一个方法列表，按调用顺序保存所有在运行期被调用的方法。
+
+上图的出处：[https://msdn.microsoft.com/zh-tw/library/dd229210.aspx](https://msdn.microsoft.com/zh-tw/library/dd229210.aspx)
+
+## 3. IL 指令
+
+### 3.1. 示例代码
+
+用 `C#` 写一个简单控制台应用程序，代码如下：
+
+```csharp
+using System;
+
+namespace ILDemo
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int i = 1;
+            int j = 2;
+            int k = 3;
+            int answer = i + j + k;
+            Console.WriteLine("i + j + k = " + answer);
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+### 3.2. 反编译
+
+用 `ILDasm` 反编译上面代码的 `exe` 文件后得到的 `IL` 汇编如下：
+
+```c#
+.method private hidebysig static void Main(string[] args) cil managed
+{
+  .entrypoint   // 程序入口
+  // 这个程序的的代码大小   42字节 (0x2a)
+  .maxstack  2  // 计算堆栈(Evaluation Stack)的大小
+
+  .locals init (
+      [0] int32 i,
+      [1] int32 j,
+      [2] int32 k,
+      [3] int32 answer
+  ) // 定义 int32 类型的 i, j, k, answer
+
+  IL_0000:  nop       // 无操作
+
+  IL_0001:  ldc.i4.1  // 把整数值(常量) 1 (即 i = 1) 压入计算堆栈最顶端, 相当于 push 1 到计算堆栈上
+  IL_0002:  stloc.0   // 把计算堆栈顶部的值( i 的值)放到调用堆栈索引 0 处
+  IL_0003:  ldc.i4.2  // 把整数值(常量) 2 (即 j = 2) 压入计算堆栈最顶端, 相当于 push 2 到计算堆栈上
+  IL_0004:  stloc.1   // 把计算堆栈顶部的值( j 的值)放到调用堆栈索引 1 处
+  IL_0005:  ldc.i4.3  // 把整数值(常量) 3 (即 k = 3) 压入计算堆栈最顶端, 相当于 push 3 到计算堆栈上
+  IL_0006:  stloc.2   // 把计算堆栈顶部的值( k 的值)放到调用堆栈索引 2 处
+
+  IL_0007:  ldloc.0   // 把调用堆栈索引为 0 处的值复制到计算堆栈上
+  IL_0008:  ldloc.1   // 把调用堆栈索引为 1 处的值复制到计算堆栈上
+  IL_0009:  add       // 相加, 即 (i + j)
+  IL_000a:  ldloc.2   // 把调用堆栈索引为 2 处的值复制到计算堆栈上
+  IL_000b:  add       // 相加, 即 ((i + j) + k)
+  IL_000c:  stloc.3   // 把计算堆栈顶部的值(add 的值)放到调用堆栈索引 3 处, 即 (i + j + k)
+  IL_000d:  ldstr ""i + j + k = ""  // 推送对元数据中存储的字符串的新对象引用。
+  IL_0012:  ldloc.3   // 把调用堆栈索引为 3 处的值复制到计算堆栈上
+
+  IL_0013:  box        [mscorlib]System.Int32     // 装箱
+  IL_0018:  call       string [mscorlib]System.String::Concat(object, object)  // 调用内部方法
+  IL_001d:  call       void [mscorlib]System.Console::WriteLine(string)        // 调用 WriteLine
+  IL_0022:  nop        // 无操作
+  IL_0023:  call       valuetype [mscorlib]System.ConsoleKeyInfo [mscorlib]System.Console::ReadKey()  // 调用 ConsoleKey
+  IL_0028:  pop        // 弹出堆栈
+  IL_0029:  ret        // return, 返回
+}
+// end of method Program::Main
+```
+
+总结一下常用的 `IL` 指令：
+
+* `.entrypoint`：指令表示 `CLR` 加载程序时，是首先从 `.entrypoint` 开始的，即从 `Main` 方法作为程序的入口函数；
+* `stloc.X`：把计算堆栈顶部的值放到调用堆栈索引为 `X` 处的位置；
+* `ldloc.X`：把调用堆栈 `X` 处位置的值复制到计算堆栈上；
+* `.newobj`：用于创建引用类型的对象；
+* `.ldstr`：用于创建 `String` 对象变量；
+* `.newarr`：用于创建数组型对象；
+* `.box`：在值类型转换为引用类型的对象时，将值类型拷贝至托管堆上分配内存；
+* `.assembly`：指令告诉编译器，我们准备去用一个外部的类库（不是我们自己写的，而是提前编译好的）。
+
+## 4. IL指令大全
 
 -------------------------------------------------------------------------------
 | 名称          | 说明                                 |
@@ -236,3 +350,13 @@
 | Volatile      | 指定当前位于计算堆栈顶部的地址可以是易失的，并且读取该位置的结果不能被缓存，或者对该地址的多个存储区不能被取消。|
 | Xor           | 计算位于计算堆栈顶部的两个值的按位异或，并且将结果推送到计算堆栈上。|
 -------------------------------------------------------------------------------
+
+## 5. 参考文章
+
+1. [`浅谈 C# 中的 IL`](https://blog.csdn.net/neil3611244/article/details/71211398)
+
+    [https://blog.csdn.net/neil3611244/article/details/71211398](https://blog.csdn.net/neil3611244/article/details/71211398)
+
+2. [`C# IL 入门`](https://blog.csdn.net/icebergliu1234/article/details/81322455)
+
+    [https://blog.csdn.net/icebergliu1234/article/details/81322455](https://blog.csdn.net/icebergliu1234/article/details/81322455)
