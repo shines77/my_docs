@@ -26,11 +26,11 @@
 
 ![C# IL 编译流程图](./images/cs-msil/MSIL_framework.jpg)
 
-* `Managed Heap`（托管堆）：这就是 `NET` 中的托管堆，用来存放引用类型，它是由 `GC`（垃圾回收器自动进行回收）管理；
+* `Managed Heap`（托管堆）：这就是 `.NET` 中的托管堆，用来存放引用类型，它是由 `GC`（垃圾回收器自动进行回收）管理；
 
 * `Evaluation Stack`（计算堆栈）：每个线程都有自己的线程栈，`IL` 里面的任何计算，都发生在 `Evaluation Stack` 上，其实就是一个 `Stack` 结构。可以 `Push`，也可以 `Pop`。
 
-* `Call Stack`（调用堆栈）：也是一个 `Stack` 结构，调用堆栈是一个方法列表，按调用顺序保存所有在运行期被调用的方法。
+* `Call Stack`（调用堆栈）：也是一个 `Stack` 结构，调用堆栈保存了被调用函数的参数列表（`Argument List`），还保存了调用返回信息，以及被调用函数的局部变量（`Local Vars`），非常类似于物理 `CPU` 上的 `Call Stack`，只不过没有相应的 `寄存器` 变量。
 
 上图的出处：[https://msdn.microsoft.com/zh-tw/library/dd229210.aspx](https://msdn.microsoft.com/zh-tw/library/dd229210.aspx)
 
@@ -101,7 +101,7 @@ namespace ILDemo
   IL_001d:  call       void [mscorlib]System.Console::WriteLine(string)        // 调用 WriteLine
   IL_0022:  nop        // 无操作
   IL_0023:  call       valuetype [mscorlib]System.ConsoleKeyInfo [mscorlib]System.Console::ReadKey()  // 调用 ConsoleKey
-  IL_0028:  pop        // 弹出堆栈
+  IL_0028:  pop        // 弹出堆栈(对计算堆栈操作)
   IL_0029:  ret        // return, 返回
 }
 // end of method Program::Main
@@ -117,6 +117,16 @@ namespace ILDemo
 * `.newarr`：用于创建数组型对象；
 * `.box`：在值类型转换为引用类型的对象时，将值类型拷贝至托管堆上分配内存；
 * `.assembly`：指令告诉编译器，我们准备去用一个外部的类库（不是我们自己写的，而是提前编译好的）。
+
+**关于 .maxstack 的理解**
+
+上面的 `IL` 汇编代码中，看起来好像最多用到了 `3` 个计算堆栈的寄存器位置，但为什么 `.maxstack` 的值却是 `2` 呢？
+
+这是因为，实际上，上面的 `IL` 代码中最多只用到了两个计算堆栈的寄存器位置。比如，一开始虽然“`ldc.i4.1`”，“`ldc.i4.2`”，“`ldc.i4.3`”指令分别加载了 `3` 个常量值到计算堆栈上，但每一个加载指令后面都有一条 `stloc.X` 指令，该指令把计算堆栈顶端的值写回到调用堆栈上了，下一条 `ldc.i4.X` 指令加载的值是可以覆盖原来调用堆栈最顶端的寄存器的，所以最多只需要一个计算堆栈的寄存器就可以了。
+
+再看之后的两条 `add` 指令。第一条 `add` 指令，会对计算堆栈最顶端的两个 `int32` 的寄存器相加，并且把相加后的值写回到计算堆栈的最顶端。然后，第二条 `add` 指令之前，`ldloc.2` 把调用堆栈上的索引 `2` 位置的值复制到了计算堆栈上，同时，前面 `i + j` 相加后的值会被挤到第二位，第二条 `add` 指令还是对计算堆栈最顶端的两个 `int32` 的寄存器相加。所以，最多只需要两个计算堆栈的寄存器位置即可，后面的代码分析也同样不超过 `2`。
+
+所以，对于上面的 `IL` 汇编代码，`.maxstack` 的值是 `2` 。
 
 ## 4. IL指令大全
 
