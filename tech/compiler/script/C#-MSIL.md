@@ -370,3 +370,7 @@ namespace ILDemo
 2. [`C# IL 入门`](https://blog.csdn.net/icebergliu1234/article/details/81322455)
 
     [https://blog.csdn.net/icebergliu1234/article/details/81322455](https://blog.csdn.net/icebergliu1234/article/details/81322455)
+
+3. [`C# IL DASM 使用`](https://www.cnblogs.com/caokai520/p/4921706.html)
+
+    [https://www.cnblogs.com/caokai520/p/4921706.html](https://www.cnblogs.com/caokai520/p/4921706.html)
