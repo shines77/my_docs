@@ -1,4 +1,4 @@
-# Ubuntu 14.04 搭建 Shadowsocks 服务器
+# Ubuntu 14.04 搭建 ShadowSocks 服务器
 
 ## 1. 准备工作
 
@@ -95,6 +95,62 @@ exit 0
 
 重启系统，验证配置 `/etc/rc.local` 是否生效。好了，打开客户端，开始呼吸墙外的新鲜空气吧！
 
+开机自启
+
+以下使用 `Systemd` 来实现 `shadowsocks` 开机自启。
+
+如果没有安装 `Systemd`，需要先安装 `Systemd`（可以使用 `systemctl --help` 命令来检查是否安装了 `Systemd`）。
+
+安装的命令是：
+
+```shell
+apt-get install systemd
+```
+
+新建 `shadowsocks` 配置文件：
+
+```shell
+vim /etc/systemd/system/shadowsocks.service
+```
+
+```bash
+Description=Shadowsocks Server Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/ssserver -c /etc/shadowsocks.json
+
+[Install]
+WantedBy=multi-user.target
+```
+
+让 `shadowsocks` 配置生效：
+
+```shell
+systemctl enable /etc/systemd/system/shadowsocks.service
+```
+
+执行的结果如下：
+
+```shell
+ln -s '/etc/systemd/system/shadowsocks.service'
+      '/etc/systemd/system/multi-user.target.wants/shadowsocks.service'
+```
+
+启动 `shadowsocks` 服务：
+
+```shell
+systemctl start shadowsocks
+```
+
+查询 `shadowsocks` 服务当前的状态：
+
+```shell
+systemctl status shadowsocks
+```
+
 ## 3. 更新：使用 obfs 混淆
 
 （ `2019年2月14日` 更新）
@@ -129,18 +185,110 @@ vim /etc/rc.local
 ```bash
 if [ $(id -u) -eq 0 ]; then
     ulimit -SHn 65535
-    /usr/local/bin/obfs-server -s your_server_ip -p 8193 --obfs http -r 127.0.0.1:8388
     /usr/local/bin/ssserver -s 127.0.0.1 -p 8388 -c /etc/shadowsocks.json -d start
+    /usr/local/bin/obfs-server -s your_server_ip -p 8139 --obfs http -r 127.0.0.1:8388
 fi
 ```
 
 注：这里的 `ssserver` 由于使用的是本地 `IP` 启动的，会报 `Warning`，在 `/etc/rc.local` 里启动会失败，不能自动启动。所以，待服务器启动以后，需要手动执行一遍启动命令，才能正常启动 `ssserver`，暂时找不到更好的解决办法。命令如下：
 
 ```shell
-/usr/local/bin/ssserver -s 127.0.0.1 -p 8388 -c /etc/shadowsocks.json -d start`
+/usr/local/bin/ssserver -s 127.0.0.1 -p 8388 -c /etc/shadowsocks.json -d start
 ```
 
 执行完成后，可使用 `top` 命令查看是否已经启动了 `ssserver` 程序。
+
+`shadowsocks` 开机自启
+
+新建 `shadowsocks` 配置文件：
+
+```shell
+vim /etc/systemd/system/shadowsocks.service
+```
+
+```bash
+Description=Shadowsocks Server Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/ssserver -c /etc/shadowsocks.json -s 127.0.0.1 -p 8388
+
+[Install]
+WantedBy=multi-user.target
+```
+
+让 `shadowsocks` 配置生效：
+
+```shell
+systemctl enable /etc/systemd/system/shadowsocks.service
+```
+
+执行的结果如下：
+
+```shell
+ln -s '/etc/systemd/system/shadowsocks.service'
+      '/etc/systemd/system/multi-user.target.wants/shadowsocks.service'
+```
+
+启动 `shadowsocks` 服务：
+
+```shell
+systemctl start shadowsocks
+```
+
+查询 `shadowsocks` 服务当前的状态：
+
+```shell
+systemctl status shadowsocks
+```
+
+`simple-obfs` 开机自启
+
+新建 `obfs` 配置文件：
+
+```shell
+vim /etc/systemd/system/obfs.service
+```
+
+```bash
+Description=Simple Obfs Server Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/obfs-server -s your_server_ip -p 8139 --obfs http -r 127.0.0.1:8388
+
+[Install]
+WantedBy=multi-user.target
+```
+
+让 `obfs` 配置生效：
+
+```shell
+systemctl enable /etc/systemd/system/obfs.service
+```
+
+执行的结果如下：
+
+```shell
+ln -s '/etc/systemd/system/obfs.service'
+      '/etc/systemd/system/multi-user.target.wants/obfs.service'
+```
+
+启动 `obfs` 服务：
+
+```shell
+systemctl start obfs
+```
+
+查询 `obfs` 服务当前的状态：
+
+```shell
+systemctl status obfs
+```
 
 ### 3.2. 客户端
 
@@ -162,10 +310,14 @@ fi
 
     [https://github.com/shadowsocks/shadowsocks-windows/issues/2193](https://github.com/shadowsocks/shadowsocks-windows/issues/2193)
 
-2. [`ss 客户端使用 obfs 混淆`](https://www.jianshu.com/p/135e538164f5)
+2. [`ss 客户端使用 obfs 混淆`](https://www.jianshu.com/p/135e538164f5) （该文章已被禁止访问）
 
     [https://www.jianshu.com/p/135e538164f5](https://www.jianshu.com/p/135e538164f5)
 
 3. [`simple-obfs 官网`](https://github.com/shadowsocks/simple-obfs)
 
     [https://github.com/shadowsocks/simple-obfs](https://github.com/shadowsocks/simple-obfs)
+
+4. [`VPS 搭梯子指南——shadowsocks + BBR + obfs`](https://www.solarck.com/shadowsocks-libev.html)
+
+    [https://www.solarck.com/shadowsocks-libev.html](https://www.solarck.com/shadowsocks-libev.html)
