@@ -114,6 +114,7 @@ vim /etc/systemd/system/shadowsocks.service
 ```
 
 ```bash
+[Unit]
 Description=Shadowsocks Server Service
 After=network.target
 
@@ -200,6 +201,27 @@ fi
 
 `shadowsocks` 开机自启
 
+先修改配置文件 `/etc/shadowsocks.json` 。
+
+```shell
+vim /etc/shadowsocks.json
+```
+
+内容修改为：
+
+```json
+{
+    "server": "127.0.0.1",
+    "server_port": 8388,
+    "local_address": "127.0.0.1",
+    "local_port": 1080,
+    "password": "your_password",
+    "timeout": 300,
+    "method": "aes-256-cfb",
+    "fast_open": false
+}
+```
+
 新建 `shadowsocks` 配置文件：
 
 ```shell
@@ -207,6 +229,7 @@ vim /etc/systemd/system/shadowsocks.service
 ```
 
 ```bash
+[Unit]
 Description=Shadowsocks Server Service
 After=network.target
 
@@ -253,6 +276,7 @@ vim /etc/systemd/system/obfs.service
 ```
 
 ```bash
+[Unit]
 Description=Simple Obfs Server Service
 After=network.target
 
