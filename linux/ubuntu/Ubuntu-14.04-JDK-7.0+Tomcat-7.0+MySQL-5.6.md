@@ -116,11 +116,11 @@ sudo apt-get install tomcat7 tomcat7-admin tomcat7-common tomcat7-docs tomcat7-e
 // 前面省略 ...
 
 <!--
-    <role rolename="tomcat"/>
-    <role rolename="role1"/> 
-    <user username="tomcat" password="tomcat" roles="tomcat"/>
-    <user username="both" password="tomcat" roles="tomcat,role1"/>
-    <user username="role1" password="tomcat" roles="role1"/>
+  <role rolename="tomcat"/>
+  <role rolename="role1"/> 
+  <user username="tomcat" password="tomcat" roles="tomcat"/>
+  <user username="both" password="tomcat" roles="tomcat,role1"/>
+  <user username="role1" password="tomcat" roles="role1"/>
 -->
 </tomcat-users>
 ```
@@ -133,18 +133,82 @@ sudo apt-get install tomcat7 tomcat7-admin tomcat7-common tomcat7-docs tomcat7-e
 // 前面省略 ...
 
 <!--
-    <role rolename="tomcat"/>
-    <role rolename="role1"/> 
-    <user username="tomcat" password="tomcat" roles="tomcat"/>
-    <user username="both" password="tomcat" roles="tomcat,role1"/>
-    <user username="role1" password="tomcat" roles="role1"/>
+  <role rolename="tomcat"/>
+  <role rolename="role1"/> 
+  <user username="tomcat" password="tomcat" roles="tomcat"/>
+  <user username="both" password="tomcat" roles="tomcat,role1"/>
+  <user username="role1" password="tomcat" roles="role1"/>
 -->
-    <role rolename="manager"/>
-    <user username="tomcat" password="123456" roles="manager"/>
-    <role rolename="manager-gui"/>
-    <user username="tomcat" password="123456" roles="manager-gui"/>
-    
+  <role rolename="manager"/>
+  <role rolename="manager-gui"/>
+  <role rolename="manager-status"/>
+  <role rolename="manager-script"/>
+  <role rolename="manager-jmx"/>
+  <role rolename="admin"/>
+  <role rolename="admin-gui"/>
+  <user username="tomcat" password="123456" roles="standard,manager-gui,manager-status,manager-script,admin-gui"/>
+
 </tomcat-users>
 ```
 
 注意：上面的 `password` 字段，请修改为你自己的密码。
+
+### 3.1 远程访问权限
+
+默认情况，`manager` 仅支持本地访问，如果需要远程访问，需要进行如下设置，文件地址如下：
+
+```shell
+$CATALINA_BASE/webapps/manager/META-INF/context.xml
+```
+
+编辑文件内容如下，允许两个 `IP` 地址段 `127.*.*.*` 和 `157.122.*.*` 的访问：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiResourceLocking="false" privileged="true" >
+  <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+         allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|157\.122\.\d+\.\d+|183\.240\.\d+\.\d+" />
+  <Manager sessionAttributeValueClassNameFilter="java\.lang\.(?:Boolean|Integer|Long|Number|String)|org\.apache\.catalina\.filters\.CsrfPreventionFilter\$LruCache(?:\$1)?|java\.util\.(?:Linked)?HashMap"/>
+</Context>
+```
+
+此外，新建一个 `manager.xml` 文件，如下：
+
+```shell
+$CATALINA_BASE/conf/Catalina/localhost/manager.xml
+```
+
+输入如下内容：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiResourceLocking="false" privileged="true"
+         docBase="${catalina.home}/webapps/manager">
+  <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+         allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1|157\.122\.\d+\.\d+|183\.240\.\d+\.\d+" />
+</Context>
+```
+
+编辑重新读取配置的监视目录：
+
+```shell
+$CATALINA_BASE/conf/context.xml
+```
+
+修改为：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Context reloadable="true">
+
+    <!-- Default set of monitored resources. If one of these changes, the    -->
+    <!-- web application will be reloaded.                                   -->
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
+
+    <!-- Uncomment this to disable session persistence across Tomcat restarts -->
+    <!-- manager path -->
+    <Manager pathname="${catalina.base}/webapps/manager" />
+    <!-- manager path -->
+</Context>
+```
