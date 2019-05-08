@@ -29,6 +29,40 @@ pip install shadowsocks
 
 执行完毕，且没有报错的话，接下来就是配置了。
 
+#### 2.1.1. 报错
+
+如果显示如下的错误信息：
+
+```shell
+Traceback (most recent call last):
+  File "/usr/bin/pip", line 9, in <module>
+    from pip import main
+```
+
+是因为将 `pip` 更新为 `10.0.0` 以后的版本，库里面的函数有所变动造成的。
+
+#### 2.1.2. 解决方法
+
+在 `Ubuntu 16.04` 中，下列方法可行：
+
+```shell
+vim /usr/bin/pip
+```
+
+把原来的：
+
+```python
+from pip import main
+```
+
+修改为：
+
+```python
+from pip._internal import main
+```
+
+如果以上方法还是不能解决，还有另一种方法，可参考 [pip升级后Import Error:cannot import name main解决方案](https://blog.csdn.net/zong596568821xp/article/details/80410416)。
+
 ### 2.2. 配置 ShadowSocks
 
 新建一个配置文件，例如：`/etc/shadowsocks.json`，命令如下：
