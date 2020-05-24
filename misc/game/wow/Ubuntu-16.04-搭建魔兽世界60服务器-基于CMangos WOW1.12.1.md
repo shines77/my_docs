@@ -438,9 +438,9 @@ select * from realmlist;
 
 所以，我们有两种方式修改 `realmlist` 的设置：
 
-1. 直接使用 Update 命令修改
+1. 直接使用 Update 语句修改
 
-命令如下：
+`SQL` 语句如下：
 
 ```sql
 UPDATE realmlist SET name='MaNGOS', address='127.0.0.1', port='8085', timezone='8' WHERE id=1;
@@ -448,7 +448,7 @@ UPDATE realmlist SET name='MaNGOS', address='127.0.0.1', port='8085', timezone='
 
 2. 删除原来的数据，在插入一条新数据：
 
-命令如下：
+`SQL` 语句如下：
 
 ```sql
 DELETE FROM realmlist WHERE id=1;
@@ -641,6 +641,12 @@ iptables-restore < $HOME/firewall.txt    # 恢复配置
 
 ufw reload                               # 重启 ufw 服务
 ufw status                               # 查看 ufw 服务的端口是否已经开
+```
+
+查看服务器已在监听的端口的命令：
+
+```shell
+netstat -lntup
 ```
 
 ## 4. 参考文章
