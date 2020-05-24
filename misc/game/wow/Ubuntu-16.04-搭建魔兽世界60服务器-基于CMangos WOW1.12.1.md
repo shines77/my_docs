@@ -485,7 +485,7 @@ screen -d -r session_name        # 结束当前 session 并回到 session_na
 下面是处于 `screen` 状态下的一些常用组合键：
 
 * `Ctrl` + `a` + `c`：创建一下新的 screen 窗口
-* `Ctrl` + `a` + `p`：切换到前一个 screen 窗口
+* `Ctrl` + `a` + `p`：切换到上一个 screen 窗口
 * `Ctrl` + `a` + `n`：切换到下一个 screen 窗口
 * `Ctrl` + `a` + `d`：暂时退出当前 screen 窗口（等会还想连接这个 screen 窗口）
 * `Ctrl` + `d` 或者输入 `exit`：退出当前 screen 窗口，结束当前 screen 窗口，不想再连接回来（即杀死会话）
