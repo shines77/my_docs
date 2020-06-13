@@ -1,14 +1,24 @@
 
+显示 global 配置的内容:
+
 $ git config --global --list   // 显示 global 配置的内容
 
 $ vim ~/.gitconfig             // 等价于上面那一句
 
+显示 config 信息，该信息可以通过 vim .git/config 命令编辑：
+
+$ git config --list
+
+设置全局设置的用户名和email:
 
 $ git config --global user.name=shines77
+$ git config --global user.email=gz_shines@msn.com
 
-$ git config --global user.email=wokss@163.com
+永久存储密码(无时间限制，不失效，强烈推荐！)：
 
+$ git config --global credential.helper store
 
+git 拉取远程分支:
 
 $ git pull -v --progress "origin"
 
