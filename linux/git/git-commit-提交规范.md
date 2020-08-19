@@ -6,7 +6,7 @@
 `git` 提交格式:
 
 ```
-<type>(<scope>): <subject>
+<type>(<scope>): (ISSUEE_ID:)<subject>
 <BLANK LINE>
 <body>
 <BLANK LINE>
@@ -35,7 +35,8 @@ docs: 文档修改
 test: 测试用例修改
 build: 构建项目
 revert: 回滚到上一个版本
-chore: 其他修改, 比如依赖管理。chore 的中文翻译为日常事务、例行工作，顾名思义，即不在其他 commit 类型中的修改，都可以用 chore 表示。
+chore: 其他修改，比如依赖管理，构建或辅助工具的变动。chore 原意为日常事务、例行工作。
+misc: 杂项, 一些未归类或不知道将它归类到什么方面的提交，即不在其他 commit 类型中的修改，都可以用 misc 表示。
 ```
 
 * scope: commit 影响的范围, 比如: route, component, utils, build...
@@ -51,3 +52,5 @@ chore: 其他修改, 比如依赖管理。chore 的中文翻译为日常事务�
 * [git commit 提交规范](https://zhuanlan.zhihu.com/p/90281637)
 
 * [Git Commit 标准化](https://www.cnblogs.com/wubaiqing/p/10307605.html)
+
+* [git commit的规范](https://www.cnblogs.com/chucklu/p/10400519.html)
