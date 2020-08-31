@@ -37,7 +37,7 @@
 
 4. [TerarkDB数据库的性能报告与技术解析](https://www.2cto.com/database/201606/513841.html) From `www.2cto.com`
 
-    作者：whinah，2016-06-01
+    作者：whinah (雷鹏)，2016-06-01
 
     TerarkDB 是一个拥有极高性能和数据压缩率的存储引擎。使用方法类似Facebook的RocksDB，不过比 RocksDB 具有更多功能，下面是 TerarkDB 的功能特性：
 

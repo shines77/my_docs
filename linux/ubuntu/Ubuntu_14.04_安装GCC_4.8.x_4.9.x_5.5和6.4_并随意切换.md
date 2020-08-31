@@ -1,5 +1,5 @@
 
-Ubuntu 14.04 安装 GCC 4.8.x, 4.9.x, 5.5 和 6.4 并随意切换
+Ubuntu 14.04 安装 GCC 4.8.x, 4.9.x, 5.5 和 6.5 并随意切换
 ============================================================
 
 ## 1. 添加 PPA 源 ##
@@ -10,13 +10,17 @@ Ubuntu 14.04 安装 GCC 4.8.x, 4.9.x, 5.5 和 6.4 并随意切换
 
 ```shell
 # 安装 add-apt-repository 组件
-$ sudo apt-get install -y software-properties-common
+sudo apt-get install build-essential software-properties-common -y
 
 # 添加 ppa 源
-$ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 
-# 更新 apt 源
-$ sudo apt-get update
+sudo apt-get update
+
+# 安装 gcc 快照
+apt-get install gcc-snapshot
+
+sudo apt-get update
 ```
 
 其中第二句执行的时候，如果你已经安装过 `add-apt-repository` 了的话，按回车确认，继续即可。
@@ -31,18 +35,30 @@ sudo: add-apt-repository: command not found
 
 ## 2. 安装 gcc 各个版本 ##
 
-`Ubuntu 14.04` 系统更新源默认安装的版本是 `gcc-4.8`，但现在都什么年代了，可以先安装默认的版本，接着再安装 `gcc-4.9`、`gcc-5` 之类的！
+`Ubuntu 14.04` 系统默认安装的版本是 `gcc-4.8`，`Ubuntu 16.04` 系统默认安装的版本是 `gcc-5.4`，过于老旧，可以先安装默认的版本，接着再安装 `gcc-6`、`gcc-7` 等等！
+
+
+先删除 `/usr/bin/gcc` 和 `/usr/bin/g++` 的重定向 `link`：
 
 ```shell
-$ sudo apt-get upgrade   # 这句可以不执行
-
-$ sudo apt-get install gcc-4.8 g++-4.8
-$ sudo apt-get install gcc-4.9 g++-4.9
-$ sudo apt-get install gcc-5 g++-5
-$ sudo apt-get install gcc-6 g++-6
+sudo update-alternatives --remove-all gcc
+sudo update-alternatives --remove-all g++
 ```
 
-（注意：`gcc-4.8` 安装的版本是 `4.8.5`，比 `Ubuntu 14.04` 系统默认安装的版本 `4.8.4` 略高。 `gcc-5` 目前已经更新到了 `5.5.0`，且没有 `5.1`、`5.2` 或 `5.3` 之类的选择，`gcc-6` 目前则已经更新到了 `6.4.0` 版本。最后验证日期：`2018` 年 `7` 月 `19` 日。）
+然后分别安装各个版本的 `gcc` 和 `g++`：
+
+```shell
+sudo apt-get upgrade   # 这句不是必须的
+
+sudo apt-get install gcc-4.8 g++-4.8
+sudo apt-get install gcc-4.9 g++-4.9
+sudo apt-get install gcc-5 g++-5
+sudo apt-get install gcc-6 g++-6
+sudo apt-get install gcc-7 g++-7
+sudo apt-get install gcc-8 g++-8
+```
+
+（注意：`gcc-4.8` 安装的版本是 `4.8.5`，比 `Ubuntu 14.04` 系统默认安装的版本 `4.8.4` 略高。 `gcc-5` 目前已经更新到了 `5.5.0`，`gcc-6` 目前则已经更新到了 `6.5.0` 版本。最后验证日期：`2020` 年 `8` 月 `31` 日。）
 
 现在可以考虑刷新一下设置，否则，使用 `locate` 等命令，是找不到新版本文件所在目录的：
 
@@ -60,9 +76,7 @@ $ locate gcc
 
 (下面是配置快速切换的命令，可保留原来的 `4.8.x` 版本。)
 
-### 3.1. 单命令行的版本 ###
-
-（推荐使用！）
+### 3.1. 添加 alternatives ###
 
 `gcc 4.8.x`：
 
@@ -88,60 +102,28 @@ $ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 55 --slave 
 $ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 55
 ```
 
-`gcc 6.4.0`：
+`gcc 6.5.0`：
 
 ```shell
-$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 64 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-6 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-6 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-6
+$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 65 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-6 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-6 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-6
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 64
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 65
 ```
 
-### 3.2. 多命令行的版本 ###
-
-（跟上面一样的，只是加了换行符 "\\"）
-
-`gcc 4.8.x`：
+`gcc 7.5.0`：
 
 ```shell
-$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 48 \
---slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-4.8 \
---slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-4.8 \
---slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-4.8
+$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 75 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-7 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-7 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-7
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 48
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 75
 ```
 
-`gcc 4.9.x`：
+`gcc 8.4.0`：
 
 ```shell
-$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 49 \
---slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-4.9 \
---slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-4.9 \
---slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-4.9
+$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 84 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-8 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-8 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-8
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 49
-```
-
-`gcc 5.5.0`：
-
-```shell
-$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 55 \
---slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-5 \
---slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-5 \
---slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-5
-
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 55
-```
-
-`gcc 6.4.0`：
-
-```shell
-$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 64 \
---slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-6 \
---slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-6 \
---slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-6
-
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 64
+$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 84
 ```
 
 ## 4. 快速切换 gcc 版本 ##
@@ -161,7 +143,7 @@ $ sudo update-alternatives --config gcc
   1            /usr/bin/gcc-4.8   48        手动模式
   2            /usr/bin/gcc-4.9   49        手动模式
   3            /usr/bin/gcc-5     55        手动模式
-  4            /usr/bin/gcc-6     64        手动模式
+  4            /usr/bin/gcc-6     65        手动模式
 ```
 
 ### 4.2. 切换 `g++` 版本的命令 ###
@@ -179,7 +161,7 @@ $ sudo update-alternatives --config g++
   1            /usr/bin/g++-4.8   48        手动模式
   2            /usr/bin/g++-4.9   49        手动模式
   3            /usr/bin/g++-5     55        手动模式
-  4            /usr/bin/g++-6     64        手动模式
+  4            /usr/bin/g++-6     65        手动模式
 ```
 
 ## 5. 参考文章 ##
@@ -192,6 +174,10 @@ $ sudo update-alternatives --config g++
 
 ----------------------------------------------------------------
 
-（最后更新日期：`2018` 年 `7` 月 `19` 日）
+更新历史：
+
+（最后更新日期：`2020` 年 `8` 月 `31` 日）
+
+（上一次更新日期：`2018` 年 `7` 月 `19` 日）
 
 <.end.>
