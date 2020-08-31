@@ -56,6 +56,7 @@ sudo apt-get install gcc-5 g++-5
 sudo apt-get install gcc-6 g++-6
 sudo apt-get install gcc-7 g++-7
 sudo apt-get install gcc-8 g++-8
+sudo apt-get install gcc-9 g++-9
 ```
 
 （注意：`gcc-4.8` 安装的版本是 `4.8.5`，比 `Ubuntu 14.04` 系统默认安装的版本 `4.8.4` 略高。 `gcc-5` 目前已经更新到了 `5.5.0`，`gcc-6` 目前则已经更新到了 `6.5.0` 版本。最后验证日期：`2020` 年 `8` 月 `31` 日。）
@@ -81,49 +82,57 @@ $ locate gcc
 `gcc 4.8.x`：
 
 ```shell
-$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 48 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-4.8 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-4.8 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-4.8
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 48 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-4.8 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-4.8 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-4.8
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 48
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 48
 ```
 
 `gcc 4.9.x`：
 
 ```shell
-$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 49 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-4.9 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-4.9 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-4.9
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 49 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-4.9 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-4.9 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-4.9
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 49
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 49
 ```
 
 `gcc 5.5.0`：
 
 ```shell
-$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 55 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-5 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-5 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-5
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 55 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-5 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-5 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-5
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 55
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 55
 ```
 
 `gcc 6.5.0`：
 
 ```shell
-$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 65 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-6 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-6 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-6
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 65 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-6 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-6 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-6
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 65
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 65
 ```
 
 `gcc 7.5.0`：
 
 ```shell
-$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 75 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-7 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-7 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-7
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 75 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-7 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-7 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-7
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 75
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 75
 ```
 
 `gcc 8.4.0`：
 
 ```shell
-$ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 84 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-8 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-8 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-8
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 84 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-8 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-8 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-8
 
-$ sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 84
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 84
+```
+
+`gcc 9.3.0`：
+
+```shell
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 93 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-9 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9
+
+sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 93
 ```
 
 ## 4. 快速切换 gcc 版本 ##

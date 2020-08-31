@@ -35,9 +35,9 @@
 
     已收录在本文档库中，路径为：\tech\db\terark\使用TerarkDB提升MySQL性能和压缩率.md
 
-4. [TerarkDB数据库的性能报告与技术解析](https://www.2cto.com/database/201606/513841.html) From `www.2cto.com`
+4. [TerarkDB数据库的性能报告与技术解析](https://blog.csdn.net/whinah/article/details/51545839) From `blog.csdn.net`
 
-    作者：whinah (雷鹏)，2016-06-01
+    作者：whinah (雷鹏)，2016-05-31
 
     TerarkDB 是一个拥有极高性能和数据压缩率的存储引擎。使用方法类似Facebook的RocksDB，不过比 RocksDB 具有更多功能，下面是 TerarkDB 的功能特性：
 
