@@ -15,14 +15,30 @@
 
 ## 2. 相关文档
 
-1. [全局压缩-革命性的数据库技术](http://nark.cc/p/?p=1720)
+1. [全局压缩-革命性的数据库技术](http://nark.cc/p/?p=1720) From `nark.cc`
 
     作者: rockeet，发表日期: 2017年03月08日
 
-2. [使用TerarkDB提升MySQL性能和压缩率](https://myslide.cn/slides/5559)
+2. [TerarkDB - 我们发布了一款划时代的存储引擎](https://zhuanlan.zhihu.com/p/21493877) From `zhihu.com`
+
+    作者：郭宽，发表日期：大约 2017-05-24
+
+    目前世界上绝大多数开源数据库的索引都是由 `B+树` 或 `LSM` 实现的，但是 `Terark` 实现了一种完全不同的索引结构（`Succinct Trie`），可以把读性能提升一到两个数量级。
+
+    `TerarkDB` 作为一个存储引擎，可以嵌入MongoDB、MySQL、SSDB等现有的存储系统中，也可以直接作为独立的存储系统进行使用。
+
+3. [使用TerarkDB提升MySQL性能和压缩率](https://myslide.cn/slides/5559) From `myslide.cn`
 
     主讲人：Terark 联合创始人 郭宽宽
 
     作者：闫盼晴，发表于：2017/11/26
 
     已收录在本文档库中，路径为：\tech\db\terark\使用TerarkDB提升MySQL性能和压缩率.md
+
+4. [TerarkDB数据库的性能报告与技术解析](https://www.2cto.com/database/201606/513841.html) From `www.2cto.com`
+
+    作者：whinah，2016-06-01
+
+    TerarkDB 是一个拥有极高性能和数据压缩率的存储引擎。使用方法类似Facebook的RocksDB，不过比 RocksDB 具有更多功能，下面是 TerarkDB 的功能特性：
+
+    高压缩率，通常是 snappy 的2～5倍 实时免解压直接检索数据 Query 延迟很低并且很稳定 同一 Table 可包含多个索引，支持联合索引，支持范围搜索 原生支持正则表达式检索 支持嵌入进程，或者 Server-Client 模式 数据持久化 支持 Schema，包含丰富的数据类型 列存储以及行存储，支持 Column Group。
