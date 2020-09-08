@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>CS3330: A quick guide to SSE/SIMD</title>
+  <meta name="description" content="">
+
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="canonical" href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html">
+  <link rel="alternate" type="application/rss+xml" title="CS 3330 Spring 2018" href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/feed.xml">
+  
+  
+</head>
+
+
+  <body>
+
+    <header class="site-header" role="banner">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/">CS 3330 Spring 2018</a>
+
+    <nav class="site-nav">
+      <span class="menu-icon">
+        <svg viewBox="0 0 18 15" width="18px" height="15px">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"></path>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"></path>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"></path>
+        </svg>
+      </span>
+
+      <div class="trigger"><a class="page-link" href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/">Main page</a><a class="page-link" href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/assignments.html">HWs+Labs</a><a class="page-link" href="https://archimedes.cs.virginia.edu/cs3330/quizzes/">Quizzes</a><a class="page-link" href="https://archimedes.cs.virginia.edu/cs3330/gradebook">Gradebook</a><a class="page-link" href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/grading.html">Policies</a><a class="page-link" href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/hclrs.html">HCLRS</a><a class="page-link" href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/documents.html">Study Materials</a><a class="page-link" href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/schedule.html">Schedule</a></div>
+    </nav>
+
+  </div>
+
+</header>
+
+<div class="oldsite">
+This is the website for a prior semester's offering of CS 3330.
+</div>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div id="toc">
+  <div id="toctitle">
+    <h2>Contents</h2>
+  </div>
+  <ul>
+    <li class="toc_level-1 toc_section-1">
+      <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-1"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a>
+    </li>
+    <li class="toc_level-1 toc_section-2">
+      <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-2"><span class="tocnumber">2</span> <span class="toctext">Intrinsics reference</span></a>
+    </li>
+    <li class="toc_level-1 toc_section-3">
+      <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-3"><span class="tocnumber">3</span> <span class="toctext">Header files</span></a>
+    </li>
+    <li class="toc_level-1 toc_section-4">
+      <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-4"><span class="tocnumber">4</span> <span class="toctext">Representing vectors in C</span></a>
+      <ul>
+        <li class="toc_level-2 toc_section-5">
+          <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-4-1"><span class="tocnumber">4.1</span> <span class="toctext">Setting and extracting values</span></a>
+        </li>
+        <li class="toc_level-2 toc_section-6">
+          <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-4-2"><span class="tocnumber">4.2</span> <span class="toctext">Loading and storing values</span></a>
+        </li>
+        <li class="toc_level-2 toc_section-7">
+          <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-4-3"><span class="tocnumber">4.3</span> <span class="toctext">Arithmetic</span></a>
+        </li>
+        <li class="toc_level-2 toc_section-8">
+          <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-4-4"><span class="tocnumber">4.4</span> <span class="toctext">Different types of values in vectors</span></a>
+        </li>
+      </ul>
+    </li>
+    <li class="toc_level-1 toc_section-9">
+      <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-9"><span class="tocnumber">5</span> <span class="toctext">Example (in C)</span></a>
+    </li>
+    <li class="toc_level-1 toc_section-10">
+      <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-10"><span class="tocnumber">6</span> <span class="toctext">Selected handy intrinsic functions:</span></a>
+      <ul>
+        <li class="toc_level-2 toc_section-11">
+          <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-10-1"><span class="tocnumber">6.1</span> <span class="toctext">Arithmetic</span></a>
+        </li>
+        <li class="toc_level-2 toc_section-12">
+          <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-10-2"><span class="tocnumber">6.2</span> <span class="toctext">Load/Store</span></a>
+        </li>
+        <li class="toc_level-2 toc_section-13">
+          <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-10-3"><span class="tocnumber">6.3</span> <span class="toctext">Set constants</span></a>
+        </li>
+        <li class="toc_level-2 toc_section-14">
+          <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-10-4"><span class="tocnumber">6.4</span> <span class="toctext">Extract parts of values</span></a>
+        </li>
+        <li class="toc_level-2 toc_section-15">
+          <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-10-5"><span class="tocnumber">6.5</span> <span class="toctext">Convert between types of values</span></a>
+        </li>
+        <li class="toc_level-2 toc_section-16">
+          <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-10-6"><span class="tocnumber">6.6</span> <span class="toctext">Rearrange 128-bit values</span></a>
+        </li>
+      </ul>
+    </li>
+    <li class="toc_level-1 toc_section-17">
+      <a href="https://www.cs.virginia.edu/~cr4bd/3330/S2018/simdref.html#tocAnchor-1-17"><span class="tocnumber">7</span> <span class="toctext">Example (assembly instruction)</span></a>
+    </li>
+  </ul>
+</div><p>
+  <small>
+Changelog:</small>
+</p>
+
+<ul>
+  <li>19 April 2018: Add note that <code class="highlighter-rouge">extract</code> functions require their second argument to be a constant.
+&lt;/small&gt;</li>
+</ul>
+
+<h1 id="tocAnchor-1-1">Introduction</h1>
+
+<p>This semester we are experimenting with having students use SIMD (single instruction multiple data)
+instructions in several assignments. These are sets of instructions that operate on wide registers
+called <strong>vectors</strong>. For our assignments, these vectors will be 128 bits wide. Typically, instructions
+that act on these wide registers will treat it as an array of values. They will then perform operations
+independently on each value in the array. In hardware, this can be implemented by having multiple
+ALUs that work in parallel. As a result, although these instructions perform many times more arithmetic than
+“normal” instructions, they can be as fast as the normal instructions.</p>
+
+<p>Generally, we will be accessing these instructions using “intrinsic functions”. These functions
+usually correspond directly to a particular assembly instruction. This will allow us to write C code
+that accesses this special functionality consistently without losing all the benefits of having
+a C compiler.</p>
+
+<h1 id="tocAnchor-1-2">Intrinsics reference</h1>
+
+<p>The intrinsic functions we will be using are an interface defined by Intel. Consequently, 
+Intel’s documentation, which can be <a href="https://software.intel.com/sites/landingpage/IntrinsicsGuide/">found here</a>
+is the comprehensive reference for these functions. Note that this documentation includes functions
+corresponding to instructions which are not supported on lab machines. To avoid seeing these
+be sure to check only the boxes labelled “SSE” through “SSE4.2” on the side.</p>
+
+<h1 id="tocAnchor-1-3">Header files</h1>
+
+<p>To use the intrinsic functions, you need to include the appropriate header file. For the intrinsics we
+will be using this is:</p>
+
+<div class="highlighter-rouge">
+  <div class="highlight">
+    <pre class="highlight">      <code>#include &lt;immintrin.h&gt;
+</code>
+    </pre>
+  </div>
+</div>
+
+<h1 id="tocAnchor-1-4">Representing vectors in C</h1>
+
+<p>To represent 128-bit values that might be stored in one of these registers in C, we will use one
+of the following types:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">__m128</code> (for four floats)</li>
+  <li><code class="highlighter-rouge">__m128d</code> (for two doubles)</li>
+  <li><code class="highlighter-rouge">__m128i</code> (for integers, no matter the size)</li>
+</ul>
+
+<p>Since each of these is just a 128-bit value, you can cast between these types if a function you want
+to use expects the “wrong” type of value. For example, you might want to use a function
+meant to load floating values to load integers. Internally,
+the functions that expect these types just manipulate 128-bit values in registers or memory.</p>
+
+<h2 id="tocAnchor-1-4-1">Setting and extracting values</h2>
+
+<p>If you want to load a constant in a 128-bit value, you need to use one of the intrinisc functions.
+Most easily, you can use one of the functions whose name starts with <code class="highlighter-rouge">_mm_setr</code>. For example:</p>
+
+<div class="highlighter-rouge">
+  <div class="highlight">
+    <pre class="highlight">      <code>__m128i values = _mm_setr_epi32(0x1234, 0x2345, 0x3456, 0x4567);
+</code>
+    </pre>
+  </div>
+</div>
+
+<p>makes <code class="highlighter-rouge">values</code> contain 4 32-bit integers, <code class="highlighter-rouge">0x10</code>, <code class="highlighter-rouge">0x20</code>, <code class="highlighter-rouge">0x30</code>, and <code class="highlighter-rouge">0x40</code>. We can then extract
+each of these integers by doing something like:</p>
+
+<div class="highlighter-rouge">
+  <div class="highlight">
+    <pre class="highlight">      <code>int first_value = _mm_extract_epi32(values, 0);
+// first_value == 0x1234
+int second_value = _mm_extract_epi32(values, 1);
+// second_value == 0x2345
+</code>
+    </pre>
+  </div>
+</div>
+
+<p>Note that <strong><em>one may only pass constant indices</em></strong> to the second argument of
+<code class="highlighter-rouge">_mm_extract_epi32</code> and similar functions.</p>
+
+<h2 id="tocAnchor-1-4-2">Loading and storing values</h2>
+
+<p>To load an array of values from memory or store an array of values to memory, we can use
+the intrinsics starting with <code class="highlighter-rouge">_mm_loadu</code> or <code class="highlighter-rouge">_mm_storeu</code>:</p>
+
+<div class="highlighter-rouge">
+  <div class="highlight">
+    <pre class="highlight">      <code>int arrayA[4];
+_mm_storeu_si128((__m128i*) arrayA, values);
+// arrayA[0] == 0x1234
+// arrayA[1] == 0x2345
+// ...
+
+int arrayB[4] = {10, 20, 30, 40};
+values = _mm_loadu_si128((__m128i*) arrayB);
+// 10 == arrayB[0] == _mm_extract_epi32(values, 0)
+// 20 == arrayB[1] == _mm_extract_epi32(values, 1)
+// ...
+</code>
+    </pre>
+  </div>
+</div>
+
+<h2 id="tocAnchor-1-4-3">Arithmetic</h2>
+
+<p>To actually perform arithmetic on values, there are functions for each of the
+supported mathematical operations. For example:</p>
+
+<div class="highlighter-rouge">
+  <div class="highlight">
+    <pre class="highlight">      <code>__m128i first_values =  _mm_setr_epi32(10, 20, 30, 40);
+__m128i second_values = _mm_setr_epi32( 5,  6,  7,  8);
+__m128i result_values = _mm_add_epi32(first_values, second_values);
+// _mm_extract_epi32(result_values, 0) == 15
+// _mm_extract_epi32(result_values, 1) == 26
+// _mm_extract_epi32(result_values, 2) == 37
+// _mm_extract_epi32(result_values, 3) == 48
+</code>
+    </pre>
+  </div>
+</div>
+
+<h2 id="tocAnchor-1-4-4">Different types of values in vectors</h2>
+
+<p>The examples treat the 128-bit values as an array of 4 32-bit integers. There are instructions
+that treat in many different types of values, including other sized integers or floating
+point numbers. You can usually tell which type is expected by the presence of a something
+indicating the type of value in the function names. For example, “epi32” represents
+“4 32-bit values”. (The name stands for “extended packed integers, 32-bit”.) Some
+other conventions in names you will see:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">si128</code> – signed 128-bit integer</li>
+  <li><code class="highlighter-rouge">epi8</code>, <code class="highlighter-rouge">epi32</code>, <code class="highlighter-rouge">epi64</code> — 16 signed 8-bit integers or 4 signed 32-bit integers or 2 64-bit integers</li>
+  <li><code class="highlighter-rouge">epu8</code> — 16 unsigned 8-bit integers (when there is a difference between what an operation would do with signed and unsigned numbers, such as with conversion to a larger integer or multiplication)</li>
+  <li><code class="highlighter-rouge">epu16</code>, <code class="highlighter-rouge">epu32</code> — 8 unsigned 16-bit integers or 4 unsigned 32-bit integers (when the operation would be different than signed)</li>
+  <li><code class="highlighter-rouge">ps</code> — “packed single” — 4 single-precision floats</li>
+  <li><code class="highlighter-rouge">pd</code> — “packed double” — 2 doubles</li>
+  <li><code class="highlighter-rouge">ss</code> — one float (only 32-bits of a 128-bit value are used)</li>
+  <li><code class="highlighter-rouge">sd</code> — one double (only 64-bits of a 128-bit value are used)</li>
+</ul>
+
+<h1 id="tocAnchor-1-9">Example (in C)</h1>
+
+<p>The following two C functions are equivalent</p>
+
+<div class="highlighter-rouge">
+  <div class="highlight">
+    <pre class="highlight">      <code>int add_no_SSE(int size, int *first_array, int *second_array) {
+    for (int i = 0; i &lt; size; ++i) {
+        first_array[i] += second_array[i];
+    }
+}
+
+int add_SSE(int size, int *first_array, int *second_array) {
+    int i = 0;
+    for (; i + 4 &lt;= size; ++i) {
+        // load 128-bit chunks of each array
+        __m128i first_values = _mm_loadu_si128((__m128i*) &amp;first_array[i]);
+        __m128i second_values = _mm_loadu_si128((__m128i*) &amp;second_array[i]);
+
+        // add each pair of 32-bit integers in the 128-bit chunks
+        first_values = _mm_add_epi32(first_values, second_values);
+        
+        // store 128-bit chunk to first array
+        _mm_storeu_si128((__m128i*) &amp;first_array[i], first_values);
+    }
+    // handle left-over
+    for (; i &lt; size; ++i) {
+        first_array[i] += second_array[i];
+    }
+}
+</code>
+    </pre>
+  </div>
+</div>
+
+<h1 id="tocAnchor-1-10">Selected handy intrinsic functions:</h1>
+
+<h2 id="tocAnchor-1-10-1">Arithmetic</h2>
+<ul>
+  <li><code class="highlighter-rouge">_mm_add_epi32(a, b)</code> — treats its <code class="highlighter-rouge">__m128i</code> arguments as 8 32-bit integers. If <code class="highlighter-rouge">a</code> contains the 32-bit integers <code class="highlighter-rouge">a0, a1, a2, a3</code> and <code class="highlighter-rouge">b</code> contains
+ <code class="highlighter-rouge">b0, b1, b2, b3</code>, returns <code class="highlighter-rouge">a0 + b0, a1 + b1, a2 + b2, a3 + b3</code>. (Corresponds to the <code class="highlighter-rouge">paddd</code> instruction.)</li>
+  <li><code class="highlighter-rouge">_mm_add_epi16(a, b)</code> — Same as <code class="highlighter-rouge">_mm_add_epi32</code> but with 16-bit integers. If <code class="highlighter-rouge">a</code> contains the 16-bit integers <code class="highlighter-rouge">a0, a1, ..., a7</code> and <code class="highlighter-rouge">b</code> contains
+ <code class="highlighter-rouge">b1, b2, ..., b7</code>, returns <code class="highlighter-rouge">a0 + b0, a1 + b1, ..., a7 + b7</code>. (Corresponds to the <code class="highlighter-rouge">paddw</code> instruction.)</li>
+  <li><code class="highlighter-rouge">_mm_add_epi8(a, b)</code> — Same as <code class="highlighter-rouge">_mm_add_epi32</code> but with 8-bit integers.</li>
+  <li><code class="highlighter-rouge">_mm_mullo_epi16(x, y)</code>: treats x and y as a vector of 16-bit signed integers, multiplies each pair of integers, and truncates the results to 16 bits.</li>
+  <li><code class="highlighter-rouge">_mm_mulhi_epi16(x, y)</code>: treats x and y as a vector of 16-bit signed integers, multiplies each pair of integers to get a 32-bit integer, then returns the top 16 bits of each 32-bit integer result.</li>
+  <li><code class="highlighter-rouge">_mm_srli_epi16(x, N)</code>: treat <code class="highlighter-rouge">x</code> and a vector of 16-bit signed integers, and return the result of logically shifting each right by <code class="highlighter-rouge">N</code>. (There is also a <code class="highlighter-rouge">epi32</code> and <code class="highlighter-rouge">epi64</code> variant for 32 or 64-bit integers.)</li>
+  <li><code class="highlighter-rouge">_mm_slli_epi16(x, N)</code>: treat <code class="highlighter-rouge">x</code> and a vector of 16-bit signed integers, and return the result of shifting each left by <code class="highlighter-rouge">N</code>. (There is also a <code class="highlighter-rouge">epi32</code> and <code class="highlighter-rouge">epi64</code> variant for 32 or 64-bit integers.)</li>
+  <li><code class="highlighter-rouge">_mm_hadd_epi16(a, b)</code> — (“horizontal  add”) treats its <code class="highlighter-rouge">__m128i</code> arguments as vectors of 16-bit integers. If <code class="highlighter-rouge">a</code> contains <code class="highlighter-rouge">a0, a1, a2, a3, ..., a7</code> and <code class="highlighter-rouge">b</code> contains <code class="highlighter-rouge">b0, b1, b2, b3, ..., b7</code>, returns <code class="highlighter-rouge">a0 + a1, a2 + a3, a4 + a5, a6 + a7, b0 + b1, b2 + b3, b4 + b5, b6 + b7</code>. Note that this is often substantially slower than <code class="highlighter-rouge">_mm_add_epi16</code>. (Corresponds to the <code class="highlighter-rouge">phaddw</code> instruction.)</li>
+</ul>
+
+<!-- FIXME: multiple/subtract/min/etc. -->
+
+<h2 id="tocAnchor-1-10-2">Load/Store</h2>
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">_mm_loadu_si128</code>, <code class="highlighter-rouge">_mm_storeu_si128</code> — load 128 bits to or from memory. (Corresponds to the <code class="highlighter-rouge">movdqu</code> instruciton.) Note that you can use <code class="highlighter-rouge">_mm_storeu_si128</code> to store into a temporary array as in:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> unsigned short values_as_array[8];
+ __m128i values_as_vector;
+
+ _mm_storeu_si128((__m128i*) &amp;values_as_array[0], values_as_vector);
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">_mm_storel_epi64</code> — store the first 64-bits of a vector in memory. Example usage:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> unsigned short first_four_values_as_array[4];
+ __m128i values_as_vector;
+
+ _mm_store_epi64((__m128i*) &amp;values_as_array[0], values_as_vector);
+</code></pre></div>    </div>
+
+    <p>(Although this takes a poiner to <code class="highlighter-rouge">__m128i</code>, a 128-bit value, it only writes 64 bits.)</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">_mm_store_ss</code> — store the first 32-bits of a vector in memory. The function prototype assumes that you are dealing with floats, so it expects a float pointer and a <code class="highlighter-rouge">__m128</code> representing the vector. But the instruction generated doesn’t care what the bits of the vector represent. Example usage:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> unsigned short first_two_values_as_array[2];
+ __m128i values_as_vector;
+
+ _mm_store_ss((float*) &amp;values_as_array[0], (__m128) values_as_vector);
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="tocAnchor-1-10-3">Set constants</h2>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">_mm_setr_epi32</code> — returns a <code class="highlighter-rouge">__m128i</code> value containing the specified 32-bit integers. The first integer argument will be in the part of the <code class="highlighter-rouge">__m128i</code> that has the lowest address when written to memory. For example:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> __m128i value1 = _mm_setr_epi16(0, 1, 2, 3);
+</code></pre></div>    </div>
+
+    <p>produces the same result in <code class="highlighter-rouge">value1</code> as in <code class="highlighter-rouge">value2</code> in</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> int array[8] = {0, 1, 2, 3};
+ __m128i value2 = _mm_loadu_si128((__m128i*) &amp;array[0]);
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">_mm_setr_epi16</code> — same as <code class="highlighter-rouge">_mm_setr_epi32</code> but with 16-bit integers. For example:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> __m128i value1 = _mm_setr_epi16(0, 1, 2, 3, 4, 5, 6, 7);
+</code></pre></div>    </div>
+
+    <p>produces the same result in <code class="highlighter-rouge">value1</code> as in <code class="highlighter-rouge">value2</code> in</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> short array[8] = {0, 1, 2, 3, 4, 5, 6, 7};
+ __m128i value2 = _mm_loadu_si128((__m128i*) &amp;array[0]);
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">_mm_setr_epi8</code> — same as <code class="highlighter-rouge">_mm_setr_epi32</code> but with 8-bit integers.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">_mm_set1_epi32</code>, <code class="highlighter-rouge">_mm_set1_epi16</code>, <code class="highlighter-rouge">_mm_set1_epi8</code> — return a <code class="highlighter-rouge">__m128i</code> value representing an array of values of the appropriate size, where
+ each element of the array has the same value. For example:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> __m128i value = _mm_set1_epi16(42);
+</code></pre></div>    </div>
+
+    <p>has the same effect as:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> __m128i value = _mm_setr_epi16(42, 42, 42, 42,  42, 42, 42, 42);
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">_mm_set_epi8</code>, etc.  — same as <code class="highlighter-rouge">_mm_setr_epi8</code>, etc. but takes its arguments in reverse order</p>
+  </li>
+</ul>
+
+<h2 id="tocAnchor-1-10-4">Extract parts of values</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">_mm_extract_epi32(a, index)</code> extracts the <code class="highlighter-rouge">index</code>‘th 32-bit integer from <code class="highlighter-rouge">a</code>. The integer with index 0 is the one that will be stored at the lowest memory address if <code class="highlighter-rouge">a</code> is copied to memory. (Corresponds to the <code class="highlighter-rouge">pextrd</code> instruction.) <code class="highlighter-rouge">index</code> <strong><em>must</em></strong> be a constant.</li>
+  <li><code class="highlighter-rouge">_mm_extract_epi16(a, index)</code> is same as <code class="highlighter-rouge">_mm_extract_epi32</code> but with 16-bit integers</li>
+  <li><code class="highlighter-rouge">_mm_cvtsi128_si32(a)</code> has the same effect as <code class="highlighter-rouge">_mm_extract_epi32(a, 0)</code>, but might be faster.</li>
+</ul>
+
+<h2 id="tocAnchor-1-10-5">Convert between types of values</h2>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">_mm_cvtepu8_epi16(eight_bit_numbers)</code>: converts the first 8 of 16 8-bit unsigned integers into a vector of 8 16-bit signed integers. For example:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> __m128i value1 = _mm_setr_epi8(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150);
+ __m128i value2 = _mm_cvtepu8_epi16(value1);
+</code></pre></div>    </div>
+
+    <p>results in value2 containing the same value as if we did:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> __m128i value2 = _mm_setr_epi16(10, 20, 30, 40, 50, 60, 70, 80);
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="tocAnchor-1-10-6">Rearrange 128-bit values</h2>
+
+<ul>
+  <li><code class="highlighter-rouge">_mm_shuffle_epi8(a, mask)</code> rearrange the bytes of <code class="highlighter-rouge">a</code> according to <code class="highlighter-rouge">mask</code> and return the result. <code class="highlighter-rouge">mask</code> is a vector of 8-bit integers (type <code class="highlighter-rouge">__m128i</code>) that indicates how to rearrange each byte: <!-- FIXME: example -->
+    <ul>
+      <li>if a byte in the mask has the high bit set (is greater than 127), then the corresponding byte of the output is 0;</li>
+      <li>otherwise, the byte number specified in the input is copied to the corresponding byte of the output. Bytes are numbered using 0 to represent the byte that would be stored in the lowest address if the vector were copied to memory.</li>
+    </ul>
+
+    <p>For example:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> __m128i value1 = _mm_setr_epi8(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160);
+ __m128i mask = _mm_setr_epi8(0x80, 0x80, 0x80, 5, 4, 3, 0x80, 7, 6, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80);
+ __m128i value2 = _mm_shuffle_epi8(value1, mask);
+</code></pre></div>    </div>
+
+    <p>should produce the same result as:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> __m128i value2 = _mm_setr_epi8(0, 0, 0, 60, 50, 40, 0, 80, 70, 0, 0, 0, 0, 0, 0, 0, 0);
+     /* e.g. since 3rd element of mask is 5, 3rd element of output is 60, element 5 of the input */
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h1 id="tocAnchor-1-17">Example (assembly instruction)</h1>
+
+<p>The instruction</p>
+
+<pre>  <code class="language-asm">    paddd %xmm0, %xmm1
+</code>
+</pre>
+
+<p>takes in two 128-bit values, one in the register <code class="highlighter-rouge">%xmm0</code>, and another in the register <code class="highlighter-rouge">%xmm1</code>. Each
+of these registers are treated as an array of two 64-bit values. Each pair of 64-bit values is added
+together, and the results are stored in <code class="highlighter-rouge">%xmm1</code>.</p>
+
+<p>For example, if <code class="highlighter-rouge">%xmm0</code> contains the 128-bit value (written in hexadecimal):</p>
+
+<div class="highlighter-rouge">
+  <div class="highlight">
+    <pre class="highlight">      <code>0x0000 0000 0000 0001 FFFF FFFF FFFF FFFF 
+</code>
+    </pre>
+  </div>
+</div>
+
+<p>and <code class="highlighter-rouge">%xmm1</code> contains the 128-bit value (written in hexadecimal):</p>
+
+<div class="highlighter-rouge">
+  <div class="highlight">
+    <pre class="highlight">      <code>0xFFFF FFFF FFFF FFFE 0000 0000 0000 0003 
+</code>
+    </pre>
+  </div>
+</div>
+
+<p>Then <code class="highlighter-rouge">%xmm0</code> would be treated as containing the numbers <code class="highlighter-rouge">1</code> and <code class="highlighter-rouge">-1</code> (or <code class="highlighter-rouge">0xFFFFFFFFFFFFFFFF</code>), and
+<code class="highlighter-rouge">%xmm1</code> as containing the numbers <code class="highlighter-rouge">-2</code> and <code class="highlighter-rouge">3</code>. <code class="highlighter-rouge">paddd</code> would add <code class="highlighter-rouge">1</code> and -2<code class="highlighter-rouge"> to produce -1 and
+</code>-1<code class="highlighter-rouge"> and </code>3<code class="highlighter-rouge"> to produce 2, so the final value of </code>%xmm1` would be:</p>
+
+<div class="highlighter-rouge">
+  <div class="highlight">
+    <pre class="highlight">      <code>0xFFFF FFFF FFFF FFFF 0000 0000 0000 0002
+</code>
+    </pre>
+  </div>
+</div>
+
+<p>If we interpret this value as an array of two 64-bit integers, then that would be  <code class="highlighter-rouge">-1</code> and <code class="highlighter-rouge">2</code>.</p>
+
+
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">CS 3330 Spring 2018</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>
+            
+              Charles Reiss and Samira Khan
+            
+            </li>
+            
+            <li><a href="mailto:cr4bd@virginia.edu,%20smk9u@virginia.edu">cr4bd@virginia.edu, smk9u@virginia.edu</a></li>
+            
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  
+
+
+<div class="xl-chrome-ext-bar" id="xl_chrome_ext_{4DB361DE-01F7-4376-B494-639E489D19ED}" style="display: none;">
+      <div class="xl-chrome-ext-bar__logo"></div>
+
+      <a id="xl_chrome_ext_download" href="javascript:;" class="xl-chrome-ext-bar__option">下载视频</a>
+      <a id="xl_chrome_ext_close" href="javascript:;" class="xl-chrome-ext-bar__close"></a>
+    </div></body></html>

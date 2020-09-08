@@ -70,4 +70,7 @@ $ git checkout -b stable/juno --track juno-eol          # 拉取远程分支juno
 初始化子模块:
 
 $ git submodule init
+
+$ git submodule update --init
+或
 $ git submodule update --init --recursive
