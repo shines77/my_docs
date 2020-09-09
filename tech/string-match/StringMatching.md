@@ -54,25 +54,32 @@
 
     AC 自动机算法全称 Aho-Corasick 算法，是一种字符串多模式匹配算法。该算法在1975年产生于贝尔实验室，是著名的多模匹配算法之一。
 
+* `字典树（Trie tree）`
+
+    [https://www.cnblogs.com/rollenholt/archive/2012/04/24/2468932.html]()
+
+    Trie，又称单词查找树或键树，是一种树形结构，是一种哈希树的变种。典型应用是用于统计和排序大量的字符串（但不仅限于字符串），所以经常被搜索引擎系统用于文本词频统计。它的优点是：最大限度地减少无谓的字符串比较，查询效率比哈希表高。
+
+    ![Trie的结构](./images/trie_example.png)
+
 * `如何更好的理解和掌握 KMP 算法?`
 
     [https://www.zhihu.com/question/21923021]()
 
-
     回答者：陈硕
 
     为什么要执着于 KMP 呢？
-    
+
     glibc 2.9 之后的 strstr() 在一定情况下会用高效的 [Two Way algorithm](https://www-igm.univ-mlv.fr/%7Elecroq/string/node26.html)，之前的版本是普通的二重循环查找，因此用不着自己写。
-    
+
     而且 glibc 的作者一度也写错过：<br/>
     https://sourceware.org/bugzilla/show_bug.cgi?id=12092 。
-    
+
     ps: strstr() 还不止一次出过 bug：<br/>
     https://sourceware.org/bugzilla/show_bug.cgi?id=12100<br/>
     https://sourceware.org/bugzilla/show_bug.cgi?id=14602<br/>
     等等。
-    
+
     其他：[c - What is the fastest substring search algorithm?](https://stackoverflow.com/questions/3183582/what-is-the-fastest-substring-search-algorithm)
 
 * `SSE 4.2 带来的优化`
