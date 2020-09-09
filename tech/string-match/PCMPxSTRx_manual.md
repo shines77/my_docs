@@ -7,9 +7,7 @@
 
     关于 `pcmpistri`，`pcmpistrm`，`pcmpestri`，`pcmpestrm` 指令的详细说明等。
 
-    * 
     * `pcmpistri` 指令
-    * 
 
     ```c
     Intel syntax:
@@ -40,9 +38,7 @@
         6. PF is reset
     ```
 
-    * 
     * `pcmpistrm` 指令
-    * 
 
     ```c
     Intel syntax:
@@ -73,9 +69,7 @@
         6. PF is reset
     ```
 
-    * 
     * `pcmpestri` 指令
-    * 
 
     ```c
     Intel syntax:
@@ -111,9 +105,7 @@
         6. PF is reset
     ```
 
-    * 
     * `pcmpestrm` 指令
-    * 
 
     ```c
     Intel syntax:
