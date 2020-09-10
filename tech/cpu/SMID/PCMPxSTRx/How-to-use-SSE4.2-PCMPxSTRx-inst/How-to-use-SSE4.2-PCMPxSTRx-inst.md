@@ -36,9 +36,9 @@ tags: "Intel", "SIMD", "SSE 4.2", "PCMPxSTRx", "PCMPISTRI", "PCMPISTRM", "字符
 
 ### 3.1 原理
 
-那么，什么是 `PCMPxSTRx` 指令？它能干什么？
-
 `PCMPxSTRx` 系列指令有着很强的 `并行比较` 能力，也许是 `x86` 指令集中最复杂的指令之一。
+
+那么，`PCMPxSTRx` 指令到底能干什么？工作原理？
 
 它可以一次对一组字符（16个Bytes或8个Word）与另一组字符（16个Bytes或8个Word）同时作比较，也就是说这一条指令一次可以最多做 "`16 × 16 = 256`" 次的 `字符` 比较。虽然它没有采取任何优化算法，但是由于硬件指令的暴力并行，还是能对字符串匹配、搜索和比较的性能产生巨大的提升。
 
@@ -62,13 +62,13 @@ int index = _mm_cmpistri(operand1, operand2, imm8);
 
 * `Equal Ordered` = 0x0C，imm[3:2] = 11b，判断 `operand1` 是否是 `operand2` 的子串。
 
-```asm
+```java
 operand2 = "WhenWeWillBeWed!"
 operand1 = "We"
-IntRes1  =  000010000000100
+IntRes1  =  0000100000001000
 ```
 
-我们可以看到 `"WhenWeWillBeWed!"` 中包含了 `"We"` 子串两次，分别是在索引 `4` 和 `13` 的位置（`IntRes1` 从左往右数）。
+我们可以看到 `"WhenWeWillBeWed!"` 中包含了 `"We"` 子串两次，分别是在索引 `4` 和 `12` 的位置（`IntRes1` 从左往右数）。
 
 笔者注：`IntRes1` 其实不是一个 `bit` 数组，而是一个 `Byte` 数组，上图和上面的代码中的 `IntRes1` 的 `0` 和 `1`，它其实不是一个 `bit`，而是一个 `Byte`，`1` (0x01) 其实是 `11111111` (0xFF)，只是为了作图和表述方便，简写成一个 bit 的 `1` 。
 
@@ -76,9 +76,15 @@ IntRes1  =  000010000000100
 
 `PCMPxSTRx` 指令其实是一个指令系列的统称，其中 `x` 代表通配符，它包含了下面的四条具体指令：
 
-pcmp[**e**](https://baidu.com)str[**i**](https://baidu.com)，pcmp[**e**](https://baidu.com)str[**m**](https://baidu.com)，pcmp[**i**](https://baidu.com)str[**i**](https://baidu.com)，pcmp[**i**](https://baidu.com)str[**m**](https://baidu.com)
+* pcmp[**e**](https://baidu.com)str[**i**](https://baidu.com)
 
-那么这四条指令分别是什么意思呢？请看下面的表：
+* pcmp[**e**](https://baidu.com)str[**m**](https://baidu.com)
+
+* pcmp[**i**](https://baidu.com)str[**i**](https://baidu.com)
+
+* pcmp[**i**](https://baidu.com)str[**m**](https://baidu.com)
+
+那么这四条指令分别代表什么意思呢？请看下面的表：
 
 |                                                                                    |      返回索引<br/>(返回匹配字符串的<br/>索引值到 %rcx)      |   返回Mask<br/>(返回字符比较结果的<br/>bitmask 到 %xmm0)    |
 | :--------------------------------------------------------------------------------: | :---------------------------------------------------------: | :---------------------------------------------------------: |
@@ -117,3 +123,4 @@ pcmpistri  %xmm1, %xmm2, imm8
 
 * [3]: [sse 4.2带来的优化](https://www.zzsec.org/2013/08/using-sse_4.2/)
 
+* [4]: [Intel: Intrinsics Guide](https://software.intel.com/sites/landingpage/IntrinsicsGuide/)
