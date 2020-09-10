@@ -1,0 +1,553 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta name="author" content="NAKAMURA Minoru">
+<meta name="copyright" content="(C) 2012-2017 NAKAMURA Minoru">
+<link rev="made" href="mailto:nminoru@nminoru.jp">
+<title>PCMPxSTRx 命令の使い方</title>
+<link rel="stylesheet" href="./style2.css">
+</head>
+
+<body>
+
+<h1>PCMPxSTRx 命令の使い方</h1>
+
+<div class="main">
+
+<p style="text-align: right">
+作成日：2012.11.17<br>
+</p>
+
+<p style="text-indent: 0px">
+<strong>更新履歴</strong><br>
+(2012.11.17) 作成。
+(2017.12.24) Equal Ordered の疑似プログラムが誤っていたのを修正。
+</p>
+
+<hr>
+
+<p>
+目次
+</p>
+
+<ul>
+  <li><a href="#description">命令の解説</a>
+    <ul>
+    <li><a href="#elementtype">要素の型(Byte or Word / Signed or Unsigned)</a>
+    <li><a href="#aggregation">比較操作(Aggregation Operation)</a>
+      <ul>
+      <li><a href="#endofstring">文字列の終わり以降の扱い</a>
+      </ul>
+    <li><a href="#polarity">ビット反転(Polarity)</a>
+    <li><a href="#outputselection">Output Selection</a>
+    <li><a href="#flags">フラグ変化</a>
+    </ul>
+  <li><a href="#btw">余談</a>
+  <li><a href="#comment">コメント</a>
+</ul>
+
+<h2 id="description">命令の解説</h2>
+<p>
+PCMPESTRI、PCMPESTRM、PCMPISTRI、PCMPISTRM の 4 命令は SSE 4.2 からサポートされた文字列比較のための命令だ。
+この命令グループには <i>String and Text Processing Instructions</i> という名前がついているが、この文章ではまとめて <span class="kw">PCMPxSTRx 命令</span>と呼ぶことにする。
+</p>
+
+<p>
+PCMPxSTRx 命令は 2 つの XMM レジスタをオペランドにとり 16 バイトの文字列とみなして比較操作を行う。
+第二オペランドは XMM レジスタではなくメモリオペランドを指定することも可能。
+とりあえずこの文書では第一オペランドを <i>xmm1</i>、第二オペランドを <i>xmm2</i> に呼ぶことにする。
+<i>xmm1</i> は %xmm1 ではないことに注意。
+</p>
+
+<p>
+PCMPxSTRx 命令は 4 つのバリエーションがある。
+最初に文字列の長さをどう扱うかと、結果をどのように受け取るかを選択する。
+</p>
+
+<ul>
+ <li>文字長が分からない 0 終端文字列として比較するか、文字長はあらかじめ分かっているとして比較するか。
+ <li>結果として違っている文字の位置が分かればいいか、違っている文字がある場所のビットマップが欲しいか。
+</ul>
+
+<p>
+これによって PCMPESTRI、PCMPESTRM、PCMPISTRI、PCMPISTRM の命令のどれを使うかが決まる。
+</p>
+
+<div class="indent">
+<table border="1">
+ <tr><th>&nbsp;</th><th>Return Index<br>結果は文字の位置<br>%rcxで受け取る</th><th>Return Mask<br>結果はビットマップ<br>%xmm0に</th></tr>
+ <tr><th>Explicit Length Strings<br>文字長を指定<br>xmm1を%raxで<br>xmm2を%rdxで指定</th><td>PCMP<span class="red">E</span>STR<span class="red">I</span></td><td>PCMP<span class="red">E</span>STR<span class="red">M</span></td></tr>
+ <tr><th>Implicit Length Strings<br>文字は NULL 終端</th><td>PCMP<span class="red">I</span>STR<span class="red">I</span></td><td>PCMP<span class="red">I</span>STR<span class="red">M</span><br></td></tr>
+</table>
+</div>
+
+<p>
+PCMPxSTRx 命令はオペランドとして指定した <i>xmm1</i> と <i>xmm2</i> (メモリオペランドの場合はアドレッシングに指定したレジスタ)以外に暗黙のレジスタを使用する。
+64 ビットモードでは PCMPESTRI と PCMPESTRM 命令は <span class="kw">%rax</span> と <span class="kw">%rdx</span> を暗黙のうちに入力レジスタとする。
+また PCMPESTRI と PCMPISTRI は <span class="kw">%rcx</span> を出力先として、PCMPESTRM と PCMPISTRM は <span class="kw">%xmm0</span> を出力先として暗黙のうちに出力レジスタとする。
+32ビットモードではそれぞれ %eax、%eax、%ecx となる。
+</p>
+
+<div class="indent">
+<small>
+以降の説明は全て 64 ビットモードで説明するが、32 ビットモードでも同じことができる。
+</small>
+</div>
+
+<p>
+PCMPESTRx は %rax と %rdx で文字長(要素数)を指定するが、これは要素をバイトとして扱う場合(Imm[0] が 0)はバイト単位、ワードとして扱う場合(Imm[0] が 1)の場合はワード単位で数える。
+つまり XMM レジスタが 16 バイトなので、バイト扱いの場合は 0-15、 ワード扱いの場合は 0-7 を指定する。
+</p>
+
+<p>
+また文字長(%rax、%rdx) に XMM レジスタを越える値(バイト単位の場合は 16 バイト以上、ワード単位の場合は 8 以上)を指定することもできる。
+この場合は XMM レジスタ全体が比較対象となり、原則的には 15(バイト単位) または 7 (ワード単位) を指定したのと同じように振舞う(フラグの扱いが一部違う)。
+</p>
+
+<p>
+さらに以下を選択する。
+</p>
+
+<dl class="ul">
+ <dt>Byte or Word</dt>
+ <dd>バイト(1バイト)として比較するかワード(2バイト)として比較するか？</dd>
+
+ <dt>Signed or Unsigned</dt>
+ <dd>データを符号付き整数として比較するか符号なし整数として比較するか？</dd>
+
+ <dt>Aggregation operation</dt>
+ <dd>各要素をどのように比較するか？</dd>
+
+ <dt>Polarity</dt>
+ <dd>各要素の比較の中間結果をどのように処理するか？</dd>
+
+ <dt>Output selection</dt>
+ <dd>中間結果を受けてどのようにまとめるか？</dd>
+</dl>
+
+<h3 id="elementtype">要素の型(Byte or Word / Signed or Unsigned)</h3>
+<p>
+要素をどのような型と見なすかを指定する。
+</p>
+
+<p>
+Imm[0] が 0 ならバイトとして、1 ならワードとして扱う。
+Imm[1] が 0 なら符号なしとして、1 なら符号付きとして扱う。
+</p>
+
+<div class="indent">
+<table border="1">
+ <tr><th>Imm8[0:1]</th><th>Description</th><th>Expression</th></tr>
+ <tr><td>00b</td><td>Unsigned bytes</td><td>uint8_t data[16]</td></tr>
+ <tr><td>01b</td><td>Unsigned words</td><td>uint16_t data[8]</td></tr>
+ <tr><td>10b</td><td>Signed bytes</td><td>int8_t data[16]</td></tr>
+ <tr><td>11b</td><td>Signed words</td><td>int16_t data[8]</td></tr>
+</table>
+</div>
+
+<h3 id="aggregation">比較操作(Aggregation Operation)</h3>
+<p>
+各要素の比較の方法を 4つの比較方式の中から選択する。
+PCMPxSTRx 命令においてこの選択が最も重要である。
+</p>
+
+<p>
+基本的に比較の対象となるのは <big><i>xmm2</i></big> である。
+<i>xmm2</i> の各要素を <i>xmm1</i> を使って指定の比較を行い、それを IntRes1[i] に格納する。
+<small><i>xmm2</i> が比較対象になっているのは、<i>xmm2</i> がメモリオペランドをとれるためであろう。</small>
+</p>
+
+<p>
+IntRes1[] は PCMPxSTRx 命令の中間結果の結果を保持する一時的なレジスタのようなものである。
+各要素位置の結果を 0 または 1 で記録するビットベクタを思い浮かべればよい。
+IntRes1[] の値を外部から知ることはできない。
+</p>
+
+<div class="indent">
+<pre class="program">
+UpperBound = imm8[0] ? 7 : 15;
+
+for (i=0 ; i&lt;UpperBound ; i++) {
+    IntRes1[i] = <i>Comparator</i>(Operand2[i], i);
+}
+</pre>
+</div>
+
+<p>
+要素のサイズは Imm[0] でバイトかワードが決まっている。
+</p>
+
+<p>
+Imm[1] で決まる要素の符号付き・符号なしの違いは Ranges を選択した場合のみ有効である。
+他は「一致」を比較しているので符号付き・符号なしの違いは関係ない。
+</p>
+
+<div class="indent">
+<small>
+以下の説明で Operand1[i] は <i>xmm1</i> の i 番目の要素を、Operand2[j] は <i>xmm2</i> の j 番目の要素を取り出すことを意味する。
+</small>
+</div>
+
+<div class="indent">
+<table border="1">
+ <tr>
+  <th>Imm8[3:2]</th>
+  <th>Name</th>
+  <th>Expression</th>
+  <th>用途</th>
+ </tr>
+ <tr>
+  <td>00b</td>
+  <td>Equal Any</td>
+  <td>
+比較対象の <i>xmm2</i> の中の要素が、<i>xmm1</i> の中の要素のいずれかと一致するかどうかを判定している。
+一致するものがあれば IntRes1[i] は 1 に、いずれとも一致しなければ 0 になる。
+
+<pre class="program">
+bool Comparator(Element2, ) {
+    for (j=0 ; j&lt;UpperBound ; j++) {
+        if (Element2 == Operand1[j]) {
+            return true;
+        } 
+    }
+    return false;
+}
+</pre>
+
+  </td>
+  <td>Tokenizatoin, XML parser</td>
+ </tr>
+ <tr>
+  <td>01b</td>
+  <td>Ranges</td>
+  <td>
+<i>xmm1</i> の中の要素は偶数番要素と奇数番要素でペアを作って下限と上限を記録している。
+比較対象の <i>xmm2</i> の中の要素が、<i>xmm1</i> のペアの範囲に入っているかどうかを判定する。
+どれか一組の範囲内に入っていれば IntRes1[i] は 1 に、いずれの範囲にも入っていなければ 0 になる。
+
+<pre class="program">
+bool Comparator(Element2, ) {
+    for (j=0 ; j&lt;UpperBound ; j += 2) {
+        if (Operand1[j] &lt;= Element2 &amp;&amp; Element2 &lt;= Operand1[j+1]) {
+            return true;
+        } 
+    }
+    return false;
+}
+</pre>
+
+<i>xmm1</i> 内の範囲の組は、要素がバイト扱いの場合は 8 組、ワード扱いの場合は 4 組作れる。
+</td>
+
+  <td>Subsetting, Case handling, XML parser, Schema validation</td>
+ </tr>
+
+ <tr>
+  <td>10b</td>
+  <td>Equal Each</td>
+  <td>
+比較対象の <i>xmm2</i> の中の要素が、同じ位置にある <i>xmm1</i> の要素と一致しているかどうかを判定する。
+一致すれば IntRes1[i] は 1 に、一致しなければ 0 になる。<br>
+
+<pre class="program">
+bool Comparator(Element2, i) {
+    return (Element2 == Operand1[i]);
+}
+</pre>
+
+もっと簡単に言うと以下のような比較をしている。
+これは <code>strcmp</code> や <code>memcmp</code> が行うような比較である。
+
+<pre class="program">
+UpperBound = imm8[0] ? 7 : 15;
+IntRes1 = 0;
+for (i=0 ; i&lt;UpperBound ; i++) {
+    IntRes1[i] = (Operand1[i] == Operand2[i]);
+}
+</pre>
+
+</td>
+  <td>memcmp, strcmp</td>
+ </tr>
+
+ <tr>
+  <td>11b</td>
+  <td>Equal Ordered</td>
+  <td>
+比較対象の <i>xmm2</i> の i 以下の要素が、キーワード <i>xmm1</i> と一致しているかどうかを比較する。
+一致すれば IntRes1[i] は 1 に、一致しなければ 0 になる。<br>
+
+<pre class="program">
+bool Comparator(, i) {
+    for (k=i, j=0; k &lt; UpperBound  && j &lt; UpperBound - i; k++, j++) {
+        if (Operand2[k] != Operand1[j]) {
+            return false;   
+        }
+    }
+    return true;
+}
+</pre>
+
+<p>
+もう少し解説すると、以下のように <i>xmm2</i> と <i>xmm1</i> が入っていた場合、
+Operand2[0] の位置から Operand1 の内容との一致をバイト比較する。
+</p>
+
+<pre class="program">
+Operand2[16] = &quot;0123ABC789ABCDEF&quot; // 終端文字は無視して
+Operand1[16] = &quot;ABCDEFGHIJKLMNOP&quot; // 終端文字は無視して
+</pre>
+
+<p>
+まず Operand2[0] ～ Operand2[3] までは最初の 1 要素から一致しない。
+IntRes1[0] ～ IntRes1[3] は 0 になる。
+</p>
+
+<p>
+Operand2[4] は 'A' なので Operand1[0] に一致する。
+ここから 3 要素一致するが Operand2[7] が 'D' にならず比較は失敗する。
+結局、IntRes1[4] は 0 になる。
+</p>
+
+<p>
+Operand2[10] で再び 'A' が出現し Operand1[0] に一致する。
+ここから 6 要素が一致する、ここで Operand2 は要素が尽きてしまう。
+しかし部分一致には成功しているので IntRes1[10] は 1 になる。
+</p>
+
+<p>
+結局、IntRes1[10] が 1 で、他の IntRes1[i] は 0 となる。
+</p>
+
+</td>
+
+  <td>Substring Searches, KMP, strstr</td>
+ </tr>
+</table>
+</div>
+
+<h4 id="endofstring">文字列の終わり以降の扱い</h4>
+<p>
+PCMPxSTRx は文字列長を指定(Explicit Length)か NULL 終端(Implicit Length)のどちらかで文字列の有効範囲を定めている。
+逆に文字列長よりも後の部分は「無効(Invalid)」な要素であり、この部分の比較には特別なルールが適用される。
+</p>
+
+<p>
+PCMP<span class="red">I</span>STRx 命令は NULL 終端として扱う。そのため  0 要素を「無効」とし、0 要素以降の要素も「無効」となる。
+</p>
+
+<p>
+PCMP<span class="red">I</span>STRx 命令で Ranges(Imm8[3:2]=01b)の <i>xmm1</i> は偶数要素と奇数要素で上限と下限を決めるペアを作っているが、どちらかが 0 要素の場合はペア全体が「無効」となる。
+また <i>xmm1</i> で続く ペアも「無効」となる。
+そのため PCMP<span class="red">I</span>STRx 命令の Ranges では 0 を含むような比較は上限・下限は作れず、比較対象にも 0 は置けない。
+一方、PCMP<span class="red">E</span>STRx は文字長を %rax と %rdx で指定するため、0 を含むような上限・下限を作ることも、比較対象に 0 を含めることも可能である。
+</p>
+
+<div class="indent">
+<table border="1">
+ <tr><th>&nbsp;</th><th><i>xmm1</i> の要素</th><th><i>xmm2</i> の要素</th><th>Equal Any<br>(00b)</th><th>Ranges<br>(01b)</th><th>Equal Each<br>(10b)</th><th>Equal Ordered<br>(11b)</th></tr>
+ <tr><td>(1)</td><td>Valid</td><td>Valid</td><td>Compare</td><td>Compare</td><td>Comapre</td><td>Compare</td>
+ <tr><td>(2)</td><td>Valid</td><td>Invalid</td><td>Force False(0)</td><td>Force False(0)</td><td>Force False(0)</td><td>Force False(0)</td>
+ <tr><td>(3)</td><td>Invalid</td><td>Valid</td><td>Force False(0)</td><td>Force False(0)</td><td>Force False(0)</td><td>Force True(1)</td>
+ <tr><td>(4)</td><td>Invalid</td><td>Invalid</td><td>Force False(0)</td><td>Force False(0)</td><td>Force True(1)</td><td>Force True(1)</td>
+</table>
+</div>
+
+<p>
+上記の表は一見複雑だが合理的にできている。
+</p>
+
+<ul>
+ <li>Equal Anay の場合、比較対象となる <i>xmm2</i> 内の文字が <i>xmm1</i> の文字のいずれかと一致しているかどうかを判断している。<i>xmm2</i> が Invalid ならそれは一致しないと判断すべきなので False である。また <i>xmm1</i> 内の文字が Invalid であれば当然 False である。両方が invalid の場合も False であるのは妥当であろう。
+ <li>Ranges も Equal Any と同様である。
+ <li>Equal Each の場合、strcmp 型の比較を行う。<i>xmm1</i> と <i>xmm2</i> は同等の存在で、どちらかの文字列が先に終われば一致しないと考えるべきである。そのため (2) と (3) が False となっている。<br>
+      一方、両方の終端位置が同じであれば一致と考えたい。&quot;ABC<span class="red">\0hoge</span>&quot; と &quot;ABC<span class="red">\0moge</span>&quot; を一致と判断するため (4) が True である必要がある。
+ <li>Equal Ordered の場合、部分一致の比較する対象の <i>xmm2</i> とキーワード <i>xmm1</i> は同質ではない。<br>
+      キーワードの <i>xmm1</i> が短ければ一致と判断したいので (3) と (4) は True となっている。<br>
+      一方、比較対象の <i>xmm2</i> がキーワードの <i>xmm1</i> よりも短ければそれは不一致と判断したいので (2) は False となっている。
+</ul>
+
+<p>
+なお後述の Polarity を Masked(-) (Imm8[5:4] = 11b) にした場合は、<i>xmm2</i> の無効な要素の IntRes1[] がビット反転するので、判定が以下のように変わる(実際この上にさらに全体がビット反転する)。
+</p>
+
+<div class="indent">
+<table border="1">
+ <tr><th><i>xmm1</i> の要素</th><th><i>xmm2</i> の要素</th><th>Equal Any<br>(00b)</th><th>Ranges<br>(01b)</th><th>Equal Each<br>(10b)</th><th>Equal Ordered<br>(11b)</th></tr>
+ <tr><td>Valid</td><td>Valid</td><td>Compare</td><td>Compare</td><td>Comapre</td><td>Compare</td>
+ <tr><td>Valid</td><td>Invalid</td><td>Force True(1)</td><td>Force True(1)</td><td>Force True(1)</td><td>Force True(1)</td>
+ <tr><td>Invalid</td><td>Valid</td><td>Force False(0)</td><td>Force False(0)</td><td>Force False(0)</td><td>Force True(1)</td>
+ <tr><td>Invalid</td><td>Invalid</td><td>Force True(1)</td><td>Force True(1)</td><td>Force False(0)</td><td>Force False(0)</td>
+</table>
+</div>
+
+<h3 id="polarity">ビット反転(Polarity)</h3>
+<p>
+中間結果 IntRes1[] をそのまま or 反転することができる。
+結果は次の中間結果 IntRes2[] に格納される。
+</p>
+
+<p>
+00b と 10b は結果的に同じ操作で、IntRes1[] の内容をそのまま IntRes2[] に格納する。
+</p>
+
+<p>
+01b は IntRes1[] の内容をビット反転して IntRes2[] に格納する。
+</p>
+
+<p>
+11b は 基本的に IntRes2[i] = ~IntRes1[i] だが、<i>xmm2</i> の i 番目の要素が無効なら IntRes2[i] = IntRes1[i] とする。
+<i>xmm2</i> の i 番目の要素が「無効」とは、「<i>xmm2</i> の文字列の終端以降の要素」という意味である。
+</p>
+
+<div class="indent">
+<table border="1">
+ <tr><th>Imm8[5:4]</th><th>Operation</th><th>Name</th><th>Description</th></tr>
+ <tr><td>00b</td><td>Positive Polarity(+)</td><td>No change</td><td>IntRes2[i] = IntRes1[i]</td></tr>
+ <tr><td>01b</td><td>Negative Polarity(-)</td><td>Invert</td><td>IntRes2[i] = ~IntRes1[i]</td></tr>
+ <tr><td>10b</td><td>Masked(+)</td><td>No change</td><td>IntRes2[i] = IntRes1[i]</td></tr>
+ <tr><td>11b</td><td>Masked(-)</td><td>Mask Negative</td><td>基本的に IntRes2[i] = ~IntRes1[i] だが、<i>xmm2</i> の i 番目の要素が無効なら IntRes2[i] = IntRes1[i] とする。
+</table>
+</div>
+
+<p>
+極性は %rcx にインデックスを受け取る PCMPESTRI と PCMPISTRI において、結果として「最初に一致した要素のインデックス」が欲しいのか、「最初に不一致だった要素のインデックス」のどちらを得るのかに重要になる。
+IntRes1[] の結果は一致した部分に 1 が、不一致だった部分に 0 となっている。
+次にある Output Selection では IntRes2[] のうち最上位ビットからあるいは最下位ビットから 1 が立っている位置を探すからである。
+</p>
+
+<h3 id="outputselection">Output Selection</h3>
+<p>
+出力方法を決める。
+IntRes2[] を解釈して %rcx か %xmm0 に値を設定する。
+</p>
+
+<h4>Return Index</h4>
+<p>
+PCMPESTRI と PCMPISTRI の場合は %rcx を出力先とすることは決まっているが、その内容は Imm8[6] による。
+</p>
+
+<div class="indent">
+<table border="1">
+ <tr><th>Imm8[6]</th><th>Operation</th><th>Description</th></tr>
+ <tr><td>0b</td><td>Least significant index</td><td>IntRes2[] の 0 要素目から見て最初に 1 が立っている要素の位置を %rcx にいれる。</td></tr>
+ <tr><td>1b</td><td>Most significant index</td><td>IntRes2[] の最後の要素から見て最初に 1 が立っている要素の位置を %rcx にいれる。</td></tr>
+</table>
+</div>
+
+<p>
+IntRes2[] に 1 が立っている箇所がない場合には %rcx は 16 を返す。
+</p>
+
+<h4>Return Mask</h4>
+<p>
+PCMPESTRM と PCMPISTRM の場合は %xmm0 を出力先とするが、その内容を Imm8[6] による。
+</p>
+
+<div class="indent">
+<table border="1">
+ <tr><th>Imm8[6]</th><th>Operation</th><th>Description</th></tr>
+ <tr><td>0b</td><td>Bit mask</td><td>IntRes2[] の内容が %xmm0 の下位ビットにビット単位で格納される。あまった上位ビットはゼロ拡張される。</td></tr>
+ <tr><td>1b</td><td>Byte/word mask</td><td>IntRes2[] の内容が %xmm0 の下位からバイトまたはワード単位で格納される。<br>
+
+バイトなのかワードなのかは imm8[1] によって決まる。<br>
+
+要素がバイト扱いの場合は、
+<pre class="program">
+for (i=0 ; i&lt;16  ; i++) {
+    %xmm0 |= ((IntRes2[i] ? 0xFF : 0x00) &lt;&lt; (8 * i));
+}
+</pre>
+
+要素がワード扱いの場合は、
+<pre class="program">
+for (i=0 ; i&lt;8  ; i++) {
+    %xmm0 |= ((IntRes2[i] ? 0xFFFF : 0x0000) &lt;&lt; (16 * i));
+}
+</pre>
+</td>
+
+</tr>
+</table>
+</div>
+
+<h3 id="flags">フラグ変化</h3>
+<p>
+演算結果は以下のようになる。
+</p>
+
+<div class="indent">
+<table border="1">
+ <tr><th>EFLAG</th><th>Description</th></tr>
+ <tr><td>CF</td><td>IntRes2[] が全て 0 の場合は 0 となり、それ以外は 1 になる。</td></tr>
+ <tr><td>ZF</td><td><i>xmm2</i> の要素が全部有効だった場合は 0、それ以外は 1<br>PCMPESTRx では %rdx が 16(8) 未満なら 0 になる。<br>PCMPISTRx では <i>xmm2</i> の中に 0 の要素があった場合は 0 になる。</td></tr>
+ <tr><td>SF</td><td><i>xmm1</i> の要素が全部有効だった場合は 0、それ以外は 1<br>PCMPESTRx では %rax が 16(8) 未満なら 0 になる。<br>PCMPISTRx では <i>xmm1</i> の中に 0 の要素があった場合は 0 になる。</td></tr>
+ <tr><td>OF</td><td>IntRes2[0] の値がコピーされる。</td></tr>
+</table>
+</div>
+
+<p>
+AF と PF は常にリセットされる。
+</p>
+
+<h2 id="btw">余談</h2>
+<p>
+AVX2 は 256 ビットの YMM レジスタを使った演算が可能だが、そのオペコードマップには VPCMPESTRM、VPCMESTRI、VPCMPISTRM、VPCMPISTRI が定義されている。
+将来的に 256 ビット(32 バイト)幅の PCMPxSTRx 命令が使えるようになるかも。
+</p>
+
+<h2 id="comment">コメント</h2>
+
+<div class="trackbackregion">
+<a href="/cgi-bin/tb.cgi?__mode=list&amp;tb_id=programming__pcmpxstrx" rel="nofollow"><strong><u>トラックバック</u></strong></a>
+&nbsp;&nbsp;[Trackback URL: <a href="http://www.nminoru.jp/cgi-bin/tb.cgi/programming__pcmpxstrx" rel="nofollow">http://www.nminoru.jp/cgi-bin/tb.cgi/programming__pcmpxstrx</a>]<br>
+</div>
+<div class="commentregion">
+<a href="/cgi-bin/nminoru/kuttukibbs.cgi?id=programming__pcmpxstrx" rel="nofollow"><strong><u>コメントを書き込む</u></strong></a>
+<div class="comment">
+[1] <span class="commentator">[fnami]</span>  <span class="commenttime">2017-12-06 16:44:08</span><br>
+<div class="commentbody">
+「比較操作」節の表に間違いがあります。11bの場合の擬似コード<br>        if (Operand2[k] == Operand1[j]) {<br>で「==」は「!=」が正しいと思います。<br><br>
+</div>
+</div>
+<div class="comment">
+[2] <span class="commentator">[<a href="http://www.nminoru.jp/~nminoru/" rel="nofollow">管理人</a>]</span>  <span class="commenttime">2017-12-23 13:15:48</span><br>
+<div class="commentbody">
+ご指摘ありがとうございます。<br>修正しました。<br>
+</div>
+</div>
+</div>
+
+
+</div>
+
+<hr>
+<a href="/~nminoru/"><img src="/icons/back.png" width=20 height=22>TOP</a>
+&nbsp;&nbsp;
+<a href="/cgi-bin/minibbs/bbs.cgi"><img src="/icons/back.png" width=20 height=22>掲示板</a>
+&nbsp;&nbsp;
+<a href="/~nminoru/programming/"><img src="/icons/back.png" width=20 height=22>戻る</a>
+
+<hr>
+<address>Written by NAKAMURA Minoru, Email: nminoru atmark nminoru dot jp, Twitter:<a href="https://twitter.com/#!/nminoru_jp">@nminoru_jp</a></address>
+<br>
+<div align="center">
+<script  language="JavaScript" type="text/javascript"><!--
+google_ad_client = "pub-7704885636194627";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_channel ="";
+google_ad_type = "text";
+//--></script>
+<script  language="JavaScript" type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+
+</body>
+</html>

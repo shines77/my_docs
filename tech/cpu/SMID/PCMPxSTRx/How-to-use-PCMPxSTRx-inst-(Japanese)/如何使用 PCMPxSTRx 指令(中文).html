@@ -1,0 +1,555 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta name="author" content="NAKAMURA Minoru">
+<meta name="copyright" content="(C) 2012-2017 NAKAMURA Minoru">
+<link rev="made" href="mailto:nminoru@nminoru.jp">
+<title>如何使用 PCMPxSTRx 指令</title>
+<link rel="stylesheet" href="./style2.css">
+</head>
+
+<body>
+
+<h1>如何使用 PCMPxSTRx 指令</h1>
+
+<div class="main">
+
+<p style="text-align: right">
+创建于: 2012.11.17 <br/>
+</p>
+
+<p style="text-indent: 0px">
+<strong>更新历史记录</strong><br/>
+（2012.11.17）创建。<br/>
+（2017.12.24）修正了Equal Ordered的伪程序错误。<br/><br/>
+本文链接：<a href="http://www.nminoru.jp/~nminoru/programming/pcmpxstrx.html" target="_blank">http://www.nminoru.jp/~nminoru/programming/pcmpxstrx.html</a>
+</p>
+
+<hr>
+
+<p>
+目录
+</p>
+
+<ul>
+  <li><a href="#description">命令详解</a></li>
+    <ul>
+    <li><a href="#elementtype">元素类型(Byte or Word / Signed or Unsigned)</a></li>
+    <li><a href="#aggregation">比较操作(Aggregation Operation)</a></li>
+    <ul>
+    <li><a href="#endofstring">处理字符串终止符</a></li>
+    </ul>
+    <li> <a href="#polarity">极性(Polarity)</a></li>
+    <li> <a href="#outputselection">输出选择(Output Selection)</a></li>
+    <li> <a href="#flags">更改标记</a></li>
+    </ul>
+  <li><a href="#btw">题外话</a></li>
+  <li><a href="#comment">评论</a></li>
+</ul>
+
+<h2 id="description">指令说明</h2>
+<p>
+四条指令 PCMPESTRI，PCMPESTRM，PCMPISTRI 和 PCMPISTRM 是从 SSE 4.2 支持的字符串比较指令。
+虽然这是该指令组被命名为<i>字符串和文本处理指令</i>的，在这句话将被统称为 <span class="kw">PCMPxSTRx 指令</span>。
+</p>
+
+<p>
+PCMPxSTRx 指令将两个 xmm 寄存器作为操作数，并将其视为一个16字节的字符串并执行比较操作。
+第二个操作数可以指定内存操作数，而不是 xmm 寄存器。
+在这篇文档中，我将为第一个操作数调用第一个操作数 'xmm1'，第二个操作数调用 'xmm2'。
+请注意，xmm1 不是 %xmm1。
+</p>
+
+<p>
+PCMPxSTRx 指令有四种变化。
+首先选择如何处理字符串的长度以及如何接收结果。
+</p>
+
+<ul>
+ <li>不知道字符长度0您是否将它比作终端字符串或比较字符长度为事先知道的？
+ <li>你想知道不同角色的位置吗？或者你想要一个位图来表示哪里有不同的角色？
+</ul>
+
+<p>
+这决定了要使用哪一种 PCMPESTRI，PCMPESTRM，PCMPISTRI，PCMPISTRM 指令。
+</p>
+
+<div class="ndent">
+<table border="1">
+ <tr><th>&nbsp; </th><th>返回索引<br/>返回匹配字符串的<br/>索引值到%rcx<br/></th><th>返回Mask<br/>返回字符比较结果的<br/>bitmask到%xmm0</th></tr>
+ <tr><th>显式的指定字符串的长度，<br/>xmm1的长度保存在%rdx<br/>xmm2的长度保存在%rax</th><td align="center">PCMP<span class="red">E</span>STR<span class="red">I</span></td><td align="center">PCMP<span class="red">E</span>STR<span class="red">M</span></td></tr>
+ <tr><th>隐式的字符串长度，<br/>以字符串终止符结束<br/></th><td align="center">PCMP<span class="red">I</span>STR<span class="red">I</span></td><td align="center">PCMP<span class="red">I</span>STR<span class="red">M</span><br/></td></tr>
+</table>
+</div>
+
+<p>
+PCMPxSTRx 指令使用指定为操作数的<i> xmm1中</i>和<i> xmm2 </i>的（在寻址所指定的存储器操作数寄存器的情况下）大于寄存器隐含的。
+PCMPESTRI 和在 64 位模式下 PCMPESTRM 指令和 <span class="kw">%rax</span> 和 <span class="kw">%rdx</span> 输入寄存器隐含。
+PCMPESTRI 和 PCMPISTRI 作为输出目的地的 <span class="kw">%rcx</span>，PCMPESTRM 和 PCMPISTRM 是隐式地作为输出目的地的 <span class="kw">%xmm0</span> 使其成为输出寄存器。
+在 32 位模式下，分别获得 %eax，%eax，%ecx。
+</p>
+
+<div class="ndent">
+<small>
+虽然以64位模式描述以下说明，但在32位模式下也可以做到这一点。
+</small>
+</div>
+
+<p>
+PCMPESTRx 指定 %rax 中和 %rdx 一个字符长度为（元素的数量），但是这是与元件作为字节处理时，当（imm[0]为0）的处理字节作为一个字（imm[0]为1 ），以单位为单位进行计数。
+也就是说，由于 xmm 寄存器是16个字节，所以指定0到15用于字节处理，0到7用于字处理。
+</p>
+
+<p>
+字符长度（%rax，%rdx）到（在字节16个字节或更多的情况下，在单词单元8或更高的情况下）值超过 xmm 寄存器也可以指定。
+这种情况下是一个比较目标整个 xmm 寄存器，在原则上（部分不同的处理的标志），以15个字节或7周的行为相同的方式作为指定（在字）。
+</p>
+
+<p>
+进一步选择以下内容：
+</p>
+
+<dl class="ul">
+ <dt>Byte or Word (字节或者字)</dt>
+ <dd>比较为字节（1字节）还是字（2字节）？ </dd>
+
+ <dt>Signed or Unsigned (有符合/无符号)</dt>
+ <dd>或的数据进行比较作为任一无符号整数，以作为有符号的整数比较？ </dd>
+
+ <dt>Aggregation operation (比较操作)</dt>
+ <dd>你如何比较每个元素？ </dd>
+
+ <dt>Polarity (极性)</dt>
+ <dd>我们如何处理每个元素比较的中间结果？ </dd>
+
+ <dt>Output selection (输出选择)</dt>
+ <dd>如何在收到中间结果后总结它？ </dd>
+</dl>
+
+<h3 id="elementtype">元素类型(Byte or Word/Signed or Unsigned)</h3>
+<p>
+指定一个元素被考虑的类型。
+</p>
+
+<p>
+imm[0] 如果为 0，表示是字节 (Byte)，如过为 1，表示出来的是字 (Word)。<br/>
+如果imm[1] 为 0，则将其视为 Signed (有符号)，如果为 1，将其视为 Unsigned (无符号)。
+</p>
+
+<div class="indent">
+<table border="1">
+ <tr><th>imm8[0:1]</th><th>Description</th><th>Expression</th></tr>
+ <tr><td>00b</td><td>Unsigned bytes</td><td>uint8_t data[16]</td></tr>
+ <tr><td>01b</td><td>Unsigned words</td><td>uint16_t data[8]</td></tr>
+ <tr><td>10b</td><td>Signed bytes</td><td>int8_t data[16]</td></tr>
+ <tr><td>11b</td><td>Signed words</td><td>int16_t data[8]</td></tr>
+</table>
+</div>
+
+<h3 id="elementtype">比较运算(Aggregation Operation)</h3>
+<p>
+从四种比较方法中选择比较每个元素的方法。
+这个选择在 PCMPxSTRx 指令中最重要。
+</p>
+
+<p>
+是受基本上一个进行比较<big><i> xmm2 </i></big>。
+每个元素的<i> xmm2 </i>与<i> xmm1 </i>的比较指定的，并将其存储在 IntRes1[i] 中。
+<small><i> xmm2 </i>，它已成为相比可能是由于采取了存储器操作数的<i> xmm2 </i>。</small>
+</p>
+
+<p>
+IntRes1[] 是作为保持中间结果 PCMPxSTRx 指令的结果的暂时寄存器。
+回想一下用 0 或 1 记录每个元素位置结果的位向量。
+IntRes1[] 的值无法从外部获知。
+</p>
+
+<div class="ndent">
+<pre class="program">
+UpperBound = imm8[0] ? 7 : 15;
+
+for（i = 0; i &lt; Upper Bound; i++）{
+    IntRes1[i] = Comparator(Operand2[i], i);
+}
+</pre>
+</div>
+
+<p>
+元素大小为imm[0]，并确定字节或字。
+</p>
+
+<p>
+只有在选择范围时，imm[1] 确定的元素的有符号和无符号差异才有效。
+其他人正在比较"匹配"，所以签名和无签名之间的差异并不重要。
+</p>
+
+<div class="ndent">
+<small>
+第i个以下的说明中的元件操作数 [i] 为的 <i>xmm1</i> 中的，Operand2[j] 的装置，以检索的<i> xmm2 </i>的第j个元素。
+</small>
+</div>
+
+<div class="ndent">
+<table border="1">
+ <tr>
+  <th>imm8[3:2]</th>
+  <th>Name</th>
+  <th>Expression</th>
+  <th>用途</th>
+ </tr>
+ <tr>
+  <td> 00b </td>
+  <td>Equal Any</td>
+  <td>
+确定比较目标 xmm2 中的元素是否与 xmm1 中的任何元素相匹配。
+如果匹配，则 IntRes1[i] 变为1，如果不匹配，则变为0。
+
+<pre class="program">
+bool Comparator(Element2, i) {
+    for (j = 0; j &lt; Upper Bound; j++) {
+        if (Element2 == Operand1[j]) {
+            return true;
+        }
+    }
+    return false;
+}
+</pre>
+
+  </td>
+  <td>Tokenizatoin，XML解析器</td>
+ </tr>
+ <tr>
+  <td> 01b </td>
+  <td>Ranges</td>
+  <td>
+xmm1 中的元素与偶数编号的元素和奇数编号的元素配对，并记录下限和上限。
+元件在<i> xmm2 </i>的确定是否对的<i> xmm1 </i>的范围内的比较。
+IntRes1[i] 在任何一个设定范围内为1，如果不在任何范围内则为0。
+
+<pre class="program">
+bool Comparator(Element2, i) {
+    for (j = 0; j &lt; UpperBound; j += 2) {
+        if (Element2 &gt;=  Operand1[j] &amp;&amp; Element2 &lt;= Operand1[j+1]) {
+            return true;
+        } 
+    }
+    return false;
+}
+</pre>
+
+<i> xmm1 </i>中的该组中的范围的8套如果元素是处理，在字处理的情况下的一个字节使四组。
+  </td>
+
+  <td>子集设置，案例处理，XML解析器，模式验证</td>
+ </tr>
+
+ <tr>
+  <td> 10b </td>
+  <td>Equal Each</td>
+  <td>
+确定要比较的 xmm2 中的元素是否与在相同位置处的 xmm1 的元素匹配。
+如果它们匹配，则 IntRes1[i] 变为1，如果它们不匹配，则变为 0。
+
+<pre class="program">
+bool Comparator(Element2, i) {
+    return (Element2 == Operand1[i]);
+}
+</pre>
+
+为了更简单，我们正在做下面的比较。
+这是通过 <code>strcmp</code> 或 <code>memcmp</code> 完成的比较。
+
+<pre class="program">
+UpperBound = imm8[0] ? 7 : 15;
+IntRes1 = 0;
+for (i = 0; i &lt; UpperBound; i++) {
+    IntRes1[i] = (Operand1[i] == Operand2[i]);
+}
+</pre>
+
+  </td>
+  <td> memcmp，strcmp </td>
+ </tr>
+
+ <tr>
+  <td> 11b </td>
+  <td>Equal Ordered</td>
+  <td>
+它比较要比较的<i> xmm2 </i>的 i 或更少的元素是否匹配关键字<i> xmm1 </i>。
+如果它们匹配，则 IntRes1[i] 变为 1，如果它们不匹配，则变为 0。
+
+<pre class="program">
+bool Comparator(Element2, i) {
+    for (k = i, j = 0; k &lt; UpperBound && j &lt; UpperBound - i; k++, j++) {
+        if (Operand2[k] != Operand1[j]) {
+            return false;
+        }
+    }
+    return true;
+}
+</pre>
+
+<p>
+再多解释一下，如果 xmm2 和 xmm1 包含如下，
+Operand2[0] 的位置与 Operand1 的内容匹配的字节比较。
+</p>
+
+<pre class="program">
+Operand2[16] = "0123 ABC 789 ABCDEF"  // 忽略终止字符
+Operand1[16] = "ABCDEFGHIJKLMNOP"     // 忽略终止字符
+</pre>
+
+<p>
+首先，Operand2[0] 到 Operand2[3] 与第一个操作数不匹配。
+IntRes1[0] 到 IntRes1[3] 变为0。
+</p>
+
+<p>
+由于 Operand2[4] 是 'A'，它与 Operand1[0] 匹配。
+这里有三个元素匹配，但 Operand2[7] 不成为 'D'，比较失败。
+最终，IntRes1[4] 变为0。
+</p>
+
+<p>
+'A' 再次出现在 Operand2[10] 中，并与 Operand1[0] 匹配。
+这六个元素匹配从这里开始，操作数2耗尽元素。
+但是，由于部分匹配成功，IntRes1[10] 为1。
+</p>
+
+<p>
+最终，IntRes1[10] 为 1，另一个 IntRes1[i] 为 0。
+</p>
+
+  </td>
+
+ <td>子串搜索，KMP，strstr </td>
+ </tr>
+</table>
+</div>
+
+<h4 id="endofstring">在字符串结束后处理</h4>
+<p>
+PCMPxSTRx 通过指定字符串长度 (Explicit Length) 或 NULL 结尾 (Implicit Length) 来定义字符串的有效范围。
+相反，字符串长度之后的部分是"无效"元素，并且将特殊规则应用于该部分的比较。
+</p>
+
+<p>
+PCMP<span class="red">I</span>STRx 指令将其视为 NULL 终止。因此，0元素被设置为"无效"，并且0元素之后的元素也是"无效的"。
+</p>
+
+<p>
+PCMP<span class="red">I</span>STRx 指令范围（imm8[3:2] 条件 = 01b）的<i> xmm1 </i>的对，以确定在偶数元素和奇数元素的上限和下限但是，如果其中任何一个都是0元素，那么整个配对将变为"无效"。
+而且，xmm1 后面的对也是"无效的"。
+因此，PCMP<span class="red">I</span>STRx 命令的范围不能产生上限和下限，并且不能为0进行比较。
+在另一方面，PCMP<span class="red">E</span>STRx 是指定在字符长度 %rax 和 %rdx，也使上限和下限，例如含有0那些，包含零比较这也是可能的。
+</p>
+
+<div class="ndent">
+<table border="1">
+  <tr> <th>&nbsp; </th> <th><i> xmm1 </i>的元素</th> <th><i> xmm2 </i>的元素</th><th>Equal Any<br/>(00b) </th><th>Ranges<br/>(01b)</th><th>Equal Each<br/>(10b)</th><th>Equal Ordered<br/>(11b)</th></tr>
+  <tr><td>(1)</td><td>Valid</td><td>Valid</td><td>Compare</td><td>Compare</td><td>Comapre</td><td>Compare</td>
+  <tr><td>(2)</td><td>Valid</td><td>Invalid</td><td>Force False(0)</td><td>Force False(0)</td><td>Force False(0)</td><td>Force False(0)</td>
+  <tr><td>(3)</td><td>Invalid</td><td>Valid</td><td>Force False(0)</td><td>Force False(0)</td><td>Force False(0)</td><td>Force True(1)</td>
+  <tr><td>(4)</td><td>Invalid</td><td>Invalid</td><td>Force False(0)</td><td>Force False(0)</td><td>Force True(1)</td><td>Force True(1)</td>
+</table>
+</div>
+
+<p>
+乍一看，表面上看很复杂，但其实很合理。
+</p>
+
+<ul>
+  <li>Equal Any，则确定是否在比较对象的<i> xmm2 </i>的字符匹配任何字符的<i> xmm1 </i>的。如果<x> xmm2 </i>是无效的，应该判断它不匹配，所以它是假的。如果<i> xmm1 </i>中的字符是无效的，它自然是错误的。假如两者都是无效的，那么将是合理的。</li>
+  <li>Ranges 类似于 Equal Any。</li>
+  <li>对于 Equal Each 的场合，比较 strcmp 类型。 xmm1 和 xmm2 是等价的，如果两个字符串中的任何一个结束，应该被认为是不匹配的。因此（2）和（3）是假的。<br/>
+另一方面，如果两端的位置相同，我们认为这是匹配。 &quot;ABC<span class="red">\0hoge</span>&quot; 和 &quot;ABC<span class="red">\0moge</span>&quot; 具有确定的顺序是一致的（4）真需要有。</li>
+  <li>对于 Equal Ordered 的场合，针对部分匹配比较的 "xmm2" 和 "xmm1" 不是均匀的。<br/>
+如果关键字的 xmm1 很短，我们要判断匹配，所以（3）和（4）是真实的。<br/>
+在另一方面，因为它要确定不匹配如果比较的<i> xmm2 </i>的比<i> xmm1 </i>的关键字（2）的更短的已成为假。</li>
+</ul>
+
+<p>
+注意下面掩蔽的极性(-): 如果（imm8[5:4] = 11b）的，由于<i> xmm2 </i> 是 IntRes1[] 的无效元件的位反转判断是少（实际上整个比特在这个上反过来）。
+</p>
+
+<div class="ndent">
+<table border="1">
+  <tr><th><i> xmm1</i>的元素</th><th><i> xmm2 </i>的元素</th><th>Equal Any<br/>(00b)</th><th>Ranges<br/>(01b)</th><th>Equal Each<br/>(10b)</th><th>Equal Ordered<br/>(11b)</th></tr>
+  <tr><td>Valid</td><td>Valid</td><td>Compare</td><td>Compare</td><td>Comapre</td><td>Compare</td>
+  <tr><td>Valid</td><td>Invalid</td><td>Force True(1)</td><td>Force True(1)</td><td>Force True(1)</td><td>Force True(1)</td>
+  <tr><td>Invalid</td><td>Valid</td><td>Force False(0)</td><td>Force False(0)</td><td>Force False(0)</td><td>Force True(1)</td>
+  <tr><td>Invalid</td><td>Invalid</td><td>Force True(1)</td><td>Force True(1)</td><td>Force False(0)</td><td>Force False(0)</td>
+</table>
+</div>
+
+<h3 id="polarity">Bit位的反转（极性）</h3>
+<p>
+中间结果 IntRes1[] 可以按原样翻转。
+结果存储在下一个中间结果 IntRes2[] 中。
+</p>
+
+<p>
+因此，00b 和 10b 是相同的操作，并且 IntRes1[] 的内容完整保存在 IntRes2[] 中。
+</p>
+
+<p>
+01b 对 IntRes1[] 的内容进行位反转并将其存储在 IntRes2[] 中。
+</p>
+
+<p>
+11b 是基本上 IntRes2[I] = ~IntRes1[I] 然而，如果<i> xmm2 </i>的 IntRes2[i] = IntRes1[i] 无效的第i个元素。
+<i> xmm2 </i>的是 "无效" 的意思的第i个元素的<i> xmm2 </i>的终止和串的后续元素。
+</p>
+
+<div class="indent">
+<table border="1">
+ <tr><th>imm8[5:4]</th><th>Operation</th><th>Name</th><th>Description</th></tr>
+ <tr><td>00b</td><td>Positive Polarity(+)</td><td>No change</td><td>IntRes2[i] = IntRes1[i]</td></tr>
+ <tr><td>01b</td><td>Negative Polarity(-)</td><td>Invert</td><td>IntRes2[i] = ~IntRes1[i]</td></tr>
+ <tr><td>10b</td><td>Masked(+)</td><td>No change</td><td>IntRes2[i] = IntRes1[i]</td></tr>
+ <tr><td>11b</td><td>Masked(-)</td><td>Mask Negative</td><td>基本上 IntRes2[i] = ~IntRes1[i]，但是如果 xmm2 的第 i 个元素无效，则让 IntRes2[i] = IntRes1[i]。
+</table>
+</div>
+
+<p>
+在 PCMPESTRI 和 PCMPISTRI 于极性 %rcx 上收到一个指数，无论是作为一个结果 "元​​素匹配的第一个索引" 你想，做的就是无论是的 "第一指数的不匹配因素" 变得重要。
+IntRes1[] 是匹配的结果为的一部分，并且具有部分地 0 是一个不匹配。
+在接下来的有输出选择 IntRes2[] 是从最显著比特1或它的至少显著位寻找那些与一个位置站立。
+</p>
+
+<h3 id="outputselection">输出选择</h3>
+<p>
+确定输出方法。
+IntRes2[] 解释 %rcx 或 %xmm0 到设定的值。
+</p>
+
+<h4>返回索引</h4>
+<p>
+在 PCMPESTRI 和 PCMPISTRI 的情况下，%rcx 输出指定的索引值，该操作的内容取决于 imm8[6]。
+</p>
+
+<div class="ndent">
+<table border="1">
+ <tr><th>imm8[6]</th><th>操作</th><th>描述</th></tr>
+ <tr><td> 0b </td><td>Least significant index</td><td>IntRes2[] 从低位（0-15）开始搜索第一个为 1 的元素的索引值，输出到 %rcx</tr>
+ <tr><td> 1b </td><td>Most significant index</td><td>IntRes2[] 从高位（15-0）开始搜索第一个为 1 的元素的索引值，输出到 %rcx</td>
+ </tr>
+</table>
+</div>
+
+<p>
+其中在 1b 的情况下，如果为 1 的索引值不存在，IntRes2[] 的 %rcx 返回的索引值被设置为 16。
+</p>
+
+<h4>返回 Mask</h4>
+<p>
+对于 PCMPESTRM 和 PCMPISTRM 输出目的地 %xmm0 但是由于其内容imm8[6]。
+</p>
+
+<div class="ndent">
+<table border="1">
+ <tr><th>imm8[6] </th><th>操作</th><th>描述</th></tr>
+ <tr>存储在<td> 0b </td><td>位掩码</td><td> IntRes2[] 上的内容 %xmm0 的低位比特。高位比特剩余是零扩展。</td></tr>
+ <tr>存储在<td> 1b </td><td>字节/字掩模</td><td> IntRes2[] 从较低含量 %xmm0 字节或字单元。
+
+或一个单词事物字节由的imm8[1] 确定的。
+
+如果元素以字节为单位处理，
+<pre class="program">
+for (i = 0; i &lt; 16; i++) {
+    %xmm0 |= ((IntRes2[i] ? 0xFF : 0x00) &lt;&lt; (8 * i));
+}
+</pre>
+
+当一个元素被视为一个单词时，
+<pre class="program">
+for (i = 0; i &lt; 8; i++) {
+    %xmm0 |= ((IntRes2[i] ? 0xFFFF : 0x0000) &lt;&lt; (16 * i));
+}
+</pre>
+</td>
+
+</tr>
+</table>
+</div>
+
+<h3 id="标志">标记变更</h3>
+<p>
+计算结果如下。
+</p>
+
+<div class="ndent">
+<table border="1">
+ <tr> <th> EFLAG </th> <th>描述</th> </tr>
+ <tr> <td> CF </td> <td>IntRes2[] 全为 0 的时候，CF 为 0，否则为 1。 </td> </tr>
+ <tr> <td> ZF </td> <td>如果<i> xmm2 </i> 是有效的字符串，ZF 为 0，否则为 1。PCMPESTRx 的 %rdx 小于16（8），它变成0。结果，PCMPISTRx 的<i> xmm2 </i>如果包含任何一个 0，则 SF 变为 0。 </td> </tr>
+ <tr> <td> SF </td> <td>如果<i> xmm1 </i> 是有效的字符串，SF 为 0，否则为 1。PCMPESTRx 的 %rax 小于16（8），它变成0。结果，PCMPISTRx 的<i> xmm1 </i>如果包含任何一个 0，则 SF 变为 0。 </td> </tr>
+ <tr> <td> OF </td> <td> IntRes2[0] 被复制。 </td> </tr>
+</table>
+</div>
+
+<p>
+AF 和 PF 始终重置。
+</p>
+
+<h2 id="btw">题外话</h2>
+<p>
+AVX2 是使用 256 位的 YMM 寄存器的指令集，类似的，字符串指令记包含 VPCMPESTRM，VPCMESTRI，VPCMPISTRM，VPCMPISTRI 等。
+这是未来的 256位（32字节）PCMPxSTRx 指令，很快将能使用。
+</p>
+
+<h2 id="comment">评论</h2>
+
+<div class="trackbackregion">
+<a href="/cgi-bin/tb.cgi?__mode=list&tb_id=programming__pcmpxstrx" rel="nofollow"><strong><u>引用</u></strong></a>
+&nbsp;&nbsp; [Trackback URL: <a href="http://www.nminoru.jp/cgi-bin/tb.cgi/programming__pcmpxstrx" rel="nofollow">http://www.nminoru.jp/cgi-bin/tb.cgi/programming__pcmpxstrx</a>]<br/>
+</div>
+<div class="commentregion">
+<a href="/cgi-bin/nminoru/kuttukibbs.cgi?id=programming__pcmpxstrx" rel="nofollow"><strong><u>写评论</u></strong></a>
+<div class="comment">
+[1] <span class="commentator"> [fnami] </span> <span class="commenttime"> 2017年12月6日16时44分08秒</span><br/>
+<div class="commentbody">
+有表中的"比较操作"条款是错误的。伪码结果如果是 11b 的情况下（在Operand2[K] == Operand1[J]）{ 把 "==" 改为 "!=" 才是正确的。}<br/><br/>
+</div>
+</div>
+<div class="comment">
+[2] <span class="commentator"> [<a href="http://www.nminoru.jp/~nminoru/" rel="nofollow">作者: nminoru</a>]</span><span class="commenttime"> 2017年12月23日13时15分48秒</span><br/>
+<div class="commentbody">
+谢谢你的指正，已经修正了。
+</div>
+</div>
+</div>
+
+</div>
+
+<hr>
+<a href="http://www.nminoru.jp/~nminoru/"><img src="./back.png" width=20 height=22>TOP</a>
+&nbsp;&nbsp;
+<a href="http://www.nminoru.jp/cgi-bin/minibbs/bbs.cgi"><img src="./back.png" width=20 height=22>公告板</a>
+&nbsp;&nbsp;
+<a href="http://www.nminoru.jp/~nminoru/programming/"><img src="./back.png" width=20 height=22>返回</a>
+
+<hr>
+<address>Written by NAKAMURA Minoru, Email: nminoru atmark nminoru dot jp, Twitter:<a href="https://twitter.com/#!/nminoru_jp">@nminoru_jp</a></address>
+<br/>
+<div align="center">
+<script  language="JavaScript" type="text/javascript">
+<!--
+google_ad_client = "pub-7704885636194627";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_channel ="";
+google_ad_type = "text";
+//-->
+</script>
+<script  language="JavaScript" type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</body>
+</html>
