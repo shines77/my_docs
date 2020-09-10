@@ -16,14 +16,14 @@ tags: "Intel", "SIMD", "SSE 4.2", "PCMPxSTRx", "PCMPISTRI", "PCMPISTRM", "字符
 
 `PCMPxSTRx` 指令其实是一个指令系列的统称，其中 `x` 代表通配符，它包含了下面的四条具体指令：
 
-PCMP[E](https://baidu.com)STR[I](https://baidu.com)，PCMP[E](https://baidu.com)STR[M](https://baidu.com)，PCMP[I](https://baidu.com)STR[I](https://baidu.com)，PCMP[I](https://baidu.com)STR[M](https://baidu.com)
+PCMP[**E**](https://baidu.com)STR[**I**](https://baidu.com)，PCMP[**E**](https://baidu.com)STR[**M**](https://baidu.com)，PCMP[**I**](https://baidu.com)STR[**I**](https://baidu.com)，PCMP[**I**](https://baidu.com)STR[**M**](https://baidu.com)
 
 那么这四条指令分别是什么意思呢？请看下面的表：
 
-|                                                                                    |   返回索引<br/>返回匹配字符串的<br/>索引值到 %rcx   | 返回Mask<br/>返回字符比较结果的<br/>bitmask 到 %xmm0 |
-| :--------------------------------------------------------------------------------: | :-------------------------------------------------: | :--------------------------------------------------: |
-| 显式的指定字符串的长度，<br/>xmm1 的长度保存在 %rdx，<br/>xmm2 的长度保存在 %rax。 | PCMP[E](https://baidu.com)STR[I](https://baidu.com) | PCMP[E](https://baidu.com)STR[M](https://baidu.com)  |
-|                     隐式的字符串长度，<br/>以字符串终止符结束                      | PCMP[I](https://baidu.com)STR[I](https://baidu.com) | PCMP[I](https://baidu.com)STR[M](https://baidu.com)  |
+|                                                                                    |       返回索引<br/>返回匹配字符串的<br/>索引值到 %rcx       |    返回Mask<br/>返回字符比较结果的<br/>bitmask 到 %xmm0     |
+| :--------------------------------------------------------------------------------: | :---------------------------------------------------------: | :---------------------------------------------------------: |
+| 显式的指定字符串的长度，<br/>xmm1 的长度保存在 %rdx，<br/>xmm2 的长度保存在 %rax。 | PCMP[**E**](https://baidu.com)STR[**I**](https://baidu.com) | PCMP[**E**](https://baidu.com)STR[**M**](https://baidu.com) |
+|                     隐式的字符串长度，<br/>以字符串终止符结束                      | PCMP[**I**](https://baidu.com)STR[**I**](https://baidu.com) | PCMP[**I**](https://baidu.com)STR[**M**](https://baidu.com) |
 
 
 ## X. 参考文章
