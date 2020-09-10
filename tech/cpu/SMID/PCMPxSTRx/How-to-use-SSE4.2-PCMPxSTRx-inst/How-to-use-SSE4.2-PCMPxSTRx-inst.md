@@ -86,10 +86,10 @@ IntRes1  =  0000100000001000
 
 那么这四条指令分别代表什么意思呢？请看下面的表：
 
-|                                                                                    |      返回索引<br/>(返回匹配字符串的<br/>索引值到 %rcx)      |   返回Mask<br/>(返回字符比较结果的<br/>bitmask 到 %xmm0)    |
+|                                                                                    |      返回索引<br/>(返回匹配字符串的<br/>索引值到 %ecx)      |   返回Mask<br/>(返回字符比较结果的<br/>bitmask 到 %xmm0)    |
 | :--------------------------------------------------------------------------------: | :---------------------------------------------------------: | :---------------------------------------------------------: |
-| 显式的指定字符串的长度，<br/>xmm1 的长度保存在 %rdx，<br/>xmm2 的长度保存在 %rax。 | pcmp[**e**](https://baidu.com)str[**i**](https://baidu.com) | pcmp[**e**](https://baidu.com)str[**m**](https://baidu.com) |
-|                     隐式的字符串长度，<br/>以字符串终止符结束                      | pcmp[**i**](https://baidu.com)str[**i**](https://baidu.com) | pcmp[**i**](https://baidu.com)str[**m**](https://baidu.com) |
+| 显式的指定字符串的长度，<br/>xmm1 的长度保存在 %edx，<br/>xmm2 的长度保存在 %eax。 | pcmp[**e**](https://baidu.com)str[**i**](https://baidu.com) | pcmp[**e**](https://baidu.com)str[**m**](https://baidu.com) |
+|                   隐式的字符串长度，<br/>以字符串终止符'\0'结束                    | pcmp[**i**](https://baidu.com)str[**i**](https://baidu.com) | pcmp[**i**](https://baidu.com)str[**m**](https://baidu.com) |
 
 为了方便理解，先来了解一下 `PCMPxSTRx` 指令的一般格式，例如：
 
@@ -103,17 +103,17 @@ pcmpistri  %xmm1, %xmm2, imm8
 
 前面的通配符：
 
-* 如果是 `e` 的话，表示显示的指定输入的字符串的长度，`xmm1` 的长度保存在 `%rdx` 寄存器，`xmm2` 的长度保存在 `%rax` 寄存器。
+* 如果是 `e` 的话，表示显示的指定输入的字符串的长度，`xmm1` 的长度保存在 `%edx` 寄存器，`xmm2` 的长度保存在 `%eax` 寄存器。
 
 * 如果是 `i`，则表示隐式的字符串长度，输入的字符串以终止符 “`\0`” 结束。
 
 后面的通配符：
 
-* 如果是 `i`，则表示返回的结果是索引值，即 `IntRes1` 中（二进制）从最高位开始数 (MSB) 或最低位开始数 (LSB) 第一个为 `1` 的索引位置，结果存到 `%rcx` 寄存器。
+* 如果是 `i`，则表示返回的结果是索引值，即 `IntRes1` 中（二进制）从最高位开始数 (MSB) 或最低位开始数 (LSB) 第一个为 `1` 的索引位置，结果存到 `%ecx` 寄存器。
 
 * 如果是 `m`，则表示返回的结果是一个 `BitMask` (Bit位掩码)，且这个值保存到 `%xmm0` 寄存器中（这里的 `xmm0` 是真实的寄存器名，也就是说会占用 `SSE` 的 `xmm0` 寄存器）。
 
-`PCMPxSTRx` 指令也支持 32 位系统，此时，前面提到的 `%rax`，`%rdx`，`%rcx` 寄存器相对应的是 `%eax`，`%edx`，`%ecx` 寄存器。
+注：在 `PCMPxSTRx` 指令的 `AVX` 版 `VPCMPxSTRx` 指令中，前面提到的 `%eax`，`%edx` 寄存器相对应的是 `%rax`，`%rdx` 寄存器，而 `%ecx` 寄存器做为返回的索引值，即使在 `AVX` 版下也足够了，所以不变。
 
 所以，我们来总结一下这四条指令的具体含义：
 
@@ -127,12 +127,12 @@ pcmpistri  %xmm1, %xmm2, imm8
 
 ## X. 参考文章
 
-* [1]: [RapidJSON 代码剖析（二）：使用 SSE 4.2 优化字符串扫描](https://zhuanlan.zhihu.com/p/20037058)
+* 【1】: [RapidJSON 代码剖析（二）：使用 SSE 4.2 优化字符串扫描](https://zhuanlan.zhihu.com/p/20037058)
 
-* [2]: [Implementing strcmp, strlen, and strstr using SSE 4.2 instructions](https://www.strchr.com/strcmp_and_strlen_using_sse_4.2)
+* 【2】: [Implementing strcmp, strlen, and strstr using SSE 4.2 instructions](https://www.strchr.com/strcmp_and_strlen_using_sse_4.2)
 
-* [3]: [sse 4.2带来的优化](https://www.zzsec.org/2013/08/using-sse_4.2/)
+* 【3】: [sse 4.2带来的优化](https://www.zzsec.org/2013/08/using-sse_4.2/)
 
-* [4]: [Intel: Intrinsics Guide](https://software.intel.com/sites/landingpage/IntrinsicsGuide/)
+* 【4】: [Intel: Intrinsics Guide](https://software.intel.com/sites/landingpage/IntrinsicsGuide/)
 
-* [5]: [PCMPISTRI](https://www.felixcloutier.com/x86/pcmpistri)
+* 【5】: [PCMPISTRI](https://www.felixcloutier.com/x86/pcmpistri)
