@@ -115,6 +115,16 @@ pcmpistri  %xmm1, %xmm2, imm8
 
 `PCMPxSTRx` 指令也支持 32 位系统，此时，前面提到的 `%rax`，`%rdx`，`%rcx` 寄存器相对应的是 `%eax`，`%edx`，`%ecx` 寄存器。
 
+所以，我们来总结一下这四条指令的具体含义：
+
+* `pcmpestri`：**P**acked **Com**pare **E**xplicit Length **Str**ings, Return **I**ndex。<br/>-------------（批量比较显式指定长度的字符串，返回索引值）
+
+* `pcmpestrm`：**P**acked **Com**pare **E**xplicit Length **Str**ings, Return **M**ask。<br/>-------------（批量比较显式指定长度的字符串，返回掩码）
+
+* `pcmpistri`：**P**acked **Com**pare **I**mplicit Length **Str**ings, Return **I**ndex。<br/>-------------（批量比较隐式长度的字符串，返回索引值）
+
+* `pcmpistrm`：**P**acked **Com**pare **I**mplicit Length **Str**ings, Return **M**ask。<br/>-------------（批量比较隐式长度的字符串，返回掩码）
+
 ## X. 参考文章
 
 * [1]: [RapidJSON 代码剖析（二）：使用 SSE 4.2 优化字符串扫描](https://zhuanlan.zhihu.com/p/20037058)
@@ -124,3 +134,5 @@ pcmpistri  %xmm1, %xmm2, imm8
 * [3]: [sse 4.2带来的优化](https://www.zzsec.org/2013/08/using-sse_4.2/)
 
 * [4]: [Intel: Intrinsics Guide](https://software.intel.com/sites/landingpage/IntrinsicsGuide/)
+
+* [5]: [PCMPISTRI](https://www.felixcloutier.com/x86/pcmpistri)
