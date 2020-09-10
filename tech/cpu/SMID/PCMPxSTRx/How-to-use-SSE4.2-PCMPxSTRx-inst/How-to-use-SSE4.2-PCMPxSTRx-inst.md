@@ -84,13 +84,6 @@ IntRes1  =  0000100000001000
 
 * pcmp[**i**](https://baidu.com)str[**m**](https://baidu.com)
 
-那么这四条指令分别代表什么意思呢？请看下面的表：
-
-|                                                                                    |      返回索引<br/>(返回匹配字符串的<br/>索引值到 %ecx)      |   返回Mask<br/>(返回字符比较结果的<br/>bitmask 到 %xmm0)    |
-| :--------------------------------------------------------------------------------: | :---------------------------------------------------------: | :---------------------------------------------------------: |
-| 显式的指定字符串的长度，<br/>xmm1 的长度保存在 %edx，<br/>xmm2 的长度保存在 %eax。 | pcmp[**e**](https://baidu.com)str[**i**](https://baidu.com) | pcmp[**e**](https://baidu.com)str[**m**](https://baidu.com) |
-|                   隐式的字符串长度，<br/>以字符串终止符'\0'结束                    | pcmp[**i**](https://baidu.com)str[**i**](https://baidu.com) | pcmp[**i**](https://baidu.com)str[**m**](https://baidu.com) |
-
 为了方便理解，先来了解一下 `PCMPxSTRx` 指令的一般格式，例如：
 
 ```asm
@@ -98,6 +91,13 @@ pcmpistri  %xmm1, %xmm2, imm8
 ```
 
 注：其中 `%xmm1`, `%xmm2` 代表任意 `SSE` 的 `128位` 寄存器（`SSE` 一共有 `xmm0` ~ `xmm15` 16 个寄存器），`imm8` 是一个 `8bit` 的立即数（常量），用于配置 `pcmpistri` 指令，定义指令具体的执行功能，稍后会详细介绍。常用的值是：imm8 = 0x0C（十六进制）。
+
+那么这四条指令分别代表什么意思呢？请看下面的表：
+
+|                                                                                    |      返回索引<br/>(返回匹配字符串的<br/>索引值到 %ecx)      |   返回Mask<br/>(返回字符比较结果的<br/>bitmask 到 %xmm0)    |
+| :--------------------------------------------------------------------------------: | :---------------------------------------------------------: | :---------------------------------------------------------: |
+| 显式的指定字符串的长度，<br/>xmm1 的长度保存在 %edx，<br/>xmm2 的长度保存在 %eax。 | pcmp[**e**](https://baidu.com)str[**i**](https://baidu.com) | pcmp[**e**](https://baidu.com)str[**m**](https://baidu.com) |
+|                   隐式的字符串长度，<br/>以字符串终止符'\0'结束                    | pcmp[**i**](https://baidu.com)str[**i**](https://baidu.com) | pcmp[**i**](https://baidu.com)str[**m**](https://baidu.com) |
 
 从上表可以看出，在 `PCMPxSTRx` 指令中，
 
@@ -135,4 +135,6 @@ pcmpistri  %xmm1, %xmm2, imm8
 
 * 【4】: [Intel: Intrinsics Guide](https://software.intel.com/sites/landingpage/IntrinsicsGuide/)
 
-* 【5】: [PCMPISTRI](https://www.felixcloutier.com/x86/pcmpistri)
+* 【5】: [x86: PCMPISTRI](https://www.felixcloutier.com/x86/pcmpistri)
+
+* 【6】: [HJLebbink: /asm-dude/wiki/PCMPISTRI](https://github.com/HJLebbink/asm-dude/wiki/PCMPISTRI)
