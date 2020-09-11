@@ -16,7 +16,7 @@ tags: "Intel", "SIMD", "SSE 4.2", "PCMPxSTRx", "PCMPISTRI", "PCMPISTRM", "字符
 
 `SSE 4.2` 指令集都包含了哪些指令？
 
-这里也简单介绍一下，通过 `Intel` 官方网站的指令指南：[Intel: Intrinsics Guide: SSE 4.2](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=914&techs=SSE4_2)，可以看到。
+这里也简单介绍一下，通过 `Intel` 官方网站的指令指南：[Intel Intrinsics Guide: SSE 4.2](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=914&techs=SSE4_2)，可以看到。
 
 `SSE 4.2` 指令集主要包含了三类指令：
 
@@ -30,7 +30,7 @@ tags: "Intel", "SIMD", "SSE 4.2", "PCMPxSTRx", "PCMPISTRI", "PCMPISTRM", "字符
 
 （注：为了编程方便，`Intel` 把指令包装成函数，这些函数“一一对应”着某一条具体的 `CPU` 指令。）
 
-![Intel Core i7](./images/Intel-SSE-4.2-insts.png)
+![Intel Intrinsics Guide: SSE 4.2](./images/Intel-SSE-4.2-insts.png)
 
 ## 3. PCMPxSTRx 指令
 
@@ -60,7 +60,7 @@ uint8_t imm8 = _SIDD_CHAR_OPS | _SIDD_CMP_EQUAL_ORDERED
 int index = _mm_cmpistri(operand1, operand2, imm8);
 ```
 
-原理详解：
+详细分析：
 
 * `Equal Ordered` = 0x0C，imm[3:2] = 11b，判断 `operand1` 是否是 `operand2` 的子串。
 
@@ -118,16 +118,56 @@ pcmpistri  arg1, arg2, imm8
 
 注：在 `PCMPxSTRx` 指令的 `AVX` 版 `VPCMPxSTRx` 指令中，前面提到的 `%eax`，`%edx` 寄存器相对应的要换成 `%rax`，`%rdx` 寄存器，而 `%ecx` 寄存器做为返回的索引值，即使在 `AVX` 版下也足够了，所以不变。
 
+## X. 附录
+
+### X.1 访问条件码指令
+
+| 指令    | 同义名 | 效果                | 设置条件             |
+| :------ | :----- | :------------------ | :------------------- |
+| sete D  | setz   | D = ZF              | 相等/零              |
+| setne D | setnz  | D = ~ZF             | 不等/非零            |
+| sets D  |        | D = SF              | 负数                 |
+| setns D |        | D = ~SF             | 非负数               |
+| setg D  | setnle | D = ~(SF ^OF) & ZF  | 大于(有符号>)        |
+| setge D | setnl  | D = ~(SF ^OF)       | 小于等于(有符号>=)   |
+| setl D  | setnge | D = SF ^ OF         | 小于(有符号<)        |
+| setle D | setng  | D = (SF ^ OF) \| ZF | 小于等于(有符号<=)   |
+| seta D  | setnbe | D = ~CF & ~ZF       | 超过(无符号>)        |
+| setae D | setnb  | D = ~CF             | 超过或等于(无符号>=) |
+| setb D  | setnae | D = CF              | 低于(无符号<)        |
+| setbe D | setna  | D = CF \| ZF        | 低于或等于(无符号<=) |
+
+### X.2 跳转指令
+
+| 指令         | 同义名   | 跳转条件         | 描述                 |
+| :----------- | :------- | :--------------- | :------------------- |
+| jmp          |          | 1                | 直接跳转             |
+| jmp *Operand |          | 1                | 间接跳转             |
+| jz           | je       | ZF               | 等于/零              |
+| jnz          | jne      | ~ZF              | 不等于/非零          |
+| js           |          | SF               | 符号位为 "1"，负数   |
+| jns          |          | ~SF              | 符号位为 "0"，非负数 |
+| jg           | jnle     | ~(SF ^ OF) & ~ZF | 大于(有符号>)        |
+| jge          | jnl      | ~(SF ^ OF)       | 大于等于(有符号>=)   |
+| jl           | jnge     | SF ^ OF          | 小于(有符号<)        |
+| jle          | jng      | (SF ^ OF) \| ZF  | 小于等于(有符号<=)   |
+| ja           | jnbe     | ~CF & ~ZF        | 超过(无符号>)        |
+| jae          | jnb      | ~CF              | 超过或等于(无符号>=) |
+| jb           | jnae     | CF               | 低于(无符号<)        |
+| jbe          | jna      | CF \| ZF         | 低于或等于(无符号<=) |
+| jc           | jb, jnae | CF               | 低于(无符号<)        |
+| jnc          | ja, jnbe | ~CF              | 超过或等于(无符号>=) |
+| jo           |          | OF               | 溢出                 |
+| jno          |          | ~OF              | 不溢出               |
+| jp           | jpe      |                  | 奇偶性为偶数时       |
+| jnp          | jnpe     |                  | 奇偶性为奇数时       |
+
 ## X. 参考文章
 
 * 【1】: [RapidJSON 代码剖析（二）：使用 SSE 4.2 优化字符串扫描](https://zhuanlan.zhihu.com/p/20037058)
-
 * 【2】: [Implementing strcmp, strlen, and strstr using SSE 4.2 instructions](https://www.strchr.com/strcmp_and_strlen_using_sse_4.2)
-
 * 【3】: [sse 4.2带来的优化](https://www.zzsec.org/2013/08/using-sse_4.2/)
-
 * 【4】: [Intel: Intrinsics Guide](https://software.intel.com/sites/landingpage/IntrinsicsGuide/)
-
 * 【5】: [x86: PCMPISTRI](https://www.felixcloutier.com/x86/pcmpistri)
-
 * 【6】: [HJLebbink: /asm-dude/wiki/PCMPISTRI](https://github.com/HJLebbink/asm-dude/wiki/PCMPISTRI)
+* 【7】: [x86 汇编指令详解](https://blog.csdn.net/zhu2695/article/details/16812415)
