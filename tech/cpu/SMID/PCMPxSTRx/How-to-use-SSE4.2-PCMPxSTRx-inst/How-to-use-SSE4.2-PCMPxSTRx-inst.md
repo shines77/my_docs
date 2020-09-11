@@ -60,17 +60,20 @@ uint8_t imm8 = _SIDD_CHAR_OPS | _SIDD_CMP_EQUAL_ORDERED
 int index = _mm_cmpistri(operand1, operand2, imm8);
 ```
 
+原理详解：
+
 * `Equal Ordered` = 0x0C，imm[3:2] = 11b，判断 `operand1` 是否是 `operand2` 的子串。
 
-```java
+```c
 operand2 = "WhenWeWillBeWed!"
 operand1 = "We"
-IntRes1  =  0000100000001000
+IntRes1  =  0000100000001000 (b)
+index    =  4 (从左边最低位开始数，第一个 "1" 的索引值是 4 ，索引从 0 开始计数)
 ```
 
-我们可以看到 `"WhenWeWillBeWed!"` 中包含了 `"We"` 子串两次，分别是在索引 `4` 和 `12` 的位置（`IntRes1` 从左往右数）。
+我们可以看到 `"WhenWeWillBeWed!"` 中包含了 `"We"` 子串两次，分别是在索引 `4` 和 `12` 的位置（`IntRes1` 从左往右数），由于我们指定了 `_SIDD_LEAST_SIGNIFICANT` 参数，即 `LSB` (`Least Significant Bit`，最低有效位)，所以从左边最低位开始数，第一个为 `"1"` 的 `bit` 的索引值是 `4` ，索引从 `0` 开始计数。
 
-笔者注：`IntRes1` 其实不是一个 `bit` 数组，而是一个 `Byte` 数组，上图和上面的代码中的 `IntRes1` 的 `0` 和 `1`，它其实不是一个 `bit`，而是一个 `Byte`，`1` (0x01) 其实是 `11111111` (0xFF)，只是为了作图和表述方便，简写成一个 bit 的 `1` 。
+注：在上面的例子中，`IntRes1` 是一个 16 个 `bit` 整形。
 
 ### 3.2 指令详解
 
