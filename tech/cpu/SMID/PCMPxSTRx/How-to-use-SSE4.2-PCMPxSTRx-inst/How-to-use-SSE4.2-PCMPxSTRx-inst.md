@@ -96,14 +96,14 @@ pcmpistri  arg1, arg2, imm8
 
 |                                                                                    |      返回索引<br/>(返回匹配字符串的<br/>索引值到 %ecx)      |   返回Mask<br/>(返回字符比较结果的<br/>bitmask 到 %xmm0)    |
 | :--------------------------------------------------------------------------------: | :---------------------------------------------------------: | :---------------------------------------------------------: |
-| 显式的指定字符串的长度，<br/>xmm1 的长度保存在 %edx，<br/>xmm2 的长度保存在 %eax。 | pcmp[**e**](https://baidu.com)str[**i**](https://baidu.com) | pcmp[**e**](https://baidu.com)str[**m**](https://baidu.com) |
+| 显式的指定字符串的长度，<br/>arg1 的长度保存在 %edx，<br/>arg2 的长度保存在 %eax。 | pcmp[**e**](https://baidu.com)str[**i**](https://baidu.com) | pcmp[**e**](https://baidu.com)str[**m**](https://baidu.com) |
 |                   隐式的字符串长度，<br/>以字符串终止符'\0'结束                    | pcmp[**i**](https://baidu.com)str[**i**](https://baidu.com) | pcmp[**i**](https://baidu.com)str[**m**](https://baidu.com) |
 
 从上表可以看出，在 `PCMPxSTRx` 指令中，
 
 前面的通配符：
 
-* 如果是 `e` 的话，表示显示的指定输入的字符串的长度，`xmm1` 的长度保存在 `%edx` 寄存器，`xmm2` 的长度保存在 `%eax` 寄存器。
+* 如果是 `e` 的话，表示显示的指定输入的字符串的长度，`arg1` 的长度保存在 `%edx` 寄存器，`arg2` 的长度保存在 `%eax` 寄存器。
 
 * 如果是 `i`，则表示隐式的字符串长度，输入的字符串以终止符 “`\0`” 结束。
 
@@ -111,7 +111,7 @@ pcmpistri  arg1, arg2, imm8
 
 * 如果是 `i`，则表示返回的结果是索引值，即 `IntRes1` 中（二进制）从最高位开始数 (MSB) 或最低位开始数 (LSB) 第一个为 `1` 的索引位置，结果存到 `%ecx` 寄存器。
 
-* 如果是 `m`，则表示返回的结果是一个 `BitMask` (Bit位掩码)，且这个值保存到 `%xmm0` 寄存器中（这里的 `xmm0` 是真实的寄存器名，也就是说会占用 `SSE` 的 `xmm0` 寄存器）。
+* 如果是 `m`，则表示返回的结果是一个 `BitMask` (Bit位或Byte位掩码)，且这个值保存到 `%xmm0` 寄存器中。
 
 注：在 `PCMPxSTRx` 指令的 `AVX` 版 `VPCMPxSTRx` 指令中，前面提到的 `%eax`，`%edx` 寄存器相对应的要换成 `%rax`，`%rdx` 寄存器，而 `%ecx` 寄存器做为返回的索引值，即使在 `AVX` 版下也足够了，所以不变。
 
