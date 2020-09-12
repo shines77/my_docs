@@ -40,7 +40,7 @@ tags: "Intel", "SIMD", "SSE 4.2", "PCMPxSTRx", "PCMPISTRI", "PCMPISTRM", "字符
 
 那么，`PCMPxSTRx` 指令到底能干什么？工作原理呢？
 
-它可以一次性对一组字符(串)（16个Bytes或8个Word）与另一组字符(串)（16个Bytes或8个Word）同时作比较，也就是说这一条指令一次可以最多做 "`16 × 16 = 256`" 次的 `单字符` 比较。虽然它没有采取任何优化算法，但是由于硬件指令的暴力并行，还是能对字符串匹配、搜索和比较的性能产生巨大的提升。
+它可以一次性对一组字符(串)（16个Byte或8个Word）与另一组字符(串)（16个Byte或8个Word）同时作比较，也就是说这一条指令一次可以最多做 "`16 × 16 = 256`" 次的 `单字符` 比较。虽然它没有采取任何优化算法，但是由于硬件指令的暴力并行，还是能对字符串匹配、搜索和比较的性能产生巨大的提升。
 
 我们以最常用、最有价值的 `Equal Ordered`（顺序相等）模式为例，大致的工作原理如下：
 
@@ -158,17 +158,17 @@ pcmpistri  arg1, arg2, imm8
 `pcmpistri` 指令等效的 `Intel C/C++ Compiler Intrinsic` 函数声明是：
 
 ```c
-int     _mm_cmpistri (__m128i a, __m128i b, const int mode);
+int _mm_cmpistri (__m128i a, __m128i b, const int mode);
 ```
 
 等效的用于读取 `EFlag` 结果的 `Intel C/C++ Compiler Intrinsics` 函数声明是：
 
 ```c
-int     _mm_cmpistra (__m128i a, __m128i b, const int mode);
-int     _mm_cmpistrc (__m128i a, __m128i b, const int mode);
-int     _mm_cmpistro (__m128i a, __m128i b, const int mode);
-int     _mm_cmpistrs (__m128i a, __m128i b, const int mode);
-int     _mm_cmpistrz (__m128i a, __m128i b, const int mode);
+int _mm_cmpistra (__m128i a, __m128i b, const int mode);
+int _mm_cmpistrc (__m128i a, __m128i b, const int mode);
+int _mm_cmpistro (__m128i a, __m128i b, const int mode);
+int _mm_cmpistrs (__m128i a, __m128i b, const int mode);
+int _mm_cmpistrz (__m128i a, __m128i b, const int mode);
 ```
 
 ## R. StringMatch
