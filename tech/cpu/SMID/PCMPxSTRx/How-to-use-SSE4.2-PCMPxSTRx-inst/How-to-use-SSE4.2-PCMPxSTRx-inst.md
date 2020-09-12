@@ -49,8 +49,8 @@ tags: "Intel", "SIMD", "SSE 4.2", "PCMPxSTRx", "PCMPISTRI", "PCMPISTRM", "字符
 上图所示指令的 `C/C++` 伪代码如下：
 
 ```c
-char * operand1 = "We";
-char * operand2 = "WhenWeWillBeWed!"
+char * arg1 = "We";
+char * arg2 = "WhenWeWillBeWed!"
 
 // imm8 = 0x0C
 uint8_t imm8 = _SIDD_UBYTE_OPS |
@@ -59,18 +59,22 @@ uint8_t imm8 = _SIDD_UBYTE_OPS |
      _SIDD_LEAST_SIGNIFICANT;
 
 // pcmpistri  xmm1, xmm2, 0x0C
-int index = _mm_cmpistri(operand1, operand2, imm8);
+int index = _mm_cmpistri(arg1, arg2, imm8);
 ```
 
 详细分析：
 
-* `Equal Ordered` = 0x0C，imm[3:2] = 11b，判断 `operand1` 是否是 `operand2` 的子串。
+* `Equal Ordered` = 0x0C，imm[3:2] = 11b，判断 `arg1` 是否是 `arg2` 的子串。
 
 ```c
-operand2 = "WhenWeWillBeWed!"
-operand1 = "We"
+arg2     = "WhenWeWillBeWed!"
+arg1     = "We"
 IntRes1  =  0000100000001000 (b)
-index    =  4 (从左边最低位开始数，第一个 "1" 的索引值是 4 ，索引从 0 开始计数)
+
+// 从左边最低位开始数,
+// 第一个 "1" 的索引值是 4,
+// 索引从 0 开始计数
+index    =  4
 ```
 
 我们可以看到 `"WhenWeWillBeWed!"` 中包含了 `"We"` 子串两次，分别是在索引 `4` 和 `12` 的位置（`IntRes1` 从左往右数，在这里 `IntRes1` 是一个 16 个 `bit` 的整形），由于我们指定了 `_SIDD_LEAST_SIGNIFICANT` 参数，即 `LSB` (`Least Significant Bit`，最低有效位)，所以从左边最低位开始数，第一个为 `"1"` 的 `bit` 的索引值是 `4` ，索引从 `0` 开始计数。
@@ -258,7 +262,52 @@ short arg2[8] = L"WhenWeWi";
 
 如果我说，文章写到这里才刚刚开始，你信吗？也许你不信，但的确是事实。
 
-这个部分才是 `PCMPxSTRx` 指令最核心、最关键、最重要的内容。
+这个部分才是 `PCMPxSTRx` 指令最核心、最关键、最重要的内容，通过 imm[3:2] 来设置。
+
+在 `C/C++` 中的定义：
+
+```c
+/*
+ * These defines are used to determine
+ * the comparison operation.
+ */
+#define _SIDD_CMP_EQUAL_ANY     0x00
+#define _SIDD_CMP_RANGES        0x04
+#define _SIDD_CMP_EQUAL_EACH    0x08
+#define _SIDD_CMP_EQUAL_ORDERED 0x0C
+```
+
+* `Equal Any` = 0x00，imm[3:2] = 00b，`arg2` 是否包含 `arg1` 中的任意一个字符？
+
+```c
+arg2     = "You Drive Me Mad"
+arg1     = "aeiouy"
+IntRes1  =  0110001010010010 (b)
+```
+
+* `Ranges` = 0x04，imm[3:2] = 01b，判断 `arg2` 的每一个字符是否在 `arg1` 指定的范围内。
+
+```c
+arg2     = "I'm here because"
+arg1     = "azAZ"
+IntRes1  =  1010111101111111 (b)
+```
+
+* `Equal Each` = 0x08，imm[3:2] = 10b，挨个的比较两个字符串的字符。
+
+```c
+arg1     = "UseFlatAssembler"
+arg2     = "UsingAnAssembler"
+IntRes1  =  1100000111111111 (b)
+```
+
+* `Equal Ordered` = 0x0C，imm[3:2] = 11b，判断 `arg1` 是否是 `arg2` 的子串。
+
+```c
+arg2     = "WhenWeWillBeWed!"
+arg1     = "We"
+IntRes1  =  000010000000100
+```
 
 #### 3.3.3 极性 (Polarity)
 
@@ -292,17 +341,17 @@ pcmpistri  arg1, arg2, imm8
 `pcmpistri` 指令等效的 `Intel C/C++ Compiler Intrinsic` 函数声明是：
 
 ```c
-int _mm_cmpistri (__m128i a, __m128i b, const int mode);
+int _mm_cmpistri(__m128i a, __m128i b, const int mode);
 ```
 
 等效的用于读取 `EFlag` 结果的 `Intel C/C++ Compiler Intrinsics` 函数声明是：
 
 ```c
-int _mm_cmpistra (__m128i a, __m128i b, const int mode);
-int _mm_cmpistrc (__m128i a, __m128i b, const int mode);
-int _mm_cmpistro (__m128i a, __m128i b, const int mode);
-int _mm_cmpistrs (__m128i a, __m128i b, const int mode);
-int _mm_cmpistrz (__m128i a, __m128i b, const int mode);
+int _mm_cmpistra(__m128i a, __m128i b, const int mode);
+int _mm_cmpistrc(__m128i a, __m128i b, const int mode);
+int _mm_cmpistro(__m128i a, __m128i b, const int mode);
+int _mm_cmpistrs(__m128i a, __m128i b, const int mode);
+int _mm_cmpistrz(__m128i a, __m128i b, const int mode);
 ```
 
 ## 6. StringMatch
