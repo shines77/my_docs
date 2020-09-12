@@ -53,8 +53,8 @@ char * operand1 = "We";
 char * operand2 = "WhenWeWillBeWed!"
 
 // imm8 = 0x0C
-uint8_t imm8 = _SIDD_CHAR_OPS | _SIDD_CMP_EQUAL_ORDERED
-    | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+uint8_t imm8 = _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_ORDERED
+     | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
 
 // pcmpistri  xmm1, xmm2, 0x0C
 int index = _mm_cmpistri(operand1, operand2, imm8);
@@ -133,6 +133,112 @@ pcmpistri  arg1, arg2, imm8
 * pcmp[**i**](https://baidu.com)str[**m**](https://baidu.com)：**P**acked **Com**pare **I**mplicit Length **Str**ings, Return **M**ask
 
     * 批量比较隐式长度的字符串，返回掩码
+
+### 3.3 imm8 参数设置
+
+其实，现在才是 `PCMPxSTRx` 指令最核心的地方，也许你觉得有点搞笑，但是这是事实。
+
+这个指令最核心的部分就是 `imm8` 的参数设置了，它决定了指令的具体行为，下面我们来一一详细了解一下。
+
+`imm8` 是什么呢？就是我们前面看到的，`PCMPxSTRx` 系列指令的汇编格式的最后一个参数：
+
+```asm
+pcmpistri  arg1, arg2, imm8
+```
+
+顾名思义，`imm8` 是一个 8 bit 的常量，即 `const uint8_t`，它可以用下面的 5 个部分组合成一个 `imm8` 参数，分别是：
+
+* Byte or Word (字节或者字)
+* Signed or Unsigned (有符合/无符号)
+* Aggregation operation (比较操作)
+* Polarity (极性)
+* Output selection (输出选择)
+
+例如，前面的例子里，定义的 `imm8` 值等于：
+
+```c
+uint8_t imm8 = _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_ORDERED
+     | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+```
+
+（注：这里为了让手机用户[竖版]，省略了 `const` 的声明）
+
+下面，我们来详细介绍一下每个参数的意义。
+
+#### 3.3.1 Byte or Word (字节或者字)
+
+在 `C/C++` 中的定义：
+
+```c
+/*
+ * These defines are used to determine the kind of units to be compared
+ */
+#define _SIDD_UBYTE_OPS                0x00
+#define _SIDD_UWORD_OPS                0x01
+```
+
+* `_SIDD_UBYTE_OPS` = 0x00
+
+`_SIDD_UBYTE_OPS` 表示，`arg1`，`arg2` 中的字符串是 `UBYTE` 类型，也就是 `uint8_t` 或者 `unsigned char` 类型，相当于：
+
+```c
+// 这些都是伪代码, 不要在意语法细节, 看得懂就行
+unsigned char arg1[16] = "We";
+unsigned char arg2[16] = "WhenWeWillBeWed!";
+```
+
+我们大多数时候处理的字符都是 `UBYTE` 或 `SBYTE` 类型，相当于 `std::basic_string<char>`。
+
+* `_SIDD_UWORD_OPS` = 0x01
+
+`_SIDD_UWORD_OPS` 则表示，`arg1`，`arg2` 中的字符串是 `UWORD` 类型，也就是 `uint16_t` 或者 `unsigned short` 类型，相当于：
+
+```c
+unsigned short arg1[8] = L"We";
+unsigned short arg2[8] = L"WhenWeWi";
+```
+
+`UWORD` 或 `SWORD` 类型，最典型的应用就是 `Windows` 编程里的 `Unicode` 编码，也可以称为 “`UTF-16LE`” 编码，一个 `Unicode` 字符的范围是 `0 ~ 65535`，即两个字节表示一个 `WORD`。也就是说，`PCMPxSTRx` 系列指令是支持宽字符的，但一次只能同时比较 8 个 `UWORD` 字符，比 `UBYTE` 少一半。
+
+#### 3.3.2 Signed or Unsigned (有符合/无符号)
+
+在 `C/C++` 中的定义：
+
+```c
+/*
+ * These defines are used to determine the kind of units to be compared
+ */
+#define _SIDD_SBYTE_OPS                0x02
+#define _SIDD_SWORD_OPS                0x03
+```
+
+* _SIDD_SBYTE_OPS = 0x02 相当于：
+
+```c
+char arg1[16] = "We";
+char arg2[16] = "WhenWeWillBeWed!";
+```
+
+* _SIDD_SWORD_OPS = 0x03 相当于：
+
+```c
+short arg1[8] = L"We";
+short arg2[8] = L"WhenWeWi";
+```
+
+上一小节 `3.3.1` 里定义的都是无符号的字符，可这里定义的却都是有符号的字符。
+
+为什么要定义有符号的字符呢？
+
+其实，对于字符处理，一般来说，有符号或无符号都无所谓的，没什么区别。
+
+这里定义为有符号字符，只对下面将要介绍的 `Aggregation operation (比较操作)` 中的 `Ranges` 模式有影响。这种情况下，定义成有符号或无符号字符，是会影响 `Ranges` 的范围下限和上限的比较结果的。
+
+#### 3.3.3 Aggregation operation (比较操作)
+
+#### 3.3.4 Polarity (极性)
+
+#### 3.3.5 Output selection (输出选择)
 
 ## 8. 在 C/C++ 中使用
 
@@ -269,7 +375,8 @@ Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 * 【2】: [Implementing strcmp, strlen, and strstr using SSE 4.2 instructions](https://www.strchr.com/strcmp_and_strlen_using_sse_4.2)
 * 【3】: [sse 4.2带来的优化](https://www.zzsec.org/2013/08/using-sse_4.2/)
 * 【4】: [Intel: Intrinsics Guide](https://software.intel.com/sites/landingpage/IntrinsicsGuide/)
-* 【5】: [x86: PCMPISTRI](https://www.felixcloutier.com/x86/pcmpistri)
-* 【6】: [HJLebbink: /asm-dude/wiki/PCMPISTRI](https://github.com/HJLebbink/asm-dude/wiki/PCMPISTRI)
-* 【7】: [Agner Fog 的优化手册：Optimization manuals](https://www.agner.org/optimize/)
-* 【8】: [x86 汇编指令详解](https://blog.csdn.net/zhu2695/article/details/16812415)
+* 【5】: [如何使用 PCMPxSTRx 指令（日文）](http://www.nminoru.jp/~nminoru/programming/pcmpxstrx.html)
+* 【6】: [x86: PCMPISTRI](https://www.felixcloutier.com/x86/pcmpistri)
+* 【7】: [HJLebbink: /asm-dude/wiki/PCMPISTRI](https://github.com/HJLebbink/asm-dude/wiki/PCMPISTRI)
+* 【8】: [Agner Fog 的优化手册：Optimization manuals](https://www.agner.org/optimize/)
+* 【9】: [x86 汇编指令详解](https://blog.csdn.net/zhu2695/article/details/16812415)
