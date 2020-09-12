@@ -180,7 +180,7 @@ uint8_t imm8 = _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_ORDERED
 `_SIDD_UBYTE_OPS` 表示，`arg1`，`arg2` 中的字符串是 `UBYTE` 类型，也就是 `uint8_t` 或者 `unsigned char` 类型，相当于：
 
 ```c
-// 这些都是伪代码, 不要在意语法细节, 看得懂就行
+// 这些都是伪代码, 不要太在意语法细节
 unsigned char arg1[16] = "We";
 unsigned char arg2[16] = "WhenWeWillBeWed!";
 ```
@@ -374,12 +374,12 @@ Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 
 ## X. 参考文章
 
-* 【1】: [RapidJSON 代码剖析（二）：使用 SSE 4.2 优化字符串扫描](https://zhuanlan.zhihu.com/p/20037058)
-* 【2】: [Implementing strcmp, strlen, and strstr using SSE 4.2 instructions](https://www.strchr.com/strcmp_and_strlen_using_sse_4.2)
-* 【3】: [sse 4.2带来的优化](https://www.zzsec.org/2013/08/using-sse_4.2/)
-* 【4】: [Intel: Intrinsics Guide](https://software.intel.com/sites/landingpage/IntrinsicsGuide/)
-* 【5】: [如何使用 PCMPxSTRx 指令（日文）](http://www.nminoru.jp/~nminoru/programming/pcmpxstrx.html)
-* 【6】: [x86: PCMPISTRI](https://www.felixcloutier.com/x86/pcmpistri)
-* 【7】: [HJLebbink: /asm-dude/wiki/PCMPISTRI](https://github.com/HJLebbink/asm-dude/wiki/PCMPISTRI)
-* 【8】: [Agner Fog 的优化手册：Optimization manuals](https://www.agner.org/optimize/)
-* 【9】: [x86 汇编指令详解](https://blog.csdn.net/zhu2695/article/details/16812415)
+* 【1】 [RapidJSON 代码剖析（二）：使用 SSE 4.2 优化字符串扫描](https://zhuanlan.zhihu.com/p/20037058)
+* 【2】 [Implementing strcmp, strlen, and strstr using SSE 4.2 instructions](https://www.strchr.com/strcmp_and_strlen_using_sse_4.2)
+* 【3】 [sse 4.2带来的优化](https://www.zzsec.org/2013/08/using-sse_4.2/)
+* 【4】 [Intel: Intrinsics Guide](https://software.intel.com/sites/landingpage/IntrinsicsGuide/)
+* 【5】 [如何使用 PCMPxSTRx 指令（日文）](http://www.nminoru.jp/~nminoru/programming/pcmpxstrx.html)
+* 【6】 [x86: PCMPISTRI](https://www.felixcloutier.com/x86/pcmpistri)
+* 【7】 [HJLebbink: /asm-dude/wiki/PCMPISTRI](https://github.com/HJLebbink/asm-dude/wiki/PCMPISTRI)
+* 【8】 [Agner Fog 的优化手册：Optimization manuals](https://www.agner.org/optimize/)
+* 【9】 [x86 汇编指令详解](https://blog.csdn.net/zhu2695/article/details/16812415)
