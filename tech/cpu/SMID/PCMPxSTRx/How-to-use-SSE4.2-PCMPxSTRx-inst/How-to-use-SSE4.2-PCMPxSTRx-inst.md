@@ -120,7 +120,7 @@ pcmpistri  arg1, arg2, imm8
 
 ## 8. 在 C/C++ 中使用
 
-编程的时候使用 `SSE 4.2` 等指令，一般有两种方式。第一种是直接使用汇编，或者编译器的内联汇编。第二种方式，就是 `Intel` 为我们准备的 `Intel C++ 编译器内联函数` (Intel C++ Compiler Intrinsics Function)，直接调用相应的函数就可以了，非常方便，不需要任何汇编知识，同时还支持跨平台，只要是支持 `SSE 4.2` 的 `CPU` ，都可以运行。
+编程调用 `SSE 4.2` 等指令，一般有两种方式。第一种是直接使用汇编，或者编译器的内联汇编。第二种方式，就是 `Intel` 为我们准备的 `Intel C++ 编译器内联函数` (Intel C++ Compiler Intrinsics Function)，直接调用相应的函数就可以了，非常方便，不需要任何汇编知识，同时还支持跨平台，只要是支持 `SSE 4.2` 的 `CPU` ，都可以运行。
 
 `SSE 4.2` 的 `Intel C++ Compiler Intrinsics Function` 头文件是：
 
@@ -128,14 +128,14 @@ pcmpistri  arg1, arg2, imm8
 #include <nmmintrin.h>  // For SSE 4.2
 ```
 
-编译器最低要求：Visual C++ 9.0 (2008)，GCC 4.3.1（建议4.7），Intel C++ Compiler 10.x。
+编译器最低要求：Visual C++ 9.0 (VS 2008)，GCC 4.3.1（建议4.7），Intel C++ Compiler 10.x。
 
 ### 8.1 pcmpistri 指令
 
 汇编指令格式：
 
-```c
-// arg1 = xmm128, arg2 = xmm128/mm128
+```asm
+; arg1 = xmm128, arg2 = xmm128/mm128
 pcmpistri  arg1, arg2, imm8
 ```
 
