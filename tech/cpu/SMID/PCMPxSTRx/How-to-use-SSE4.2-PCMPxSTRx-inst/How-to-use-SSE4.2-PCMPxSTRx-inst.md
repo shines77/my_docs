@@ -182,47 +182,11 @@ uint8_t imm8 = _SIDD_UBYTE_OPS |
      _SIDD_LEAST_SIGNIFICANT;
 ```
 
-下面，我们来详细介绍一下每个参数的意义。
+下面，我们来详细介绍一下每个参数的含义。
 
-#### 3.3.1 Byte or Word (字节或者字)
+#### 3.3.1 元素类型 (Byte or Word/Signed or Unsigned)
 
 每个字符是字节（1个字节）还是字（2个字节）？
-
-在 `C/C++` 中的定义：
-
-```c
-/*
- * These defines are used to determine
- * the kind of units to be compared.
- */
-#define _SIDD_UBYTE_OPS  0x00
-#define _SIDD_UWORD_OPS  0x01
-```
-
-* `_SIDD_UBYTE_OPS` = 0x00
-
-`_SIDD_UBYTE_OPS` 表示，`arg1`，`arg2` 中的字符串是 `UBYTE` 类型，也就是 `uint8_t` 或者 `unsigned char` 类型，相当于：
-
-```c
-// 这些都是伪代码, 不要太在意语法细节
-unsigned char arg1[16] = "We";
-unsigned char arg2[16] = "WhenWeWillBeWed!";
-```
-
-我们大多数时候处理的字符都是 `UBYTE` 或 `SBYTE` 类型，相当于 `std::basic_string<char>`。
-
-* `_SIDD_UWORD_OPS` = 0x01
-
-`_SIDD_UWORD_OPS` 则表示，`arg1`，`arg2` 中的字符串是 `UWORD` 类型，也就是 `uint16_t` 或者 `unsigned short` 类型，相当于：
-
-```c
-unsigned short arg1[8] = L"We";
-unsigned short arg2[8] = L"WhenWeWi";
-```
-
-`UWORD` 或 `SWORD` 类型，最典型的应用就是 `Windows` 编程里的 `Unicode` 编码，也可以称为 “`UTF-16LE`” 编码，一个 `Unicode` 字符的范围是 `0 ~ 65535`，即两个字节表示一个 `WORD`。也就是说，`PCMPxSTRx` 系列指令是支持宽字符的，但一次只能同时比较 8 个 `UWORD` 字符，比 `UBYTE` 少一半。
-
-#### 3.3.2 Signed or Unsigned (有符合/无符号)
 
 数据进行比较时作为无符号整数，或者作为有符号整数来比较？
 
@@ -233,37 +197,62 @@ unsigned short arg2[8] = L"WhenWeWi";
  * These defines are used to determine
  * the kind of units to be compared.
  */
+#define _SIDD_UBYTE_OPS  0x00
+#define _SIDD_UWORD_OPS  0x01
 #define _SIDD_SBYTE_OPS  0x02
 #define _SIDD_SWORD_OPS  0x03
 ```
 
-* _SIDD_SBYTE_OPS = 0x02, 相当于：
+* `_SIDD_UBYTE_OPS` = 0x00，相当于：
+
+```c
+// 这些都是伪代码, 不要太在意语法细节
+unsigned char arg1[16] = "We";
+unsigned char arg2[16] = "WhenWeWillBeWed!";
+```
+
+`_SIDD_UBYTE_OPS` 表示，`arg1`，`arg2` 中的字符串是 `UBYTE` 类型，也就是 `uint8_t` 或者 `unsigned char` 类型。
+
+我们大多数时候处理的字符都是 `UBYTE` 或 `SBYTE` 类型，相当于 `std::basic_string<char>`。
+
+* `_SIDD_UWORD_OPS` = 0x01，相当于：
+
+```c
+unsigned short arg1[8] = L"We";
+unsigned short arg2[8] = L"WhenWeWi";
+```
+
+`_SIDD_UWORD_OPS` 则表示，`arg1`，`arg2` 中的字符串是 `UWORD` 类型，也就是 `uint16_t` 或者 `unsigned short` 类型。
+
+`UWORD` 或 `SWORD` 类型，最典型的应用就是 `Windows` 编程里的 `Unicode` 编码，也可以称为 “`UTF-16LE`” 编码，一个 `Unicode` 字符的范围是 `0 ~ 65535`，即两个字节表示一个 `WORD`。也就是说，`PCMPxSTRx` 系列指令是支持宽字符的，但一次只能同时比较 8 个 `UWORD` 字符，比 `UBYTE` 少一半。
+
+* `_SIDD_SBYTE_OPS` = 0x02，相当于：
 
 ```c
 char arg1[16] = "We";
 char arg2[16] = "WhenWeWillBeWed!";
 ```
 
-* _SIDD_SWORD_OPS = 0x03, 相当于：
+* `_SIDD_SWORD_OPS` = 0x03，相当于：
 
 ```c
 short arg1[8] = L"We";
 short arg2[8] = L"WhenWeWi";
 ```
 
-上一小节 `3.3.1` 里定义的都是无符号的字符，可这里定义的却都是有符号的字符。
+前面两种都是无符号的字符，后面两种都是有符号的字符。
 
 为什么要定义有符号的字符呢？
 
-其实，对于字符处理，一般来说，有符号或无符号都无所谓的，没什么区别。
+其实，对于字符处理，一般来说，有符号或无符号都是没区别的，除了用做下标的时候。
 
 这里定义为有符号字符，只对下面将要介绍的 `Aggregation operation (比较操作)` 中的 `Ranges` 模式有影响。这种情况下，定义成有符号或无符号字符，是会影响 `Ranges` 的范围下限和上限的比较结果的。
 
 **参数互斥**
 
-有一点需要注意的是，`UBYTE`，`SBYTE`，`UWORD`，`SWORD` 的设置是互斥的，不能同时指定 `UBYTE` 和 `UWORD`，如果这样做了，程序可能会报异常（我猜的）。这个原理对于下面的其他参数也是类似的，同一类的参数都是互斥的，只能选择其中一个参数。
+有一点需要注意的是，`UBYTE`，`SBYTE`，`UWORD`，`SWORD` 四个值是互斥的，不能同时指定 `UBYTE` 和 `UWORD`，如果这样做了，程序可能会报异常（我猜的）。这个原理对于下面的其他参数也是类似的，同一类的参数都是互斥的，只能选择其中一个参数。
 
-#### 3.3.3 Aggregation operation (比较操作)
+#### 3.3.2 比较操作 (Aggregation operation)
 
 你想如何比较每个字符？
 
@@ -271,11 +260,11 @@ short arg2[8] = L"WhenWeWi";
 
 这个部分才是 `PCMPxSTRx` 指令最核心、最关键、最重要的内容。
 
-#### 3.3.4 Polarity (极性)
+#### 3.3.3 极性 (Polarity)
 
 我们如何处理每个字符比较的中间结果？
 
-#### 3.3.5 Output selection (输出选择)
+#### 3.3.4 输出选择 (Output selection)
 
 如何在得到中间结果后转换为最终输出结果？
 
