@@ -120,21 +120,21 @@ pcmpistri  arg1, arg2, imm8
 
 ## R. StringMatch
 
-[https://github.cim/shines77/StringMatch/](https://github.cim/shines77/StringMatch/)
+[https://github.com/shines77/StringMatch/](https://github.cim/shines77/StringMatch/)
 
 ```shell
   Algorithm Name           CheckSum       Preprocessing   Search Time    Full Search Time
 ---------------------------------------------------------------------------------------------
-  strstr()                 234204586          -----         54.225 ms       -----   
-  strstr_sse42()           234204586          -----         60.507 ms       -----   
-  strstr_sse42_v2()        234204586          -----         67.754 ms       -----   
-  strstr_glibc()           234204586          -----        623.744 ms       -----   
-  strstr_glibc_old()       234204586          -----        325.252 ms       -----   
-  my_strstr()              234204586          -----        473.050 ms       -----   
+  strstr()                 234204586          -----         54.225 ms       -----
+  strstr_sse42()           234204586          -----         60.507 ms       -----
+  strstr_sse42_v2()        234204586          -----         67.754 ms       -----
+  strstr_glibc()           234204586          -----        623.744 ms       -----
+  strstr_glibc_old()       234204586          -----        325.252 ms       -----
+  my_strstr()              234204586          -----        473.050 ms       -----
 
-  memmem()                 234204586          -----        390.299 ms       -----   
+  memmem()                 234204586          -----        390.299 ms       -----
 
-  std::search()            234204586          -----        230.211 ms       -----   
+  std::search()            234204586          -----        230.211 ms       -----
 
   Kmp                      234204586         97.362 ms     517.164 ms     614.526 ms
   Kmp (Standard)           234204586        125.345 ms    1767.437 ms    1892.782 ms
