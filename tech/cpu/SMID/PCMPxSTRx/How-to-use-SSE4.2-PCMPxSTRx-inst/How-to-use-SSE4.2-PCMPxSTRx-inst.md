@@ -22,9 +22,9 @@ tags: "Intel", "SIMD", "SSE 4.2", "PCMPxSTRx", "PCMPISTRI", "PCMPISTRM", "字符
 
 * 用于字符或文字处理的 `PCMPxSTRx` 系列指令
 * 用于校验或者哈希的 `CRC32` 系列指令
-* 用于批量的 `64位` 数据比较的 `_mm_cmpgt_epi64()` 指令（这个是填以前的坑的，因为 `SSE 4.2` 之前没实现）
+* 用于 `64位` 批量数据比较的 `_mm_cmpgt_epi64()` 指令（这个是在填以前的坑，只有一条指令）
 
-忽略第 `3` 类那条填旧坑的指令（而且也只有一条而已），`SSE 4.2` 其实只有 `PCMPxSTRx` 和 `CRC32` 两大类，其中绝大部分都是 `PCMPxSTRx` 指令。所以，如果你认为 `PCMPxSTRx` 就是 `SSE 4.2` 指令集的代表，也不为过。
+除去第 `3` 类那条填旧坑的指令，`SSE 4.2` 其实只有 `PCMPxSTRx` 和 `CRC32` 两个大类，其中绝大部分都是 `PCMPxSTRx` 指令。所以，`PCMPxSTRx` 指令是 `SSE 4.2` 指令集的 “主角” 。
 
 下图中，以 `_mm_cmpestr` 和 `_mm_cmpistr` 开头的函数都是 `PCMPxSTRx` 指令。
 
