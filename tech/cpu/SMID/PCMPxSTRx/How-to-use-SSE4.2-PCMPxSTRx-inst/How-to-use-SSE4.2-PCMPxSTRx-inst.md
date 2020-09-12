@@ -155,11 +155,10 @@ pcmpistri  arg1, arg2, imm8
 例如，前面的例子里，定义的 `imm8` 值等于：
 
 ```c
+// 为了照顾手机用户看到更多代码, 省略了const声明, 下同
 uint8_t imm8 = _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_ORDERED
      | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
 ```
-
-（注：这里为了让手机用户[竖版]，省略了 `const` 的声明）
 
 下面，我们来详细介绍一下每个参数的意义。
 
@@ -169,10 +168,11 @@ uint8_t imm8 = _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_ORDERED
 
 ```c
 /*
- * These defines are used to determine the kind of units to be compared
+ * These defines are used to determine
+ * the kind of units to be compared.
  */
-#define _SIDD_UBYTE_OPS                0x00
-#define _SIDD_UWORD_OPS                0x01
+#define _SIDD_UBYTE_OPS  0x00
+#define _SIDD_UWORD_OPS  0x01
 ```
 
 * `_SIDD_UBYTE_OPS` = 0x00
@@ -204,20 +204,21 @@ unsigned short arg2[8] = L"WhenWeWi";
 
 ```c
 /*
- * These defines are used to determine the kind of units to be compared
+ * These defines are used to determine
+ * the kind of units to be compared.
  */
-#define _SIDD_SBYTE_OPS                0x02
-#define _SIDD_SWORD_OPS                0x03
+#define _SIDD_SBYTE_OPS  0x02
+#define _SIDD_SWORD_OPS  0x03
 ```
 
-* _SIDD_SBYTE_OPS = 0x02 相当于：
+* _SIDD_SBYTE_OPS = 0x02, 相当于：
 
 ```c
 char arg1[16] = "We";
 char arg2[16] = "WhenWeWillBeWed!";
 ```
 
-* _SIDD_SWORD_OPS = 0x03 相当于：
+* _SIDD_SWORD_OPS = 0x03, 相当于：
 
 ```c
 short arg1[8] = L"We";
@@ -234,9 +235,9 @@ short arg2[8] = L"WhenWeWi";
 
 #### 3.3.3 Aggregation operation (比较操作)
 
-也许我说，文章写到这里才刚刚开始，你信吗？也许你不太想信，但的确是事实。
+也许我说，文章写到这里才刚刚开始，你信吗？也许你不信，但的确是事实。
 
-这才是 `PCMPxSTRx` 指令最核心、最关键、最重要的内容。
+这个部分才是 `PCMPxSTRx` 指令最核心、最关键、最重要的内容。
 
 #### 3.3.4 Polarity (极性)
 
