@@ -118,6 +118,43 @@ pcmpistri  arg1, arg2, imm8
 
 注：在 `PCMPxSTRx` 指令的 `AVX` 版 `VPCMPxSTRx` 指令中，前面提到的 `%eax`，`%edx` 寄存器相对应的要换成 `%rax`，`%rdx` 寄存器，而 `%ecx` 寄存器做为返回的索引值，即使在 `AVX` 版下也足够了，所以不变。
 
+## 8. 在 C/C++ 中使用
+
+编程的时候使用 `SSE 4.2` 等指令，一般有两种方式。第一种是直接使用汇编，或者编译器的内联汇编。第二种方式，就是 `Intel` 为我们准备的 `Intel C++ 编译器内联函数` (Intel C++ Compiler Intrinsics Function)，直接调用相应的函数就可以了，非常方便，不需要任何汇编知识，同时还支持跨平台，只要是支持 `SSE 4.2` 的 `CPU` ，都可以运行。
+
+`SSE 4.2` 的 `Intel C++ Compiler Intrinsics Function` 头文件是：
+
+```c
+#include <nmmintrin.h>  // For SSE 4.2
+```
+
+编译器最低要求：Visual C++ 9.0 (2008)，GCC 4.3.1（建议4.7），Intel C++ Compiler 10.x。
+
+### 8.1 pcmpistri 指令
+
+汇编指令格式：
+
+```c
+// arg1 = xmm128, arg2 = xmm128/mm128
+pcmpistri  arg1, arg2, imm8
+```
+
+`pcmpistri` 指令等效的 `Intel C/C++ Compiler Intrinsic` 函数声明是：
+
+```c
+int     _mm_cmpistri (__m128i a, __m128i b, const int mode);
+```
+
+等效的用于读取 `EFlag` 结果的 `Intel C/C++ Compiler Intrinsics` 函数声明是：
+
+```c
+int     _mm_cmpistra (__m128i a, __m128i b, const int mode);
+int     _mm_cmpistrc (__m128i a, __m128i b, const int mode);
+int     _mm_cmpistro (__m128i a, __m128i b, const int mode);
+int     _mm_cmpistrs (__m128i a, __m128i b, const int mode);
+int     _mm_cmpistrz (__m128i a, __m128i b, const int mode);
+```
+
 ## R. StringMatch
 
 [https://github.com/shines77/StringMatch/](https://github.cim/shines77/StringMatch/)
@@ -156,17 +193,17 @@ Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 
 ## X. 附录
 
-### X.1 标志位
+### X.1 标志位寄存器
 
-标志位寄存器描述了最近的算数或逻辑操作的属性。
+`标志位寄存器` 描述了最近的 `算数` 或 `逻辑操作` 的属性。
 
-* CF：进位标志，最高位产生了进位，可用于检查无符号数溢出。
+* `CF`：进位标志，最高位产生了进位，可用于检查无符号数溢出。
 
-* OF：溢出标志，二进制补码溢出 -- 正溢出或负溢出。
+* `OF`：溢出标志，二进制补码溢出 -- 正溢出或负溢出。
 
-* ZF：零标志，结果为 0。
+* `ZF`：零标志，结果为 0。
 
-* SF：符号标志，符号位为 `0` 则为 0，符号位为 `1` 则为 1。
+* `SF`：符号标志，符号位为 `0` 则为 0，符号位为 `1` 则为 1。
 
 ### X.2 访问条件码指令
 
@@ -218,4 +255,5 @@ Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 * 【4】: [Intel: Intrinsics Guide](https://software.intel.com/sites/landingpage/IntrinsicsGuide/)
 * 【5】: [x86: PCMPISTRI](https://www.felixcloutier.com/x86/pcmpistri)
 * 【6】: [HJLebbink: /asm-dude/wiki/PCMPISTRI](https://github.com/HJLebbink/asm-dude/wiki/PCMPISTRI)
-* 【7】: [x86 汇编指令详解](https://blog.csdn.net/zhu2695/article/details/16812415)
+* 【7】: [Agner Fog 的优化手册：Optimization manuals](https://www.agner.org/optimize/)
+* 【8】: [x86 汇编指令详解](https://blog.csdn.net/zhu2695/article/details/16812415)
