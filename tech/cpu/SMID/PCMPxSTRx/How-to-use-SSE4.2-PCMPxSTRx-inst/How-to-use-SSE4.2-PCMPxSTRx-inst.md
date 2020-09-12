@@ -118,21 +118,25 @@ pcmpistri  arg1, arg2, imm8
 
 所以，这四条指令的含义，列表如下：
 
-* pcmp[**e**](https://baidu.com)str[**i**](https://baidu.com)：**P**acked **Com**pare **E**xplicit Length **Str**ings, Return **I**ndex
+* pcmp[**e**](https://baidu.com)str[**i**](https://baidu.com)：
 
-    * 批量比较显式指定长度的字符串，返回索引值
+    * **P**acked **Com**pare **E**xplicit Length **Str**ings, Return **I**ndex
+    *  (批量比较显式指定长度的字符串，返回索引值)
 
-* pcmp[**e**](https://baidu.com)str[**m**](https://baidu.com)：**P**acked **Com**pare **E**xplicit Length **Str**ings, Return **M**ask
+* pcmp[**e**](https://baidu.com)str[**m**](https://baidu.com)：
 
-    * 批量比较显式指定长度的字符串，返回掩码
+    * **P**acked **Com**pare **E**xplicit Length **Str**ings, Return **M**ask
+    * (批量比较显式指定长度的字符串，返回掩码)
 
-* pcmp[**i**](https://baidu.com)str[**i**](https://baidu.com)：**P**acked **Com**pare **I**mplicit Length **Str**ings, Return **I**ndex
+* pcmp[**i**](https://baidu.com)str[**i**](https://baidu.com)：
 
-    * 批量比较隐式长度的字符串，返回索引值
+    * **P**acked **Com**pare **I**mplicit Length **Str**ings, Return **I**ndex
+    * (批量比较隐式长度的字符串，返回索引值)
 
-* pcmp[**i**](https://baidu.com)str[**m**](https://baidu.com)：**P**acked **Com**pare **I**mplicit Length **Str**ings, Return **M**ask
+* pcmp[**i**](https://baidu.com)str[**m**](https://baidu.com)：
 
-    * 批量比较隐式长度的字符串，返回掩码
+    * **P**acked **Com**pare **I**mplicit Length **Str**ings, Return **M**ask
+    * (批量比较隐式长度的字符串，返回掩码)
 
 ### 3.3 imm8 参数设置
 
