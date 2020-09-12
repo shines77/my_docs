@@ -36,9 +36,9 @@ sudo: add-apt-repository: command not found
 
 `Ubuntu 14.04` 系统默认安装的版本是 `gcc-4.8`，`Ubuntu 16.04` 系统默认安装的版本是 `gcc-5.4`，过于老旧，可以先安装默认的版本，接着再安装 `gcc-6`、`gcc-7` 等等！
 
-如果原来已经做过 `gcc` 和 `g++` 的 `update-alternatives`，并先保留原来的设置，该步骤可以跳过。
+如果原来已经做过 `gcc` 和 `g++` 的 `update-alternatives`，并想保留原来的设置，则该步骤可以跳过。
 
-但如果你觉得原先的设置存在问题，可以用如下的命令清除原来的设置。
+但如果你觉得原先的设置存在问题，可以用下面的命令清除原来的设置。
 
 删除所有的 `/usr/bin/gcc` 和 `/usr/bin/g++` 的重定向 `link`：
 
@@ -129,7 +129,7 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 93 --slave /u
 sudo update-alternatives --config gcc
 ```
 
-例如，有 4 个候选项可用于替换 `gcc` （默认路径 `/usr/bin/gcc`），如下所示：
+例如，有 5 个候选项可用于替换 `gcc` （默认路径 `/usr/bin/gcc`），如下所示：
 
 ```shell
   选择       路径            优先级  状态
