@@ -53,8 +53,10 @@ char * operand1 = "We";
 char * operand2 = "WhenWeWillBeWed!"
 
 // imm8 = 0x0C
-uint8_t imm8 = _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_ORDERED
-     | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+uint8_t imm8 = _SIDD_UBYTE_OPS |
+     _SIDD_CMP_EQUAL_ORDERED |
+     _SIDD_POSITIVE_POLARITY |
+     _SIDD_LEAST_SIGNIFICANT;
 
 // pcmpistri  xmm1, xmm2, 0x0C
 int index = _mm_cmpistri(operand1, operand2, imm8);
@@ -121,22 +123,22 @@ pcmpistri  arg1, arg2, imm8
 * pcmp[**e**](https://baidu.com)str[**i**](https://baidu.com)：
 
     * **P**acked **Com**pare **E**xplicit Length **Str**ings, Return **I**ndex
-    *  (批量比较显式指定长度的字符串，返回索引值)
+    *  批量比较显式指定长度的字符串，返回索引值
 
 * pcmp[**e**](https://baidu.com)str[**m**](https://baidu.com)：
 
     * **P**acked **Com**pare **E**xplicit Length **Str**ings, Return **M**ask
-    * (批量比较显式指定长度的字符串，返回掩码)
+    * 批量比较显式指定长度的字符串，返回掩码
 
 * pcmp[**i**](https://baidu.com)str[**i**](https://baidu.com)：
 
     * **P**acked **Com**pare **I**mplicit Length **Str**ings, Return **I**ndex
-    * (批量比较隐式长度的字符串，返回索引值)
+    * 批量比较隐式长度的字符串，返回索引值
 
 * pcmp[**i**](https://baidu.com)str[**m**](https://baidu.com)：
 
     * **P**acked **Com**pare **I**mplicit Length **Str**ings, Return **M**ask
-    * (批量比较隐式长度的字符串，返回掩码)
+    * 批量比较隐式长度的字符串，返回掩码
 
 ### 3.3 imm8 参数设置
 
@@ -151,22 +153,40 @@ pcmpistri  arg1, arg2, imm8
 顾名思义，`imm8` 是一个 8 bit 的常量，即 `const uint8_t`，它可以用下面的 5 个部分组合成一个 `imm8` 参数，分别是：
 
 * Byte or Word (字节或者字)
+
+    每个字符是字节（1个字节）还是字（2个字节）？
+  
 * Signed or Unsigned (有符合/无符号)
+
+    数据进行比较时作为无符号整数，或者作为有符号整数来比较？
+
 * Aggregation operation (比较操作)
+  
+    你想如何比较每个字符？
+
 * Polarity (极性)
+
+    我们如何处理每个字符比较的中间结果？
+
 * Output selection (输出选择)
+
+    如何在得到中间结果后转换为最终输出结果？
 
 例如，前面的例子里，定义的 `imm8` 值等于：
 
 ```c
-// 为了照顾手机用户看到更多代码, 省略了const声明, 下同
-uint8_t imm8 = _SIDD_UBYTE_OPS | _SIDD_CMP_EQUAL_ORDERED
-     | _SIDD_POSITIVE_POLARITY | _SIDD_LEAST_SIGNIFICANT;
+// 为了照顾手机用户, 省略了const声明, 下同
+uint8_t imm8 = _SIDD_UBYTE_OPS |
+     _SIDD_CMP_EQUAL_ORDERED |
+     _SIDD_POSITIVE_POLARITY |
+     _SIDD_LEAST_SIGNIFICANT;
 ```
 
 下面，我们来详细介绍一下每个参数的意义。
 
 #### 3.3.1 Byte or Word (字节或者字)
+
+每个字符是字节（1个字节）还是字（2个字节）？
 
 在 `C/C++` 中的定义：
 
@@ -204,6 +224,8 @@ unsigned short arg2[8] = L"WhenWeWi";
 
 #### 3.3.2 Signed or Unsigned (有符合/无符号)
 
+数据进行比较时作为无符号整数，或者作为有符号整数来比较？
+
 在 `C/C++` 中的定义：
 
 ```c
@@ -237,17 +259,27 @@ short arg2[8] = L"WhenWeWi";
 
 这里定义为有符号字符，只对下面将要介绍的 `Aggregation operation (比较操作)` 中的 `Ranges` 模式有影响。这种情况下，定义成有符号或无符号字符，是会影响 `Ranges` 的范围下限和上限的比较结果的。
 
+**参数互斥**
+
+有一点需要注意的是，`UBYTE`，`SBYTE`，`UWORD`，`SWORD` 的设置是互斥的，不能同时指定 `UBYTE` 和 `UWORD`，如果这样做了，程序可能会报异常（我猜的）。这个原理对于下面的其他参数也是类似的，同一类的参数都是互斥的，只能选择其中一个参数。
+
 #### 3.3.3 Aggregation operation (比较操作)
 
-也许我说，文章写到这里才刚刚开始，你信吗？也许你不信，但的确是事实。
+你想如何比较每个字符？
+
+如果我说，文章写到这里才刚刚开始，你信吗？也许你不信，但的确是事实。
 
 这个部分才是 `PCMPxSTRx` 指令最核心、最关键、最重要的内容。
 
 #### 3.3.4 Polarity (极性)
 
+我们如何处理每个字符比较的中间结果？
+
 #### 3.3.5 Output selection (输出选择)
 
-## 8. 在 C/C++ 中使用
+如何在得到中间结果后转换为最终输出结果？
+
+## 5. 在 C/C++ 中使用
 
 编程调用 `SSE 4.2` 等指令，一般有两种方式。第一种是直接使用汇编，或者编译器的内联汇编。第二种方式，就是 `Intel` 为我们准备的 `Intel C++ 编译器内联函数` (Intel C++ Compiler Intrinsics Function)，直接调用相应的函数就可以了，非常方便，不需要任何汇编知识，同时还支持跨平台，只要是支持 `SSE 4.2` 的 `CPU` ，都可以运行。
 
@@ -259,7 +291,7 @@ short arg2[8] = L"WhenWeWi";
 
 编译器最低要求：Visual C++ 9.0 (VS 2008)，GCC 4.3.1（建议4.7），Intel C++ Compiler 10.x。
 
-### 8.1 pcmpistri 指令
+### 5.1 pcmpistri 指令
 
 汇编指令格式：
 
@@ -284,7 +316,7 @@ int _mm_cmpistrs (__m128i a, __m128i b, const int mode);
 int _mm_cmpistrz (__m128i a, __m128i b, const int mode);
 ```
 
-## R. StringMatch
+## 6. StringMatch
 
 [https://github.com/shines77/StringMatch/](https://github.cim/shines77/StringMatch/)
 
@@ -320,9 +352,9 @@ int _mm_cmpistrz (__m128i a, __m128i b, const int mode);
 
 Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 
-## X. 附录
+## 7. 附录
 
-### X.1 标志位寄存器
+### 7.1 标志位寄存器
 
 `标志位寄存器` 描述了最近的 `算数` 或 `逻辑操作` 的属性。
 
@@ -334,7 +366,7 @@ Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 
 * `SF`：符号标志，符号位为 `0` 则为 0，符号位为 `1` 则为 1。
 
-### X.2 访问条件码指令
+### 7.2 访问条件码指令
 
 | 指令    | 同义名 | 效果                | 设置条件             |
 | :------ | :----- | :------------------ | :------------------- |
@@ -351,7 +383,7 @@ Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 | setb D  | setnae | D = CF              | 低于(无符号<)        |
 | setbe D | setna  | D = CF \| ZF        | 低于或等于(无符号<=) |
 
-### X.3 跳转指令
+### 7.3 跳转指令
 
 | 指令         | 同义名   | 跳转条件         | 描述                 |
 | :----------- | :------- | :--------------- | :------------------- |
@@ -376,7 +408,7 @@ Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 | jp           | jpe      |                  | 奇偶性为偶数时       |
 | jnp          | jnpe     |                  | 奇偶性为奇数时       |
 
-## X. 参考文章
+## 8. 参考文章
 
 * 【1】 [RapidJSON 代码剖析（二）：使用 SSE 4.2 优化字符串扫描](https://zhuanlan.zhihu.com/p/20037058)
 * 【2】 [Implementing strcmp, strlen, and strstr using SSE 4.2 instructions](https://www.strchr.com/strcmp_and_strlen_using_sse_4.2)
