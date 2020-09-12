@@ -118,6 +118,42 @@ pcmpistri  arg1, arg2, imm8
 
 注：在 `PCMPxSTRx` 指令的 `AVX` 版 `VPCMPxSTRx` 指令中，前面提到的 `%eax`，`%edx` 寄存器相对应的要换成 `%rax`，`%rdx` 寄存器，而 `%ecx` 寄存器做为返回的索引值，即使在 `AVX` 版下也足够了，所以不变。
 
+## R. StringMatch
+
+[https://github.cim/shines77/StringMatch/](https://github.cim/shines77/StringMatch/)
+
+```shell
+  Algorithm Name           CheckSum       Preprocessing   Search Time    Full Search Time
+---------------------------------------------------------------------------------------------
+  strstr()                 234204586          -----         54.225 ms       -----   
+  strstr_sse42()           234204586          -----         60.507 ms       -----   
+  strstr_sse42_v2()        234204586          -----         67.754 ms       -----   
+  strstr_glibc()           234204586          -----        623.744 ms       -----   
+  strstr_glibc_old()       234204586          -----        325.252 ms       -----   
+  my_strstr()              234204586          -----        473.050 ms       -----   
+
+  memmem()                 234204586          -----        390.299 ms       -----   
+
+  std::search()            234204586          -----        230.211 ms       -----   
+
+  Kmp                      234204586         97.362 ms     517.164 ms     614.526 ms
+  Kmp (Standard)           234204586        125.345 ms    1767.437 ms    1892.782 ms
+
+  BoyerMoore               234204586        339.573 ms     433.063 ms     772.637 ms
+  BM Tuned                 234204586         56.944 ms     389.176 ms     446.120 ms
+  Sunday                   234204586         52.003 ms     295.160 ms     347.163 ms
+  Horspool                 234204586         49.826 ms     333.458 ms     383.283 ms
+  QuickSearch              234204586         53.343 ms     310.861 ms     364.205 ms
+
+  ShiftAnd                 234204586         79.371 ms     836.070 ms     915.441 ms
+  ShiftOr                  234204586         63.126 ms     450.558 ms     513.684 ms
+  Rabin-Karp 2             234204586         41.011 ms     547.331 ms     588.342 ms
+  Rabin-Karp 31            234204586         30.051 ms     924.236 ms     954.287 ms
+---------------------------------------------------------------------------------------------
+```
+
+Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
+
 ## X. 附录
 
 ### X.1 标志位
