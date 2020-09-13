@@ -67,14 +67,14 @@ int index = _mm_cmpistri(arg1, arg2, imm8);
 * `Equal Ordered` = 0x0C，imm[3:2] = 11b，判断 `arg1` 是否是 `arg2` 的子串。
 
 ```c
-arg2     = "WhenWeWillBeWed!"
-arg1     = "We"
-IntRes1  =  0000100000001000 (b)
+arg2    = "WhenWeWillBeWed!"
+arg1    = "We"
+IntRes1 =  0000100000001000 (b)
 
 // 从左边最低位开始数,
 // 第一个 "1" 的索引值是 4,
 // 索引从 0 开始计数
-index    =  4
+index   =  4
 ```
 
 我们可以看到 `"WhenWeWillBeWed!"` 中包含了 `"We"` 子串两次，分别是在索引 `4` 和 `12` 的位置（`IntRes1` 从左往右数，在这里 `IntRes1` 是一个 16 个 `bit` 的整形），由于我们指定了 `_SIDD_LEAST_SIGNIFICANT` 参数，即 `LSB` (`Least Significant Bit`，最低有效位)，所以从左边最低位开始数，第一个为 `"1"` 的 `bit` 的索引值是 `4` ，索引从 `0` 开始计数。
@@ -280,33 +280,33 @@ short arg2[8] = L"WhenWeWi";
 * `Equal Any` = 0x00，imm[3:2] = 00b，`arg2` 是否包含 `arg1` 中的任意一个字符？
 
 ```c
-arg2     = "You Drive Me Mad"
-arg1     = "aeiouy"
-IntRes1  =  0110001010010010 (b)
+arg2    = "You Drive Me Mad"
+arg1    = "aeiouy"
+IntRes1 =  0110001010010010 (b)
 ```
 
 * `Ranges` = 0x04，imm[3:2] = 01b，判断 `arg2` 的每一个字符是否在 `arg1` 指定的范围内。
 
 ```c
-arg2     = "I'm here because"
-arg1     = "azAZ"
-IntRes1  =  1010111101111111 (b)
+arg2    = "I'm here because"
+arg1    = "azAZ"
+IntRes1 =  1010111101111111 (b)
 ```
 
 * `Equal Each` = 0x08，imm[3:2] = 10b，挨个的比较两个字符串的字符。
 
 ```c
-arg1     = "UseFlatAssembler"
-arg2     = "UsingAnAssembler"
-IntRes1  =  1100000111111111 (b)
+arg1    = "UseFlatAssembler"
+arg2    = "UsingAnAssembler"
+IntRes1 =  1100000111111111 (b)
 ```
 
 * `Equal Ordered` = 0x0C，imm[3:2] = 11b，判断 `arg1` 是否是 `arg2` 的子串。
 
 ```c
-arg2     = "WhenWeWillBeWed!"
-arg1     = "We"
-IntRes1  =  000010000000100 (b)
+arg2    = "WhenWeWillBeWed!"
+arg1    = "We"
+IntRes1 =  000010000000100 (b)
 ```
 
 #### 3.3.3 极性 (Polarity)
