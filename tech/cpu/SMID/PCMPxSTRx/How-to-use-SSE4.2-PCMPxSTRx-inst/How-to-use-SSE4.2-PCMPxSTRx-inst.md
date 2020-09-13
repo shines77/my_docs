@@ -645,7 +645,7 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
 }
 ```
 
-## 4.2 Intel 官网伪代码的错误
+### 4.2 Intel 官网伪代码的错误
 
 关于`Intel` 官网的 `_mm_cmpistri()` 伪代码中关于 `dest_index` 的错误问题：
 
