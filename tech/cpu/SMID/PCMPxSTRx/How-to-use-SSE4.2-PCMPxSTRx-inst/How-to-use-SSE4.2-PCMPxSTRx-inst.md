@@ -210,7 +210,7 @@ uint8_t imm8 = _SIDD_UBYTE_OPS |
 * `_SIDD_UBYTE_OPS` = 0x00，相当于：
 
 ```c
-// 这些都是伪代码, 不要太在意语法细节
+// 伪代码, 一些语法细节不纠结，能看懂就行
 unsigned char arg1[16] = "We";
 unsigned char arg2[16] = "WhenWeWillBeWed!";
 ```
@@ -340,20 +340,22 @@ CPUID Flags: SSE 4.2
 `imm8` 可以是以下各项的组合：
 
 ```c
-_SIDD_UBYTE_OPS                // unsigned 8-bit characters
-_SIDD_UWORD_OPS                // unsigned 16-bit characters
-_SIDD_SBYTE_OPS                // signed 8-bit characters
-_SIDD_SWORD_OPS                // signed 16-bit characters
-_SIDD_CMP_EQUAL_ANY            // compare equal any
-_SIDD_CMP_RANGES               // compare ranges
-_SIDD_CMP_EQUAL_EACH           // compare equal each
-_SIDD_CMP_EQUAL_ORDERED        // compare equal ordered
-_SIDD_NEGATIVE_POLARITY        // negate results
-_SIDD_MASKED_NEGATIVE_POLARITY // negate results only before end of string
-_SIDD_LEAST_SIGNIFICANT        // index only: return last significant bit
-_SIDD_MOST_SIGNIFICANT         // index only: return most significant bit
-_SIDD_BIT_MASK                 // mask only: return bit mask
-_SIDD_UNIT_MASK                // mask only: return byte/word mask
+_SIDD_UBYTE_OPS                0x00 // unsigned 8-bit characters
+_SIDD_UWORD_OPS                0x01 // unsigned 16-bit characters
+_SIDD_SBYTE_OPS                0x02 // signed 8-bit characters
+_SIDD_SWORD_OPS                0x03 // signed 16-bit characters
+_SIDD_CMP_EQUAL_ANY            0x00 // compare equal any
+_SIDD_CMP_RANGES               0x04 // compare ranges
+_SIDD_CMP_EQUAL_EACH           0x08 // compare equal each
+_SIDD_CMP_EQUAL_ORDERED        0x0C // compare equal ordered
+_SIDD_POSITIVE_POLARITY        0x00 // posite results
+_SIDD_NEGATIVE_POLARITY        0x10 // negate results
+_SIDD_MASKED_POSITIVE_POLARITY 0x20 // posite results only before end of string
+_SIDD_MASKED_NEGATIVE_POLARITY 0x30 // negate results only before end of string
+_SIDD_LEAST_SIGNIFICANT        0x00 // index only: return last significant bit
+_SIDD_MOST_SIGNIFICANT         0x40 // index only: return most significant bit
+_SIDD_BIT_MASK                 0x00 // mask only: return bit mask
+_SIDD_UNIT_MASK                0x40 // mask only: return byte/word mask
 ```
 
 * 指令执行过程 (Operation)
@@ -361,6 +363,7 @@ _SIDD_UNIT_MASK                // mask only: return byte/word mask
 `C++` 版，伪代码：
 
 ```c
+// 伪代码, 不要太在意细节, 意思到了就行
 template <typename T>
 class BitMap {
 private:
@@ -398,14 +401,23 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
     // compare all characters
     bool aInvalid = 0;
     bool bInvalid = 0;
+
+    // 两层循环, a, b 两个字符的每一个字符都比较一次
     for (size_t i = 0; i <= UpperBound; i++) {
         for (size_t j = 0; j <= UpperBound; j++) {
+            // 当 a[i], b[j] 均为有效字符时, 相等为 1, 不相等为 0
             BoolRes.word[i].bit[j] = (a.byte[i] == b.byte[j]) ? 1 : 0;
 
             // invalidate characters after EOS
+            // EOS (End of sign, '\0' 终止符) 之后的字符都视为无效字符
+
+            // 一旦遇到第一个 '\0' 终止符以后, aInvalid 就永远为 1 了
+            // aInvalid = 1 时, 代表是无效字符
             if (a.byte[i] == 0) {
                 aInvalid = 1;
             }
+            // 一旦遇到第一个 '\0' 终止符以后, bInvalid 就永远为 1 了
+            // bInvalid = 1 时, 代表是无效字符
             if (b.byte[j] == 0) {
                 bInvalid = 1;
             }
@@ -444,9 +456,9 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
                 else if (aInvalid && bInvalid)
                     BoolRes.word[i].bit[j] = 1;
                 break;
-            } // end switch
-        } // end for
-    } // end for
+            } // switch
+        } // for
+    } // for
 
     BitMask<UCharType> IntRes1;
 
@@ -464,10 +476,9 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
         case 0x04:  // Ranges
             IntRes1 = 0;
             for (size_t i = 0; i <= UpperBound; i++) {
-                for (size_t j = 0; j <= UpperBound; j++) {
+                for (size_t j = 0; j <= UpperBound; j += 2) {
                     IntRes1.bit[i] = IntRes1.bit[i] or (BoolRes.word[i].bit[j]
                                                     and BoolRes.word[i].bit[j + 1]);
-                    j += 2;
                 }
             }
             break;
@@ -481,7 +492,7 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
             IntRes1 = ((imm8 & 0x01) ? 0xFF : 0xFFFF);
             for (size_t i = 0; i <= UpperBound; i++) {
                 k = i;
-                for (size_t j = 0; j <= UpperBound; j++) {
+                for (size_t j = 0; j <= (UpperBound - i); j++) {
                     IntRes1.bit[i] = IntRes1.bit[i] and BoolRes.word[k].bit[j];
                     k = k + 1;
                 }
@@ -518,8 +529,6 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
         }
     }
 
-    size_t dest_index;
-
     // output
 
     // 笔者注: 这个地方 Intel 官网的原文档似乎有一个错误,
@@ -528,6 +537,8 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
     // 不然我们辛辛苦苦计算了那么久, 结果求的索引竟然只跟跟输入的 a 有关,
     // 跟中间计算过程都无关, 那么计算那么多干嘛 ??
     // 更详细的说明请看后文.
+
+    size_t dest_index;
 
     if (imm8 & 0x40) {  // most significant bit = 0x00
         // 求最高有效位
@@ -604,7 +615,7 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
             break;
         }
     }
-    SF = aInvalid;
+    bool SF = aInvalid;
 
     // _mm_cmpistrz() 的返回值, 设置 ZF 标志位
     bInvalid = 0;
@@ -614,16 +625,16 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
             break;
         }
     }
-    ZF = bInvalid;
+    bool ZF = bInvalid;
 
     // _mm_cmpistrc() 的返回值, 设置 CF 标志位
-    CF = (IntRes2 != 0);
+    bool CF = (IntRes2 != 0);
 
     // _mm_cmpistro() 的返回值, 设置 OF 标志位
-    OF = IntRes2.bit[0];
+    bool OF = IntRes2.bit[0];
 
     // _mm_cmpistra() 的返回值, 等价于 !CF & ZF
-    A_Result = (IntRes2 == 0) and bInvalid;
+    bool A_Flag = (IntRes2 == 0) and bInvalid;
 
     // 返回 _mm_cmpistri() 的索引值
     return dest_index;
@@ -632,7 +643,7 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
 
 关于`Intel` 官网的 `_mm_cmpistri()` 伪代码中关于 `dest_index` 的错误问题：
 
-请看 [https://www.felixcloutier.com/x86/pcmpistri](https://www.felixcloutier.com/x86/pcmpistri)，他描述是这样的，如下：
+可以看 [https://www.felixcloutier.com/x86/pcmpistri](https://www.felixcloutier.com/x86/pcmpistri)，描述是这样的，如下：
 
 > **Description**
 >
@@ -648,7 +659,7 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
 
 这说明，_mm_cmpistri() 返回的应该是中间结果 IntRes2 的 MSB 或 LSB 索引值，而不是返回 a 输入字符串的 MSB 或 LSB  索引值。
 
-## 5. 在 C/C++ 中使用
+## 4. 在 C/C++ 中使用
 
 编程调用 `SSE 4.2` 等指令，一般有两种方式。第一种是直接使用汇编，或者编译器的内联汇编。第二种方式，就是 `Intel` 为我们准备的 `Intel C++ 编译器内联函数` (Intel C++ Compiler Intrinsics Function)，直接调用相应的函数就可以了，非常方便，不需要任何汇编知识，同时还支持跨平台，只要是支持 `SSE 4.2` 的 `CPU` ，都可以运行。
 
@@ -660,7 +671,7 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
 
 编译器最低要求：Visual C++ 9.0 (VS 2008)，GCC 4.3.1（建议4.7），Intel C++ Compiler 10.x。
 
-### 5.1 pcmpistri 指令
+### 4.1 pcmpistri 指令
 
 汇编指令格式：
 
@@ -685,7 +696,7 @@ int _mm_cmpistrs(__m128i a, __m128i b, const int mode);
 int _mm_cmpistrz(__m128i a, __m128i b, const int mode);
 ```
 
-## 6. StringMatch
+## 5. StringMatch
 
 [https://github.com/shines77/StringMatch/](https://github.cim/shines77/StringMatch/)
 
@@ -751,9 +762,9 @@ int _mm_cmpistrz(__m128i a, __m128i b, const int mode);
 
 Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 
-## 7. 附录
+## 6. 附录
 
-### 7.1 标志位寄存器
+### 6.1 标志位寄存器
 
 `标志位寄存器` 描述了最近的 `算数` 或 `逻辑操作` 的属性。
 
@@ -765,7 +776,7 @@ Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 
 * `SF`：符号标志，符号位为 `0` 则为 0，符号位为 `1` 则为 1。
 
-### 7.2 访问条件码指令
+### 6.2 访问条件码指令
 
 | 指令    | 同义名 | 效果                | 设置条件             |
 | :------ | :----- | :------------------ | :------------------- |
@@ -782,7 +793,7 @@ Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 | setb D  | setnae | D = CF              | 低于(无符号<)        |
 | setbe D | setna  | D = CF \| ZF        | 低于或等于(无符号<=) |
 
-### 7.3 跳转指令
+### 6.3 跳转指令
 
 | 指令         | 同义名   | 跳转条件         | 描述                 |
 | :----------- | :------- | :--------------- | :------------------- |
@@ -807,7 +818,7 @@ Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 | jp           | jpe      |                  | 奇偶性为偶数时       |
 | jnp          | jnpe     |                  | 奇偶性为奇数时       |
 
-## 8. 参考文章
+## 7. 参考文章
 
 * 【1】 [RapidJSON 代码剖析（二）：使用 SSE 4.2 优化字符串扫描](https://zhuanlan.zhihu.com/p/20037058)
 * 【2】 [Implementing strcmp, strlen, and strstr using SSE 4.2 instructions](https://www.strchr.com/strcmp_and_strlen_using_sse_4.2)
@@ -818,3 +829,7 @@ Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 * 【7】 [HJLebbink: /asm-dude/wiki/PCMPISTRI](https://github.com/HJLebbink/asm-dude/wiki/PCMPISTRI)
 * 【8】 [Agner Fog 的优化手册：Optimization manuals](https://www.agner.org/optimize/)
 * 【9】 [x86 汇编指令详解](https://blog.csdn.net/zhu2695/article/details/16812415)
+
+## 8. 更新历史
+
+* 2020/09/13：初始版本。
