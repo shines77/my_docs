@@ -6,7 +6,7 @@ tags: "Intel", "SIMD", "SSE 4.2", "PCMPxSTRx", "PCMPISTRI", "PCMPISTRM", "字符
 
 现代的 `CPU` 大多都提供了 [`单指令流多数据流`](https://zh.wikipedia.org/wiki/%E5%8D%95%E6%8C%87%E4%BB%A4%E6%B5%81%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%B5%81)（`SIMD`，`Single Instruction Multiple Data`）指令集，最常见的是用于大量的浮点数计算。但其实也可以用在文字处理方面，`Intel` 在 `SSE 4.2` 指令集中就加入了字符串处理的指令，这就是 `PCMPxSTRx` 系列指令。
 
-这里简单的介绍一下 `x86` 架构下的 `SIMD`，在 `SSE 4.2` 指令集之前，`Intel` 和 `AMD` 共同维护和开发了 `MMX`，`SSE`，`SSE2`，`SSE3`，`SSEE3`，`SSE4`，`SSE 4.1`，`SSE 4.a`，`3D Now` 等指令集。在 `SSE 4.2` 指令集之后，最新的还有 `SSE 5`，`AVX`，`AVX 2`，`FMA`，`AVX 512` 等等。
+这里简单的介绍一下 x86 架构下的 SIMD，在 `SSE 4.2` 指令集之前，`Intel` 和 `AMD` 共同维护和开发了 MMX，SSE，SSE2，SSE3，SSEE3，SSE4，SSE 4.1，SSE 4.a，3D Now 等指令集。在 `SSE 4.2` 指令集之后，最新的还有 SSE 5，AVX，AVX 2，FMA，AVX 512 等等。
 
 ![Intel Core i7](./images/intel-core-i7.jpg)
 
@@ -22,9 +22,9 @@ tags: "Intel", "SIMD", "SSE 4.2", "PCMPxSTRx", "PCMPISTRI", "PCMPISTRM", "字符
 
 * 用于字符或文字处理的 `PCMPxSTRx` 系列指令
 * 用于校验或者哈希的 `CRC32` 系列指令
-* 用于 `64位` 批量数据比较的 `_mm_cmpgt_epi64()` 指令（这个是在填以前的坑，只有一条指令）
+* 用于 64位 批量数据比较的 `_mm_cmpgt_epi64()` 指令（这个是在填以前的坑，只有一条指令）
 
-除去第 `3` 类那条填旧坑的指令，`SSE 4.2` 其实只有 `PCMPxSTRx` 和 `CRC32` 两个大类，其中绝大部分都是 `PCMPxSTRx` 指令。所以，`PCMPxSTRx` 指令是 `SSE 4.2` 指令集的 “主角” 。
+除去第 3 类那条填旧坑的指令，`SSE 4.2` 其实只有 `PCMPxSTRx` 和 `CRC32` 两个大类，其中绝大部分都是 `PCMPxSTRx` 指令。所以，`PCMPxSTRx` 指令是 `SSE 4.2` 指令集的 “主角” 。
 
 下图中，以 `_mm_cmpestr` 和 `_mm_cmpistr` 开头的函数都是 `PCMPxSTRx` 指令。
 
@@ -77,7 +77,7 @@ IntRes1 =  0000100000001000 (b)
 index   =  4
 ```
 
-我们可以看到 `"WhenWeWillBeWed!"` 中包含了 `"We"` 子串两次，分别是在索引 `4` 和 `12` 的位置（`IntRes1` 从左往右数，在这里 `IntRes1` 是一个 16 个 `bit` 的整形），由于我们指定了 `_SIDD_LEAST_SIGNIFICANT` 参数，即 `LSB` (`Least Significant Bit`，最低有效位)，所以从左边最低位开始数，第一个为 `"1"` 的 `bit` 的索引值是 `4` ，索引从 `0` 开始计数。
+我们可以看到 `"WhenWeWillBeWed!"` 中包含了 `"We"` 子串两次，分别是在索引 4 和 12 的位置（`IntRes1` 从左往右数，在这里 `IntRes1` 是一个 16 个 bit 的整形），由于我们指定了 `_SIDD_LEAST_SIGNIFICANT` 参数，即 `LSB` (`Least Significant Bit`，最低有效位)，所以从左边最低位开始数，第一个为 `"1"` 的 bit 的索引值是 4 ，索引从 0 开始计数。
 
 ### 3.2 指令详解
 
@@ -97,7 +97,7 @@ index   =  4
 pcmpistri  arg1, arg2, imm8
 ```
 
-注：其中 `arg1`，`arg2` 可以是任意的 `SSE 128位` 寄存器 `xmm0` ~ `xmm15`（一共 16 个），`imm8` 是一个 `8bit` 的立即数（常量），用于配置 `pcmpistri` 指令，定义指令具体的执行功能，稍后会详细介绍。常用的值是：imm8 = 0x0C（十六进制）。
+注：其中 `arg1`，`arg2` 可以是任意的 SSE 128位 寄存器 `xmm0` ~ `xmm15`（一共 16 个），`imm8` 是一个 `8bit` 的立即数（常量），用于配置 `pcmpistri` 指令，定义指令具体的执行功能，稍后会详细介绍。常用的值是：imm8 = 0x0C（十六进制）。
 
 那么，这四条指令有什么区别？请看下表，有更清晰的划分：
 
@@ -120,7 +120,7 @@ pcmpistri  arg1, arg2, imm8
 
 * 如果是 `m`，则表示返回的结果是一个 `BitMask` (Bit位或Byte位掩码)，且这个值保存到 `%xmm0` 寄存器中。
 
-注：在 `PCMPxSTRx` 指令的 `AVX` 版 `VPCMPxSTRx` 指令中，前面提到的 `%eax`，`%edx` 寄存器相对应的要换成 `%rax`，`%rdx` 寄存器，而 `%ecx` 寄存器做为返回的索引值，即使在 `AVX` 版下也足够了，所以不变。
+注：在 `PCMPxSTRx` 指令的 AVX 版 `VPCMPxSTRx` 指令中，前面提到的 `%eax`，`%edx` 寄存器相对应的要换成 `%rax`，`%rdx` 寄存器，而 `%ecx` 寄存器做为返回的索引值，即使在 AVX 版下也足够了，所以不变。
 
 所以，这四条指令的含义，列表如下：
 
@@ -215,9 +215,9 @@ unsigned char arg1[16] = "We";
 unsigned char arg2[16] = "WhenWeWillBeWed!";
 ```
 
-`_SIDD_UBYTE_OPS` 表示，`arg1`，`arg2` 中的字符串是 `UBYTE` 类型，也就是 `uint8_t` 或者 `unsigned char` 类型。
+`_SIDD_UBYTE_OPS` 表示，arg1，arg2 中的字符串是 `UBYTE` 类型，也就是 `uint8_t` 或者 `unsigned char` 类型。
 
-我们大多数时候处理的字符都是 `UBYTE` 或 `SBYTE` 类型，相当于 `std::basic_string<char>`。
+我们大多数时候处理的字符都是 `UBYTE` 或 `SBYTE` 类型，相当于 std::basic_string\<char\>。
 
 * `_SIDD_UWORD_OPS` = 0x01，相当于：
 
@@ -226,9 +226,9 @@ unsigned short arg1[8] = L"We";
 unsigned short arg2[8] = L"WhenWeWi";
 ```
 
-`_SIDD_UWORD_OPS` 则表示，`arg1`，`arg2` 中的字符串是 `UWORD` 类型，也就是 `uint16_t` 或者 `unsigned short` 类型。
+`_SIDD_UWORD_OPS` 则表示，arg1，arg2 中的字符串是 `UWORD` 类型，也就是 `uint16_t` 或者 `unsigned short` 类型。
 
-`UWORD` 或 `SWORD` 类型，最典型的应用就是 `Windows` 编程里的 `Unicode` 编码，也可以称为 “`UTF-16LE`” 编码，一个 `Unicode` 字符的范围是 `0 ~ 65535`，即两个字节表示一个 `WORD`。也就是说，`PCMPxSTRx` 系列指令是支持宽字符的，但一次只能同时比较 8 个 `UWORD` 字符，比 `UBYTE` 少一半。
+`UWORD` 或 `SWORD` 类型，最典型的应用就是 Windows 编程里的 `Unicode` 编码，也可以称为 “`UTF-16LE`” 编码，一个 Unicode 字符的范围是 0 ~ 65535，即两个字节表示一个 WORD。也就是说，`PCMPxSTRx` 系列指令是支持宽字符的，但一次只能同时比较 8 个 UWORD 字符，比 UBYTE 少一半。
 
 * `_SIDD_SBYTE_OPS` = 0x02，相当于：
 
@@ -254,7 +254,7 @@ short arg2[8] = L"WhenWeWi";
 
 **参数互斥**
 
-有一点需要注意的是，`UBYTE`，`SBYTE`，`UWORD`，`SWORD` 四个值是互斥的，不能同时指定 `UBYTE` 和 `UWORD`，如果这样做了，程序可能会报异常（我猜的）。这个原理对于下面的其他参数也是类似的，同一类的参数都是互斥的，只能选择其中一个参数。
+有一点需要注意的是，UBYTE，SBYTE，UWORD，SWORD 四个值是互斥的，不能同时指定 `UBYTE` 和 `UWORD`，如果这样做了，程序可能会报异常（我猜的）。这个原理对于下面的其他参数也是类似的，同一类的参数都是互斥的，只能选择其中一个参数。
 
 #### 3.3.2 比较操作 (Aggregation operation)
 
@@ -319,7 +319,7 @@ IntRes1 =  000010000000100 (b)
 
 #### 3.3.5 _mm_cmpistri() 伪代码
 
-以下伪代码参考自：[Intrinsics Guide: SSE 4.2 - _mm_cmpistri\(\)](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=914,956&techs=SSE4_2)
+以下伪代码参考自：[Intrinsics Guide: SSE 4.2 - _mm_cmpistri()](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=914,956&techs=SSE4_2)
 
 ```c
 int _mm_cmpistri(__m128i a, __m128i b, const int imm8);
@@ -335,7 +335,7 @@ CPUID Flags: SSE 4.2
 
 * 描述 (Description)
 
-使用 `imm8` 变量控制，批量的比较具有隐式长度的字符串 `a` 和 `b`，并将生成的 `索引值` 存储在 `dest` 中。
+使用 `imm8` 变量控制，批量的比较具有隐式长度的字符串 a 和 b，并将生成的 `索引值` 存储在 `dest_index` 中。
 
 `imm8` 可以是以下各项的组合：
 
@@ -760,7 +760,13 @@ int _mm_cmpistrz(__m128i a, __m128i b, const int mode);
 ---------------------------------------------------------------------------------------------
 ```
 
-Ubuntu 16.04 Server 64bit (Linux): Intel Dual Xeon E5-2690 v3 @ 2.60GHz
+测试环境：
+
+```bash
+系统  ：Ubuntu 16.04 Server 64bit (Linux)
+CPU   ：Intel Dual Xeon E5-2690 v3 @ 2.60GHz
+编译器：gcc 8.0
+```
 
 ## 6. 附录
 
