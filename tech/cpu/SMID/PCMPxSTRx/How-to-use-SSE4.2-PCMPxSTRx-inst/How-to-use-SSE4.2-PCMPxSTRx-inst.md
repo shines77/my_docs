@@ -306,7 +306,7 @@ IntRes1  =  1100000111111111 (b)
 ```c
 arg2     = "WhenWeWillBeWed!"
 arg1     = "We"
-IntRes1  =  000010000000100
+IntRes1  =  000010000000100 (b)
 ```
 
 #### 3.3.3 极性 (Polarity)
@@ -456,7 +456,7 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
             IntRes1 = 0;
             for (size_t i = 0; i <= UpperBound; i++) {
                 for (size_t j = 0; j <= UpperBound; j++) {
-                    // 从 C++17 开始, 是支持 or, and 操作符的, 这样写更直观一些
+                    // 从 C++17 开始, 是支持 or, and 操作符的, 这样写更直观
                     IntRes1.bit[i] = IntRes1.bit[i] or BoolRes.word[i].bit[j];
                 }
             }
@@ -662,6 +662,36 @@ int _mm_cmpistrz(__m128i a, __m128i b, const int mode);
 ## 6. StringMatch
 
 [https://github.com/shines77/StringMatch/](https://github.cim/shines77/StringMatch/)
+
+```shell
+ Algorithm Name      Search Time
+-----------------------------------
+ strstr()              54.225 ms
+ strstr_sse42()        60.507 ms
+ strstr_sse42_v2()     67.754 ms
+ strstr_glibc()       623.744 ms
+ strstr_glibc_old()   325.252 ms
+ my_strstr()          473.050 ms
+
+ memmem()             390.299 ms
+
+ std::search()        230.211 ms
+
+ Kmp                  517.164 ms
+ Kmp (Standard)      1767.437 ms
+
+ BoyerMoore           433.063 ms
+ BM Tuned             389.176 ms
+ Sunday               295.160 ms
+ Horspool             333.458 ms
+ QuickSearch          310.861 ms
+
+ ShiftAnd             836.070 ms
+ ShiftOr              450.558 ms
+ Rabin-Karp 2         547.331 ms
+ Rabin-Karp 31        924.236 ms
+-----------------------------------
+```
 
 ```shell
   Algorithm Name           CheckSum       Preprocessing   Search Time    Full Search Time
