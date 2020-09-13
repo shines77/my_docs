@@ -386,7 +386,9 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
     typedef typename std::make_unsigned<CharType>::type UCharType;
 
     // Uint size: 8 or 16-bit characters
+    // is (_SIDD_UWORD_OPS = 0x01) ?
     size_t size = ((imm8 & 0x01) ? 16 : 8);
+    // 字符串的最大单元数 (Unit Size)
     size_t UpperBound = (128 / size) - 1;
     // = { 0 } 表示清零初始化
     BoolResult<UCharType> BoolRes = { 0 };
@@ -485,15 +487,17 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
             break;
     }
 
-    // 这个值返回的是 ByteMask
+    // 这个值是处理极性(Polarity)后的结果
     BitMask<UCharType> IntRes2;
 
     // optionally negate results
     bInvalid = 0;
     for (size_t i = 0; i <= UpperBound; i++) {
         // is NEGATIVE_POLARITY ?
+        // 是负极性吗? 要取反吗?
         if (imm8 & 0x10) {  // imm8[4]
             // is a masked POLARITY ?
+            // 是否是一个带掩码的极性设置 ?
             if (imm8 & 0x20) {  // imm8[5], only negate valid
                 if (b.byte[n] == 0) {
                     bInvalid = 1;
@@ -516,7 +520,7 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
 
     // output
     if (imm8 & 0x40) {  // most significant bit = 0x00
-      // 求最高有效位
+        // 求最高有效位
         size_t tmp = UpperBound;
         dest_index = tmp;
         while ((tmp >= 0) and (a.byte[tmp] == 0)) {
@@ -525,7 +529,7 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
         }
     }
     else {  // least significant bit = 0x40
-      // 求最低有效位
+        // 求最低有效位
         tmp = 0;
         dest_index = tmp;
         while ((tmp <= UpperBound) and (a.byte[tmp] == 0)) {
@@ -556,24 +560,28 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
     //
     // 两者是不能合并为一条指令的。
 
-    // _mm_cmpistrm() 的返回值, 求 bitmask 或 bytemask
-    BitMask<UCharType> dest_mask;
+    // _mm_cmpistrm() 的返回值, 求 bitmask 或 bytemask/wordmask
+    BoolResult<UCharType> dest_mask;
+
     // imm8[6], byte or word mask ?
-    if (imm8 & 0x40) {
-        // byte mask
+    // Unit Mask 的意思就是它不是一个 BitMask,
+    // 但是每一个Unit的大小由前面的 _SIDD_UBYTE_OPS, _SIDD_UWORD_OPS
+    // 来决定, 可能是 ByteMask, 也可能是 WordMask。
+    if (imm8 & 0x40) {  // _SIDD_UNIT_MASK = 0x04
+        // byte or word mask
         for (size_t i = 0; i <= UpperBound; i++) {
             if (IntRes2.bit[i]) {
-                dest_mask.byte[i] = ((imm8 & 0x01) ? 0xFF : 0xFFFF);
+                dest_mask.word[i] = ((imm8 & 0x01) ? 0xFF : 0xFFFF);
             }
             else {
-                dest_mask.byte[i] = 0;
+                dest_mask.word[i] = 0;
             }
         }
     }
     else {
         // bit mask
         dest_mask.bit[0:UpperBound] = IntRes2.bit[0:UpperBound];
-        dest_mask.[(UpperBound + 1):127] = 0;
+        dest_mask.bit[(UpperBound + 1):127] = 0;
     }
 
     // 如果调用的是 _mm_cmpistrm(), 则返回 dest_mask
