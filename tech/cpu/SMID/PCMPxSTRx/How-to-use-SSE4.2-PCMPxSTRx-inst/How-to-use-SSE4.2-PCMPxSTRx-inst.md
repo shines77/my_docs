@@ -521,20 +521,28 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
     size_t dest_index;
 
     // output
+
+    // 笔者注: 这个地方 Intel 官网的原文档似乎有一个错误,
+    // 他的伪代码求的是 a.byte[tmp] 的索引值,
+    // 其实应该是错误的, 这里应该是求 IntRes2.bit[tmp] 的索引值
+    // 不然我们辛辛苦苦计算了那么久, 结果求的索引竟然只跟跟输入的 a 有关,
+    // 跟中间计算过程都无关, 那么计算那么多干嘛 ??
+    // 更详细的说明请看后文.
+
     if (imm8 & 0x40) {  // most significant bit = 0x00
         // 求最高有效位
         size_t tmp = UpperBound;
         dest_index = tmp;
-        while ((tmp >= 0) and (a.byte[tmp] == 0)) {
+        while ((tmp >= 0) and (IntRes2.bit[tmp] == 0)) {
             tmp = tmp - 1;
             dest_index = tmp;
         }
     }
     else {  // least significant bit = 0x40
         // 求最低有效位
-        tmp = 0;
+        size_t tmp = 0;
         dest_index = tmp;
-        while ((tmp <= UpperBound) and (a.byte[tmp] == 0)) {
+        while ((tmp <= UpperBound) and (IntRes2.bit[tmp] == 0)) {
             tmp = tmp + 1;
             dest_index = tmp;
         }
@@ -621,6 +629,26 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
     return dest_index;
 }
 ```
+
+请看 [https://www.felixcloutier.com/x86/pcmpistri](https://www.felixcloutier.com/x86/pcmpistri) 的描述是这样的，如下：
+
+```bash
+Description
+
+The instruction compares data from two strings based on the encoded value in the Imm8 Control Byte (see Section 4.1, “Imm8 Control Byte Operation for PCMPESTRI / PCMPESTRM / PCMPISTRI / PCMPISTRM”), and generates an index stored to ECX.
+
+Each string is represented by a single value. The value is an xmm (or possibly m128 for the second operand) which contains the data elements of the string (byte or word data). Each input byte/word is augmented with a valid/invalid tag. A byte/word is considered valid only if it has a lower index than the least significant null byte/word. (The least significant null byte/word is also considered invalid.)
+
+The comparison and aggregation operations are performed according to the encoded value of Imm8 bit fields (see Section 4.1). The index of the first (or last, according to imm8[6]) set bit of IntRes2 is returned in ECX. If no bits are set in IntRes2, ECX is set to 16 (8).
+```
+
+请注意最后一段话：
+
+```bash
+The index of the first (or last, according to imm8[6]) set bit of IntRes2 is returned in ECX. If no bits are set in IntRes2, ECX is set to 16 (8).
+```
+
+_mm_cmpistri() 返回的是中间结果 IntRes2 的 MSB 或 LSB 索引值，而不是返回 a 输入字符串的 MSB 或 LSB  索引值。
 
 ## 5. 在 C/C++ 中使用
 
