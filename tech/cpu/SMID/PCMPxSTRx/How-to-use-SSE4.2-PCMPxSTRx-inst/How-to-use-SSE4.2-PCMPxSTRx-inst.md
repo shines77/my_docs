@@ -317,7 +317,9 @@ IntRes1  =  000010000000100
 
 如何在得到中间结果后转换为最终输出结果？
 
-#### 3.3.5 范例
+#### 3.3.5 _mm_cmpistri() 伪代码
+
+以下伪代码参考自：[Intrinsics Guide: SSE 4.2 - _mm_cmpistri()](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=914,956&techs=SSE4_2)
 
 ```c
 int _mm_cmpistri(__m128i a, __m128i b, const int imm8);
