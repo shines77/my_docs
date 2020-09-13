@@ -903,16 +903,31 @@ CPU  ：Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 
 ## 8. 参考文章
 
-* 【1】 [RapidJSON 代码剖析（二）：使用 SSE 4.2 优化字符串扫描](https://zhuanlan.zhihu.com/p/20037058)
-* 【2】 [Implementing strcmp, strlen, and strstr using SSE 4.2 instructions](https://www.strchr.com/strcmp_and_strlen_using_sse_4.2)
-* 【3】 [sse 4.2带来的优化](https://www.zzsec.org/2013/08/using-sse_4.2/)
-* 【4】 [Intel: Intrinsics Guide](https://software.intel.com/sites/landingpage/IntrinsicsGuide/)
-* 【5】 [如何使用 PCMPxSTRx 指令（日文）](http://www.nminoru.jp/~nminoru/programming/pcmpxstrx.html)
-* 【6】 [x86: PCMPISTRI](https://www.felixcloutier.com/x86/pcmpistri)
-* 【7】 [HJLebbink: /asm-dude/wiki/PCMPISTRI](https://github.com/HJLebbink/asm-dude/wiki/PCMPISTRI)
-* 【8】 [Agner Fog 的优化手册：Optimization manuals](https://www.agner.org/optimize/)
-* 【9】 [x86 汇编指令详解](https://blog.csdn.net/zhu2695/article/details/16812415)
+* 【01】 [RapidJSON 代码剖析（二）：使用 SSE 4.2 优化字符串扫描](https://zhuanlan.zhihu.com/p/20037058)
+* 【02】 [Implementing strcmp, strlen, and strstr using SSE 4.2 instructions](https://www.strchr.com/strcmp_and_strlen_using_sse_4.2)
+* 【03】 [sse 4.2带来的优化](https://www.zzsec.org/2013/08/using-sse_4.2/)
+* 【04】 [Intel: Intrinsics Guide](https://software.intel.com/sites/landingpage/IntrinsicsGuide/)
+* 【05】 [如何使用 PCMPxSTRx 指令（日文）](http://www.nminoru.jp/~nminoru/programming/pcmpxstrx.html)
+* 【06】 [x86/x64 SIMD命令一覧表: pcmpistri（日文）](https://www.officedaytime.com/tips/simdimg/str.php?f=pcmpistri)
+* 【07】 [x86: PCMPISTRI](https://www.felixcloutier.com/x86/pcmpistri)
+* 【08】 [HJLebbink: /asm-dude/wiki/PCMPISTRI](https://github.com/HJLebbink/asm-dude/wiki/PCMPISTRI)
+* 【09】 [Agner Fog 的优化手册：Optimization manuals](https://www.agner.org/optimize/)
+* 【10】 [x86 汇编指令详解](https://blog.csdn.net/zhu2695/article/details/16812415)
 
-## 9. 更新历史
+## 9. 后话
+
+（声明：由于时间有限，水平有限，如有错漏的地方，错别字等，欢迎批评指正。）
+
+### 9.1 QQ群
+
+如果对 `算法和数据结构`，`LeetCode解题`，`高性能编程`，`硬件/汇编` 等感兴趣的话，欢迎加入 “`C++ 高性能编程`” QQ群：`1278678` 。
+
+加群请注明看到的本文的网站，密语格式是：“`Hello，来自XXXX`” ，例如：“`Hello，来自博客网`”，“`Hello, 来自知乎`”，或者 “`Hello，来自csdn.net`”。最好是 `C++` 程序员，如果不是 `C++` 程序员希望其他语言有一定的水准，且对 `C++` 有一定的了解。
+
+### 9.2 GitHub
+
+博主 GitHub：[https://github.com/shines77/](https://github.com/shines77/)
+
+## 10. 更新历史
 
 * 2020/09/13：初始版本。
