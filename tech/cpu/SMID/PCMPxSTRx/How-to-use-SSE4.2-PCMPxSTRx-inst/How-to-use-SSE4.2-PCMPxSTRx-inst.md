@@ -362,255 +362,253 @@ _SIDD_UNIT_MASK                // mask only: return byte/word mask
 template <typename T>
 class BitMap {
 private:
-  uint8_t bits[sizeof(T) * 8];
+    uint8_t bits[sizeof(T) * 8];
 public:
-  T & operator [] (size_t pos) {
-    return bits[i];
-  }
+    T & operator [] (size_t pos) {
+        return bits[i];
+    }
 };
 
 template <typename T>
 struct BitMask {
-  BitMap<T> bit;
+    BitMap<T> bit;
 };
 
 template <typename CharType>
 struct BoolResult {
-  // ......
-  BitMask<CharType> word[128 / sizeof(CharType)];
+    // ......
+    BitMask<CharType> word[128 / sizeof(CharType)];
 };
 
 template <typename CharType>
 int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
 {
-  typedef typename std::make_unsigned<CharType>::type UCharType;
+    typedef typename std::make_unsigned<CharType>::type UCharType;
 
-  // Uint size: 8 or 16-bit characters
-  size_t size = ((imm8 & 0x01) ? 16 : 8);
-  size_t UpperBound = (128 / size) - 1;
-  // = { 0 } 表示清零初始化
-  BoolResult<UCharType> BoolRes = { 0 };
+    // Uint size: 8 or 16-bit characters
+    size_t size = ((imm8 & 0x01) ? 16 : 8);
+    size_t UpperBound = (128 / size) - 1;
+    // = { 0 } 表示清零初始化
+    BoolResult<UCharType> BoolRes = { 0 };
 
-  // compare all characters
-  bool aInvalid = 0
-  bool bInvalid = 0
-  for (size_t i = 0; i <= UpperBound; i++) {
-    size_t m = i * size;
-    for (size_t j = 0; j <= UpperBound; j++) {
-      size_t n = j * size;
-      BoolRes.word[i].bit[j] = (a.byte[m] == b.byte[n]) ? 1 : 0;
+    // compare all characters
+    bool aInvalid = 0;
+    bool bInvalid = 0;
+    for (size_t i = 0; i <= UpperBound; i++) {
+        for (size_t j = 0; j <= UpperBound; j++) {
+            BoolRes.word[i].bit[j] = (a.byte[i] == b.byte[j]) ? 1 : 0;
 
-      // invalidate characters after EOS
-      if (a.byte[m] == 0) {
-        aInvalid = 1;
-      }
-      if (b.byte[n] == 0) {
-        bInvalid = 1;
-      }
+            // invalidate characters after EOS
+            if (a.byte[i] == 0) {
+                aInvalid = 1;
+            }
+            if (b.byte[j] == 0) {
+                bInvalid = 1;
+            }
 
-      // override comparisons for invalid characters
-      switch (imm8 & 0x0C) {
-      case 0x00:  // Equal Any
-        if (!aInvalid && bInvalid)
-          BoolRes.word[i].bit[j] = 0;
-        else if (aInvalid && !bInvalid)
-          BoolRes.word[i].bit[j] = 0;
-        else if (aInvalid && bInvalid)
-          BoolRes.word[i].bit[j] = 0;
-        break;
-      case 0x04:  // Ranges
-        if (!aInvalid && bInvalid)
-          BoolRes.word[i].bit[j] = 0;
-        else if (aInvalid && !bInvalid)
-          BoolRes.word[i].bit[j] = 0;
-        else if (aInvalid && bInvalid)
-          BoolRes.word[i].bit[j] = 0;
-        break;
-      case 0x08:  // Equal Each
-        if (!aInvalid && bInvalid)
-          BoolRes.word[i].bit[j] = 0;
-        else if (aInvalid && !bInvalid)
-          BoolRes.word[i].bit[j] = 0;
-        else if (aInvalid && bInvalid)
-          BoolRes.word[i].bit[j] = 1;
-        break;
-      case 0x0C:  // Equal Ordered
-        if (!aInvalid && bInvalid)
-          BoolRes.word[i].bit[j] = 0;
-        else if (aInvalid && !bInvalid)
-          BoolRes.word[i].bit[j] = 1;
-        else if (aInvalid && bInvalid)
-          BoolRes.word[i].bit[j] = 1;
-        break;
-      } // end switch
+            // override comparisons for invalid characters
+            switch (imm8 & 0x0C) {
+            case 0x00:  // Equal Any
+                if (!aInvalid && bInvalid)
+                    BoolRes.word[i].bit[j] = 0;
+                else if (aInvalid && !bInvalid)
+                    BoolRes.word[i].bit[j] = 0;
+                else if (aInvalid && bInvalid)
+                    BoolRes.word[i].bit[j] = 0;
+                break;
+            case 0x04:  // Ranges
+                if (!aInvalid && bInvalid)
+                    BoolRes.word[i].bit[j] = 0;
+                else if (aInvalid && !bInvalid)
+                    BoolRes.word[i].bit[j] = 0;
+                else if (aInvalid && bInvalid)
+                    BoolRes.word[i].bit[j] = 0;
+                break;
+            case 0x08:  // Equal Each
+                if (!aInvalid && bInvalid)
+                    BoolRes.word[i].bit[j] = 0;
+                else if (aInvalid && !bInvalid)
+                    BoolRes.word[i].bit[j] = 0;
+                else if (aInvalid && bInvalid)
+                    BoolRes.word[i].bit[j] = 1;
+                break;
+            case 0x0C:  // Equal Ordered
+                if (!aInvalid && bInvalid)
+                    BoolRes.word[i].bit[j] = 0;
+                else if (aInvalid && !bInvalid)
+                    BoolRes.word[i].bit[j] = 1;
+                else if (aInvalid && bInvalid)
+                    BoolRes.word[i].bit[j] = 1;
+                break;
+            } // end switch
+        } // end for
     } // end for
-  } // end for
 
-  BitMask<UCharType> IntRes1;
+    BitMask<UCharType> IntRes1;
 
-  // aggregate results
-  switch (imm8 & 0x0C) {
-  case 0x00:  // Equal Any
-    IntRes1 = 0;
-    for (size_t i = 0; i <= UpperBound; i++) {
-      for (size_t j = 0; j <= UpperBound; j++) {
-        // 从 C++17 开始, 是支持 or, and 操作符的, 这样写更直观一些
-        IntRes1.bit[i] = IntRes1.bit[i] or BoolRes.word[i].bit[j];
-      }
+    // aggregate results
+    switch (imm8 & 0x0C) {
+        case 0x00:  // Equal Any
+            IntRes1 = 0;
+            for (size_t i = 0; i <= UpperBound; i++) {
+                for (size_t j = 0; j <= UpperBound; j++) {
+                    // 从 C++17 开始, 是支持 or, and 操作符的, 这样写更直观一些
+                    IntRes1.bit[i] = IntRes1.bit[i] or BoolRes.word[i].bit[j];
+                }
+            }
+            break;
+        case 0x04:  // Ranges
+            IntRes1 = 0;
+            for (size_t i = 0; i <= UpperBound; i++) {
+                for (size_t j = 0; j <= UpperBound; j++) {
+                    IntRes1.bit[i] = IntRes1.bit[i] or (BoolRes.word[i].bit[j]
+                                                    and BoolRes.word[i].bit[j + 1]);
+                    j += 2;
+                }
+            }
+            break;
+        case 0x08:  // Equal Each
+            IntRes1 = 0;
+            for (size_t i = 0; i <= UpperBound; i++) {
+                IntRes1.bit[i] = BoolRes.word[i].bit[i];
+            }
+            break;
+        case 0x0C:  // Equal Ordered
+            IntRes1 = ((imm8 & 0x01) ? 0xFF : 0xFFFF);
+            for (size_t i = 0; i <= UpperBound; i++) {
+                k = i;
+                for (size_t j = 0; j <= UpperBound; j++) {
+                    IntRes1.bit[i] = IntRes1.bit[i] and BoolRes.word[k].bit[j];
+                    k = k + 1;
+                }
+            }
+            break;
     }
-    break;
-  case 0x04:  // Ranges
-    IntRes1 = 0;
-    for (size_t i = 0; i <= UpperBound; i++) {
-      for (size_t j = 0; j <= UpperBound; j++) {
-        IntRes1.bit[i] = IntRes1.bit[i] or (BoolRes.word[i].bit[j]
-                        and BoolRes.word[i].bit[j+1]);
-        j += 2;
-      }
-    }
-    break;
-  case 0x08:  // Equal Each
-    IntRes1 = 0;
-    for (size_t i = 0; i <= UpperBound; i++) {
-      IntRes1.bit[i] = BoolRes.word[i].bit[i];
-    }
-    break;
-  case 0x0C:  // Equal Ordered
-    IntRes1 = ((imm8 & 0x01) ? 0xFF : 0xFFFF)
-    for (size_t i = 0; i <= UpperBound; i++) {
-      k = i;
-      for (size_t j = 0; j <= UpperBound; j++) {
-        IntRes1.bit[i] = IntRes1.bit[i] and BoolRes.word[k].bit[j];
-        k = k + 1;
-      }
-    }
-    break;
-  }
 
-  // 这个值返回的是 ByteMask
-  BitMask<UCharType> IntRes2;
-  
-  // optionally negate results
-  bInvalid = 0;
-  for (size_t i = 0; i <= UpperBound; i++) {
-    // is NEGATIVE_POLARITY ?
-    if (imm8 & 0x10) {  // imm8[4]
-      // is a masked POLARITY ?
-      if (imm8 & 0x20) {  // imm8[5], only negate valid
-        if (b.byte[n] == 0) {
-          bInvalid = 1;
+    // 这个值返回的是 ByteMask
+    BitMask<UCharType> IntRes2;
+
+    // optionally negate results
+    bInvalid = 0;
+    for (size_t i = 0; i <= UpperBound; i++) {
+        // is NEGATIVE_POLARITY ?
+        if (imm8 & 0x10) {  // imm8[4]
+            // is a masked POLARITY ?
+            if (imm8 & 0x20) {  // imm8[5], only negate valid
+                if (b.byte[n] == 0) {
+                    bInvalid = 1;
+                }
+                if (bInvalid)  // invalid, don't negate
+                    IntRes2.bit[i] = IntRes1.bit[i];
+                else  // valid, negate
+                    IntRes2.bit[i] = uint8_t(-1) xor IntRes1.bit[i];
+            }
+            else {  // negate all
+                IntRes2.bit[i] = uint8_t(-1) xor IntRes1.bit[i];
+            }
         }
-        if (bInvalid)  // invalid, don't negate
-          IntRes2.byte[i] = IntRes1.byte[i];
-        else  // valid, negate
-          IntRes2.byte[i] = UCharType(-1) xor IntRes1.byte[i];
-      }
-      else {  // negate all
-        IntRes2.byte[i] = UCharType(-1) xor IntRes1.byte[i];
-      }
+        else {  // don't negate
+            IntRes2.bit[i] = IntRes1.bit[i];
+        }
     }
-    else {  // don't negate
-      IntRes2.byte[i] = IntRes1.byte[i];
+
+    size_t dest_index;
+
+    // output
+    if (imm8 & 0x40) {  // most significant bit = 0x00
+      // 求最高有效位
+        size_t tmp = UpperBound;
+        dest_index = tmp;
+        while ((tmp >= 0) and (a.byte[tmp] == 0)) {
+            tmp = tmp - 1;
+            dest_index = tmp;
+        }
     }
-  }
-
-  size_t dest_index;
-
-  // output
-  if (imm8 & 0x40) {  // most significant bit = 0x00
-    // 求最高有效位
-    size_t tmp = UpperBound;
-    dest_index = tmp;
-    while ((tmp >= 0) and a.byte[tmp] == 0) {
-      tmp = tmp - 1;
-      dest_index = tmp;
+    else {  // least significant bit = 0x40
+      // 求最低有效位
+        tmp = 0;
+        dest_index = tmp;
+        while ((tmp <= UpperBound) and (a.byte[tmp] == 0)) {
+            tmp = tmp + 1;
+            dest_index = tmp;
+        }
     }
-  }
-  else {  // least significant bit = 0x40
-    // 求最低有效位
-    tmp = 0;
-    dest_index = tmp;
-    while ((tmp <= UpperBound) and a.byte[tmp] == 0) {
-      tmp = tmp + 1;
-      dest_index = tmp;
+
+    // 这里 dest_index 就是求得的 _mm_cmpistri() 索引值
+
+    // 有一点值得注意: _SIDD_MOST_SIGNIFICANT 和 _SIDD_UNIT_MASK 值是一样的,
+    // _SIDD_MOST_SIGNIFICANT 只能用于 _mm_cmpistri() 函数里,
+    // _SIDD_UNIT_MASK 只能用于 _mm_cmpistrm() 函数里.
+
+    // 除了 _mm_cmpistri() 和 _mm_cmpistrm() 两个函数以外,
+
+    // _mm_cmpistra(), _mm_cmpistrz(), _mm_cmpistrc(),
+    // _mm_cmpistro(), _mm_cmpistra() 这5个函数,
+
+    // 编译的时候, 其实是可以跟上面两条指令合并为一条指令的,
+    // 所以我们也把它们的求值运算过程也列出来, 因为指令每次调用的时候,
+    // 都必然会同时也计算出这些结果的。
+
+    // 另外，_mm_cmpistrm() 的运算过程我们这里也列出来了,
+    // _mm_cmpistrm() 的汇编指令其实是另一条指令:
+    //
+    //  pcmpistrm xmm, xmm, imm8
+    //
+    // 两者是不能合并为一条指令的。
+
+    // _mm_cmpistrm() 的返回值, 求 bitmask 或 bytemask
+    BitMask<UCharType> dest_mask;
+    // imm8[6], byte or word mask ?
+    if (imm8 & 0x40) {
+        // byte mask
+        for (size_t i = 0; i <= UpperBound; i++) {
+            if (IntRes2.bit[i]) {
+                dest_mask.byte[i] = ((imm8 & 0x01) ? 0xFF : 0xFFFF);
+            }
+            else {
+                dest_mask.byte[i] = 0;
+            }
+        }
     }
-  }
+    else {
+        // bit mask
+        dest_mask.bit[0:UpperBound] = IntRes2.bit[0:UpperBound];
+        dest_mask.[(UpperBound + 1):127] = 0;
+    }
 
-  // 这里 dest_index 就是求得的 _mm_cmpistri() 索引值
+    // 如果调用的是 _mm_cmpistrm(), 则返回 dest_mask
 
-  // 有一点值得注意: _SIDD_MOST_SIGNIFICANT 和 _SIDD_UNIT_MASK 值是一样的,
-  // _SIDD_MOST_SIGNIFICANT 只能用于 _mm_cmpistri() 函数里,
-  // _SIDD_UNIT_MASK 只能用于 _mm_cmpistrm() 函数里.
-
-  // 除了 _mm_cmpistri() 和 _mm_cmpistrm() 两个函数以外,
-
-  // _mm_cmpistra(), _mm_cmpistrz(), _mm_cmpistrc(),
-  // _mm_cmpistro(), _mm_cmpistra() 这5个函数,
-
-  // 编译的时候, 其实是可以跟上面两条指令合并为一条指令的,
-  // 所以我们也把它们的求值运算过程也列出来, 因为指令每次调用的时候,
-  // 都必然会同时也计算出这些结果的。
-
-  // 另外，_mm_cmpistrm() 的运算过程我们这里也列出来了,
-  // _mm_cmpistrm() 的汇编指令其实是另一条指令:
-  //
-  //  pcmpistrm xmm, xmm, imm8
-  //
-  // 两者是不能合并为一条指令的。
-
-  // _mm_cmpistrm() 的返回值, 求 bitmask 或 bytemask
-  BitMask<UCharType> dest_mask;
-  // // imm8[6], byte or word mask ?
-  if (imm8 & 0x40) {
-    // byte mask
+    // _mm_cmpistrs() 的返回值, 设置 SF 标志位
+    aInvalid = 0;
     for (size_t i = 0; i <= UpperBound; i++) {
-      if IntRes2.bit[i] {
-        dest_mask.byte[i] = ((imm8 & 0x01) ? 0xFF : 0xFFFF);
-      }
-      else {
-        dest_mask.byte[i] = 0;
-      }
+        if (a.byte[i] == 0) {
+            aInvalid = 1;
+            break;
+        }
     }
-  }
-  else {
-    // bit mask
-    dest_mask.bit[0:UpperBound] = IntRes2.bit[0:UpperBound];
-    dest_mask.[(UpperBound+1):127] = 0;
-  }
+    SF = aInvalid;
 
-  // 如果调用的是 _mm_cmpistrm(), 则返回 dest_mask
-
-  // _mm_cmpistrs() 的返回值, 设置 SF 标志位
-  aInvalid = 0;
-  for (size_t i = 0; i <= UpperBound; i++) {
-    if (a.byte[i] == 0) {
-      aInvalid = 1;
-      break;
+    // _mm_cmpistrz() 的返回值, 设置 ZF 标志位
+    bInvalid = 0;
+    for (size_t j = 0; j <= UpperBound; j++) {
+        if (b.byte[j] == 0) {
+            bInvalid = 1;
+            break;
+        }
     }
-  }
-  SF = aInvalid
+    ZF = bInvalid;
 
-  // _mm_cmpistrz() 的返回值, 设置 ZF 标志位
-  bInvalid = 0;
-  for (size_t j = 0; j <= UpperBound; j++) {
-    if (b.byte[j] == 0) {
-      bInvalid = 1;
-      break;
-    }
-  }
-  ZF = bInvalid
+    // _mm_cmpistrc() 的返回值, 设置 CF 标志位
+    CF = (IntRes2 != 0);
 
-  // _mm_cmpistrc() 的返回值, 设置 CF 标志位
-  CF = (IntRes2 != 0);
+    // _mm_cmpistro() 的返回值, 设置 OF 标志位
+    OF = IntRes2.bit[0];
 
-  // _mm_cmpistro() 的返回值, 设置 OF 标志位
-  OF = IntRes2.bit[0];
+    // _mm_cmpistra() 的返回值, 等价于 !CF & ZF
+    A_Result = (IntRes2 == 0) and bInvalid;
 
-  // _mm_cmpistra() 的返回值, 等价于 !CF & ZF
-  A_Result = (IntRes2 == 0) and bInvalid;
-
-  // 返回 _mm_cmpistri() 的索引值
-  return dest_index;
+    // 返回 _mm_cmpistri() 的索引值
+    return dest_index;
 }
 ```
 
