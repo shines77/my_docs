@@ -317,9 +317,13 @@ IntRes1 =  000010000000100 (b)
 
 如何在得到中间结果后转换为最终输出结果？
 
-#### 3.3.5 _mm_cmpistri() 伪代码
+## 4. 指令伪代码
 
-以下伪代码参考自：[Intrinsics Guide: SSE 4.2 - _mm_cmpistri()](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=914,956&techs=SSE4_2)
+### 4.1 _mm_cmpistri() 伪代码
+
+`Intel` 官网的伪代码是用类 `Pascal` 语言写的，既没有声明变量的类型，看起来也比较费劲，所以我决定用 `C++` 重新写一遍，这样看起来更清晰，更便于理解。
+
+以下伪代码参考自 `Intel` 官网：[Intrinsics Guide: SSE 4.2 - _mm_cmpistri()](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=914,956&techs=SSE4_2)
 
 ```c
 int _mm_cmpistri(__m128i a, __m128i b, const int imm8);
@@ -363,7 +367,7 @@ _SIDD_UNIT_MASK                0x40 // mask only: return byte/word mask
 `C++` 版，伪代码：
 
 ```c
-// 伪代码, 不要太在意细节, 意思到了就行
+// 伪代码, 不用在意细节, 意思到了就行
 template <typename T>
 class BitMap {
 private:
@@ -641,6 +645,8 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
 }
 ```
 
+## 4.2 Intel 官网伪代码的错误
+
 关于`Intel` 官网的 `_mm_cmpistri()` 伪代码中关于 `dest_index` 的错误问题：
 
 可以看 [https://www.felixcloutier.com/x86/pcmpistri](https://www.felixcloutier.com/x86/pcmpistri)，描述是这样的，如下：
@@ -659,7 +665,7 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
 
 这说明，_mm_cmpistri() 返回的应该是中间结果 IntRes2 的 MSB 或 LSB 索引值，而不是返回 a 输入字符串的 MSB 或 LSB  索引值。
 
-## 4. 在 C/C++ 中使用
+## 5. 在 C/C++ 中使用
 
 编程调用 `SSE 4.2` 等指令，一般有两种方式。第一种是直接使用汇编，或者编译器的内联汇编。第二种方式，就是 `Intel` 为我们准备的 `Intel C++ 编译器内联函数` (Intel C++ Compiler Intrinsics Function)，直接调用相应的函数就可以了，非常方便，不需要任何汇编知识，同时还支持跨平台，只要是支持 `SSE 4.2` 的 `CPU` ，都可以运行。
 
@@ -671,7 +677,7 @@ int _mm_cmpistri(__m128i a, __m128i b, const int imm8)
 
 编译器最低要求：Visual C++ 9.0 (VS 2008)，GCC 4.3.1（建议4.7），Intel C++ Compiler 10.x。
 
-### 4.1 pcmpistri 指令
+### 5.1 pcmpistri 指令
 
 汇编指令格式：
 
@@ -696,7 +702,78 @@ int _mm_cmpistrs(__m128i a, __m128i b, const int mode);
 int _mm_cmpistrz(__m128i a, __m128i b, const int mode);
 ```
 
-## 5. StringMatch
+### 5.2 pcmpistrm 指令
+
+汇编指令格式：
+
+```asm
+; arg1 = xmm128, arg2 = xmm128/mm128
+pcmpistrm  arg1, arg2, imm8
+```
+
+`pcmpistrm` 指令等效的 `Intel C/C++ Compiler Intrinsic` 函数声明是：
+
+```c
+int _mm_cmpistri(__m128i a, __m128i b, const int mode);
+```
+
+等效的用于读取 `EFlag` 结果的 `Intel C/C++ Compiler Intrinsics` 函数声明是：
+
+```c
+// 这个部分跟 _mm_cmpistri() 指令一样的, 这里省略
+```
+
+### 5.3 pcmpestri 指令
+
+汇编指令格式：
+
+```asm
+; arg1 = xmm128, arg2 = xmm128/mm128
+pcmpestri  arg1, arg2, imm8
+```
+
+`pcmpestri` 指令等效的 `Intel C/C++ Compiler Intrinsic` 函数声明是：
+
+```c
+__m128i _mm_cmpestri(__m128i a, __m128i b, const int mode);
+```
+
+等效的用于读取 `EFlag` 结果的 `Intel C/C++ Compiler Intrinsics` 函数声明是：
+
+```c
+int _mm_cmpestra(__m128i a, __m128i b, const int mode);
+int _mm_cmpestrc(__m128i a, __m128i b, const int mode);
+int _mm_cmpestro(__m128i a, __m128i b, const int mode);
+int _mm_cmpestrs(__m128i a, __m128i b, const int mode);
+int _mm_cmpestrz(__m128i a, __m128i b, const int mode);
+```
+
+### 5.4 pcmpestrm 指令
+
+汇编指令格式：
+
+```asm
+; arg1 = xmm128, arg2 = xmm128/mm128
+pcmpestrm  arg1, arg2, imm8
+```
+
+`pcmpestrm` 指令等效的 `Intel C/C++ Compiler Intrinsic` 函数声明是：
+
+```c
+__m128i _mm_cmpestrm(__m128i a, __m128i b, const int mode);
+```
+
+等效的用于读取 `EFlag` 结果的 `Intel C/C++ Compiler Intrinsics` 函数声明是：
+
+```c
+// 这个部分跟 _mm_cmpestri() 指令一样的, 这里省略
+```
+
+### 5.5 原理和原型
+
+关于以上四条指令的原理，可以参考 `3.3.5 _mm_cmpistri() 伪代码`，也可以参考 `Intel` 官网：[Intrinsics Guide: SSE 4.2](https://software.intel.com/sites/landingpage/IntrinsicsGuide/#expand=914&techs=SSE4_2) 。
+
+## 6. 实战应用：StringMatch
 
 [https://github.com/shines77/StringMatch/](https://github.cim/shines77/StringMatch/)
 
@@ -764,13 +841,13 @@ int _mm_cmpistrz(__m128i a, __m128i b, const int mode);
 
 ```bash
 系统  ：Ubuntu 16.04 Server 64bit (Linux)
-CPU   ：Intel Dual Xeon E5-2690 v3 @ 2.60GHz
+CPU  ：Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 编译器：gcc 8.0
 ```
 
-## 6. 附录
+## 7. 附录
 
-### 6.1 标志位寄存器
+### 7.1 标志位寄存器
 
 `标志位寄存器` 描述了最近的 `算数` 或 `逻辑操作` 的属性。
 
@@ -782,7 +859,7 @@ CPU   ：Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 
 * `SF`：符号标志，符号位为 `0` 则为 0，符号位为 `1` 则为 1。
 
-### 6.2 访问条件码指令
+### 7.2 访问条件码指令
 
 | 指令    | 同义名 | 效果                | 设置条件             |
 | :------ | :----- | :------------------ | :------------------- |
@@ -799,7 +876,7 @@ CPU   ：Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 | setb D  | setnae | D = CF              | 低于(无符号<)        |
 | setbe D | setna  | D = CF \| ZF        | 低于或等于(无符号<=) |
 
-### 6.3 跳转指令
+### 7.3 跳转指令
 
 | 指令         | 同义名   | 跳转条件         | 描述                 |
 | :----------- | :------- | :--------------- | :------------------- |
@@ -824,7 +901,7 @@ CPU   ：Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 | jp           | jpe      |                  | 奇偶性为偶数时       |
 | jnp          | jnpe     |                  | 奇偶性为奇数时       |
 
-## 7. 参考文章
+## 8. 参考文章
 
 * 【1】 [RapidJSON 代码剖析（二）：使用 SSE 4.2 优化字符串扫描](https://zhuanlan.zhihu.com/p/20037058)
 * 【2】 [Implementing strcmp, strlen, and strstr using SSE 4.2 instructions](https://www.strchr.com/strcmp_and_strlen_using_sse_4.2)
@@ -836,6 +913,6 @@ CPU   ：Intel Dual Xeon E5-2690 v3 @ 2.60GHz
 * 【8】 [Agner Fog 的优化手册：Optimization manuals](https://www.agner.org/optimize/)
 * 【9】 [x86 汇编指令详解](https://blog.csdn.net/zhu2695/article/details/16812415)
 
-## 8. 更新历史
+## 9. 更新历史
 
 * 2020/09/13：初始版本。
