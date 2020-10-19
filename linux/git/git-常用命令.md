@@ -124,7 +124,7 @@ git rm --cached 子模块名称
 
 See: https://www.cnblogs.com/sutrahsing/p/11752092.html
 
-git使用-忽略文件更新的几种方法
+git使用-忽略文件更新的两种方法
 
 有几种情况我们不希望本地文件在 git 里面得到更新。
 
