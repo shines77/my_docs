@@ -100,7 +100,7 @@ Initialize by fitdep_init.py.
 
 (从子模块官方远程仓库)更新子模块:
 
-	git submodule update --remote
+	git submodule update --remote --recursive
 
 
 删除子模块
