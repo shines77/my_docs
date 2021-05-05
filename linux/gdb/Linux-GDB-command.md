@@ -166,7 +166,17 @@ backtrace  break      bt
 
     enable 所指定的停止点一次，当程序停止后，该停止点马上被 GDB 自动删除。
 
-## 2. 参考文章
+## 2. GDB 调试汇编
+
+* 能够实时看到寄存器值的变化
+
+使用 `gdb` 时增加 `-tui` 选项，打开 `gdb` 后运行 `layout regs` 命令。注意最好加上 `-tui`，否则很大可能会出现花屏现象。
+
+* 能够看到源代码和对应汇编的关系
+
+在 `gdb` 中运行 `set disassemble-next-line on`，表示自动反汇编后面要执行的代码。
+
+## 3. 参考文章
 
 * `Linux 下 gdb 单步调试`
 
