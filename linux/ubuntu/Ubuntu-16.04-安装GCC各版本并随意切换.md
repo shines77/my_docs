@@ -129,16 +129,20 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 93 --slave /u
 sudo update-alternatives --config gcc
 ```
 
-例如，有 5 个候选项可用于替换 `gcc` （默认路径 `/usr/bin/gcc`），如下所示：
+例如，有 7 个候选项可用于替换 `gcc` （默认路径 `/usr/bin/gcc`），如下所示：
 
 ```shell
   选择       路径            优先级  状态
 ------------------------------------------------------------
 * 0            /usr/bin/gcc-4.9   49        自动模式
-  1            /usr/bin/gcc-4.8   48        手动模式
-  2            /usr/bin/gcc-4.9   49        手动模式
-  3            /usr/bin/gcc-5     55        手动模式
-  4            /usr/bin/gcc-6     65        手动模式
+  1            /usr/bin/gcc-4.8   48        手动模式 (manual mode)
+  2            /usr/bin/gcc-4.9   49        手动模式 (manual mode)
+  3            /usr/bin/gcc-5     55        手动模式 (manual mode)
+  4            /usr/bin/gcc-6     65        手动模式 (manual mode)
+  4            /usr/bin/gcc-7     75        手动模式 (manual mode)
+  5            /usr/bin/gcc-8     84        手动模式 (manual mode)
+  6            /usr/bin/gcc-9     93        手动模式 (manual mode)
+
 ```
 
 注：为了方便，切换 `gcc` 的同时，我们也切换到相同版本的 `g++`。
