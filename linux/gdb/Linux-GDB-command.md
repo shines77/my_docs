@@ -74,7 +74,7 @@ backtrace  break      bt
 
     打开 step-mode 模式，于是，在进行单步跟踪时，程序不会因为没有 debug 信息而不停住。这个参数有很利于查看机器码。
 
-  * set step-mod off
+  * set step-mode off
 
     关闭 step-mode 模式。
 
