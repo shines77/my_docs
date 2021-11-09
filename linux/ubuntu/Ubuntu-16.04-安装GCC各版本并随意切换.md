@@ -123,13 +123,13 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 84 --slave /u
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 94 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-9 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9 --slave /usr/bin/g++ g++ /usr/bin/g++-9
 ```
 
-`gcc 10.3.0`：
+`gcc 10.3.0`：(要求 `Ubuntu 18.04`)
 
 ```shell
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 103 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-10 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10 --slave /usr/bin/g++ g++ /usr/bin/g++-10
 ```
 
-`gcc 11.1.0`：
+`gcc 11.1.0`：(要求 `Ubuntu 18.04`)
 
 ```shell
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 111 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-11 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11 --slave /usr/bin/g++ g++ /usr/bin/g++-11
@@ -143,7 +143,7 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 111 --slave 
 sudo update-alternatives --config gcc
 ```
 
-例如，有 9 个候选项可用于替换 `gcc` （默认路径 `/usr/bin/gcc`），如下所示：
+例如，有 7 个候选项可用于替换 `gcc` （默认路径 `/usr/bin/gcc`），如下所示：
 
 ```shell
   选择       路径            优先级  状态
@@ -156,8 +156,6 @@ sudo update-alternatives --config gcc
   4            /usr/bin/gcc-7     75        手动模式 (manual mode)
   5            /usr/bin/gcc-8     84        手动模式 (manual mode)
   6            /usr/bin/gcc-9     94        手动模式 (manual mode)
-  7            /usr/bin/gcc-9     103       手动模式 (manual mode)
-  8            /usr/bin/gcc-9     111       手动模式 (manual mode)
 ```
 
 注：为了方便，切换 `gcc` 的同时，我们也切换到相同版本的 `g++`。
@@ -178,11 +176,11 @@ sudo update-alternatives --config gcc
 
 ## 6. 更新历史
 
-* `2021` / `11` / `07` ：更新到 `gcc 11.1.0`。
+* `2021` / `11` / `07` ：更新到 `gcc 11.1.0`，但 `Ubuntu 16.04` 最高只支持到 `gcc 9.4`。
 
 * `2020` / `09` / `12` ：把 `gcc`, `g++` 的 `alternatives` 合并在一起了。
 
-* `2020` / `08` / `31` ：更新到 Ubuntu 16.04，并新增 `gcc` 7.5, 8.4, 9.3 等版本。
+* `2020` / `08` / `31` ：更新到 Ubuntu 16.04，并新增 `gcc` 7.5, 8.4, 9.4 等版本。
 
 * `2018` / `07` / `19` ：原始版本
 
