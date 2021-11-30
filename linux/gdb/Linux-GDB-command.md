@@ -456,7 +456,7 @@ x/3uh 0x54320 ：从内存地址 0x54320 读取内容，h 表示以双字节为�
 使用 `gdb` 时，最好加上 `-tui` 选项，否则很大可能会出现花屏现象。
 
 ```shell
-$ gdb tui <your_exec_file>
+$ gdb <your_exec_file> tui
 ```
 
 如果你已经启动了 `gdb`，可使用下面的命令启用 `tui`：
