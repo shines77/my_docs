@@ -471,6 +471,48 @@ x/3uh 0x54320 ：从内存地址 0x54320 读取内容，h 表示以双字节为�
 
     在 `C++` 中，如果一个对象指针指向其派生类，如果打开这个选项，`GDB` 会自动按照虚方法调用的规则显示输出，如果关闭这个选项的话，`GDB` 就不管虚函数表了。
 
+### 3.9 变量的类型和文件
+
+1. 查看变量的类型
+
+    在 `gdb` 中，可以使用如下命令查看变量的类型：
+
+    ```shell
+    (gdb) whatis he
+
+    type = struct child
+    ```
+
+2. 详细的类型信息
+
+    如果想查看详细的类型信息：
+
+    ```shell
+    (gdb) ptype he
+
+    type = struct child {
+        char name[10];
+        enum {boy, girl} gender;
+    }
+    ```
+
+3. 定义变量的文件
+
+    如果想查看定义该变量的所有文件：
+
+    ```shell
+    (gdb) i variables he
+
+    All variables matching regular expression "he":
+
+    File variable.c:
+    struct child he;
+
+    Non-debugging symbols:
+    0x0000000000402030  she
+    0x00007ffff7dd3380  __check_rhosts_file
+    ```
+
 ## 4. GDB 布局
 
 使用 `gdb` 时，最好加上 "`--tui`" 选项，否则很大可能会出现花屏现象。
@@ -525,3 +567,7 @@ $ gdb --tui <your_exec_file>
 * `gdb print 详解`
 
     [https://blog.csdn.net/litanglian9839/article/details/84966813](https://blog.csdn.net/litanglian9839/article/details/84966813)
+
+* `gdb 打印技巧`
+
+    [https://www.jianshu.com/p/98c923a671ae](https://www.jianshu.com/p/98c923a671ae)
