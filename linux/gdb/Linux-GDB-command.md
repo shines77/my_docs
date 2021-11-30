@@ -419,7 +419,7 @@ x/3uh 0x54320 ：从内存地址 0x54320 读取内容，h 表示以双字节为�
 4. set print elements
 
     ```shell
-    set print elements
+    set print elements on
     ```
 
     这个选项主要是设置数组的，如果你的数组太大了，那么就可以指定一个来指定数据显示的最大长度，当到达这个长度时，GDB就不再往下显示了。如果设置为0，则表示不限制。
@@ -427,7 +427,7 @@ x/3uh 0x54320 ：从内存地址 0x54320 读取内容，h 表示以双字节为�
 5. set print null-stop
 
     ```shell
-    set print null-stop
+    set print null-stop on
     ```
 
     如果打开了该选项，那么当显示字符串时，遇到结束符则停止显示，默认值为 `off`。
@@ -456,7 +456,7 @@ x/3uh 0x54320 ：从内存地址 0x54320 读取内容，h 表示以双字节为�
 7. set print union
 
     ```shell
-    set print union
+    set print union on
     ```
 
     设置显示结构体时，是否显式其中的 `union` (联合体) 数据。
@@ -464,7 +464,7 @@ x/3uh 0x54320 ：从内存地址 0x54320 读取内容，h 表示以双字节为�
 8. set print object
 
     ```shell
-    set print object
+    set print object on
     ```
 
     在 `C++` 中，如果一个对象指针指向其派生类，如果打开这个选项，`GDB` 会自动按照虚方法调用的规则显示输出，如果关闭这个选项的话，`GDB` 就不管虚函数表了。
