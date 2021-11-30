@@ -419,9 +419,9 @@ x/3uh 0x54320 ：从内存地址 0x54320 读取内容，h 表示以双字节为�
 4. set print elements
 
     ```shell
-    set print elements number-of-elements   # 设置这个最大限制数
-    set print elements 0                    # 没有限制
-    set print elements unlimited            # 没有限制, 跟设置为 0 一样
+    set print elements 100          # 设置最大的显示元素个数, 这里设置为 100
+    set print elements 0            # 没有限制
+    set print elements unlimited    # 没有限制, 跟设置为 0 效果一样
     ```
 
     这个选项是设置数组元素的最大显示个数的，如果你的数组太大了，那么就可以指定一个最大长度，当超过这个长度时，`GDB` 就不再往下显示了，默认最多只显示 200 个元素。如果设置为 0，则表示不限制。
