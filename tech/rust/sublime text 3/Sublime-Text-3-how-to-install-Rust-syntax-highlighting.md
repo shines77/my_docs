@@ -41,7 +41,7 @@ import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc5
 
 按 “Ctrl + Shift + P” 调出 “命令面板”，然后输入 “Install Package”，如果有多个选择，则选择“Package Control: Install Package”。
 
-然后经过短暂的联网搜索（枚举），会列出所有可选的插件包，如果再次弹出输入框，则输入 “Rust”，自动完成列表里应该能看到如下的插件包：
+然后经过短暂的联网搜索（Loading Repositories），会列出所有可选的插件包，如果再次弹出输入框，则输入 “Rust”，自动完成列表里应该能看到如下的插件包：
 
 ```shell
 Rust Enhanced
