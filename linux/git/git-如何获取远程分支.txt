@@ -34,6 +34,10 @@ $ git status 查看目前状态
 $ git checkout -B stable/juno                           # 在本地创建一个叫stable/juno的新分支
 $ git checkout -b stable/juno --track juno-eol          # 拉取远程分支juno-eol,并且把分支重命名为stable/juno
 
+切换分支:
+
+$ git checkout 分支名
+
 列出所有分支
 
 $ git branch -a
