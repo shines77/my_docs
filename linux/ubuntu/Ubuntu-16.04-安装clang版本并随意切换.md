@@ -106,6 +106,12 @@ sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-6.0 60 --
 sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-8 80 --slave /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-8 --slave /usr/bin/llvm-as llvm-as /usr/bin/llvm-as-8 --slave /usr/bin/llvm-link llvm-link /usr/bin/llvm-link-8 --slave /usr/bin/llvm-lib llvm-lib /usr/bin/llvm-lib-8 --slave /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-8 --slave /usr/bin/llvm-ranlib llvm-ranlib /usr/bin/llvm-ranlib-8 --slave /usr/bin/llvm-objdump llvm-objdump /usr/bin/llvm-objdump-8 --slave /usr/bin/llvm-cxxdump llvm-cxxdump /usr/bin/llvm-cxxdump-8 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-8 --slave /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-8 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-8
 ```
 
+`clang 9.0`：
+
+```shell
+sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-9 90 --slave /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-9 --slave /usr/bin/llvm-as llvm-as /usr/bin/llvm-as-9 --slave /usr/bin/llvm-link llvm-link /usr/bin/llvm-link-9 --slave /usr/bin/llvm-lib llvm-lib /usr/bin/llvm-lib-9 --slave /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-9 --slave /usr/bin/llvm-ranlib llvm-ranlib /usr/bin/llvm-ranlib-9 --slave /usr/bin/llvm-objdump llvm-objdump /usr/bin/llvm-objdump-9 --slave /usr/bin/llvm-cxxdump llvm-cxxdump /usr/bin/llvm-cxxdump-9 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-9 --slave /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-9 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-9
+```
+
 ## 4. 切换 clang 版本
 
 ### 4.1. 切换 `clang` 版本的命令
@@ -123,6 +129,7 @@ sudo update-alternatives --config clang
   1            /usr/bin/clang-5.0   50        手动模式
   2            /usr/bin/clang-6.0   60        手动模式
   3            /usr/bin/clang-8     80        手动模式
+  4            /usr/bin/clang-9     90        手动模式  
 ```
 
 注：为了方便，切换 `clang` 的同时，我们也切换到相同版本的 `clang++`。
@@ -144,5 +151,6 @@ sudo update-alternatives --config clang
 ## 6. 更新历史：
 
 * `2020` / `09` / `12` ：`clang` 的第一个版本。
+* `2022` / `03` / `18` ：增加 `clang 9.x` 版本 (Ubuntu 16.04)。
 
 <.end.>
