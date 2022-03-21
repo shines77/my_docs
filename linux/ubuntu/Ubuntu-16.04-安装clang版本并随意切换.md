@@ -61,7 +61,12 @@ sudo apt-get install clang-3.8
 
 sudo apt-get install clang-5.0
 sudo apt-get install clang-6.0
+sudo apt-get install clang-7
 sudo apt-get install clang-8
+sudo apt-get install clang-9
+sudo apt-get install clang-10
+sudo apt-get install clang-11
+sudo apt-get install clang-12
 ```
 
 （最后验证日期：`2020` 年 `9` 月 `12` 日。）
@@ -69,9 +74,9 @@ sudo apt-get install clang-8
 现在要刷新一下系统数据和设置，该步骤最好做一下（推荐），否则在使用 `locate`, `which` 等命令时，是搜索不到上面更新的 `clang` 相关的文件或目录的：
 
 ```shell
-$ sudo updatedb && sudo ldconfig
+sudo updatedb && sudo ldconfig
 
-$ locate gcc
+locate gcc
 ```
 
 现在，你会发现 `clang --version` 显示出来的版本是前面安装命令里装过的 `clang` 的最新版本，如果我们想随意切换 `clang` 的版本，则需要更新一下软链接，我们使用 `alternatives` 来管理 `clang`，`clang++` 的软链接，方法见下一小节。
@@ -100,6 +105,12 @@ sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-5.0 50 --
 sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-6.0 60 --slave /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-6.0 --slave /usr/bin/llvm-as llvm-as /usr/bin/llvm-as-6.0 --slave /usr/bin/llvm-link llvm-link /usr/bin/llvm-link-6.0 --slave /usr/bin/llvm-lib llvm-lib /usr/bin/llvm-lib-6.0 --slave /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-6.0 --slave /usr/bin/llvm-ranlib llvm-ranlib /usr/bin/llvm-ranlib-6.0 --slave /usr/bin/llvm-objdump llvm-objdump /usr/bin/llvm-objdump-6.0 --slave /usr/bin/llvm-cxxdump llvm-cxxdump /usr/bin/llvm-cxxdump-6.0 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-6.0 --slave /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-6.0 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-6.0
 ```
 
+`clang 7.0`：
+
+```shell
+sudo update-alternatives --install /usr/bin/clang clang /usr/lib/llvm-7/bin/clang 70 --slave /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-7 --slave /usr/bin/llvm-as llvm-as /usr/bin/llvm-as-7 --slave /usr/bin/llvm-link llvm-link /usr/bin/llvm-link-7 --slave /usr/bin/llvm-lib llvm-lib /usr/bin/llvm-lib-7 --slave /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-7 --slave /usr/bin/llvm-ranlib llvm-ranlib /usr/bin/llvm-ranlib-7 --slave /usr/bin/llvm-objdump llvm-objdump /usr/bin/llvm-objdump-7 --slave /usr/bin/llvm-cxxdump llvm-cxxdump /usr/bin/llvm-cxxdump-7 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-7 --slave /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-7 --slave /usr/bin/clang++ clang++ /usr/lib/llvm-7/bin/clang++
+```
+
 `clang 8.0`：
 
 ```shell
@@ -110,6 +121,24 @@ sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-8 80 --sl
 
 ```shell
 sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-9 90 --slave /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-9 --slave /usr/bin/llvm-as llvm-as /usr/bin/llvm-as-9 --slave /usr/bin/llvm-link llvm-link /usr/bin/llvm-link-9 --slave /usr/bin/llvm-lib llvm-lib /usr/bin/llvm-lib-9 --slave /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-9 --slave /usr/bin/llvm-ranlib llvm-ranlib /usr/bin/llvm-ranlib-9 --slave /usr/bin/llvm-objdump llvm-objdump /usr/bin/llvm-objdump-9 --slave /usr/bin/llvm-cxxdump llvm-cxxdump /usr/bin/llvm-cxxdump-9 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-9 --slave /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-9 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-9
+```
+
+`clang 10.0`：
+
+```shell
+sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-10 100 --slave /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-10 --slave /usr/bin/llvm-as llvm-as /usr/bin/llvm-as-10 --slave /usr/bin/llvm-link llvm-link /usr/bin/llvm-link-10 --slave /usr/bin/llvm-lib llvm-lib /usr/bin/llvm-lib-10 --slave /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-10 --slave /usr/bin/llvm-ranlib llvm-ranlib /usr/bin/llvm-ranlib-10 --slave /usr/bin/llvm-objdump llvm-objdump /usr/bin/llvm-objdump-10 --slave /usr/bin/llvm-cxxdump llvm-cxxdump /usr/bin/llvm-cxxdump-10 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-10 --slave /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-10 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-10
+```
+
+`clang 11.0`：
+
+```shell
+sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-11 110 --slave /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-11 --slave /usr/bin/llvm-as llvm-as /usr/bin/llvm-as-11 --slave /usr/bin/llvm-link llvm-link /usr/bin/llvm-link-11 --slave /usr/bin/llvm-lib llvm-lib /usr/bin/llvm-lib-11 --slave /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-11 --slave /usr/bin/llvm-ranlib llvm-ranlib /usr/bin/llvm-ranlib-11 --slave /usr/bin/llvm-objdump llvm-objdump /usr/bin/llvm-objdump-11 --slave /usr/bin/llvm-cxxdump llvm-cxxdump /usr/bin/llvm-cxxdump-11 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-11 --slave /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-11 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-11
+```
+
+`clang 12.0`：
+
+```shell
+sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 120 --slave /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-12 --slave /usr/bin/llvm-as llvm-as /usr/bin/llvm-as-12 --slave /usr/bin/llvm-link llvm-link /usr/bin/llvm-link-11 --slave /usr/bin/llvm-lib llvm-lib /usr/bin/llvm-lib-12 --slave /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-12 --slave /usr/bin/llvm-ranlib llvm-ranlib /usr/bin/llvm-ranlib-12 --slave /usr/bin/llvm-objdump llvm-objdump /usr/bin/llvm-objdump-12 --slave /usr/bin/llvm-cxxdump llvm-cxxdump /usr/bin/llvm-cxxdump-12 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-12 --slave /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-12 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-12
 ```
 
 ## 4. 切换 clang 版本

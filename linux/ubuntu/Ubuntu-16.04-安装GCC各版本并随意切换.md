@@ -68,9 +68,9 @@ sudo apt-get install gcc-11 g++-11
 现在要刷新一下系统数据和设置，该步骤最好做一下（推荐），否则在使用 `locate`, `which` 等命令时，是搜索不到上面更新的 `clang` 相关的文件或目录的：
 
 ```shell
-$ sudo updatedb && sudo ldconfig
+sudo updatedb && sudo ldconfig
 
-$ locate gcc
+locate gcc
 ```
 
 现在，你会发现 `gcc -v` 显示出来的版本是前面安装命令里装过的 `gcc` 的最新版本，如果我们想随意切换 `gcc` 的版本，则需要更新一下软链接，我们使用 `alternatives` 来管理 `gcc`，`g++` 的软链接，方法见下一小节。

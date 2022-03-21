@@ -8,6 +8,12 @@
 
 * [Microsoft: VS 2010 Compiler Intrinsics: SSE3](https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2010/bb892952(v=vs.100))
 
+## 2. 技术文章
+
+* [为什么AVX反而比SSE慢？](https://www.zhihu.com/question/37230675)
+
+    混用 SSE 指令和 AVX 指令将会引发 transition penalty, 但是使用 Intel SIMD intrin 函数写的代码, 是不会出现这个问题的, 除非是手写的 SSE 和 AVX 汇编.
+
 ## 2. 在线编译器
 
 * [Godbolt compiler explorer](https://godbolt.org/) [需要翻墙]

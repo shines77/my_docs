@@ -38,6 +38,16 @@ $ git checkout -b stable/juno --track juno-eol          # À­È¡Ô¶³Ì·ÖÖ§juno-eol,²
 
 $ git checkout ·ÖÖ§Ãû
 
+ÀıÈç:
+
+git fetch --tags --all -v --progress
+git checkout -b next remotes/origin/next 
+git checkout next
+»òÕß
+git fetch --tags --all -v --progress
+git branch next remotes/origin/next
+git checkout next
+
 ÁĞ³öËùÓĞ·ÖÖ§
 
 $ git branch -a
