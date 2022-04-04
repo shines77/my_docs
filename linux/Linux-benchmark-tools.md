@@ -301,10 +301,14 @@ apt-get install lmbench
 运行：
 
 ```shell
+# 运行测试之前，先创建这个目录
+sudo mkdir -p /var/tmp/lmbench
+
+# 运行测试
 lmbench-run
 ```
 
-然后按照提示选择。
+然后按照提示选择，基本使用默认选项就行，具体的请仔细阅读提示信息。
 
 测试结果：
 
