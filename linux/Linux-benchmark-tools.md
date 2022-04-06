@@ -284,7 +284,217 @@ AVG     Method: DUMB    Elapsed: 0.01729        MiB: 256.00000  Copy: 14808.559 
 
 结论：测试速度非常快，至于准确性有待研究，我个人觉得还有提升的空间，不过大致也就这样了。
 
-### 2.2 性能测试工具 lmbench
+### 2.2 内存测试工具 STREAM
+
+官网：[http://www.cs.virginia.edu/stream/ref.html](http://www.cs.virginia.edu/stream/ref.html)
+
+源码：[http://www.cs.virginia.edu/stream/FTP/Code/](http://www.cs.virginia.edu/stream/FTP/Code/)
+
+下载，编译方法：
+
+```shell
+mkdir STREAM
+cd ./STREAM
+wget -c http://www.cs.virginia.edu/stream/FTP/Code/stream.c
+wget -c http://www.cs.virginia.edu/stream/FTP/Code/stream.f
+wget -c http://www.cs.virginia.edu/stream/FTP/Code/mysecond.c
+wget -c http://www.cs.virginia.edu/stream/FTP/Code/Makefile
+
+# 编译
+make
+```
+
+如果 `make` 后看到如下信息：
+
+```text
+gcc -O2 -c mysecond.c
+g77 -O2 -c stream.f
+make: g77: Command not found
+Makefile:10: recipe for target 'stream_f.exe' failed
+make: *** [stream_f.exe] Error 127
+```
+
+说明没安装 `g77`，`g77` 是 `FORTRAN` 的编译器，但由于年代久远，已经被 `gfortran` 取代了。
+
+`gfortran` 的安装方法：
+
+```shell
+sudo apt-get install gfortran
+```
+
+并且修改 `./Makefile` 文件：
+
+```shell
+vim ./Makefile
+```
+
+把 `./Makefile` 文件中的：
+
+```bash
+FF = g77
+```
+
+修改为：
+
+```bash
+FF = f77
+```
+
+然后重新执行 `make` 命令。
+
+运行 `STREAM` 测试：
+
+```shell
+./stream_c.exe
+```
+
+测试结果：
+
+```text
+-------------------------------------------------------------
+STREAM version $Revision: 5.10 $
+-------------------------------------------------------------
+This system uses 8 bytes per array element.
+-------------------------------------------------------------
+Array size = 10000000 (elements), Offset = 0 (elements)
+Memory per array = 76.3 MiB (= 0.1 GiB).
+Total memory required = 228.9 MiB (= 0.2 GiB).
+Each kernel will be executed 10 times.
+ The *best* time for each kernel (excluding the first iteration)
+ will be used to compute the reported bandwidth.
+-------------------------------------------------------------
+Your clock granularity/precision appears to be 1 microseconds.
+Each test below will take on the order of 6794 microseconds.
+   (= 6794 clock ticks)
+Increase the size of the arrays if this shows that
+you are not getting at least 20 clock ticks per test.
+-------------------------------------------------------------
+WARNING -- The above is only a rough guideline.
+For best results, please be sure you know the
+precision of your system timer.
+-------------------------------------------------------------
+Function    Best Rate MB/s  Avg time     Min time     Max time
+Copy:           19821.3     0.008390     0.008072     0.009419
+Scale:          20578.6     0.008235     0.007775     0.009568
+Add:            25410.4     0.010004     0.009445     0.011516
+Triad:          25831.6     0.010351     0.009291     0.015329
+-------------------------------------------------------------
+Solution Validates: avg error less than 1.000000e-13 on all three arrays
+-------------------------------------------------------------
+```
+
+#### 2.2.1 手动编译
+
+由于 `STREAM` 的测试参数是在代码里定义的，但默认的参数可能不能满足你的需求，例如：默认只使用了 `O2` 编译优化等级，并且没有使用 `-march=native` 编译选项，无法利用 `SIMD` 指令带来的加速优化等等。并且默认的测试数据大小是固定的，是 10000000 个 double（10000000 x 8 = 约 76.293 MB，一个 double 是 8 个字节）。所以，需要自行调整参数，重新编译。
+
+例如：
+
+单线程，编译选项为：
+
+```shell
+gcc -march=native -mtune=native -O3 -DSTREAM_ARRAY_SIZE=50000000 -DOFFSET=0 -DNTIMES=20 stream.c -o stream-single
+```
+
+多线程版，开启 `OPENMP`，编译选项为：
+
+```shell
+gcc -march=native -mtune=native -O3 -fopenmp -DSTREAM_ARRAY_SIZE=50000000 -DOFFSET=0 -DNTIMES=20 stream.c -o stream-openmp
+```
+
+参数说明：
+
+* -mtune=native -march=native：针对CPU指令的优化，此处由于编译机即运行机器。故采用native的优化方法。更多编译器对CPU的优化参考；
+* -O3：编译器的编译优化级别；
+* -mcmodel=medium ；当单个Memory Array Size 大于2GB时需要设置此参数；
+* -fopenmp：适应多处理器环境。开启后，程序默认线程为 CPU 线程数，也可以运行时动态指定运行的进程数：
+
+  ```bash
+  export OMP_NUM_THREADS=12   # 12为自定义的要使用的 CPU 处理器个数
+  ```
+
+* -DSTREAM_ARRAY_SIZE=50000000；指定计算中 a[], b[], c[] 数组的大小，大小为 50000000 * 8 = 400000000 字节（约 381.469 MB）；
+* -DOFFSET=0 ；数组间的偏移值，由于代码中连续定义了 3 个数组，所以为了让每个数组都对齐到同样的起始值，可以指定该值，默认值为0。一般情况下，我们要对齐到 Cache Line 大小（一般是 64 字节），先计算 （STREAM_ARRAY_SIZE * 8） 除以 64 的余数，再用 64 减去这个余数，就是该 OFFSET 的值，如果值刚好为64，则取 0；
+* -DNTIMES=20：测试的次数，并且从这些结果中选最优值。
+
+测试结果（可以看到，测试数据提升不少，因为使用了 SIMD 指令）：
+
+```bash
+./stream-single
+
+-------------------------------------------------------------
+STREAM version $Revision: 5.10 $
+-------------------------------------------------------------
+This system uses 8 bytes per array element.
+-------------------------------------------------------------
+Array size = 50000000 (elements), Offset = 0 (elements)
+Memory per array = 381.5 MiB (= 0.4 GiB).
+Total memory required = 1144.4 MiB (= 1.1 GiB).
+Each kernel will be executed 20 times.
+ The *best* time for each kernel (excluding the first iteration)
+ will be used to compute the reported bandwidth.
+-------------------------------------------------------------
+Your clock granularity/precision appears to be 1 microseconds.
+Each test below will take on the order of 22638 microseconds.
+   (= 22638 clock ticks)
+Increase the size of the arrays if this shows that
+you are not getting at least 20 clock ticks per test.
+-------------------------------------------------------------
+WARNING -- The above is only a rough guideline.
+For best results, please be sure you know the
+precision of your system timer.
+-------------------------------------------------------------
+Function    Best Rate MB/s  Avg time     Min time     Max time
+Copy:           31776.2     0.026502     0.025176     0.032057
+Scale:          35201.9     0.023798     0.022726     0.027416
+Add:            36650.1     0.035089     0.032742     0.040272
+Triad:          36328.5     0.034748     0.033032     0.037801
+-------------------------------------------------------------
+Solution Validates: avg error less than 1.000000e-13 on all three arrays
+-------------------------------------------------------------
+
+## 开启 OPENMP 后的测试结果：
+
+-------------------------------------------------------------
+Function    Best Rate MB/s  Avg time     Min time     Max time
+Copy:           39639.5     0.021956     0.020182     0.037029
+Scale:          26954.2     0.034290     0.029680     0.056762
+Add:            28636.1     0.047166     0.041905     0.066302
+Triad:          28521.2     0.047188     0.042074     0.078559
+-------------------------------------------------------------
+
+## 可以看到，除了 Copy 以外，其他数据跟单线程的比，都降低了。
+```
+
+#### 2.2.2 附：`g77` 安装方法
+
+`g77` 安装方法如下，这个是 `Ubuntu 10.10` 上的方法，由于年代久远，该方法也许没用了：
+
+先编辑 `/etc/apt/source.list` 文件：
+
+```shell
+sudo vi /etc/apt/source.list
+```
+
+在该文件中最后面，添加如下源：
+
+```text
+deb http://hu.archive.ubuntu.com/ubuntu/ hardy universe
+deb-src http://hu.archive.ubuntu.com/ubuntu/ hardy universe
+deb http://hu.archive.ubuntu.com/ubuntu/ hardy-updates universe
+deb-src http://hu.archive.ubuntu.com/ubuntu/ hardy-updates universe
+```
+
+然后执行：
+
+```shell
+sudo apt-get install aptitude
+
+# 然后执行
+sudo aptitude update
+sudo aptitude install g77
+```
+
+### 2.3 性能测试工具 lmbench
 
 `lmbench` 是个用于评价系统综合性能的多平台开源 `benchmark`，能够测试包括磁盘读写 I/O 性能、内存读写性能、缓存/内存延迟、进程创建销毁开销、网络性能等。
 
@@ -366,7 +576,9 @@ STREAM2 sum latency: 0.95 nanoseconds
 STREAM2 sum bandwidth: 8440.49 MB/sec
 ```
 
-### 2.3 内存压力测试工具 memtester4
+### 2.4 内存压力测试工具 memtester4
+
+结论：很可惜，这个工具只是测试内存的运算是否出错，并没有测试性能的功能。
 
 官网： [https://pyropus.ca./software/memtester](https://pyropus.ca./software/memtester)
 
@@ -424,8 +636,6 @@ Loop 1/1:
   8-bit Writes        : ok
   16-bit Writes       : ok
 ```
-
-结论：很可惜，这个工具支持测试内存的运算是否是正常的，并没有性能测试功能。
 
 ## 3. 参考文章
 
