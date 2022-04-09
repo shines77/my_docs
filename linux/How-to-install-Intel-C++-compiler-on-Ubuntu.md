@@ -84,6 +84,13 @@ source /opt/intel/oneapi/setvars.sh
 
 只需要在这些文件中的其中一个文件里添加这条语句即可，否则会多次执行。
 
+`/opt/intel/oneapi/setvars.sh` 可以接受一个目标 `arch` 架构的参数 `<arg>`，可选项为:
+
+* intel64: 使用 x86_amd64 (x64, 64位) 架构的库生成代码。
+* ia32: 使用 x86_i386 (32位) 架构的库生成代码。
+
+留空，则代表使用当前的 `arch` 架构。
+
 更多信息可以参考：[Set Environment Variables for CLI Development](https://www.intel.com/content/www/us/en/develop/documentation/get-started-with-intel-oneapi-base-linux/top/before-you-begin.html)
 
 ## 2. Intel 官网在线安装
@@ -181,11 +188,26 @@ Intel 官网还提供了另一种安装方法，先到这里：
 
 注：如果你不使用命令行的方式安装，则可能要从 Intel 官网下载安装文件，此时，你需要登录 Intel 官网的账号，并选择 "`Continue as Guest`" 选项，才能下载。
 
-## 4. 配置 icpc, icc
+## 4. 配置 icc, icpc
+
+### 4.1 配置 Environment Variables
 
 安装完 "`Intel® oneAPI DPC++/C++ Compiler and Intel® C++ Compiler Classic`" 或 "`Intel® oneAPI Base Toolkit`" 之后，都要配置以后才能使用，配置的方法可以参考 "`1. 使用 oneapi 安装源`" 小节末尾提到的，也可以参考下面的官网的教程：
 
 [Intel® oneAPI Base Toolkit: Configure Your CPU or GPU System](https://www.intel.com/content/www/us/en/develop/documentation/get-started-with-intel-oneapi-base-linux/top/before-you-begin.html)
+
+### 4.2 CMake
+
+在 Linux 中，`icc` 用于 `C`，`icpc` 用于 `C++`，所以 CMake 中可以这样使用：
+
+```shell
+cmake -G "Unix Makefiles" -DCMAKE_C_COMPILER=/opt/intel/oneapi/compiler/2022.0.2/linux/bin/intel64/icc -DCMAKE_CXX_COMPILER=/opt/intel/oneapi/compiler/2022.0.2/linux/bin/intel64/icpc ./
+```
+
+其中 `icc`，`icpc` 的路径可以使用 `which` 命令查看。
+
+本小节参考自：[Invoking the Compiler Using the Command Line](https://www.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference/top/compiler-setup/using-the-command-line/invoking-the-compiler.html)
+
 
 ## 5. 参考文章
 
@@ -196,5 +218,7 @@ Intel 官网还提供了另一种安装方法，先到这里：
 - [Fix apt-get update “the following signatures couldn’t be verified because the public key is not available”](https://chrisjean.com/fix-apt-get-update-the-following-signatures-couldnt-be-verified-because-the-public-key-is-not-available/) [chrisjean.com]
 
 - [Intel® oneAPI Base Toolkit: Configure Your CPU or GPU System](https://www.intel.com/content/www/us/en/develop/documentation/get-started-with-intel-oneapi-base-linux/top/before-you-begin.html) [www.intel.com]
+
+- [Invoking the Compiler Using the Command Line](https://www.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference/top/compiler-setup/using-the-command-line/invoking-the-compiler.html) [www.intel.com]
 
 - [Where can I download the Intel C++ Compiler?](https://askubuntu.com/questions/43389/where-can-i-download-the-intel-c-compiler) [askubuntu.com]
