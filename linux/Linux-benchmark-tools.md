@@ -392,20 +392,20 @@ Solution Validates: avg error less than 1.000000e-13 on all three arrays
 单线程，编译选项为：
 
 ```shell
-gcc -march=native -mtune=native -O3 -DSTREAM_ARRAY_SIZE=50000000 -DOFFSET=0 -DNTIMES=20 stream.c -o stream-single
+gcc -march=native -mtune=native -O3 -DNDEBUG -DSTREAM_ARRAY_SIZE=50000000 -DOFFSET=0 -DNTIMES=20 stream.c -o stream-single
 ```
 
 多线程版，开启 `OPENMP`，编译选项为：
 
 ```shell
-gcc -march=native -mtune=native -O3 -fopenmp -DSTREAM_ARRAY_SIZE=50000000 -DOFFSET=0 -DNTIMES=20 stream.c -o stream-openmp
+gcc -march=native -mtune=native -O3 -DNDEBUG -fopenmp -DSTREAM_ARRAY_SIZE=50000000 -DOFFSET=0 -DNTIMES=20 stream.c -o stream-openmp
 ```
 
 参数说明：
 
 * -mtune=native -march=native：针对CPU指令的优化，此处由于编译机即运行机器。故采用native的优化方法。更多编译器对CPU的优化参考；
 * -O3：编译器的编译优化级别；
-* -mcmodel=medium ；当单个Memory Array Size 大于2GB时需要设置此参数；
+* -mcmodel=medium：当单个 Memory Array Size 大于 2GB 时需要设置此参数；
 * -fopenmp：适应多处理器环境。开启后，程序默认线程为 CPU 线程数，也可以运行时动态指定运行的进程数：
 
   ```bash
