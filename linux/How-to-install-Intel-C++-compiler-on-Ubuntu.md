@@ -69,7 +69,22 @@ $ icpc -V
 icpc version 2021.5.0 (gcc version 9.4.0 compatibility)
 ```
 
-有一点需要注意的是，要使用 "`icc`" 或 "`icpc`"，你必须每次都终端里执行一遍 "`source /opt/intel/oneapi/setvars.sh`"，才能使用，否则只能使用完整的路径启动 "`icc`" 或 "`icpc`"。
+有一点需要注意的是，要使用 "`icc`" 或 "`icpc`"，你必须每次都要在 SSH 终端里运行一遍 "`source /opt/intel/oneapi/setvars.sh`"，才能使用，否则只能使用完整的路径启动 "`icc`" 或 "`icpc`"。
+
+如果想每次登录 SSH 终端的时候都生效，可以把命令写到你当前用户的 `~/.bashrc`，`~/.bashrc_profile` 或者 `~/.profile` 文件中。如果想在所有的用户里都生效，则可以把命令写到 "`/etc/profile`" 文件中。
+
+例如：
+
+```shell
+sudo vim /etc/profile
+
+# 在 /etc/profile 的最后面加上这句
+source /opt/intel/oneapi/setvars.sh
+```
+
+只需要在这些文件中的其中一个文件里添加这条语句即可，否则会多次执行。
+
+更多信息可以参考：[Set Environment Variables for CLI Development](https://www.intel.com/content/www/us/en/develop/documentation/get-started-with-intel-oneapi-base-linux/top/before-you-begin.html)
 
 ## 2. Intel 官网在线安装
 
@@ -148,10 +163,38 @@ chmod +x l_dpcpp-cpp-compiler_p_2022.0.2.84_offline.sh
 
 其他应该跟 `Online` 版是类似的，不再敖述（我自己也没有实装过，应该是相似的）。
 
-## 3. 参考文章
+## 3. 另一种官网安装方法
+
+Intel 官网还提供了另一种安装方法，先到这里：
+
+[Intel® oneAPI Toolkits - Free for All Developers](https://www.intel.com/content/www/us/en/developer/articles/news/free-intel-software-developer-tools.html)
+
+选择 "`Intel® oneAPI Base Toolkit`" 的 "`Get the base kit`" 按钮，跳转到：
+
+[Intel® oneAPI Base Toolkit: General Compute](https://www.intel.com/content/www/us/en/developer/tools/oneapi/toolkits.html#base-kit)
+
+然后点击 “`Intel® oneAPI Base Toolkit: General Compute`” 的 "`Download`" 按钮，跳转到：
+
+[Get the Intel® oneAPI Base Toolkit](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit-download.html)
+
+在这个页面，你可以选择要安装的操作系统，安装方式（Online / offline，APT，YUM 或 Zypper 等），比上面的那些方法更全面，安装和下载的链接也是完全不一样的，但基本是类似的。本人没测试过，有兴趣的朋友可以自己试一下。
+
+注：如果你不使用命令行的方式安装，则可能要从 Intel 官网下载安装文件，此时，你需要登录 Intel 官网的账号，并选择 "`Continue as Guest`" 选项，才能下载。
+
+## 4. 配置 icpc, icc
+
+安装完 "`Intel® oneAPI DPC++/C++ Compiler and Intel® C++ Compiler Classic`" 或 "`Intel® oneAPI Base Toolkit`" 之后，都要配置以后才能使用，配置的方法可以参考 "`1. 使用 oneapi 安装源`" 小节末尾提到的，也可以参考下面的官网的教程：
+
+[Intel® oneAPI Base Toolkit: Configure Your CPU or GPU System](https://www.intel.com/content/www/us/en/develop/documentation/get-started-with-intel-oneapi-base-linux/top/before-you-begin.html)
+
+## 5. 参考文章
 
 - [Intel® oneAPI DPC++/C++ Compiler and Intel® C++ Compiler Classic](https://www.intel.com/content/www/us/en/developer/articles/tool/oneapi-standalone-components.html#dpcpp-cpp) [www.intel.com]
 
 - [Intel C++ compiler is free (as in beer) as part of oneAPI](https://www.reddit.com/r/cpp/comments/kafmsz/intel_c_compiler_is_free_as_in_beer_as_part_of/) [www.reddit.com]
 
 - [Fix apt-get update “the following signatures couldn’t be verified because the public key is not available”](https://chrisjean.com/fix-apt-get-update-the-following-signatures-couldnt-be-verified-because-the-public-key-is-not-available/) [chrisjean.com]
+
+- [Intel® oneAPI Base Toolkit: Configure Your CPU or GPU System](https://www.intel.com/content/www/us/en/develop/documentation/get-started-with-intel-oneapi-base-linux/top/before-you-begin.html) [www.intel.com]
+
+- [Where can I download the Intel C++ Compiler?](https://askubuntu.com/questions/43389/where-can-i-download-the-intel-c-compiler) [askubuntu.com]
