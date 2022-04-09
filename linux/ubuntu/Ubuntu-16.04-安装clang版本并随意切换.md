@@ -158,7 +158,10 @@ sudo update-alternatives --config clang
   1            /usr/bin/clang-5.0   50        手动模式
   2            /usr/bin/clang-6.0   60        手动模式
   3            /usr/bin/clang-8     80        手动模式
-  4            /usr/bin/clang-9     90        手动模式  
+  4            /usr/bin/clang-9     90        手动模式
+  5            /usr/bin/clang-10   100        手动模式
+  6            /usr/bin/clang-11   110        手动模式
+  7            /usr/bin/clang-12   120        手动模式
 ```
 
 注：为了方便，切换 `clang` 的同时，我们也切换到相同版本的 `clang++`。
@@ -181,5 +184,6 @@ sudo update-alternatives --config clang
 
 * `2020` / `09` / `12` ：`clang` 的第一个版本。
 * `2022` / `03` / `18` ：增加 `clang 9.x` 版本 (Ubuntu 16.04)。
+* `2022` / `03` / `20` ：增加 `clang 10.x`, `clang 11.x`, `clang 12.x` 版本 (Ubuntu 20.04)。
 
 <.end.>
