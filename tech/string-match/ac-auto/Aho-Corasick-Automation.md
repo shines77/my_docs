@@ -227,7 +227,7 @@ bool AcTrie::match(const T * first, const T * last, std::vector<MatchInfo> & mat
     State * cur = root;
 
     while (text < text_last) {
-        std::uint32_t lable = (uchar_type)*text;
+        std::uint32_t label = (uchar_type)*text;
         if (cur == root) {  // 第一层要特殊处理, 因为第一层匹配失败,
                             // 直接可以匹配下一个字符, 因为自己本身就是 root 节点
             auto iter = cur->children.find(label);
