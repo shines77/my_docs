@@ -53,7 +53,6 @@ public:
         root_->is_final = 0;
     }
 
-    // 实际的代码中，还要考虑 pattern 重复插入的问题
     void insert(const char * pattern, std::size_t length, std::uint32_t id) {
         State * cur = this->root();
         for (std::size_t i = 0; i < length; i++) {
@@ -82,7 +81,8 @@ public:
         leaf->pattern_id = id;
         leaf->is_final = 1;
 
-        // 进阶思考：如果叶子节点的 is_final 已经为 1，则表示重复添加了
+        // 进阶思考：实际的代码中，还要考虑 pattern 重复插入的问题.
+        // 如果叶子节点的 is_final 已经为 1，则表示重复添加了.
         // 重复添加虽然是无害的，但是为了程序的健壮性，可以判断一下。
     }
 };
@@ -101,7 +101,7 @@ void append_all_patterns(AcTrie & trie, const std::vector<std::string> & pattern
 
 笔者注：
 
-这里为了兼顾代码的可读性，`fail` 和 `children` 中 value 使用的是指针。实际实用中，在 64 位环境下，可以把所有 State 保存在一个数组里，`fail` 和 `children` 中的 value 使用一个整型 uint32_t 作为索引指向这个数组中的 State，一方面可以节省内存，另一方面所有 State 节点在物理上是连续的。
+这里为了兼顾代码的可读性，`fail` 和 `children` 中 value 使用的是指针。实际使用中，在 64 位环境下，可以把所有 State 保存在一个数组里，`fail` 和 `children` 中的 value 使用一个整型 uint32_t 作为索引指向这个数组中的 State，一方面可以节省内存，另一方面所有 State 节点在物理上是连续的。
 
 ## 3. output 表
 
