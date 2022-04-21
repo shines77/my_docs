@@ -31,7 +31,10 @@ C++ 代码：
 #include <cstddef>
 #include <cstdbool>
 #include <string>
+#include <cstring>
+#include <vector>
 #include <map>
+#include <utility>
 
 class AcTrie {
     struct State {
@@ -201,7 +204,6 @@ C++ 代码：
 
 ```cpp
 #include <vector>
-#include <type_traits>  // For std::make_unsigned<T>
 
 struct MatchInfo {
     std::uint32_t last_pos;
