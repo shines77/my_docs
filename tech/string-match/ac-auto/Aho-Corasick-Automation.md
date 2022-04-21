@@ -57,7 +57,7 @@ public:
         State * cur = this->root();
         for (std::size_t i = 0; i < length; i++) {
             // 当前的字符 label
-            std::uint32_t label = (uint8_t)*pattern++;
+            std::uint32_t label = (std::uint8_t)*pattern++;
 
             auto iter = cur->children.find(label);
             if (iter != cur->children.end()) {
@@ -140,6 +140,7 @@ void append_all_patterns(AcTrie & trie, const std::vector<std::string> & pattern
 C++ 代码：
 
 ```cpp
+#include <assert.h>
 #include <vector>
 
 void AcTrie::create_fail() {
@@ -207,13 +208,8 @@ struct MatchInfo {
     std::uint32_t pattern_id;
 };
 
-template <typename T>
-bool AcTrie::match(const T * first, const T * last, std::vector<MatchInfo> & matchInfos) {
-    // 这里直接使用 C++11 的 std::make_unsigned<T>,
-    // 当 T 不是 Integral 类型时，则会报编译错误。
-    // 但所有已知的字符编码类型绝大部分都是 Integral 类型。
-    // 如果有需要，也可以自己写一个 traits 从 T 类型获得无符号的 char_type。
-    typedef typename std::make_unsigned<T>::type uchar_type;
+bool AcTrie::match(const char * first, const char * last, std::vector<MatchInfo> & matchInfos) {
+    typedef uchar_type std::uint8_t;
 
     matchInfos.clear();
 
