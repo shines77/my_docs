@@ -101,7 +101,7 @@ void append_all_patterns(AcTrie & trie, const std::vector<std::string> & pattern
 
 笔者注：
 
-这里为了兼顾代码的可读性，`next_link` 和 `fail_link` 使用的是指针。实际实用中，在 64 位环境下，可以把所有 State 保存在一个数组里，`next_link` 和 `fail_link` 使用一个整型 uint32_t 作为索引指向这个数组，一方面可以节省内存，另一方面所有 State 节点在物理上连续的。
+这里为了兼顾代码的可读性，`fail` 和 `children` 中 value 使用的是指针。实际实用中，在 64 位环境下，可以把所有 State 保存在一个数组里，`fail` 和 `children` 中的 value 使用一个整型 uint32_t 作为索引指向这个数组中的 State，一方面可以节省内存，另一方面所有 State 节点在物理上是连续的。
 
 ## 3. output 表
 
@@ -186,8 +186,6 @@ void AcTrie::create_fail() {
 }
 ```
 
-![加入 fail 表的 AC 自动机](./images/ac-auto-ushers.jpg)
-
 ## 5. 模式匹配
 
 我们从 `根节点` 开始查找，如果它的 `children` 能命中目标串的第 1 个字符，那么我们就从这个 `children` 的 `children` 中再尝试命中目标串的第 2 个字符，以此类推。否则，我们就顺着它的 `失配指针`，跳到已匹配部分的最长后缀，找其他可能匹配的节点。
@@ -195,6 +193,8 @@ void AcTrie::create_fail() {
 如果都没有命中，就从 `根节点` 重头再来。
 
 当我们已经命中的节点，或这些节点的 `fail 节点`，其中任意一个有叶子节点的标识时（如 is_final = 1 ），我们就可以确定当前匹配的字符串已经命中某一个模式串，并将它放到返回结果集中。如果这时搜索的字符串还没有结束，我们就继续搜索和匹配，直到结束。
+
+![完整的 AC 自动机状态图](./images/ac-auto-ushers.jpg)
 
 C++ 代码：
 
@@ -264,7 +264,7 @@ bool AcTrie::match(const T * first, const T * last, std::vector<MatchInfo> & mat
         while (node != root) {
             if (node->is_final != 0) {
                 // 如果有叶子节点, 则继续到 MatchInfo 数组中,
-                // 如果只想匹配第一个结果, 则可以提前返回.
+                // 如果只想匹配第一个模式串, 则可以提前返回.
                 MatchInfo matchInfo;
                 matchInfo.last_pos   = (std::uint32_t)(text + 1 - text_first);
                 matchInfo.pattern_id = node->pattern_id;
