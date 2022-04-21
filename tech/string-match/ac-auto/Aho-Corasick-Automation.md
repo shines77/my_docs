@@ -79,8 +79,8 @@ public:
 
         // 设置叶子节点的 is_final 状态
         State * leaf = cur;
-        leaf.pattern_id = id;
-        leaf.is_final = 1;
+        leaf->pattern_id = id;
+        leaf->is_final = 1;
 
         // 进阶思考：如果叶子节点的 is_final 已经为 1，则表示重复添加了
         // 重复添加虽然是无害的，但是为了程序的健壮性，可以判断一下。
@@ -161,23 +161,23 @@ void AcTrie::create_fail() {
             std::uint32_t label = iter->first;
             State * child = iter->second;
             if (cur == root) {
-                child.fail = root;          // 第 1 层的子节点的 fail 总是指向 root
+                child->fail = root;         // 第 1 层的子节点的 fail 总是指向 root
             } else {
-                State * node = cur.fail;    // 第 2 层之后的节点,
+                State * node = cur->fail;   // 第 2 层之后的节点,
                                             // 其 fail 是通过回溯 cur.fail 来找到的
                 while (node != nullptr) {
                     // 遍历它的 children，看有没与 cur 节点相同字符 label 的节点
                     auto node_iter = node->children.find(label);
                     if (node_iter != node->children.end()) {
-                        child.fail = node_iter->second;
+                        child->fail = node_iter->second;
                         break;
                     }
                     // 如果没找到，继续回溯，直到回溯到 root 节点
-                    node = node.fail;
+                    node = node->fail;
                 }
                 // 没有任何匹配的后缀，则 fail 指针指向 root
                 if (node == nullptr) {
-                    child.fail = root;
+                    child->fail = root;
                 }
             }
             queue.push(child);
@@ -211,7 +211,7 @@ template <typename T>
 bool AcTrie::match(const T * first, const T * last, std::vector<MatchInfo> & matchInfos) {
     // 这里直接使用 C++11 的 std::make_unsigned<T>,
     // 当 T 不是 Integral 类型时，则会报编译错误。
-    // 但所有的已知的字符编码类型绝大部分都是 Integral 类型。
+    // 但所有已知的字符编码类型绝大部分都是 Integral 类型。
     // 如果有需要，也可以自己写一个 traits 从 T 类型获得无符号的 char_type。
     typedef typename std::make_unsigned<T>::type uchar_type;
 
@@ -245,7 +245,7 @@ bool AcTrie::match(const T * first, const T * last, std::vector<MatchInfo> & mat
                 auto iter = cur->children.find(label);
                 if (iter == cur->children.end()) {
                     // 匹配失败, 逐层回跳到 fail 指针
-                    cur = cur.fail;
+                    cur = cur->fail;
                     // 如果 fail 指针指向 root, 直接匹配下一个字符
                     if (cur == root) {
                         text++;
@@ -262,17 +262,17 @@ bool AcTrie::match(const T * first, const T * last, std::vector<MatchInfo> & mat
         // 判断已经匹配的前缀中, 是否有叶子节点(is_final = 1), 即 output
         State * node = cur;
         while (node != root) {
-            if (node.is_final != 0) {
+            if (node->is_final != 0) {
                 // 如果有叶子节点, 则继续到 MatchInfo 数组中,
                 // 如果只想匹配第一个结果, 则可以提前返回.
                 MatchInfo matchInfo;
                 matchInfo.last_pos   = (std::uint32_t)(text + 1 - text_first);
-                matchInfo.pattern_id = node.pattern_id;
+                matchInfo.pattern_id = node->pattern_id;
                 matchInfos.push_back(matchInfo);
 
                 matched = true;
             }
-            node = node.fail;
+            node = node->fail;
         }
 
         // 继续匹配下一个字符
