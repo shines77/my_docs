@@ -225,6 +225,7 @@ bool AcTrie::match(const char * first, const char * last, std::vector<MatchInfo>
     State * cur = root;
 
     while (text < text_last) {
+MatchNextLabel:
         std::uint32_t label = (uchar_type)*text;
         if (cur == root) {  // 第一层要特殊处理, 因为第一层匹配失败,
                             // 直接可以匹配下一个字符, 因为自己本身就是 root 节点
@@ -242,12 +243,16 @@ bool AcTrie::match(const char * first, const char * last, std::vector<MatchInfo>
             do {
                 auto iter = cur->children.find(label);
                 if (iter == cur->children.end()) {
-                    // 匹配失败, 逐层回跳到 fail 指针
-                    cur = cur->fail;
-                    // 如果 fail 指针指向 root, 直接匹配下一个字符
-                    if (cur == root) {
+                    if (cur != root) {
+                        // 匹配失败, 逐层回跳到 fail 指针
+                        cur = cur->fail;
+                    } else {
+                        // 如果 fail 指针指向 root, 直接匹配下一个字符
                         text++;
-                        continue;
+                        if (text < text_last)
+                            goto MatchNextLabel;
+                        else
+                            return matched;
                     }
                 } else {
                     // 匹配成功, 转移到下一个状态
