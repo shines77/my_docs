@@ -50,13 +50,18 @@ private:
 
 public:
     AcTrie() : root_(nullptr) {
-        root_ = new State;
-        root_->fail = nullptr;
-        root_->pattern_id = 0;
-        root_->is_final = 0;
+        State * root = new State;
+        root->fail = nullptr;
+        root->pattern_id = 0;
+        root->is_final = 0;
+        this->root_ = root;
     }
 
-    State * root() const { return root_; }
+    virtual ~AcTrie() {
+        this->clear();
+    }
+
+    State * root() const { return this->root_; }
 
     void clear() {
         // 自己实现 State 的遍历和释放, 从 root 节点开始.
