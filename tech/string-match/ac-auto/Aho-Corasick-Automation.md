@@ -56,6 +56,12 @@ public:
         root_->is_final = 0;
     }
 
+    State * root() const { return root_; }
+
+    void clear() {
+        // 自己实现 State 的遍历和释放, 从 root 节点开始.
+    }
+
     void insert(const char * pattern, std::size_t length, std::uint32_t id) {
         State * cur = this->root();
         for (std::size_t i = 0; i < length; i++) {
@@ -88,18 +94,17 @@ public:
         // 如果叶子节点的 is_final 已经为 1，则表示重复添加了.
         // 重复添加虽然是无害的，但是为了程序的健壮性，可以判断一下。
     }
-};
 
-void append_all_patterns(AcTrie & trie, const std::vector<std::string> & patterns)
-{
-    trie.clear();
-    std::uint32_t index = 0;
-    for (auto iter = patterns.begin(); iter != patterns.end(); ++iter) {
-        const std::string & pattern = *iter;
-        trie.insert(pattern.c_str(), pattern.size(), index);
-        index++;
+    void insert_all(const std::vector<std::string> & patterns) {
+        this->clear();
+        std::uint32_t index = 0;
+        for (auto iter = patterns.begin(); iter != patterns.end(); ++iter) {
+            const std::string & pattern = *iter;
+            this->insert(pattern.c_str(), pattern.size(), index);
+            index++;
+        }
     }
-}
+};
 ```
 
 笔者注：
@@ -117,6 +122,10 @@ void append_all_patterns(AcTrie & trie, const std::vector<std::string> & pattern
 如下图所示：
 
 ![output 表](./images/ac-auto-output-table.jpeg)
+
+笔者注：
+
+由于很多时候，我们只需要匹配 `最长的` 模式串，所以这里的代码并未实现 `output` 表，只返回当前叶子节点的 `pattern_id` ，也就是最长的那一个模式串。要获得完整的 `output` 表，也很简单，回溯节点的 state.fail 即可，如果回溯的过程中 state.is_final = 1 ，就添加到该节点的 `output` 表中。
 
 ## 4. fail 表
 
