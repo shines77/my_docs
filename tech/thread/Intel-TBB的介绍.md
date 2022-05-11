@@ -80,7 +80,7 @@ Intel Thread Building Blocks (TBB) 很好地解决了上述问题：
 
 ### 4.1 例子 - parallel_for 模版
 
-`parallel_for(range, body, partitioner)` 提供了并行迭代的泛型形式。
+`parallel_for` (`range`, `body`, `partitioner`) 提供了并行迭代的泛型形式。
 
 它表示在区域的每个值，并行执行 `body`。
 
@@ -101,9 +101,8 @@ Intel Thread Building Blocks (TBB) 很好地解决了上述问题：
 ```cpp
 #include <iostream>
 #include <vector>
+// 其实只 include <tbb/tbb.h> 就行了
 #include <tbb/tbb.h>
-#include <tbb/task_scheduler_init.h>
-#include <tbb/task.h>
 #include <tbb/blocked_range.h>
 #include <tbb/parallel_for.h>
  
@@ -178,10 +177,10 @@ int main()
 
 ## 5. 参考文章
 
-1. [Intel Thread Building Blocks (TBB) 入门篇](http://t.zoukankan.com/ybqjymy-p-13679446.html)
+1. `[Intel Thread Building Blocks (TBB) 入门篇]`
 
     [http://t.zoukankan.com/ybqjymy-p-13679446.html](http://t.zoukankan.com/ybqjymy-p-13679446.html)
 
-2. [Intel Thread Building Blocks (TBB) 的介绍](https://bbs.csdn.net/topics/210061396)
+2. `[Intel Thread Building Blocks (TBB) 的介绍]`
 
     [https://bbs.csdn.net/topics/210061396](https://bbs.csdn.net/topics/210061396)
