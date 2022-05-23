@@ -73,7 +73,7 @@ cnpm : 无法加载文件 C:\Users\XXXXXX\AppData\Roaming\npm\cnpm.ps1，因为�
 创建 docsify 文档根目录：
 
 ```shell
-mddir .\docsify-demo   # Windows
+mkdir .\docsify-demo   # Windows
 或
 mkdir ./docsify-demo   # Linux
 ```
