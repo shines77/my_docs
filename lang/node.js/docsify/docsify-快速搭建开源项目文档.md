@@ -10,7 +10,7 @@
 
 这将非常实用，如果只是需要快速的搭建一个小型的文档网站，或者不想因为生成的一堆 .html 文件 “污染” commit 记录，只需要创建一个 index.html 就可以开始写文档而且直接部署在 `GitHub Pages` 。
 
-docsify 官网：[https://docsify.js.org/](https://docsify.js.org/)
+`Docsify` 官网：[https://docsify.js.org/](https://docsify.js.org/)
 
 ## 2. 安装 Node.js
 
@@ -41,6 +41,7 @@ cnpm : 无法加载文件 C:\Users\XXXXXX\AppData\Roaming\npm\cnpm.ps1，因为�
 这是因为 `Windows PowerShell` 的 `*.ps1` 脚本运行策略的问题，解决办法是：
 
 1. 以管理员身份运行 `Windows PowerShell`；
+
 2. 运行命令：
 
     ```shell
