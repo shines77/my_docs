@@ -43,9 +43,8 @@ cnpm : 无法加载文件 C:\Users\XXXXXX\AppData\Roaming\npm\cnpm.ps1，因为�
 
 1. `[入坑 docsify，一款神奇的文档生成利器！]`
 
-    [https://baijiahao.baidu.com/s?id=1683928475208](https://baijiahao.baidu.com/s?id=1683928475208)
+    [https://baijiahao.baidu.com/s?id=1683928475208184783](https://baijiahao.baidu.com/s?id=1683928475208184783)
 
 2. `[解决 windows “因为在此系统上禁止运行脚本报错”]`
 
     [https://blog.csdn.net/qq_47183158/article/details/120088725](https://blog.csdn.net/qq_47183158/article/details/120088725)
-
