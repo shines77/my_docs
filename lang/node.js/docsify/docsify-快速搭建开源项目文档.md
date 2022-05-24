@@ -8,7 +8,7 @@
 
 `Docsify` 是一个动态生成文档网站的工具。不同于 VuePress、GitBook、Hexo 的地方是它不会生成将 .md 转成 .html 文件，所有转换工作都是在运行时进行。
 
-这将非常实用，如果只是需要快速的搭建一个小型的文档网站，或者不想因为生成的一堆 .html 文件 “污染” commit 记录，只需要创建一个 index.html 就可以开始写文档而且直接部署在 `GitHub Pages` 。
+这将非常实用，如果只是需要快速的搭建一个小型的文档网站，或者不想因为生成的一堆 .html 文件 "污染" commit 记录，只需要创建一个 `index.html` 就可以开始写文档而且直接部署在 `GitHub Pages` 。
 
 `Docsify` 官网：[https://docsify.js.org/](https://docsify.js.org/)
 
@@ -358,22 +358,22 @@ Medium's 风格的图片缩放插件. 基于 [medium-zoom](https://github.com/fr
 
 ## 8. 参考文章
 
-1. `[Docsify快速搭建个人博客]`
+1. `Docsify快速搭建个人博客`
 
     [https://www.imooc.com/article/287154](https://www.imooc.com/article/287154)
 
-2. `[Wiki系列（二）：docsify部署及配置]`
+2. `Wiki系列（二）：docsify部署及配置`
 
     [https://juemuren4449.com/archives/docsify-deploy-and-configuration](https://juemuren4449.com/archives/docsify-deploy-and-configuration)
 
-3. `[入坑 docsify，一款神奇的文档生成利器！]`
+3. `入坑 docsify，一款神奇的文档生成利器！`
 
     [https://baijiahao.baidu.com/s?id=1683928475208184783](https://baijiahao.baidu.com/s?id=1683928475208184783)
 
-4. `[Docsify使用指南（打造最快捷、最轻量级的个人&团队文档）]`
+4. `Docsify使用指南（打造最快捷、最轻量级的个人&团队文档）`
 
     [https://www.cnblogs.com/Can-daydayup/p/15413267.html](https://www.cnblogs.com/Can-daydayup/p/15413267.html)
 
-5. `[解决 windows “因为在此系统上禁止运行脚本报错”]`
+5. `解决 windows “因为在此系统上禁止运行脚本报错”`
 
     [https://blog.csdn.net/qq_47183158/article/details/120088725](https://blog.csdn.net/qq_47183158/article/details/120088725)
