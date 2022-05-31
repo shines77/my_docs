@@ -13,7 +13,7 @@
 * 轻量级，速度快；
 * 客户端使用简单；
 
-## 2. 安装 ocserv (OpenConnect Server)
+## 2. 手动编译安装 ocserv
 
 `ocserv` 是一个 `OpenConnect SSL VPN` 协议服务端，从 `0.3.0` 版后开始兼容 `Cisco AnyConnect SSL VPN` 协议的终端。
 
@@ -21,7 +21,7 @@
 
 ### 2.1. 下载 ocserv
 
-由于 `Ubuntu 14.04` 没有提供 `ocserv` 的源安装，所以我们要下载源码然后自己编译安装，这里使用的版本是 `ocserv 0.9.2`，最新的版本是 `0.11.8` ，但依赖的组件不一样，`0.9.2` 也挺好用，有兴趣的朋友可以自行研究一下 `0.11.8` 如何编译安装。
+`Ubuntu 20.04` 提供了 `ocserv` 的安装源，但这里先介绍手动编译安装，使用的版本是最新版 `ocserv 1.1.6` （2022/02/17）。
 
 从官网下载 `ocserv` 的源码包，并解压：
 
@@ -29,9 +29,9 @@
 cd ~/
 mkdir ocserv
 cd ocserv
-wget ftp://ftp.infradead.org/pub/ocserv/ocserv-0.9.2.tar.xz
-tar -xf ocserv-0.9.2.tar.xz
-cd ocserv-0.9.2
+wget ftp://ftp.infradead.org/pub/ocserv/ocserv-1.1.6.tar.xz
+tar -xf ocserv-1.1.6.tar.xz
+cd ocserv-1.1.6
 ```
 
 ### 2.2. 依赖组件
@@ -39,7 +39,13 @@ cd ocserv-0.9.2
 接下来，安装 `ocserv` 的依赖组件：
 
 ```bash
-apt-get install build-essential pkg-config libgnutls28-dev libwrap0-dev libpam0g-dev libseccomp-dev libreadline-dev libnl-route-3-dev
+apt install build-essential pkg-config libgnutls28-dev libwrap0-dev libpam0g-dev libseccomp-dev libreadline-dev libnl-route-3-dev
+```
+
+`ocserv 1.1.6` 相对于 `0.9.2` 等以前的版本，特别增加的依赖组件是 `libev`，安装命令：
+
+```bash
+apt install libev-dev
 ```
 
 ### 2.3. 编译安装
@@ -52,7 +58,7 @@ make
 make install
 ```
 
-## 3. 配置 ocserv
+## 2. 配置 ocserv
 
 ### 3.1. 安装证书工具
 
@@ -185,7 +191,7 @@ openssl pkcs12 -export -inkey user-key.pem -in user-cert.pem -name "User VPN Cli
 在 `ocserv` 源代码里有一个简单的配置范例文件：`/ocserv-0.9.2/doc/sample.config`，把它复制到 `/etc/ocserv/` 目录下：
 
 ```shell
-cp ~/ocserv/ocserv-0.9.2/doc/sample.config /etc/ocserv/config
+cp ~/ocserv/ocserv-1.1.6/doc/sample.config /etc/ocserv/config
 ```
 
 编辑这个配置文件 `/etc/ocserv/config`，找到与下文相同的配置选项，并修改成下文里展示的内容，找到那几个关于 `route` 的配置项，像下面展示的一样，把它们都注释掉。最后一项 “`cisco-client-compat = true`” 在文件比较后面的地方，原本是被注释了的，将其注释去掉。
@@ -206,6 +212,9 @@ max-same-clients = 8
 # tcp 和 udp 端口，默认值是 443，可以不用改
 tcp-port = 443
 udp-port = 443
+
+# 下面这个选项从 1.1.2 开始就取消了，需要注释掉
+# listen-clear-file = /var/run/ocserv-conn.socket
 
 # 默认是 false, 修改为 true
 try-mtu-discovery = true
