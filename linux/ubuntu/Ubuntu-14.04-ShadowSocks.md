@@ -194,7 +194,7 @@ systemctl status shadowsocks
 
 可以使用第三方的服务测试你的服务器 `IP` 是否被墙了：
 
-```
+```shell
 https://ipcheck.need.sh/
 ```
 
@@ -215,6 +215,7 @@ https://ipcheck.need.sh/
 ```shell
 vim /etc/rc.local
 ```
+
 如下：
 
 ```bash

@@ -1,5 +1,5 @@
 
-# Ubuntu 14.04 安装和配置 Cisco AnyConnect VPN Server
+# Ubuntu 20.04 安装和配置 Cisco AnyConnect VPN Server
 
 ## 1. 简介
 
@@ -18,8 +18,6 @@
 `ocserv` 是一个 `OpenConnect SSL VPN` 协议服务端，从 `0.3.0` 版后开始兼容 `Cisco AnyConnect SSL VPN` 协议的终端。
 
 官方主页：[http://www.infradead.org/ocserv/](http://www.infradead.org/ocserv/)
-
-（注：本文是基于 `Ubuntu 14.04 x64` 而写的）
 
 ### 2.1. 下载 ocserv
 
