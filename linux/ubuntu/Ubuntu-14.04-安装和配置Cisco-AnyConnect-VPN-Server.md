@@ -231,8 +231,9 @@ run-as-group = ocserv
 default-domain = example.com
 
 # VPN 客户端的网络(IPv4)，IP 池范围，要跟你的 VPN 客户端本地的局域网网段错开
-ipv4-network = 192.168.8.0
-ipv4-netmask = 255.255.255.0
+# 这里选一个比较少人用的网段 10.250.x.x
+ipv4-network = 10.250.0.0
+ipv4-netmask = 255.255.0.0
 
 # DNS 设置
 dns = 8.8.8.8
@@ -253,11 +254,14 @@ dns = 8.8.4.4
 #route = 192.168.0.0/255.255.0.0
 #route = fef4:db8:1000:1001::/64
 
-# 这里表示不使用 VPN 代理转发的网段，一般是你本地的局域网网段。
-no-route = 192.168.0.0/255.255.255.0
-no-route = 192.168.1.0/255.255.255.0
-no-route = 192.168.10.0/255.255.255.0
-no-route = 192.168.88.0/255.255.255.0
+# 这里表示不使用 VPN 代理转发的网段，下面是所有的私有地址段。
+no-route = 127.0.0.0/255.0.0.0
+no-route = 169.254.0.0/255.255.0.0
+no-route = 172.16.0.0/255.240.0.0
+no-route = 192.168.0.0/255.255.0.0
+
+# 也可以把你的 VPN 服务器 IP 所在的网段也加到 no-route 里，例如：114.128.111.222
+no-route = 114.128.111.0/255.255.255.0
 
 # 以下选项适用于 AnyConnect 客户端兼容性（实验性）。
 
@@ -488,5 +492,7 @@ systemctl status ocserv
 1. [Setup OpenConnect VPN Server for Cisco AnyConnect on Ubuntu 14.04 x64](https://www.vultr.com/docs/setup-openconnect-vpn-server-for-cisco-anyconnect-on-ubuntu-14-04-x64)
 
 2. [在 CentOS 7 上搭建 Cisco AnyConnect VPN](http://blog.csdn.net/y87329396/article/details/48264731)
+
+3. [ocserv 1.1.6 - manual.html](http://ocserv.gitlab.io/www/manual.html)
 
 <.End.>
