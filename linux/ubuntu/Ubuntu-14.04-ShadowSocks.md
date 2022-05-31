@@ -76,7 +76,7 @@ vim /etc/shadowsocks.json
 ```json
 {
     "server": "114.114.114.114",
-    "server_port": 8388,
+    "server_port": 5173,
     "local_address": "127.0.0.1",
     "local_port": 1080,
     "password": "your_password",
@@ -114,20 +114,18 @@ ssserver -c /etc/shadowsocks.json -d start
 当然，我们可不希望每次重启服务器都手动启动 `ShadowSocks`，因此可以这条命令写到系统启动文件中：`/etc/rc.local` (在 `exit 0` 之前)，这样以后就能开机自动运行了。
 
 ```shell
-vim /etc/rc.local
+vim /etc/profile
 ```
 
-在 `exit 0` 之前添加如下内容：
+在末尾添加如下内容：
 
 ```bash
 if [ $(id -u) -eq 0 ]; then
     /usr/local/bin/ssserver -c /etc/shadowsocks.json -d start
 fi
-
-exit 0
 ```
 
-重启系统，验证配置 `/etc/rc.local` 是否生效。好了，打开客户端，开始呼吸墙外的新鲜空气吧！
+重启系统，验证配置 `/etc/profile` 是否生效。好了，打开客户端，开始呼吸墙外的新鲜空气吧！
 
 开机自启
 
@@ -186,7 +184,63 @@ systemctl start shadowsocks
 systemctl status shadowsocks
 ```
 
-## 3. 更新：使用 obfs 混淆
+## 3. 安装 shadowsocks-libev
+
+如果 `python` 版的 `shadowsocks` 有问题，那可以试试 `shadowsocks-libev`，安装命令如下：
+
+```shell
+apt-get install shadowsocks-libev
+```
+
+`shadowsocks-libev` 装好以后，是自动自启的，启动的文件和参数是：
+
+```shell
+/usr/bin/ss-server -c /etc/shadowsocks-libev/config.json
+```
+
+修改其配置文件：
+
+```shell
+vim /etc/shadowsocks-libev/config.json
+```
+
+修改为：
+
+```javascript
+{
+    "server": "0.0.0.0",
+    "mode": "tcp_and_udp",
+    "server_port": 5173,
+    "local_port": 1080,
+    "password": "your_password",
+    "timeout": 30,
+    "method": "xchacha20-ietf-poly1305"
+}
+```
+
+注意：这里不能添加 `"local_address": "127.0.0.1"` 这样的参数，会报错，导致客户端连不上。
+
+因为 `xchacha20-ietf-poly1305` 加密格式有的 `ShadowSocks` 客户端版本不支持，请尝试更新至最新版。
+
+启动 `shadowsocks-libev` ：
+
+```shell
+service shadowsocks-libev start
+```
+
+停止 `shadowsocks-libev` ：
+
+```shell
+service shadowsocks-libev stop
+```
+
+查看 `shadowsocks-libev` 的状态：
+
+```shell
+service shadowsocks-libev status
+```
+
+## 4. 更新：使用 obfs 混淆
 
 （ `2019年2月14日` 更新）
 
@@ -204,7 +258,7 @@ https://ipcheck.need.sh/
 
 本文仅介绍如何使用和配置 `simple-obfs` 来做混淆。
 
-### 3.1. 服务器端
+### 4.1. 服务器端
 
 服务器端 (`Ubuntu 14.04 64-bit`)：
 
@@ -247,7 +301,7 @@ vim /etc/shadowsocks.json
 ```json
 {
     "server": "127.0.0.1",
-    "server_port": 8388,
+    "server_port": 5173,
     "local_address": "127.0.0.1",
     "local_port": 1080,
     "password": "your_password",
@@ -349,7 +403,7 @@ systemctl start obfs
 systemctl status obfs
 ```
 
-### 3.2. 客户端
+### 4.2. 客户端
 
 客户端 (`Windows 10`)：
 
@@ -363,7 +417,7 @@ systemctl status obfs
 
 关于 `Windows` 上客户端的设置，更多内容，可参考如下文章：[https://www.jianshu.com/p/135e538164f5](https://www.jianshu.com/p/135e538164f5) 。
 
-## 4. 参考文章
+## 5. 参考文章
 
 1. [`issue：有种被针对的感觉`](https://github.com/shadowsocks/shadowsocks-windows/issues/2193)
 
