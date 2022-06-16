@@ -1,0 +1,17 @@
+img {
+    max-width:100%;
+    width: 600px;
+}
+
+blockquote {
+    border-left: 5px darkgrey solid;
+    padding-left: 10px;
+    margin-left: 20px;
+    max-width: 100%;
+    width: 800px;
+}
+
+body {
+    max-width: 100%;
+    width: 1200px;
+}

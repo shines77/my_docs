@@ -4,7 +4,7 @@
 
     [https://segmentfault.com/a/1190000012926722](https://segmentfault.com/a/1190000012926722)
 
-    ```
+    ```text
     HashMap 底层是基于散列算法实现，散列算法分为散列再探测和拉链式。HashMap 则使用了拉链式的散列算法，并在 JDK 1.8 中引入了红黑树优化过长的链表。
 
     HashMap 基本操作就是对拉链式散列算法基本操作的一层包装。不同的地方在于 JDK 1.8 中引入了红黑树，底层数据结构由数组 + 链表变为了数组 + 链表 + 红黑树，不过本质并未变。
@@ -18,7 +18,7 @@
 
     [https://blog.csdn.net/vking_wang/article/details/14166593](https://blog.csdn.net/vking_wang/article/details/14166593)
 
-    ```
+    ```text
     这篇文章介绍的大概是 JDK 1.7 以前的 HashMap 版本。
 
     HashMap里面实现一个静态内部类Entry，其重要的属性有 key , value, next，从属性key,value我们就能很明显的看出来Entry就是HashMap键值对实现的一个基础bean，我们上面说到HashMap的基础就是一个线性数组，这个数组就是Entry[]，Map里面的内容都保存在Entry[]里面。
@@ -27,7 +27,7 @@
 
     [https://segmentfault.com/a/1190000005075494](https://segmentfault.com/a/1190000005075494)
 
-    ```
+    ```text
     文章介绍 Mac OS 上的 Objective-C 哈希表，也就是 NXHashTable ：
 
     NXHashTable 的实现
@@ -41,7 +41,7 @@
 
     [https://zhuanlan.zhihu.com/p/28501879](https://zhuanlan.zhihu.com/p/28501879)
 
-    ```
+    ```text
     链表的节点数超过 8 时，转换为红黑树。
     ```
 
@@ -50,7 +50,7 @@
     [https://zhuanlan.zhihu.com/p/28587782](https://zhuanlan.zhihu.com/p/28587782)
 
 
-    ```
+    ```text
     接上文。
     ```
 
@@ -58,7 +58,7 @@
 
     [https://www.zhihu.com/question/20806796](https://www.zhihu.com/question/20806796)
 
-    ```
+    ```text
     作者：十一太保念技校
 
     首先来说假如关键字是随机分布的，那么无所谓一定要模质数。但在实际中往往关键字有某种规律，例如大量的等差数列，那么公差和模数不互质的时候发生碰撞的概率会变大，而用质数就可以很大程度上回避这个问题。质数并不是唯一的准则，具体可以参考以下网站。
@@ -74,7 +74,7 @@
 
     [http://planetmath.org/goodhashtableprimes](http://planetmath.org/goodhashtableprimes)
 
-    ```
+    ```text
     In the course of designing a good hashing configuration, it is helpful to have a list of prime numbers for the hash table size.
 
     The following is such a list. It has the properties that:
@@ -116,14 +116,13 @@
     230	231	0.000000	1610612741
 
     The columns are, in order, the lower bounding power of two, the upper bounding power of two, the relative deviation (in percent) of the prime number from the optimal middle of the first two, and finally the prime itself.
-
     ```
 
 * `为什么hash table的大小最好取一个不接近 2^p 的素数`
 
     [http://blog.51cto.com/thuhak/1352903](http://blog.51cto.com/thuhak/1352903)
 
-    ```
+    ```text
     1. m 不能取一个 2^p 的数。算法导论是这样解释的：
 
       这是因为对一个数除以 2^p 取余数相当于只取这个数的最低的 p 位，高于 p 位的信息就被丢弃了。
@@ -137,7 +136,7 @@
 
     [https://blog.csdn.net/duan19920101/article/details/51579136/](https://blog.csdn.net/duan19920101/article/details/51579136/)
 
-    ```
+    ```text
     什么是哈希表？
 
         哈希表（Hash table，也叫散列表），是根据关键码值(Key value)而直接进行访问的数据结构。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。
@@ -152,11 +151,12 @@
 
         碰撞处理，一种是 open hashing，也称为拉链法；另一种就是 closed hashing，也称开放地址法，opened addressing。
     ```
+
 * `散列表(哈希表)（散列函数构造、处理冲突、查找）`
 
     [https://blog.csdn.net/qq_22238021/article/details/78258605](https://blog.csdn.net/qq_22238021/article/details/78258605)
 
-    ```
+    ```text
     一、哈希函数的构造方法
 
     1、直接定址法
@@ -181,7 +181,7 @@
 
     [https://www.jianshu.com/p/dbe7a1ea5928](https://www.jianshu.com/p/dbe7a1ea5928)
 
-    ```
+    ```text
     Open Hashing 拉链法
 
     名词解释：之所以叫拉链，是因为哈希冲突后，用链表去延展来解决。
