@@ -7,7 +7,7 @@
 #include <iostream>
 #include <string>
 #include <type_traits>
- 
+
 struct Ex1 {
     std::string str; // member has a non-trivial but non-throwing move ctor
 };
@@ -68,10 +68,10 @@ struct HasMove_both_noexcept {
 };
 
 template <typename T>
-void display_copy_constructible(const std::string & var)
+void display_copy_constructible(const std::string & name)
 {
     std::cout << std::boolalpha;
-    std::cout << var << ":" << '\n';
+    std::cout << name << ":" << '\n';
     std::cout << "is copy-constructible: ";
     std::cout << std::is_copy_constructible<T>::value << '\n';
     std::cout << "is trivially copy-constructible: ";
@@ -81,23 +81,10 @@ void display_copy_constructible(const std::string & var)
 }
 
 template <typename T>
-void display_move_constructible(const std::string & var)
+void display_copy_assignable(const std::string & name)
 {
     std::cout << std::boolalpha;
-    std::cout << var << ":" << '\n';
-    std::cout << "is move-constructible: ";
-    std::cout << std::is_move_constructible<T>::value << '\n';
-    std::cout << "is trivially move-constructible: ";
-    std::cout << std::is_trivially_move_constructible<T>::value << '\n';
-    std::cout << "is nothrow move-constructible: ";
-    std::cout << std::is_nothrow_move_constructible<T>::value << "\n\n";
-}
-
-template <typename T>
-void display_copy_assignable(const std::string & var)
-{
-    std::cout << std::boolalpha;
-    std::cout << var << ":" << '\n';
+    std::cout << name << ":" << '\n';
     std::cout << "is copy-assignable: ";
     std::cout << std::is_copy_constructible<T>::value << '\n';
     std::cout << "is trivially copy-assignable: ";
@@ -107,10 +94,23 @@ void display_copy_assignable(const std::string & var)
 }
 
 template <typename T>
-void display_move_assignable(const std::string & var)
+void display_move_constructible(const std::string & name)
 {
     std::cout << std::boolalpha;
-    std::cout << var << ":" << '\n';
+    std::cout << name << ":" << '\n';
+    std::cout << "is move-constructible: ";
+    std::cout << std::is_move_constructible<T>::value << '\n';
+    std::cout << "is trivially move-constructible: ";
+    std::cout << std::is_trivially_move_constructible<T>::value << '\n';
+    std::cout << "is nothrow move-constructible: ";
+    std::cout << std::is_nothrow_move_constructible<T>::value << "\n\n";
+}
+
+template <typename T>
+void display_move_assignable(const std::string & name)
+{
+    std::cout << std::boolalpha;
+    std::cout << name << ":" << '\n';
     std::cout << "is move-assignable: ";
     std::cout << std::is_move_assignable<T>::value << '\n';
     std::cout << "is trivially move-assignable: ";
@@ -120,10 +120,10 @@ void display_move_assignable(const std::string & var)
 }
 
 template <typename T>
-void display_copy_and_move_all(const std::string & var)
+void display_copy_and_move_all(const std::string & name)
 {
     std::cout << std::boolalpha;
-    std::cout << var << ":" << "\n\n";
+    std::cout << name << ":" << "\n\n";
 
     std::cout << "is copy-constructible: ";
     std::cout << std::is_copy_constructible<T>::value << '\n';
@@ -132,19 +132,19 @@ void display_copy_and_move_all(const std::string & var)
     std::cout << "is nothrow copy-constructible: ";
     std::cout << std::is_nothrow_copy_constructible<T>::value << "\n\n";
 
-    std::cout << "is move-constructible: ";
-    std::cout << std::is_move_constructible<T>::value << '\n';
-    std::cout << "is trivially move-constructible: ";
-    std::cout << std::is_trivially_move_constructible<T>::value << '\n';
-    std::cout << "is nothrow move-constructible: ";
-    std::cout << std::is_nothrow_move_constructible<T>::value << "\n\n";
-
     std::cout << "is copy-assignable: ";
     std::cout << std::is_copy_constructible<T>::value << '\n';
     std::cout << "is trivially copy-assignable: ";
     std::cout << std::is_trivially_copy_constructible<T>::value << '\n';
     std::cout << "is nothrow copy-assignable: ";
     std::cout << std::is_nothrow_copy_constructible<T>::value << "\n\n";
+
+    std::cout << "is move-constructible: ";
+    std::cout << std::is_move_constructible<T>::value << '\n';
+    std::cout << "is trivially move-constructible: ";
+    std::cout << std::is_trivially_move_constructible<T>::value << '\n';
+    std::cout << "is nothrow move-constructible: ";
+    std::cout << std::is_nothrow_move_constructible<T>::value << "\n\n";
 
     std::cout << "is move-assignable: ";
     std::cout << std::is_move_assignable<T>::value << '\n';
@@ -166,6 +166,22 @@ void test_copy_constructible()
     display_copy_constructible<HasMove>("HasMove");
     display_copy_constructible<HasMove_noexcept>("HasMove_noexcept");
     display_copy_constructible<HasMove_both_noexcept>("HasMove_both_noexcept");
+
+    std::cout << '\n';
+}
+
+void test_copy_assignable()
+{
+    display_copy_assignable<Ex1>("Ex1");
+    display_copy_assignable<Ex2>("Ex2");
+    display_copy_assignable<Ex3>("Ex3");
+    display_copy_assignable<NoMove>("NoMove");
+    display_copy_assignable<NoMove_noexcept>("NoMove_noexcept");
+    display_copy_assignable<OnlyMove>("OnlyMove");
+    display_copy_assignable<OnlyMove_noexcept>("OnlyMove_noexcept");
+    display_copy_assignable<HasMove>("HasMove");
+    display_copy_assignable<HasMove_noexcept>("HasMove_noexcept");
+    display_copy_assignable<HasMove_both_noexcept>("HasMove_both_noexcept");
 
     std::cout << '\n';
 }
@@ -207,22 +223,6 @@ void test_move_constructible()
     NoMove is nothrow move-constructible? false
 
  *******************************************************/
-
-void test_copy_assignable()
-{
-    display_copy_assignable<Ex1>("Ex1");
-    display_copy_assignable<Ex2>("Ex2");
-    display_copy_assignable<Ex3>("Ex3");
-    display_copy_assignable<NoMove>("NoMove");
-    display_copy_assignable<NoMove_noexcept>("NoMove_noexcept");
-    display_copy_assignable<OnlyMove>("OnlyMove");
-    display_copy_assignable<OnlyMove_noexcept>("OnlyMove_noexcept");
-    display_copy_assignable<HasMove>("HasMove");
-    display_copy_assignable<HasMove_noexcept>("HasMove_noexcept");
-    display_copy_assignable<HasMove_both_noexcept>("HasMove_both_noexcept");
-
-    std::cout << '\n';
-}
 
 void test_move_assignable()
 {
@@ -275,15 +275,15 @@ void test_copy_and_move_all()
     display_copy_and_move_all<HasMove_noexcept>("HasMove_noexcept");
     display_copy_and_move_all<HasMove_both_noexcept>("HasMove_both_noexcept");
 }
- 
+
 int main()
 {
     std::cout << "------------------------------------------------";
     std::cout << '\n';
 
     test_copy_constructible();
-    test_move_constructible();
     test_copy_assignable();
+    test_move_constructible();
     test_move_assignable();
 
     std::cout << "------------------------------------------------";
