@@ -152,6 +152,7 @@ $ locate -r tomcat.2021-01-[0-3][0-9].log
 ```shell
 find [path...] [expression] [options]
 ```
+
 参数说明：
 
 `find` 根据下列规则判断 `path` 和 `expression`，在命令列上第一个 `- ( ) , !` 之前的部份为 `path`，之后的是 `expression`。如果 `path` 是空字符串，则使用目前路径。如果 `expression` 是空字符串，则使用 `-print` 为预设 `expression` 。
@@ -199,7 +200,14 @@ find [path...] [expression] [options]
 
 * `-H` :
 * `-L` :
-* `-name` : 按照文件名查找文件，文件名后可用引号括起来，支持模糊查找。
+* `-name`
+
+    按照文件名查找文件，文件名后可用引号括起来，支持模糊查找，通配符为 `*` (代表任意长度的任意字符)，`?` (代表一个任意字符)。
+
+* `-iname`
+
+    默认情况下，`find` 是区分大小写的。对于不区分大小写的 `find`，可以使用 `-iname`
+
 * `-perm` : 按照文件权限来查找文件
 * `-user` : 按照文件所属的用户来查找文件
 * `-group` : 按照文件所属的组来查找文件
