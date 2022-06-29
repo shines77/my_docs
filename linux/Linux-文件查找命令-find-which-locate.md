@@ -199,9 +199,24 @@ find [path...] [expression] [options]
 
 * `-H` :
 * `-L` :
-* `-print` : 输出文件名
+* `-name` : 按照文件名查找文件，文件名后可用引号括起来，支持模糊查找。
+* `-perm` : 按照文件权限来查找文件
+* `-user` : 按照文件所属的用户来查找文件
+* `-group` : 按照文件所属的组来查找文件
+* `-nouser` : 查找无有效属主的文件，即该文件的属主在 `/etc/passwd` 中不存在
+* `-nogroup` : 查找无有效所属组的文件，即该文件所属的组在 `/etc/groups` 中不存在
+
+* `-prune`
+
+    使用这一选项可以使 `find` 命令不在当前指定的目录中查找，如果同时使用 `-depth` 选项，那么 `-prune` 将被 `find` 命令忽略。
+
+* `-print` : 将匹配的文件输出到标准输出
 * `-fprint FILE` : 打印文件内容
-* `-exec COMMAND` : 运行命令
+
+* `-exec COMMAND`， `-exec COMMAND {} \;`
+
+    对匹配的文件执行该参数所给出的 `shell` 命令，注意 `{}` 和 `\;` 之间的有空格
+
 * `-execdir COMMAND`: 指定运行目录
 * `-delete` : 删除匹配的文件
 * `-depth` : 指定搜索的深度
@@ -252,3 +267,7 @@ $ find / -type f -size 0 -exec ls -l {} \;
 2. `[Linux find 命令]`
 
     [https://www.runoob.com/linux/linux-comm-find.html](https://www.runoob.com/linux/linux-comm-find.html)
+
+3. `[日常小记] linux 中强大且常用命令：find、grep`
+
+    [https://www.cnblogs.com/skynet/archive/2010/12/25/1916873.html](https://www.cnblogs.com/skynet/archive/2010/12/25/1916873.html)
