@@ -1,81 +1,88 @@
+# 哈希表算法相关资料
 
-斐波那契散列法:
+## 1. 哈希函数
 
-hash = (value * 2654435769) >> 28;
+1. 斐波那契散列法:
 
+    ```cpp
+    hash = (value * 2654435769) >> 28;
+    ```
 
-eastl:
+2. `eastl` 中的哈希函数:
 
-hash = 2166136261
-
-hash = (hash * 16777619) ^ value;
-
+    ```cpp
+    hash = 2166136261
+    hash = (hash * 16777619) ^ value;
+    ```
 
 ------------------------------------------
 
 分布式技术探索——如何判断哈希的好坏
 
-https://zhuanlan.zhihu.com/p/53710382
+[https://zhuanlan.zhihu.com/p/53710382](https://zhuanlan.zhihu.com/p/53710382)
 
+先来看看一下 `DJB` :
 
-先来看看一个DJB
-
-unsigned long
-hash(unsigned char *str)
+```cpp
+unsigned long hash(unsigned char *str)
 {
-        unsigned long hash = 5381;
-        int c;
+    unsigned long hash = 5381;
+    int c;
 
-        while (c = *str++)
-            hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+    while (c = *str++) {
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+    }
 
-        return hash;
+    return hash;
 }
+```
 
-再来看看FNV哈希算法
+再来看看 `FNV` 哈希算法:
 
-template<class T>
+```cpp
+template <class T>
 size_t FNVHash(const T* str)
 {
-    if(!*str)
+    if (!*str) {
         return 0;
-    register size_t hash = 2166136261;
-    while (size_t ch = (size_t)*str++)
-    {
+    }
+    size_t hash = 2166136261;   // Seed
+    while (size_t ch = (size_t)*str++) {
         hash *= 16777619;
         hash ^= ch;
     }
     return hash;
 }
+```
 
-我们继续看一个哈希算法,BKDRHash
+我们继续看一个哈希算法, `BKDRHash` :
 
-unsigned int bkdr_hash(const char* key)
+```cpp
+unsigned int bkdr_hash(const char * key)
 {
-    char* str = const_cast<char*>(key);
-
+    char * str = const_cast<char *>(key);
     unsigned int seed = 31; // 31 131 1313 13131 131313 etc.. 37
     unsigned int hash = 0;
-    while (*str)
-    {
+    while (*str) {
         hash = hash * seed + (*str++);
     }
     return hash;
 }
+```
 
+.
 
 深入解析面向数据的哈希表性能
 
 https://zhuanlan.zhihu.com/p/26417610
 
-我测试了四个不同的 quick-and-dirty 哈希表实现，另外还包括 std::unordered_map 。这五个哈希表都使用了同一个哈希函数 —— Bob Jenkins 的 SpookyHash（64 位哈希值）。（由于哈希函数在这里不是重点，所以我没有测试不同的哈希函数；我同样也没有检测我的分析中的总内存消耗。）实现会通过简短的代码在测试结果表中标注出来。
+我测试了四个不同的 `quick-and-dirty` 哈希表实现，另外还包括 `std::unordered_map` 。这五个哈希表都使用了同一个哈希函数 —— `Bob Jenkins` 的 `SpookyHash`（64 位哈希值）。（由于哈希函数在这里不是重点，所以我没有测试不同的哈希函数；我同样也没有检测我的分析中的总内存消耗。）实现会通过简短的代码在测试结果表中标注出来。
 
-UM： std::unordered_map 。在 VS2012 和 libstdc++-v3 （libstdc++-v3: gcc 和 clang 都会用到这东西）中，UM 是以链表的形式实现，所有的元素都在链表中，bucket 数组中存储了链表的迭代器。VS2012 中，则是一个双链表，每一个 bucket 存储了起始迭代器和结束迭代器；libstdc++ 中，是一个单链表，每一个 bucket 只存储了一个起始迭代器。这两种情况里，链表节点是独立申请和释放的。最大负载因子是 1 。
+UM： `std::unordered_map` 。在 `VS2012` 和 `libstdc++-v3` （libstdc++-v3: gcc 和 clang 都会用到这东西）中，UM 是以链表的形式实现，所有的元素都在链表中，bucket 数组中存储了链表的迭代器。VS2012 中，则是一个双链表，每一个 bucket 存储了起始迭代器和结束迭代器；`libstdc++` 中，是一个单链表，每一个 bucket 只存储了一个起始迭代器。这两种情况里，链表节点是独立申请和释放的。最大负载因子是 1 。
 
-
+```text
 插入       insert: 将一个随机的 key 序列插入到表中（key 在序列中是唯一的）
 预留插入   presized insert: 和 insert 相似，但是在插入之间我们先为所有的 key 保留足够的内存空间，以防止在 insert 过程中 rehash 或者重申请。
-
 
 查询       find
 失败查询   failed find
@@ -83,20 +90,17 @@ UM： std::unordered_map 。在 VS2012 和 libstdc++-v3 （libstdc++-v3: gcc 和
 删除       erase
 失败删除   failed erase
 
-扩容     grow
+扩容       grow
 
 重新hash   rehash
 
-
-
 析构       destruct
+```
 
-
-
-
+```cpp
 /*
-* My best guess at if you are big-endian or little-endian.  This may
-* need adjustment.
+* My best guess at if you are big-endian or little-endian.
+* This may need adjustment.
 */
 #if (defined(__BYTE_ORDER) && defined(__LITTLE_ENDIAN) && \
      __BYTE_ORDER == __LITTLE_ENDIAN) || \
@@ -112,77 +116,75 @@ UM： std::unordered_map 。在 VS2012 和 libstdc++-v3 （libstdc++-v3: gcc 和
 #else
 # define HASH_LITTLE_ENDIAN 0
 # define HASH_BIG_ENDIAN 0
-
+```
 
 Hash 函数概览
 
-本文地址：https://www.oschina.net/translate/state-of-hash-functions
-原文地址：http://blog.reverberate.org/2012/01/state-of-hash-functions-2012.html
+本文地址：[https://www.oschina.net/translate/state-of-hash-functions](https://www.oschina.net/translate/state-of-hash-functions)
+
+原文地址：[http://blog.reverberate.org/2012/01/state-of-hash-functions-2012.html](http://blog.reverberate.org/2012/01/state-of-hash-functions-2012.html)
 
 现代的 Hash 算法
 
-Bob Jenkins' Functions
+`Bob Jenkins' Functions`
 
-Bob Jenkins已经在散列函数领域工作了将近15年。在1997年他在《 Dr. Dobbs Journal》杂志上发表了一片关于散列函数的文章《A hash function for hash Table lookup》，这篇文章自从发表以后现在网上有更多的扩展内容。这篇文章中，Bob广泛收录了很多已有的散列函数，这其中也包括了他自己所谓的“lookup2”。随后在2006年，Bob发布了lookup3，由于它即快速（Bob自称，0.5 bytes/cycle）又无严重缺陷，在这篇文章中我把它认为是第一个“现代”散列函数。
+`Bob Jenkins` 已经在散列函数领域工作了将近15年。在1997年他在《 Dr. Dobbs Journal》杂志上发表了一片关于散列函数的文章《A hash function for hash Table lookup》，这篇文章自从发表以后现在网上有更多的扩展内容。这篇文章中，Bob广泛收录了很多已有的散列函数，这其中也包括了他自己所谓的“lookup2”。随后在2006年，Bob发布了lookup3，由于它即快速（Bob自称，0.5 bytes/cycle）又无严重缺陷，在这篇文章中我把它认为是第一个“现代”散列函数。
 
-更多有关Bob's散列函数的内容请参阅维基百科：Jenkins hash function.
+更多有关 `Bob's 散列函数` 的内容请参阅维基百科：`Jenkins hash function`.
 
-第二代: MurmurHash
+第二代: `MurmurHash`
 
 Austin Appleby在2008年发布了一个新的散列函数——MurmurHash。其最新版本大约是lookup3速度的2倍（大约为1 byte/cycle），它有32位和64位两个版本。32位版本只使用32位数学函数并给出一个32位的哈希值，而64位版本使用了64位的数学函数，并给出64位哈希值。根据Austin的分析，MurmurHash具有优异的性能，虽然Bob Jenkins 在《Dr. Dobbs article》杂志上声称“我预测[MurmurHash ]比起lookup3要弱，但是我不知道具体值，因为我还没测试过它”。MurmurHash能够迅速走红得益于其出色的速度和统计特性。
 
-第三代: CityHash 和 SpookyHash
+第三代: `CityHash` 和 `SpookyHash`
 
 2011年，发布了两个散列函数，相对于MurmurHash ，它们都进行了改善，这主要应归功于更高的指令级并行机制。Google发布了CityHash（由Geoff Pike 和Jyrki Alakuijala编写），Bob Jenkins发布了他自己的一个新散列函数SpookyHash（这样命名是因为它是在万圣节发布的）。它们都拥有2倍于MurmurHash的速度，但他们都只使用了64位数学函数而没有32位版本，并且CityHash的速度取决于CRC32 指令，目前为SSE 4.2（Intel Nehalem及以后版本）。SpookyHash给出128位输出，而CityHash有64位，128位以及256位的几个变种。
 
+`FarmHash`
 
-FarmHash
-
-https://github.com/google/farmhash
+[https://github.com/google/farmhash](https://github.com/google/farmhash)
 
 2014年Google发布了FarmHash，一个新的用于字符串的哈希函数系列。FarmHash从CityHash继承了许多技巧和技术，是它的后继。FarmHash有多个目标，声称从多个方面改进了CityHash。与CityHash相比，FarmHash的另一项改进是在多个特定于平台的实现之上提供了一个接口。这样，当开发人员只是想要一个用于哈希表的、快速健壮的哈希函数，而不需要在每个平台上都一样时，FarmHash也能满足要求。目前，FarmHash只包含在32、64和128位平台上用于字节数组的哈希函数。未来开发计划包含了对整数、元组和其它数据的支持。
 
 The hash methods are platform dependent. Different CPU architectures, for example 32-bit vs 64-bit, Intel vs ARM, SSE4.2 vs AVX might produce different results for a given input.
 
-https://www.biaodianfu.com/hash.html
+[https://www.biaodianfu.com/hash.html](https://www.biaodianfu.com/hash.html)
 
-SuperFastHash
+`SuperFastHash`
 
-http://www.azillionmonkeys.com/qed/hash.html
+[http://www.azillionmonkeys.com/qed/hash.html](http://www.azillionmonkeys.com/qed/hash.html)
 
-XXHash
+`XXHash`
 
-https://github.com/Cyan4973/xxHash
-https://cyan4973.github.io/xxHash/
+[https://github.com/Cyan4973/xxHash](https://github.com/Cyan4973/xxHash)
 
+[https://cyan4973.github.io/xxHash/](https://cyan4973.github.io/xxHash/)
 
+.
 
+为什么 Java String 哈希乘数为 31 ？
 
-
-
-为什么Java String哈希乘数为31？
-
-https://juejin.im/post/6844903683361079309
+[https://juejin.im/post/6844903683361079309](https://juejin.im/post/6844903683361079309)
 
 ------------------------------------------------------
 
 个人笔记本，Windows 7操作系统，酷睿i5双核64位CPU。
 
-测试数据：CentOS Linux release 7.5.1804的/usr/share/dict/words字典文件对应的所有单词。
+测试数据：CentOS Linux release 7.5.1804的 `/usr/share/dict/words` 字典文件对应的所有单词。
 
-由于CentOS上找不到该字典文件，通过 yum -y install words 进行了安装。
+由于CentOS上找不到该字典文件，通过 `yum -y install words` 进行了安装。
 
-/usr/share/dict/words共有479828个单词，该文件链接的原始文件为linux.words。
+`/usr/share/dict/words` 共有 `479828` 个单词，该文件链接的原始文件为 `linux.words` 。
 
+`Ubuntu` 上装 `words` 的方法：
 
-
-Ubuntu上装 words 的方法：
-
+```shell
 apt-get install --reinstall wamerican
+```
 
-(https://askubuntu.com/questions/149125/how-to-use-dict-words)
+[https://askubuntu.com/questions/149125/how-to-use-dict-words](https://askubuntu.com/questions/149125/how-to-use-dict-words)
 
-
+.
 
 比常规CRC32C算法快12倍的优化
 
@@ -190,6 +192,7 @@ https://bbs.csdn.net/topics/370011606
 
 CRC-32C (Castagnoli) 算法是 iSCSI 和 SCTP 数据校验的算法，和常用 CRC-32-IEEE 802.3 算法所不同的是多项式常数 CRC32C 是 0x1EDC6F41, CRC32 是 0x04C11DB7, 也就是说由此生成的CRC表不同外算法是一模一样.
 
+```cpp
 // polynomial = 0x1EDC6F41 ??
 
 static const uint32_t CRC32c_Table = {
@@ -379,7 +382,7 @@ uint32_t crc32c_x86(const unsigned char * data, size_t length)
     crc32 = crc32 ^ 0xFFFFFFFF;
     return crc32;
 }
-
+```
 
 CRC32为例详细解析（菜鸟至老鸟进阶）
 
@@ -410,10 +413,13 @@ CRC primer, Chapter 7 (http://chrisballance.com/wp-content/uploads/2015/10/CRC-P
 
 计算方法：
 
+```text
          QUOTIENT
         ----------
 DIVISOR ) DIVIDEND
                  = REMAINDER
+```
+
 1. 取前32位。
 2. 转移位
 3. 如果32位小于DIVISOR，请转到步骤2.
@@ -426,13 +432,13 @@ DIVISOR ) DIVIDEND
 
 这个奇怪程序的原因是第一个以太网实现会一次一个字节地串行化消息，并首先发送每个字节的最低有效位。然后串行比特流经过串行CRC-32移位寄存器计算，该消息在消息完成后被简单地补充并在线路上发送出去。补充消息的前32位的原因是，即使消息全为零，也不会得到全零CRC。
 
-
 答案 4 :(得分：4)
 
 我花了一些时间试图揭开这个问题的答案，我终于在今天发表了关于CRC-32的教程： CRC-32 hash tutorial - AutoHotkey Community (https://autohotkey.com/boards/viewtopic.php?f=7&t=35671)
 
 在这个例子中，我演示了如何计算ASCII字符串'abc'的CRC-32哈希值：
 
+```text
 calculate the CRC-32 hash for the ASCII string 'abc':
 
 inputs:
@@ -504,4 +510,4 @@ reverse bits:
 0b00110101001001000100000111000010 = 0x352441C2
 
 thus the CRC-32 hash for the ASCII string 'abc' is 0x352441C2
-
+```
