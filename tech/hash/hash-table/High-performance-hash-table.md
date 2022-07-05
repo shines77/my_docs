@@ -16,7 +16,15 @@
 
     [https://abseil.io/about/design/swisstables](https://abseil.io/about/design/swisstables)
 
-## 3. Benchmark
+## 3. Source
+
+1. [golang - MatrixOne]
+
+    [https://github.com/matrixorigin/matrixone/blob/main/pkg/container/hashtable/hash_amd64.s](https://github.com/matrixorigin/matrixone/blob/main/pkg/container/hashtable/hash_amd64.s)
+
+    把 CRC32 和 AES 当哈希函数的批量运算。
+
+## 4. Benchmark
 
 1. `HashTable性能测试(CK/phmap/ska)`
 

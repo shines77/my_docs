@@ -405,9 +405,9 @@ CRC-32c: 0x1EDC6F41 标准引用: SCTP
 
 如何计算CRC32校验和？
 
-https://www.thinbug.com/q/2587766
+[https://www.thinbug.com/q/2587766](https://www.thinbug.com/q/2587766)
 
-CRC primer, Chapter 7 (http://chrisballance.com/wp-content/uploads/2015/10/CRC-Primer.html)
+[CRC primer, Chapter 7](http://chrisballance.com/wp-content/uploads/2015/10/CRC-Primer.html)
 
 仅使用32位数作为除数，并使用整个流作为被除数。丢掉商并保留其余部分。在邮件结尾处填写余数并且您有CRC32。
 
@@ -422,8 +422,8 @@ DIVISOR ) DIVIDEND
 
 1. 取前32位。
 2. 转移位
-3. 如果32位小于DIVISOR，请转到步骤2.
-4. DIVISOR的XOR 32位。转到第2步。
+3. 如果32位小于 DIVISOR，请转到步骤2.
+4. DIVISOR 的 XOR 32位。转到第2步。
 （请注意，流必须可以被32位分割，或者它应该被填充。例如，必须填充8位ANSI流。同样在流的末尾，分割被暂停。）
 
 答案 3 :(得分：5)
@@ -434,9 +434,9 @@ DIVISOR ) DIVIDEND
 
 答案 4 :(得分：4)
 
-我花了一些时间试图揭开这个问题的答案，我终于在今天发表了关于CRC-32的教程： CRC-32 hash tutorial - AutoHotkey Community (https://autohotkey.com/boards/viewtopic.php?f=7&t=35671)
+我花了一些时间试图揭开这个问题的答案，我终于在今天发表了关于CRC-32的教程：[CRC-32 hash tutorial - AutoHotkey Community](https://autohotkey.com/boards/viewtopic.php?f=7&t=35671)
 
-在这个例子中，我演示了如何计算ASCII字符串'abc'的CRC-32哈希值：
+在这个例子中，我演示了如何计算ASCII字符串 'abc' 的 CRC-32 哈希值：
 
 ```text
 calculate the CRC-32 hash for the ASCII string 'abc':
