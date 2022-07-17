@@ -74,7 +74,7 @@ $ gdb --tui <your_exec_file>
 
 ## 3 GDB 命令
 
-### 3.1.1 调试已运行的程序
+### 3.1 调试已运行的程序
 
 两种方法：
 
@@ -93,7 +93,7 @@ $ gdb --tui <your_exec_file>
     (gdb) detach        # 取消挂接的进程
     ```
 
-### 3.1.2 调试未运行的程序
+### 3.2 调试未运行的程序
 
 先用 `gdb <your_exec_file>` 关联要调试的运行的程序：
 
@@ -119,7 +119,7 @@ $ gdb
 (gdb) run -f -d your_exec_params
 ```
 
-### 3.1.3 暂停/恢复程序运行
+### 3.3 暂停/恢复程序运行
 
 调试程序中，暂停程序运行是必须的， `gdb` 可以方便地暂停程序的运行。你可以设置程序的在哪行停住，在什么条件下停住，在收到什么信号时停往等等。以便于你查看运行时的变量，以及运行时的流程。
 
@@ -127,87 +127,111 @@ $ gdb
 
 在 `gdb` 中，我们可以有以下几种暂停方式：断点（`BreakPoint`）、观察点（`WatchPoint`）、捕捉点（`CatchPoint`）、信号（`Signals`）、线程停止（`Thread Stops`）。如果要恢复程序运行，可以使用 `c` 或是 `continue` 命令。
 
-### 3.1.4 设置断点（BreakPoint）
+`gdb` 断点分类：
+
+* `breakpoint`
+
+    可以根据行号、函数、条件生成断点。
+
+* `watchpoint`
+
+    监测变量或者表达式的值发生变化时产生断点。
+
+* `catchpoint`
+
+    监测信号的产生。例如c++的throw，或者加载库的时候。
+
+### 3.4 设置断点（BreakPoint）
 
 * 设置断点
 
-  1. break \<function\>
+  1. `break <function>`
 
         b / break \<function\>，例如：b main，把断点设置在 main() 函数上。
 
-  2. break \<linenum\>
+  2. `break <linenum>`
 
         在指定行号停住。
 
-  3. break \<filename:linenum\>
+  3. `break <filename:linenum>`
 
         在源文件 filename 的 linenum 行处停住。
 
-  4. break \<filename:function\>
+  4. `break <filename:function>`
 
         在源文件 filename 的 function 函数的入口处停住。
 
-  5. break *address
+  5. `break *address`
 
         在程序运行的内存地址处停住。
 
-  6. break
+  6. `break`
 
         break 命令没有参数时，表示在下一条指令处停住
 
+* 查看断点信息
+
+    1. `info break [break num]`
+
+        列出断点 break num 的信息。
+
+    2. `info break`
+
+        列出所有断点信息。
+
 恢复程序运行和单步调试
 
-* 单步跟踪：`s` / `step` \<count\>，例如：`s 10`。
+* 单步跟踪：`s` / `step <count>`，例如：`s 10`。
 
     单步跟踪，如果有函数调用，他会进入该函数。
 
-* 单步跟踪：`n` / `next` \<count\>，例如：`n 10`。
+* 单步跟踪：`n` / `next <count>`，例如：`n 10`。
 
     同样单步跟踪，如果有函数调用，他不会进入该函数，很像 VC 等工具中的 step over 。
 
-* 设置 step-mode
+* 设置 `step-mode`
 
-  * set step-mode on
+  * `set step-mode on`
 
     打开 step-mode 模式，于是，在进行单步跟踪时，程序不会因为没有 debug 信息而不停住。这个参数有很利于查看机器码。
 
-  * set step-mode off
+  * `set step-mode off`
 
     关闭 step-mode 模式。
 
 当程序被停住了，你可以用 continue 命令恢复程序的运行直到程序结束，或下一个断点到来。也可以使用 step 或 next 命令单步跟踪程序。
 
-* continue [ignore-count]
-* c [ignore-count]
-* fg [ignore-count]
+* `continue [ignore-count]`
+* `c [ignore-count]`
+* `fg [ignore-count]`
 
     恢复程序运行，直到程序结束，或是下一个断点到来。 ignore-count 表示忽略其后的断点次数。 continue，c，fg 三个命令都是一样的意思。
 
-### 3.1.5 设置观察点（WatchPoint）
+### 3.5 设置观察点（WatchPoint）
 
 观察点一般来观察某个表达式（变量也是一种表达式）的值是否有变化了，如果有变化，马上停住程序。我们有下面的几种方法来设置观察点：
 
-* watch \<expr\>
+* `watch <expr>`
 
     为表达式（变量）expr 设置一个观察点。一量表达式值有变化时，马上停住程序。
 
-* rwatch \<expr\>
+* `rwatch <expr>`
 
     当表达式（变量）expr 被读时，停住程序。
 
-* awatch \<expr\>
+* `awatch <expr>`
 
     当表达式（变量）的值被读或被写时，停住程序。
 
-* info watchpoints
+* `info watchpoints`
 
     列出当前所设置了的所有观察点。
 
-### 3.1.6 设置捕捉点（CatchPoint）
+### 3.6 设置捕捉点（CatchPoint）
 
-你可设置捕捉点来补捉程序运行时的一些事件。如：载入共享库（动态链接库）或是 C++ 的异常。设置捕捉点的格式为：
+你可设置捕捉点来补捉程序运行时的一些事件。如：载入共享库（动态链接库）或是 `C++` 的异常。设置捕捉点的格式为：
 
-* catch \<event\>
+* `catch <event>`
 
    当 event 发生时，停住程序。event 可以是下面的内容：
 
@@ -219,49 +243,125 @@ $ gdb
    6. load 或 `load <libname>` 载入共享库（动态链接库）时。（load 为关键字，目前此功能只在 HP-UX 下有用）
    7. unload 或 `unload <libname>` 卸载共享库（动态链接库）时。（unload 为关键字，目前此功能只在 HP-UX 下有用）
 
-* tcatch \<event\>
+* `tcatch <event>`
 
    只设置一次捕捉点，当程序停住以后，应点被自动删除。
 
-### 3.1.7 维护停止点
+### 3.7 维护停止点
 
 上面说了如何设置程序的停止点，GDB 中的停止点也就是上述的三类。在 GDB 中，如果你觉得已定义好的停止点没有用了，你可以使用 delete、clear、disable、enable 这几个命令来进行维护。
 
-* clear
+* `clear`
 
     清除所有的已定义的停止点。
 
-* clear \<function\>
-* clear \<filename:function\>
+* `clear <function>`
+* `clear <filename:function>`
 
     清除所有设置在函数上的停止点。
 
-* clear \<linenum\>
-* clear \<filename:linenum\>
+* `clear <linenum>`
+* `clear <filename:linenum>`
 
     清除所有设置在指定行上的停止点。
 
-* delete [breakpoints] [range...]
+* `delete [breakpoints] [range...]`
 
     删除指定的断点， breakpoints 为断点号。如果不指定断点号，则表示删除所有的断点。 range 表示断点号的范围（如： 3-7 ）。其简写命令为 d 。
 
 比删除更好的一种方法是 disable 停止点，disable 了的停止点， GDB 不会删除，当你还需要时， enable 即可，就好像回收站一样。
 
-* disable [breakpoints] [range...]
+* `disable [breakpoints] [range...]`
 
     disable 所指定的停止点， breakpoints 为停止点号。如果什么都不指定，表示 disable 所有的停止点。简写命令是 dis.
 
-* enable [breakpoints] [range...]
+* `enable [breakpoints] [range...]`
 
     enable 所指定的停止点， breakpoints 为停止点号。
 
-* enable [breakpoints] once range...
+* `enable [breakpoints] once range...`
 
     enable 所指定的停止点一次，当程序停止后，该停止点马上被 GDB 自动 disable 。
 
-* enable [breakpoints] delete range...
+* `enable [breakpoints] delete range...`
 
     enable 所指定的停止点一次，当程序停止后，该停止点马上被 GDB 自动删除。
+
+### 3.8 查看栈信息
+
+查看函数调用栈的几个函数：
+
+* `bt`
+
+    显示函数调用栈所有的帧信息，每个帧一行。
+
+* `bt n`
+
+    显示栈顶的 n 个帧信息。
+
+* `bt -n`
+
+    显示栈底的 n 个帧信息。
+
+* `bt full`
+
+    显示函数调用栈中所有帧的完全信息如：函数参数，本地变量。
+
+* `bt full n`
+* `bt full -n`
+
+    同上。
+
+### 3.9 选择帧
+
+如果要查看指定帧内的信息、变量、参数，首先要移动到指定帧。
+
+* `frame n` 或 `f n`
+
+    通过帧编号来选择帧，帧编号可以通过 `bt` 命令来查看。
+
+* `frame addr` 或 `f addr`
+
+    通过帧地址来选择帧，帧编号可以通过 `bt` 命令来查看。
+
+* `up n`
+
+    在栈中向上移动 n 个帧，即向着最外层移动 n 个帧，目标帧 = 当前帧 + n。
+
+* `down n`
+
+    在栈中向下移动 n 个帧，即向着最内层移动 n 个帧，目标帧 = 当前帧 - n。
+
+* `up-silently n`
+* `down-silently n`
+
+    同上，在栈中移动 n 个帧，但是不打印信息。
+
+### 3.10 查看帧内信息
+
+* `frame` 或 `f`
+
+    打印帧内函数的信息。
+
+* `info frame` 或 `info f`
+
+    打印帧的信息。
+
+* `info frame addr` 或 `info f addr`
+
+    打印通过 addr 指定帧的信息。
+
+* `info args`
+
+    打印函数变量的值。
+
+* `info locals`
+
+    打印本地变量的信息。
+
+* `info catch`
+
+    打印异常捕获信息。
 
 ## 4. print 命令
 
@@ -282,10 +382,11 @@ p [options --] [/fmt] expr
 1. `@`
 
     是一个和数组有关的操作符，在后面会有更详细的说明。
+
 2. `::`
 
     指定一个在文件或是一个函数中的变量。
-    
+
 3. `{}`
 
     表示一个指向内存地址的类型为type的一个对象。
@@ -578,3 +679,11 @@ x/3uh 0x54320 ：从内存地址 0x54320 读取内容，h 表示以双字节为�
 * `gdb 打印技巧`
 
     [https://www.jianshu.com/p/98c923a671ae](https://www.jianshu.com/p/98c923a671ae)
+
+* `gdb break 断点设置（一）`
+
+    [https://blog.csdn.net/yangzhongxuan/article/details/6897968](https://blog.csdn.net/yangzhongxuan/article/details/6897968)
+
+* `gdb调试（四）函数调用栈之 BackTraces`
+
+    [https://blog.csdn.net/yangzhongxuan/article/details/6911689](https://blog.csdn.net/yangzhongxuan/article/details/6911689)
