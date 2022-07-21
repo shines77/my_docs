@@ -5,7 +5,9 @@
 使用如下命令：
 
 ```bash
-$ git submodule add -b master https://github.com/shines77/jstd.git ./3rd_party/jstd
+git submodule add -b master https://github.com/shines77/jstd.git ./3rd_party/jstd
+或
+git submodule add --force -b master -- "https://gitee.com/shines77/emhash.git" "./3rd_party/emhash"
 ```
 
 添加以后，会出现 `.gitmodule` 文件，内容如下：
@@ -31,14 +33,14 @@ $ git submodule add -b master https://github.com/shines77/jstd.git ./3rd_party/j
 先初始化 `submodule` ，然后更新到主项目设置的 `子模块` 版本：
 
 ```bash
-$ git submodule init
-$ git submodule update --init --recursive
+git submodule init
+git submodule update --init --recursive
 ```
 
 如果想更新到 `子模块` 最新的版本，请使用：
 
 ```bash
-$ git submodule update --remote --recursive
+git submodule update --remote --recursive
 ```
 
 ## 3. 删除子模块
@@ -50,7 +52,7 @@ $ git submodule update --remote --recursive
 1. 删除子模块的文件夹
 
 ```bash
-$ git rm --cached ./3rd_party/jstd
+git rm --cached ./3rd_party/jstd
 ```
 
 2. 删除 `.gitmodules` 文件中相关子模块的信息，例如：
@@ -72,7 +74,7 @@ $ git rm --cached ./3rd_party/jstd
 4. 删除 `.git/modules` 文件夹中的相关子模块的文件夹，例如：
 
 ```bash
-$ rm -rf ./.git/modules/jstd
+rm -rf ./.git/modules/jstd
 ```
 
 ## 4. 查看子模块
