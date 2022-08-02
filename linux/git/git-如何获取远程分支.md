@@ -42,7 +42,7 @@ $ git checkout -B stable/juno                           # 在本地创建一个�
 $ git checkout -b stable/juno --track juno-eol          # 拉取远程分支juno-eol, 并且把分支重命名为stable/juno
 ```
 
-切换分支:
+切换分支 (切换到已创建的分支):
 
 ```bash
 $ git checkout 分支名
