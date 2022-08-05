@@ -2,7 +2,7 @@
 ## Save this file to sudo-source.cmd file(保存这些内容到 sudo-source.cmd 文件)
 spawn su root
 expect -nocase "password: "
-send "skyinno251\r"
+send "skynet\r"
 interact
 
 

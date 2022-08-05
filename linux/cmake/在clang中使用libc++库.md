@@ -20,6 +20,18 @@ sudo apt-get install libc++abi-dev
 
 注：安装 `libc++-dev` 的同时，还会安装 `libc++abi1` 和 `libc++1` 。
 
+如果以上安装的版本与你的 `clang` 版本不匹配，可以尝试下列的命令：
+
+```bash
+## For clang 11.x
+sudo apt-get install libc++-11-dev
+sudo apt-get install libc++abi-11-dev
+
+## For clang 12.x
+sudo apt-get install libc++-12-dev
+sudo apt-get install libc++abi-12-dev
+```
+
 ## 2. 在 CMake 中设置
 
 使用 `clang` 的 `libc++` ：
