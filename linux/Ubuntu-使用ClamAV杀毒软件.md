@@ -1,5 +1,9 @@
 # Ubuntu 使用 ClamAV 杀毒软件
 
+## 0. 简介
+
+`ClamAV` 是一个在命令行下查毒软件，它不将杀毒作为主要功能，默认只能查出您计算机内的病毒，但是无法清除，只能删除感染的文件。
+
 ## 1. 安装
 
 ```shell
@@ -61,11 +65,15 @@ PONG
 
 从根目录 `/` 开始，扫描所有目录：
 
-```shell
+```bash
+# 只扫描感染的文件，不删除文件
+$ sudo clamscan --infected --recursive /
+
+# 扫描感染的病毒，并删除感染的文件，慎用。
 $ sudo clamscan --infected --remove --recursive /
 ```
 
-`--remove` 自动清楚病毒。
+`--remove` 自动删除感染病毒的文件，慎用。
 
 ## 5. clamav-daemon 系统服务
 
@@ -86,7 +94,7 @@ $ systemctl status clamav-daemon
 clamdtop
 ```
 
-## 6. 卸载 clamav
+## 7. 卸载 clamav
 
 ```shell
 $ sudo apt-get remove clamav clamav-daemon
