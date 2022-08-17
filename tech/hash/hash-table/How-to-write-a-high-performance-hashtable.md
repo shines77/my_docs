@@ -36,7 +36,7 @@ typedef struct dictEntry {
 
 一次读操作会经历：
 
-从 key 求出哈希值，再求出 bucket_index, 从 bucket 数组中读取链表首地址，此时会污染一条缓存行。再跳转该首地址指向的 dictEntry，也会污染一条缓存行。由于 dictEntry 和 key, value 在地址上大概率不是连续的，比较 key 和 dictEntry->key 是否相等时，读取 dictEntry->key 的值也会污染一条缓存行。我们假设链表的平均搜索长度为 2，所以继续再跳转到下一个 dictEntry，又会污染两条缓存行。由于 key，value 在内存上大概率是在一起的、连续的，所以 `value` 的值大概率是跟 `key` 在同一条缓存行内。
+从 key 求出哈希值，再求出 bucket_index, 从 bucket 数组中读取链表首地址，此时会污染一条缓存行。再跳转该首地址指向的 dictEntry，也会污染一条缓存行。由于 dictEntry 和 key, value 在地址上大概率不是连续的，比较 key 和 dictEntry->key 是否相等时，读取 dictEntry->key 的值也会污染一条缓存行。我们假设链表的平均搜索长度为 2，所以继续再跳转到下一个 dictEntry，又会污染两条缓存行。由于 key，value 在内存上大概率是在一起的、连续的，所以 value 字符串的值大概率是跟 key 字符串在同一条缓存行内。
 
 整个过程加起来，`1 + 2 + 2`，一共会污染 `5` 条缓存行。由于 bucket 数组数据，dictEntry 结构体，在其他读操作时，有可能已经在缓存中了，所以可以看作一次污染约 `4.5` 条缓存行。
 
@@ -66,9 +66,13 @@ L1 Max Hit % = ceil(L1CacheLines / N) / KeyCount;
 可以看到，当 `N` 的值越小，L1 最大命中率就越大，如果我们采用更好的哈希表实现方式，让每次读操作平均污染的缓存行条数减小到 2 左右，那么上面的例子中，`L1` 最大命中率就等于 (512 / 2) / 500 = `51.2 %`，`L2` 最大命中率就等于 (16384 / 2) / 10000 = `81.92 %` ，性能对比的百分百 =
 4.5 / 2 = `225 %` 。
 
-**所以，结论是，哈希表每次读操作的平均污染缓存行数越小，（前提）在高负载下，性能就越高。**
+**所以，结论是，在高负载下（前提），哈希表每次读操作的平均污染缓存行数越少，性能就越高。**
 
 这个结论对于 L1，L2，L3 缓存乃至内存，都是通用的。
+
+以上讨论的仅仅是 `Find Hit` 的情况，读操作还有可能 `Find Miss`，则 “污染” 的缓存行会更多。同理，插入有 `Key` 已存在和 `Key` 不存在两种情况，如果是 `Insert New Key`，“污染” 的缓存行将会更多，因为插入的 `Key` 不存在已经等价于 `Find Miss`，还要处理元素的插入。链表哈希表的删除操作跟 `Find` 很接近，只多了删除 / 析构元素，修改链表的操作。
+
+实际情况是比较复杂的，上面也是理论上的分析，但平均污染缓存行数越少，整体性能可能会更高，这一点基本是不会变的。
 
 ### 1.4 缓存的延迟
 
@@ -84,7 +88,7 @@ L1 Max Hit % = ceil(L1CacheLines / N) / KeyCount;
 
 图源：[https://cs.brown.edu/courses/csci1310/2020/assign/labs/lab4.html](https://cs.brown.edu/courses/csci1310/2020/assign/labs/lab4.html)
 
-一般来说，前一级的 `Cache` 是后一级 `Cache` 速度的 `2.5` ~ `3.5` 倍，下图是 `Intel Xeon Platinum 8380 (SNC2)` 的缓存和内存延迟实测数据，可以看到 `内存 DRAM` 的延迟是 `L3 缓存` 的差不多 5 倍。
+一般来说，前一级 Cache 是后一级 Cache 速度的 `2.5` ~ `3.5` 倍，下图是 `Intel Xeon Platinum 8380 (SNC2)` 的缓存和内存延迟实测数据，可以看到 `DRAM (内存)` 的延迟是 `L3 缓存` 的差不多 5 倍。
 
 ![Intel Xeon 8380 Cache Latency](./images/Intel-xeon-8380-snc2-cache-latency.png)
 
