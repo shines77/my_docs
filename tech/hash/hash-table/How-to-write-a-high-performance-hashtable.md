@@ -66,9 +66,9 @@ L1 Max Hit % = ceil(L1CacheLines / N) / KeyCount;
 可以看到，当 `N` 的值越小，L1 最大命中率就越大，如果我们采用更好的哈希表实现方式，让每次读操作平均污染的缓存行条数减小到 2 左右，那么上面的例子中，`L1` 最大命中率就等于 (512 / 2) / 500 = `51.2 %`，`L2` 最大命中率就等于 (16384 / 2) / 10000 = `81.92 %` ，性能对比的百分百 =
 4.5 / 2 = `225 %` 。
 
- > 所以，结论是，哈希表每次读操作的平均污染缓存行数越小，（前提）在高负载下，性能就越高。
+**所以，结论是，哈希表每次读操作的平均污染缓存行数越小，（前提）在高负载下，性能就越高。**
 
-这个结论对于 L1，L2，L3 乃至内存，都是通用的。
+这个结论对于 L1，L2，L3 缓存乃至内存，都是通用的。
 
 ### 1.4 缓存的延迟
 
@@ -78,25 +78,32 @@ L1 Max Hit % = ceil(L1CacheLines / N) / KeyCount;
 
 对于容量，则是相反的，越快的容量越小。
 
+`CPU` 的 `Cache` 往往是多级的金字塔模型，L1 最靠近 CPU，访问延迟最小，但 `L1 Cache` 的容量也最小。
+
+![CPU 缓存延迟](./images/cpu-cache-latency-order.png)
+
+图源：[https://cs.brown.edu/courses/csci1310/2020/assign/labs/lab4.html](https://cs.brown.edu/courses/csci1310/2020/assign/labs/lab4.html)
+
+一般来说，前一级的 `Cache` 是后一级 `Cache` 速度的 `2.5` ~ `3.5` 倍，下图是 `Intel Xeon Platinum 8380 (SNC2)` 的缓存和内存延迟实测数据，可以看到 `内存 DRAM` 的延迟是 `L3 缓存` 的差不多 5 倍。
+
+![Intel Xeon 8380 Cache Latency](./images/Intel-xeon-8380-snc2-cache-latency.png)
 
 单线程的 `Redis` 的 QPS 可以达到 100,000+ (十万)，我们就一台 24 核内存足够的多实例的 QPS 为 400000 (四十万)。假设 Key，Value 都是字符串类型，且长度都是 32 字节以内，假设 `10` 秒内读取的 Key 有 60% 是重复的（不管重复几次），40% 是各不相同的，那么 `10` 秒内所有实例读取的原始哈希表数据（单纯Key和Value）总量是 400000 x 40% x 64 x 10 = `114.4 MB`。
 
 我们假设一条缓存行是 64 字节，那么为了读取 Key, Value 一共 64 字节的数据，我们会污染 5 条缓存行一共 64 x 5 = 320 个字节的缓存，也就是大约 5 倍的读放大。有些部分，比如 bucket 数据，dictEntry，在其他读操作时，缓存是可能已经是在各级缓存里的，那就视为大约 `4` 倍的读放大。
 
-也就是说，10 秒内，redis 哈希表所有读操作，污染的缓存总量大约是 128 MB x 4 = `512 MB`，而一般的服务器 CPU 的 `L3` 缓存，Intel Xeon Platinum 24 核及以上的至强服务器 CPU，三级缓存在 32 MB - 77 MB 之间，Intel 大于 128 MB 的很少，AMD 新出的服务器 CPU 比较舍得堆料。
+也就是说，10 秒内，redis 哈希表所有读操作，污染的缓存总量大约是 128 MB x 4 = `512 MB`，而一般的服务器 CPU 的 `L3` 缓存，Intel Xeon Platinum 24 核及以上的至强服务器 CPU，三级缓存在 `32 MB` -- `77 MB` 之间，Intel 大于 `128 MB` 的很少，AMD 新出的服务器 CPU 比较舍得堆料。
 
 我们知道，10 秒内所有读操作需要的缓存总量是远大约 `CPU` L3 缓存的，所以缓存得以复用，即 Cache Hit 的几率是很低的，几乎
+
 缓存命中率变低，从 `内存` 加载数据的概率也变高了，导致性能下降。
 
 （注：腾讯云的某些云服务器采用的 48 核心 `AMD EPYC 7K62`，则拥有 192 MB 的三级缓存，这是本人实际使用过的三级缓存最大的 CPU。而采用 3D V-Cache 技术 64 核心的 AMD 霄龙 7773X，拥有 768 MB 的三级缓存。）
 
-
 多个实例合在一起，
 
 
-
 （注：严格意义上讲，“占满” 一词是不太准确的，“污染” 更准确一些，意会就行，关于缓存的原理也不再赘述。）
-
 
 
 ## 2. 缓存局部性 (Cache locatity)
@@ -107,6 +114,12 @@ L1 Max Hit % = ceil(L1CacheLines / N) / KeyCount;
 
 某个哈希表，每次读操作，都会污染 `10` 条新的缓存行，假设 `L1` 缓存只能存 `100` 条缓存行。另一个哈希表，第一次读操作，污染了一条缓存行；第二次读操作，数据还在上次访问的缓存行里；第三次读操作，用到之前那条缓存行，同时也污染了一条 `新的` 缓存行。
 
+## 参考文章
 
+1. `阿里云：[揭秘 cache 访问延迟背后的计算机原理]`
 
+    [https://developer.aliyun.com/article/859576?utm_content=g_1000322648](https://developer.aliyun.com/article/859576?utm_content=g_1000322648)
 
+2. `Intel 3rd Gen Xeon Scalable (Ice Lake SP) Review: Generationally Big, Competitively Small`
+
+    [https://www.anandtech.com/show/16594/intel-3rd-gen-xeon-scalable-review/4](https://www.anandtech.com/show/16594/intel-3rd-gen-xeon-scalable-review/4)
