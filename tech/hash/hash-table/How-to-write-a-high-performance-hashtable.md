@@ -44,7 +44,7 @@ typedef struct dictEntry {
 
 ### 1.1 L1 Cache
 
-以 Intel 2019 年第二季度发行的至强 CPU：[Intel Xeon Platinum 8280L - 28核 56线程](https://en.wikichip.org/wiki/intel/xeon_platinum/8280l) 为例，每个核心的 L1 Data 缓存是 8 路组相连 - 64 KB 大小，L2 缓存是 16 路组相连 - 1024 KB 大小，缓存行是 64 字节。也就是说 L1 最多只有 64 x 1024 / 64 = 1024 条缓存行，每读取 1024 / 4.5 = 227.55 个不同的 `Key`，就会占满整个 `L1` 。这还是假设 8 个 way 都不会互相冲突的情况，如果考虑 8 路组相连可能产生的冲突，实际的 `Key` 个数会更少。
+以 Intel 2019 年第二季度发行的至强 CPU：[Intel Xeon Platinum 8280L - 28核 56线程](https://en.wikichip.org/wiki/intel/xeon_platinum/8280l) 为例，每个核心的 L1 Data 缓存是 8 路组相连 - 32 KB 大小，L2 缓存是 16 路组相连 - 1024 KB 大小，缓存行是 64 字节。也就是说 L1 最多只有 32 x 1024 / 64 = 512 条缓存行，每读取 512 / 4.5 = 113.77 个不同的 `Key`，就会占满整个 `L1` 。这还是假设 8 个 way 都不会互相冲突的情况，如果考虑 8 路组相连可能产生的冲突，实际的 `Key` 个数会更少。
 
 假设我们已经用哈希表读取了 `500` 个不同的 `Key`（Key1, Key2, ... Key499, Key500），让它们加载到缓存中，最终，最多也只有 `113` 个 `Key` 的值是位于 `L1` 缓存中的，也就是（Key500, Key499，... Key389, Key388）这 113 个 Key。我们再次随机读取这 500 个不同的 `Key`，最优的情况是，前 113 个读取的 Key 都在（Key500, Key499, ..., Key2, Key1）中，也就是说一定会在 L1 中命中，此时 L1 缓存的命中率是 113 / 500 = 22.6 %。最坏的情况是前 `113` 个读取的 Key 都不在 `L1` 缓存中，此时的 L1 缓存的命中率是 0 / 500 = 0 %。
 
@@ -65,8 +65,7 @@ typedef struct dictEntry {
 L1 Max Hit % = ceil(L1CacheLines / N) / KeyCount;
 ```
 
-可以看到，当 `N` 的值越小，L1 最大命中率就越大，如果我们采用更好的哈希表实现方式，让每次读操作平均污染的缓存行条数减小到 2 左右，那么上面的例子中，`L1` 最大命中率就等于 (512 / 2) / 500 = `51.2 %`，`L2` 最大命中率就等于 (16384 / 2) / 10000 = `81.92 %` ，性能对比的百分百 =
-4.5 / 2 = `225 %` 。
+可以看到，当 `N` 的值越小，L1 最大命中率就越大，如果我们采用更好的哈希表实现方式，让每次读操作平均污染的缓存行条数减小到 2 左右，那么上面的例子中，`L1` 最大命中率就等于 (512 / 2) / 500 = `51.2 %`，从 `22.6 %` 提升到 `51.2 %`；`L2` 最大命中率就等于 (16384 / 2) / 10000 = `81.92 %` ，从 `36.4 %` 提升到 `81.92 %`，性能比对的百分百 = 4.5 / 2 = `225 %` 。
 
 **所以，结论是，在高负载下（前提），哈希表每次读操作的平均污染缓存行数越少，性能就越高。**
 
@@ -90,25 +89,48 @@ L1 Max Hit % = ceil(L1CacheLines / N) / KeyCount;
 
 图源：[https://cs.brown.edu/courses/csci1310/2020/assign/labs/lab4.html](https://cs.brown.edu/courses/csci1310/2020/assign/labs/lab4.html)
 
-一般来说，前一级 Cache 是后一级 Cache 速度的 `2.5` ~ `3.5` 倍，下图是 `Intel Xeon Platinum 8380 (SNC2)` 的缓存和内存延迟实测数据，可以看到 `DRAM (内存)` 的延迟是 `L3 缓存` 的差不多 5 倍。
+一般来说，前一级 Cache 是后一级 Cache 速度的 `2.5` ~ `3.5` 倍，下图是 `Intel Xeon Platinum 8380 (SNC2) - DDR4-2933` 的缓存和内存延迟实测数据，可以看到 `DRAM (内存)` 的延迟是 `L3 缓存` 的差不多 5 倍。
 
 ![Intel Xeon 8380 Cache Latency](./images/Intel-xeon-8380-snc2-cache-latency.png)
 
 ### 1.5 L3 Cache
 
-一般的服务器 CPU 的 `L3` 缓存，Intel Xeon Platinum 24 核及以上的至强服务器 CPU，三级缓存在 `32 MB` -- `77 MB` 之间，Intel 大于 `128 MB` 的很少，AMD 新出的服务器 CPU 比较舍得堆料。
+从上图可以看到，`L3 Cache` 还是相当重要的，由于 `L3 Cache` 和内存的延迟相差比较大，如果内存的频率比 DDR4-2933 MHz 还低，或者是 DDR3，内存的延迟会更高。所以 `L3` 的大小最为最后一道防线，将直接影响到高负载下的性能。虽然 L1 容量越大，整体性能会提高，但是 L1 做大的可能性不大，跟 `PageSize`、`L1 TLB` 以及 `set associativity` 都是相关的；同理，增大 L2 容量，也会对整体性能有提高；所以增大 `L2` 和 `L3` 缓存的大小是比较实际的方式，`AMD` 的 CPU 一直以来，`L2` 都比 Intel 的稍大一点，现在 `AMD` 的服务器 CPU 的 L3 容量也是比 Intel 的大很多。
 
-我们知道，10 秒内所有读操作需要的缓存总量是远大约 `CPU` L3 缓存的，所以缓存得以复用，即 Cache Hit 的几率是很低的，几乎
+增大 `L1` 的容量目前已经有发售的产品中有两种方式：
 
-缓存命中率变低，从 `内存` 加载数据的概率也变高了，导致性能下降。
+1. 从 `Intel Sunny Cove`（Core 第 10 代）开始，`L1 Cache` 从 32K（指令）+ 32K（数据）的组合变成了 32K（指令）+ 48K（数据）的组合。这样做的后果是，`L1 Cache` 的访问性能下降，从 4 个cycle 变成 5 个 cycle 。
 
-（注：腾讯云的某些云服务器采用的 48 核心 `AMD EPYC 7K62`，则拥有 192 MB 的三级缓存，这是本人实际使用过的三级缓存最大的 CPU。而采用 3D V-Cache 技术 64 核心的 AMD 霄龙 7773X，拥有 768 MB 的三级缓存。）
+2. `Apple M1` CPU，通过把 PageSize 从 4KB 增加到 16KB，实现了 128 KB L1-数据 + 192 KB L1-指令。同时还保证了 L1-数据 的 3 cycle 的延迟，因为只改变了 PageSize，其他没变，还是 8 way 组相连，8 x 16 KB = 128 KB ，L1 变大，对性能的提升是很大的。
 
-## 2. 缓存局部性 (Cache locatity)
+`L3 缓存` 和 L1，L2 是不一样的，每个 Core 上都有独立的 L1，L2，而 `L3` 是所有 Core 共享的，整个 CPU 只有一个。有点遗憾的是，Intel 的 `L3 缓存` 是偏小的，`L3` 的总容量一般只比所有 Core 的 `L2` 缓存加起来的总量多一点点，一般是 1.2 - 1.5 倍左右。
+
+|   名称   |  Way | 核心数 |   平均每 Core   |  总容量  |
+|:--------:|:----:|:------:|----------------|----------|
+|  L1 指令 |  8   |   28   | 28 x 32 KiB    | 896 KiB  |
+|  L1 数据 |  8   |   28   | 28 x 32 KiB    | 896 KiB  |
+|  L2      |  16  |   28   | 28 x 1.0 MiB   | 28 MiB   |
+|  L3      |  11  |   28   |*28 x 1.375 MiB | 38.5 MiB |
+
+表格数据来自：[Intel Xeon Platinum 8280L - 28核 56线程](https://en.wikichip.org/wiki/intel/xeon_platinum/8280l)
+
+一般的服务器 CPU 的 `L3` 缓存，以 `Intel Xeon Platinum` 24 核及以上的至强服务器 CPU 为例，三级缓存大小在 `32 MB` -- `77 MB` 之间，Intel 大于 `128 MB` 的很少，AMD 新出的服务器 CPU 比较舍得堆料，大于 `128 MB` 的 L3 Cache 是很常见的。
+
+注：腾讯云的某些云服务器采用的 48 核心 `AMD EPYC 7K62`，则拥有 192 MB 的三级缓存，这是本人实际使用过的三级缓存最大的 CPU。而采用 3D V-Cache 技术 64 核心的 AMD 霄龙 7773X，拥有 768 MB 的三级缓存。
+
+## 2. 缓存局部性 (Cache Locatity)
 
 所以，如果我们对哈希表的读、增、删，每次的操作对 `CPU` 缓存的污染越小，那么哈希表的总体性能可能就会越好，这就是缓存局部性（Cache locatity）。
 
-缓存局部性通常分为两种不同的形式：时间局部性 (`Temporal Locality`) 和空间局部性 (`Spatial Locality`)。在具有良好时间局部性的程序中，一次引用的内存位置可能在不久的将来会再次多次被引用。在具有良好空间局部性的程序中，如果一个内存位置被引用一次，那么该程序很可能在不久的将来引用附近的内存位置。
+缓存局部性通常分为两种不同的形式：时间局部性 (`Temporal Locality`) 和空间局部性 (`Spatial Locality`)。
+
+* 时间局部性 (`Temporal Locality`)
+
+    在具有良好时间局部性的程序中，一次引用的内存位置可能在不久的将来会再次多次被引用。
+
+* 空间局部性 (`Spatial Locality`)
+
+    在具有良好空间局部性的程序中，如果一个内存位置被引用一次，那么该程序很可能在不久的将来引用附近的内存位置。
 
 ## 参考文章
 
@@ -119,3 +141,7 @@ L1 Max Hit % = ceil(L1CacheLines / N) / KeyCount;
 2. `Intel 3rd Gen Xeon Scalable (Ice Lake SP) Review: Generationally Big, Competitively Small`
 
     [https://www.anandtech.com/show/16594/intel-3rd-gen-xeon-scalable-review/4](https://www.anandtech.com/show/16594/intel-3rd-gen-xeon-scalable-review/4)
+
+3. `知乎：为什么目前x86的CPU的L1 Cache这么小？`
+
+    [https://www.zhihu.com/question/490863861/answer/2157766409](https://www.zhihu.com/question/490863861/answer/2157766409)
