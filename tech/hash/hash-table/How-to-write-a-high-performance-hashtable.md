@@ -32,11 +32,12 @@ typedef struct dictEntry {
 
 `代码片段 01`
 
-我们把哈希表除了 `Key`, `Value` 的值以外的额外信息称为 `MetaData`，可以看到，整个 `struct dictEntry` 真正属于 `metadata` 的是 `dictEntry * next`，一共 8 个字节（64位环境下）。`void * key` 和 `void * val` 这样的定义有其优点，但是也有缺点。优点是，像 `Key` 如果是字符串，一旦分配，就是固定的长度，不太可能会扩展，结尾也可以用 `\0` 表示，所以 `capacity` 和 `size` 可以不要，`C++ 标准库` 里的 Key，Value，定义为 `std::pair<const Key, Value>`，虽然不是 `Fixed` 的语义，但是也并不需要扩容。缺点呢，就是没有 `SSO` 优化，对于较短的字符串，直接分配在 `dictEntry` 结构体内，缓存局部性更好一点。
+我们把哈希表除了 `Key`, `Value` 的值以外的额外信息称为 `MetaData`，`struct dictEntry` 的 `metadata` 只有 `dictEntry * next`，8 个字节（64位环境下）。`void * key` 和 `void * val` 这种 C 字符串的用法有优点，但也有缺点。优点是，在这里，`Key` 一旦分配，就是固定的长度，不会扩展，结尾也可以用 `\0` 表示，所以 `capacity` 和 `size` 是可以不要的。`C++ 标准库` 里的 Key，Value 对定义为 `std::pair<const Key, Value>`，虽然不是 `Fixed` 语义，但是因为不需要扩容，也不能随意更改（语义上的），所以可以认为是 `Fixed` 的。缺点呢，就是没有 `SSO` 优化，对于较短的字符串，直接分配在 `dictEntry` 结构体内，缓存局部性更好一点。
 
-因为在 `C++` 里，字符串通常用 `std::string` 表示，`C++` 标准库的 `std::string` 实现一般都采用了 `SSO` 优化，`Small String Optimizatio`，下面是 `g++` (libstdc++) 的实现：
+因为在 `C++` 里，字符串通常使用 `std::string`，`C++` 标准库的 `std::string` 实现一般都采用了 `SSO` 优化，`Small String Optimizatio`，下面是 `g++` (libstdc++) 的实现：
 
 ```cpp
+// g++ (libstdc++)
 template <typename value_type>
 class basic_string {
     enum { __min_cap = 15 / sizeof(value_type) };
@@ -51,6 +52,39 @@ class basic_string {
 };                                         // 32 bytes
 ```
 
+这种方式的 `SSO` 在 `std::basic_string<char>` 中最多可以保存 `15` 个字符（末尾要保留 `\0`），且在 64 位下 sizeof(std::string) = `32` 字节。
+
+而在 `llvm / clang` 的 `libc++` 中，`std::basic_string<char>`，在 64 位下 sizeof(std::string) = `24` 字节，并且 `std::basic_string<char>` 中 `SSO` 最多可以保存 `22` 个字符，比 `g++` 的多 7 个字符。但它有一个缺点，就是 `SSO` 状态下，string.c_str() 的首地址不是 16 字节对齐的。24 字节的 sizeof() 也是有利有弊，利是它可以跟别的数据类型组合起来（例如 8 字节的数据类型），共同对齐到 32，64 字节等；弊是，如果组合的数据类型加起来的大小，不是 2 的幂次方，对于地址对齐来说，是稍微有一点尴尬的，解决的办法可以自己添加 `padding`，但是 `padding` 部分又不能让 `SSO` 享受到。
+
+```cpp
+// llvm / clang (libc++)
+template <typename value_type>
+class basic_string {
+    struct __long {
+        size_type __cap_;               // 8      bytes
+        size_type __size_;              // 8      bytes
+        pointer   __data_;              // 8      bytes
+    };
+
+    enum { __min_cap = ((sizeof(__long) - 1) / sizeof(value_type) > 2) ?
+                       ((sizeof(__long) - 1) / sizeof(value_type)) : 2 };
+
+    struct __short {
+        union {
+            unsigned char __size_;      // 1      byte
+            value_type __lx;            // 1 (2)  bytes for char(wchar_t)
+        };                              // 1 (2)  bytes for char(wchar_t)
+        value_type __data_[__min_cap];  // 23(22) bytes for char(wchar_t)
+    };                                  // 24     bytes
+
+    union {
+        __long  __l;                    // 24     bytes
+        __short __s;                    // 24     bytes
+    } __r_;                             // 24     bytes
+}
+```
+
+参考自：[C++ Small String Optimization](https://tc-imba.github.io/posts/cpp-sso)
 
 当然，当负载较低时，链表式哈希表的表现还是不错的，`Redis` 是链表式哈希表。
 
@@ -79,17 +113,15 @@ class basic_string {
 
 对于 `Redis` 集群或者云服务，一台服务器跑的不止一个 `Redis` 实例，每个实例的数据容量，单位时间内访问量都是不一样的。虽然每个 `Redis` 实例都是单线程的，但多个实例之间 `CPU` 缓存是共用的。
 
-纵使，我们只运行一个 `Redis` 实例，此时虽然不存在跟其他实例抢占缓存的情况，但在高负载下（同样差不多的 QPS 下），单实例和多实例几乎是一样的，`Redis` 的性能依然取决于各级缓存的速度和大小。如果每次哈希表操作污染的 `CPU` 缓存行 (CacheLine) 越多，各级缓存的使用总量就越多，各级缓存的 `Miss` 率也就会越大，从慢速的 `内存` 加载数据的概率也会增加。
+纵使，我们只运行一个 `Redis` 实例，此时虽然不存在跟其他实例抢占缓存的情况，但在同样的 QPS 负载下，单实例和多实例基本是一样的，`Redis` 的性能依然取决于各级缓存的延迟和容量。如果每次哈希表操作污染的 `CPU` 缓存行 (CacheLine) 越多，各级缓存的使用总量就越多，各级缓存的 `Miss` 率也就会越大，从慢速的 `内存` 加载数据的概率也会增加。
 
-以读操作（Find Hit）为例，假设 Key，Value 都是字符串类型，且长度都是 32 字节以内。每个哈希表的实现方式各不一样，`Redis` 采用的是拉链法，每个 `entry` 需要的额外信息 `metadata` 就是 24 个字节大小（即 `struct dictEntry`，3 个 指针类型，在 64 位模式下就是 24 个字节），假设在 `bucket` 链表里平均搜索两次就能找到所要找的 `Key`。
-
-
+以读操作（Find Hit）为例，假设 Key，Value 都是字符串类型，且长度都是 31 字节以内。`Redis` 采用的是拉链法，每个 `struct dictEntry` 在 64 位模式下需要 24 个字节（3 个 指针类型），假设在 `bucket` 链表里平均搜索两次才能找到所要找的 `Key`。
 
 一次读操作会经历：
 
-从 key 求出哈希值，再求出 bucket_index, 从 bucket 数组中读取链表首地址，此时会污染一条缓存行。再跳转该首地址指向的 dictEntry，也会污染一条缓存行。由于 dictEntry 和 key, value 在地址上大概率不是连续的，比较 key 和 dictEntry->key 是否相等时，读取 dictEntry->key 的值也会污染一条缓存行。我们假设链表的平均搜索长度为 2，所以继续再跳转到下一个 dictEntry，又会污染两条缓存行。由于 key，value 在内存上大概率是在一起的、连续的，所以 value 字符串的值大概率是跟 key 字符串在同一条缓存行内。
+由 key 计算出哈希值，再得到 bucket_index, 从 bucket 数组中读取链表首地址，此时会污染一条缓存行。再跳转该首地址指向的 dictEntry（24 个字节），也会污染一条缓存行。由于 dictEntry 和 key, value 在地址上大概率不是连续的（我未阅读过 Redis 源码，纯猜测），比较 key 和 dictEntry->key 是否相等时，读取 dictEntry->key 也会污染一条缓存行。前面我们假设链表的平均搜索长度为 2，所以要继续跳转到下一个 dictEntry，又会污染两条缓存行。由于 key，value 在内存上应该是一起分配的、连续的，所以 value 字符串的值是跟 key 字符串大概率在同一条缓存行内，读 value 不会污染新的缓存行。
 
-整个过程加起来，`1 + 2 + 2`，一共会污染 `5` 条缓存行。由于 bucket 数组数据，dictEntry 结构体，在其他读操作时，有可能已经在缓存中了，所以可以看作一次污染约 `4.5` 条缓存行。
+整个过程加起来，`1 + 2 + 2`，一共可能会污染 `5` 条缓存行。由于 bucket 数组数据，dictEntry 结构体等，在其他读操作时，有一定概率已经在缓存中了，所以可以看作一次大约污染 `4.5` 条缓存行。
 
 ![Redis 字典 hash 表结构图](./images/redis-dict-hash-table.svg)
 
@@ -109,22 +141,22 @@ class basic_string {
 
 ### 1.3 结论
 
-所以，`L1` 的最大命中率是由每次读操作平均污染的缓存行数决定的，我们设该值为 `N`，L1 中最大缓存行数为 `L1CacheLines`，读操作在 L1 里最多能缓存 C = ceil(L1CacheLines / N) 个 `Key`。假设我们已经缓存的 `Key` 个数是 `KeyCount`，且一定大于 C，那么 `L1` 最大命中率等于：
+所以，`L1` 的最大命中率是由每次读操作平均污染的缓存行数决定的，我们设该值为 `N`，L1 中最大缓存行数为 `L1_CacheLines`，读操作在 L1 里最多能缓存 C = ceil(L1_CacheLines / N) 个 `Key`。假设我们已经缓存的 `Key` 个数是 `TotalKeys`，且一定大于 C，那么 `L1` 最大命中率等于：
 
 ```cpp
 // ceil(x) 为向下取整
-L1 Max Hit % = ceil(L1CacheLines / N) / KeyCount;
+L1_MaxHitRate % = ceil(L1_CacheLines / N) / TotalKeys;
 ```
 
-可以看到，当 `N` 的值越小，L1 最大命中率就越大，如果我们采用更好的哈希表实现方式，让每次读操作平均污染的缓存行条数减小到 2 左右，那么上面的例子中，`L1` 最大命中率就等于 (512 / 2) / 500 = `51.2 %`，从 `22.6 %` 提升到 `51.2 %`；`L2` 最大命中率就等于 (16384 / 2) / 10000 = `81.92 %` ，从 `36.4 %` 提升到 `81.92 %`，性能比对的百分百 = 4.5 / 2 = `225 %` 。
+可以看到，当 `N` 的值越小，L1 最大命中率就越大，如果我们采用更好的哈希表实现方式，例如：让每次读操作平均污染的缓存行条数减小到 2 左右，那么上面的例子中，`L1` 最大命中率就等于 (512 / 2) / 500 = `51.2 %`，从 `22.6 %` 提升到 `51.2 %`；`L2` 最大命中率就等于 (16384 / 2) / 10000 = `81.92 %` ，从 `36.4 %` 提升到 `81.92 %`，性能 SpeedUp 的比例 = 4.5 / 2 = `225 %` 。
 
 **所以，结论是，在高负载下（前提），哈希表每次读操作的平均污染缓存行数越少，性能就越高。**
 
-这个结论对于 L1，L2，L3 缓存乃至内存，都是通用的。
+这个结论对于 L1，L2，L3 缓存以及内存，都是适用的。
 
-以上讨论的仅仅是 `Find Hit` 的情况，读操作还有可能 `Find Miss`，则 “污染” 的缓存行会更多。同理，插入有 `Key` 已存在和 `Key` 不存在两种情况，如果是 `Insert New Key`，“污染” 的缓存行将会更多，因为插入的 `Key` 不存在已经等价于 `Find Miss`，还要处理元素的插入。链表哈希表的删除操作跟 `Find` 很接近，只多了删除 / 析构元素，修改链表的操作。
+以上分析的只是 `Find Hit` 的情况，读操作还有可能 `Find Miss`，则平均 “污染” 的缓存行可能会更多一些。同理，插入分为 `Key` 已存在和 `Key` 不存在两种情况，如果是 `Insert New Key`，“污染” 的缓存行将会更多，因为插入的不存在的 `Key` 首先要经历 `Find Miss`，再处理元素的插入，链表法插入的时候可能会涉及到提前预创建一个节点的问题。删除操作要先经历 `Find`，然后删除 / 析构元素，再修改链表的 next 指针等操作。
 
-实际情况是复杂的，以上也只是从理论上的分析了 Find Hit 的情况，未考虑组相连 way 冲突（也无法估算），但平均污染缓存行数越少，整体性能可能会更高，这一点基本是不会变的。
+实际的情况是极其复杂的，以上也只是理论上的分析，也未考虑组相连的 way 冲突（无法估算），但平均污染缓存行数越少，整体性能可能会更高，这个概念是不会变的。
 
 ### 1.4 缓存的延迟
 
@@ -146,7 +178,7 @@ L1 Max Hit % = ceil(L1CacheLines / N) / KeyCount;
 
 ### 1.5 L3 Cache
 
-从上图可以看到，`L3 Cache` 还是相当重要的，由于 `L3 Cache` 和内存的延迟相差比较大，如果内存的频率比 DDR4-2933 MHz 还低，或者是 DDR3，内存的延迟会更高。所以 `L3` 作为最后一道防线，容量大小将直接影响在高负载下程序的性能。虽然 L1 容量越大，整体性能会提高，但是 L1 做大的可能性不大，跟 `PageSize`、`L1 TLB` 以及 `set associativity` 都是相关的；同理，增大 L2 容量，也会对整体性能有提高；所以增大 `L2` 和 `L3` 缓存的大小是比较实际的方式，`AMD` 的 CPU 一直以来，`L2` 都比 Intel 的稍大一点，现在一些 `AMD` 新的服务器 CPU 的 L3 容量也是比 Intel 的大很多。
+从上图可以看到，`L3 Cache` 还是相当重要的，由于 `L3 Cache` 和内存的延迟相差比较大，如果内存的频率比 DDR4-2933 MHz 还低，或者是 DDR3，内存的延迟会更高。所以 `L3` 作为最后一道防线，容量大小将直接影响在高负载下程序的性能。虽然 L1 容量越大，整体性能会越好，但 L1 受 `PageSize`、`L1 TLB` 以及 `set associativity` 所限制，做大的可能性基本没有。
 
 增大 `L1` 的容量目前已发售的产品中有两种方式：
 
@@ -156,7 +188,9 @@ L1 Max Hit % = ceil(L1CacheLines / N) / KeyCount;
 
 ![Intel Sunny Cove Cache Latency](./images/Intel-sunny-cove-core-cache-latency.jpg)
 
-`L3 缓存` 和 L1，L2 是不一样的，每个 Core 上都有独立的 L1，L2，而 `L3` 是所有 Core 共享的，整个 CPU 只有一个。有点遗憾的是，Intel 的 `L3 缓存` 是偏小的，`L3` 的总容量一般只比所有 Core 的 `L2` 缓存加起来的总量多一点点，一般是 1.2 - 1.5 倍左右。
+所以增大 `L2` 和 `L3` 缓存的大小是比较实际的方式，`AMD` 的 CPU 一直以来，`L2` 都比 Intel 的稍大一点，现在一些 `AMD` 新的服务器 CPU 的 L3 容量也是比 Intel 的大很多很多。
+
+而且，`L3 缓存` 和 L1，L2 是不一样的，L1，L2 是每个 Core 上独立存在的，而 `L3` 是所有 Cores 共享的，整个 CPU 只有一个。有点遗憾的是，Intel 的 `L3 缓存` 是有点偏小的，`L3` 的总容量一般只比各个 Core 的 `L2` 缓存加起来的总量多一点点，一般是 1.2 - 1.5 倍左右。
 
 |   名称   |  Way | 核心数 |   平均每 Core   |  总容量  |
 |:--------:|:----:|:------:|----------------|----------|
@@ -169,7 +203,7 @@ L1 Max Hit % = ceil(L1CacheLines / N) / KeyCount;
 
 一般的服务器 CPU 的 `L3` 缓存，以 `Intel Xeon Platinum` 24 核及以上的至强服务器 CPU 为例，三级缓存大小在 `32 MB` -- `77 MB` 之间，Intel 大于 `128 MB` 的很少，AMD 新出的服务器 CPU 比较舍得堆料，大于 `128 MB` 的 L3 Cache 是很常见的。
 
-注：腾讯云的某些云服务器采用的 48 核心 `AMD EPYC 7K62`，则拥有 `192 MB` 的三级缓存，这是本人实际使用过的三级缓存最大的 CPU。而采用 3D V-Cache 技术 64 核心的 AMD 霄龙 7773X，拥有 `768 MB` 的三级缓存。
+笔者注：腾讯云的某些云服务器采用的 48 核心 `AMD EPYC 7K62`，则拥有 `192 MB` 的三级缓存，这是本人实际使用过的三级缓存最大的 CPU。而采用 3D V-Cache 技术 64 核心的 AMD 霄龙 7773X，拥有 `768 MB` 的三级缓存。
 
 ## 2. 缓存局部性 (Cache Locatity)
 
