@@ -32,9 +32,13 @@ typedef struct dictEntry {
 
 `代码片段 01`
 
-我们把哈希表除了 `Key`, `Value` 的值以外的额外信息称为 `MetaData`，`struct dictEntry` 的 `metadata` 只有 `dictEntry * next`，8 个字节（64位环境下）。`void * key` 和 `void * val` 这种 C 字符串的用法有优点，但也有缺点。优点是，在这里，`Key` 一旦分配，就是固定的长度，不会扩展，结尾也可以用 `\0` 表示，所以 `capacity` 和 `size` 是可以不要的。`C++ 标准库` 里的 Key，Value 对定义为 `std::pair<const Key, Value>`，虽然不是 `Fixed` 语义，但是因为不需要扩容，也不能随意更改（语义上的），所以可以认为是 `Fixed` 的。缺点呢，就是没有 `SSO` 优化，对于较短的字符串，直接分配在 `dictEntry` 结构体内，缓存局部性更好一点。
+我们把哈希表除了 `Key`, `Value` 的值以外的额外信息称为 `MetaData`，`struct dictEntry` 的 `metadata` 只有 `dictEntry * next`，64位环境下占 8 个字节。`void * key` 和 `void * val` 这种 C 字符串的用法，有优点，但也有缺点。优点是省内存，在这里，`Key` 一旦分配就是固定的，不需要扩展，结尾用 `\0` 表示即可，所以 `capacity` 和 `size` 在这种情况下是多余的。缺点呢，就是没有 `SSO` 优化，对于较短的字符串，如果直接分配在 `dictEntry` 结构体内，缓存局部性更好一点。
 
-因为在 `C++` 里，字符串通常使用 `std::string`，`C++` 标准库的 `std::string` 实现一般都采用了 `SSO` 优化，`Small String Optimizatio`，下面是 `g++` (libstdc++) 的实现：
+因为在 `C++` 里，字符串通常使用 `std::string`，`C++` 标准库的 `std::string` 实现一般都采用了 `SSO` 优化，`Small String Optimizatio`。
+
+同样的，`C++ 标准库` 里的 `键值对` 定义为 `std::pair<const Key, Value>`，Key 不需要扩容，语义上的也不能修改（const Key），所以也可以认为 Key 是 `Fixed` 的。
+
+下面是 `g++` (libstdc++) 的实现：
 
 ```cpp
 // g++ (libstdc++)
@@ -51,6 +55,8 @@ class basic_string {
     } __u_;                                // 16 bytes
 };                                         // 32 bytes
 ```
+
+摘自：[C++ Small String Optimization](https://tc-imba.github.io/posts/cpp-sso)
 
 这种方式的 `SSO` 在 `std::basic_string<char>` 中最多可以保存 `15` 个字符（末尾要保留 `\0`），且在 64 位下 sizeof(std::string) = `32` 字节。
 
@@ -84,7 +90,7 @@ class basic_string {
 }
 ```
 
-参考自：[C++ Small String Optimization](https://tc-imba.github.io/posts/cpp-sso)
+摘自：[C++ Small String Optimization](https://tc-imba.github.io/posts/cpp-sso)
 
 当然，当负载较低时，链表式哈希表的表现还是不错的，`Redis` 是链表式哈希表。
 
@@ -156,7 +162,7 @@ L1_MaxHitRate % = ceil(L1_CacheLines / N) / TotalKeys;
 
 以上分析的只是 `Find Hit` 的情况，读操作还有可能 `Find Miss`，则平均 “污染” 的缓存行可能会更多一些。同理，插入分为 `Key` 已存在和 `Key` 不存在两种情况，如果是 `Insert New Key`，“污染” 的缓存行将会更多，因为插入的不存在的 `Key` 首先要经历 `Find Miss`，再处理元素的插入，链表法插入的时候可能会涉及到提前预创建一个节点的问题。删除操作要先经历 `Find`，然后删除 / 析构元素，再修改链表的 next 指针等操作。
 
-实际的情况是极其复杂的，以上也只是理论上的分析，也未考虑组相连的 way 冲突（无法估算），但平均污染缓存行数越少，整体性能可能会更高，这个概念是不会变的。
+实际的情况是极其复杂的，以上也只是理论上的分析，也未考虑组相连的 way 冲突（无法估算），但平均污染缓存行数越少，整体性能可能会更高，这个概念是通用的。
 
 ### 1.4 缓存的延迟
 
