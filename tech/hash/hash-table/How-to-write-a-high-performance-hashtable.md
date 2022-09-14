@@ -32,7 +32,7 @@ typedef struct dictEntry {
 
 `代码片段 01`
 
-我们把哈希表除了 `Key`, `Value` 的值以外的额外信息称为 `MetaData`，`struct dictEntry` 的 `metadata` 只有 `dictEntry * next`，64位环境下占 8 个字节。`void * key` 和 `void * val` 这种 C 字符串的用法，有优点，但也有缺点。优点是省内存，在这里，`Key` 一旦分配就是固定的，不需要扩展，结尾用 `\0` 表示即可，所以 `capacity` 和 `size` 在这种情况下是多余的。缺点呢，就是没有 `SSO` 优化，对于较短的字符串，如果直接分配在 `dictEntry` 结构体内，缓存局部性更好一点。
+我们把哈希表除了 `Key`, `Value` 的值以外的额外信息称为 `MetaData`，`struct dictEntry` 的 `metadata` 只有 `dictEntry * next`，64位环境下占 8 个字节。`void * key` 和 `void * val` 这种 C 字符串的用法，有优点，但也有缺点。优点是省内存，在这里，`Key` 一旦分配就是固定的，不需要扩展，结尾用 `\0` 表示即可，所以 `capacity` 和 `size` 在这种情况下是多余的。缺点呢，就是没有 `SSO` 优化，对于较短的字符串，如果直接分配在 `dictEntry` 结构体内，缓存局部性会更好一点。
 
 因为在 `C++` 里，字符串通常使用 `std::string`，`C++` 标准库的 `std::string` 实现一般都采用了 `SSO` 优化，`Small String Optimizatio`。
 
