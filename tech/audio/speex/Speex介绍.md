@@ -2,7 +2,6 @@
 title: Speex介绍
 Antuor: shines77(GuoXH)
 comments: true
-toc: true
 tags: Speex
 date: 2023-02-05 20:53:21
 categories: 语音
@@ -16,7 +15,7 @@ categories: 语音
 
 > 为网络电话而不是移动电话而设计，意味着 *Speex* 对数据丢失具有鲁棒性，但是对数据包损坏不鲁棒，在 *VoIP* 中的数据包要么完整到达，要么不能到达。
 
-*Speex* 选用 `CELP`（码激励线性预测编码）编码技术，在高比特率和低比特率都稳定可靠，复杂性适度并且占用内存较少。
+*Speex* 选用 *CELP*（码激励线性预测编码）编码技术，在高比特率和低比特率都稳定可靠，复杂性适度并且占用内存较少。
 
 ## 1. 相关概念
 
