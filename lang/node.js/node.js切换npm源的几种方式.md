@@ -1,4 +1,4 @@
-# NodeJs 切换 npm 源的几种方式
+# node.js 切换 npm 源的几种方式
 
 ## 1. 在 Windows 下
 
@@ -72,7 +72,7 @@
 例如：
 
 ```shell
-npm install -g cnpm --registry=https://registry.npm.taobao.org
+npm install -g cnpm --registry=https://registry.npmmirror.com
 ```
 
 安装完成以后，执行 `cnmp -v` 命令会显示如下错误信息：
