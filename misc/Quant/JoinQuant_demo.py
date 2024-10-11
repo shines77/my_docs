@@ -13,9 +13,9 @@
 
 # 总体回测前要做的事情
 def initialize(context):
-    set_params()      #1设置策参数
-    set_variables()   #2设置中间变量
-    set_backtest()    #3设置回测条件
+    set_params()      # 1 设置策参数
+    set_variables()   # 2 设置中间变量
+    set_backtest()    # 3 设置回测条件
 
 #1
 # 设置策参数
@@ -23,20 +23,21 @@ def set_params():
     g.tc = 15  # 调仓频率
     g.yb = 63  # 样本长度
     g.N = 20   # 持仓数目
-    g.factors = ["market_cap","roe"] # 用户选出来的因子
+    g.factors = ["market_cap", "roe"] # 用户选出来的因子
     # 因子等权重里1表示因子值越小越好，-1表示因子值越大越好
     g.weights = [[1], [-1]]
 
 #2
 # 设置中间变量
 def set_variables():
-    g.t = 0              #记录回测运行的天数
-    g.if_trade = False   #当天是否交易
+    g.t = 0              # 记录回测运行的天数
+    g.if_trade = False   # 当天是否交易
 
 #3
 # 设置回测条件
 def set_backtest():
-    set_option('use_real_price', True)#用真实价格交易
+    # 用真实价格交易
+    set_option('use_real_price', True)
     log.set_level('order', 'error')
 
 '''
@@ -53,9 +54,9 @@ def before_trading_start(context):
         # 设置手续费与手续费
         set_slip_fee(context)
         # 设置可行股票池：获得当前开盘的沪深300股票池并剔除当前或者计算样本期间停牌的股票
-        g.all_stocks = set_feasible_stocks(get_index_stocks('000300.XSHG'), g.yb,context)
+        g.all_stocks = set_feasible_stocks(get_index_stocks('000300.XSHG'), g.yb, context)
         # 查询所有财务因子
-        g.q = query(valuation, balance, cash_flow, income,indicator).filter(valuation.code.in_(g.all_stocks))
+        g.q = query(valuation, balance, cash_flow, income, indicator).filter(valuation.code.in_(g.all_stocks))
     g.t += 1
 
 '''
@@ -119,13 +120,13 @@ def handle_data(context, data):
         # 获得今天日期的字符串
         todayStr = str(context.current_dt)[0:10]
         # 获得因子排序
-        a,b = getRankedFactors(g.factors, todayStr)
+        a, b = getRankedFactors(g.factors, todayStr)
         # 计算每个股票的得分
-        points = np.dot(a,g.weights)
+        points = np.dot(a, g.weights)
         # 复制股票代码
         stock_sort = b[:]
         # 对股票的得分进行排名
-        points,stock_sort = bubble(points, stock_sort)
+        points, stock_sort = bubble(points, stock_sort)
         # 取前N名的股票
         toBuy = stock_sort[0:g.N].values
         # 对于不需要持仓的股票，全仓卖出
@@ -167,23 +168,23 @@ def indexOf(e, a):
 
 #9
 #取因子数据
-#输入：f-全局通用的查询,d-str
-#输出：因子数据,股票的代码-dataframe
-def getRankedFactors(f, d):
+#输入：factor-全局通用的查询, today
+#输出：因子数据, 股票的代码-dataframe
+def getRankedFactors(factors, today):
     # 获得股票的基本面数据，这个API里面有，g.q是一个全局通用的查询
-    df = get_fundamentals(g.q, d)
+    info = get_fundamentals(g.q, today)
     # 为了防止Python里面的浅复制现象，采用循环来定义二维数组
-    res = [([0] * len(f)) for i in range(len(df))]
+    res = [([0] * len(factors)) for i in range(len(info))]
     # 把数据填充到刚才定义的数组里面
-    for i in range(0, len(df)):
-        for j in range(0, len(f)):
-            res[i][j] = df[f[j]][i]
+    for i in range(0, len(info)):
+        for j in range(0, len(factors)):
+            res[i][j] = info[factors[j]][i]
     # 用均值填充NaN值
     fillNan(res)
     # 将数据变成排名
     getRank(res)
     # 返回因子数据和股票的代码（这个是因为沪深300指数成分股一直在变，如果用未来的沪深300指数成分股在之前可能有一些股票还没上市）
-    return res, df['code']
+    return res, info['code']
 
 #10
 #把每列原始数据变成排序的数据
