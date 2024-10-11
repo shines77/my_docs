@@ -55,7 +55,7 @@ def before_trading_start(context):
         # 设置可行股票池：获得当前开盘的沪深300股票池并剔除当前或者计算样本期间停牌的股票
         g.all_stocks = set_feasible_stocks(get_index_stocks('000300.XSHG'), g.yb,context)
         # 查询所有财务因子
-        g.q = query(valuation, balance, cash_flow,income,indicator).filter(valuation.code.in_(g.all_stocks))
+        g.q = query(valuation, balance, cash_flow, income,indicator).filter(valuation.code.in_(g.all_stocks))
     g.t += 1
 
 '''
@@ -114,7 +114,7 @@ def set_slip_fee(context):
 
 def handle_data(context, data):
     if g.if_trade == True:
-    # 计算现在的总资产，以分配资金，这里是等额权重分配
+        # 计算现在的总资产，以分配资金，这里是等额权重分配
         g.everyStock = context.portfolio.portfolio_value / g.N
         # 获得今天日期的字符串
         todayStr = str(context.current_dt)[0:10]
@@ -139,7 +139,7 @@ def handle_data(context, data):
 #输入：context, data，toBuy-list
 #输出：none
 def order_stock_sell(context, data, toBuy):
-    #如果现有持仓股票不在股票池，清空
+    # 如果现有持仓股票不在股票池，清空
     list_position = context.portfolio.positions.keys()
     for stock in list_position:
         if stock not in toBuy:
@@ -152,7 +152,7 @@ def order_stock_sell(context, data, toBuy):
 def order_stock_buy(context, data, toBuy):
     # 对于不需要持仓的股票，按分配到的份额买入
     for i in range(0, len(g.all_stocks)):
-        if indexOf(g.all_stocks[i],toBuy) > -1:
+        if indexOf(g.all_stocks[i], toBuy) > -1:
             order_target_value(g.all_stocks[i], g.everyStock)
 
 #8
