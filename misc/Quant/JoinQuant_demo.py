@@ -5,6 +5,20 @@
 #多因子策略入门
 # 2015-01-01 到 2016-03-08, ￥2000000, 每天
 
+import platform
+g.python_ver = int(platform.python_version()[0:1])
+
+def UseOS():
+    sysName = platform.system()
+    if (sysName == "Windows" or sysName == "windows"):
+        return 1
+    elif (sysName == "Linux"):
+        return 2
+    elif (sysName == "MacOs"):
+        return 3
+    else:
+        return 4
+
 '''
 ================================================================================
 总体回测前
