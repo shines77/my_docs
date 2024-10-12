@@ -1,8 +1,7 @@
 #
+# pytorch学习笔记(7)：RNN 和 LSTM 实现分类和回归
 #
-# pytorch学习笔记(2)：在 MNIST 上实现一个 cnn
-#
-# From: https://mp.weixin.qq.com/s?__biz=MzAwMDgyNjE3OA==&mid=2247483868&idx=1&sn=ee395d612522e95a48592170c05bf814&chksm=9ae24ff1ad95c6e7cc5c0d561ebdb8c8826e6b0f0c355ad42e49028d6677dfea8d97bb876cf6&scene=21#wechat_redirect
+# From: https://mp.weixin.qq.com/s?__biz=MzAwMDgyNjE3OA==&mid=2247483927&idx=1&sn=75775f2a137a5f3a22d8741cc5a4146c&chksm=9ae24c3aad95c52c4a17d16b0dde6d6a15230f5ea46bb97e2bdd69dc0173494bfe21a175abc2&scene=21#wechat_redirect
 #
 # 10 分钟完全读懂 PyTorch
 # From: https://mp.weixin.qq.com/s?__biz=MzAxMjUyNDQ5OA==&mid=2653563579&idx=2&sn=f2a3c115977af6368b37cb03676b3771&chksm=806e0406b7198d1065236238eb8d34bdd62011ad9d5fd845879395071860e9974ef61da151a5&scene=27
@@ -38,7 +37,7 @@ class RNN(torch.nn.Module):
 
 def main():
     # 0. Get started
-    print("\nBegin simple MNIST CNN Dataset with PyTorch demo.\n")
+    print("\nBegin simple RNN Dataset with PyTorch demo.\n")
     torch.manual_seed(1)
     np.random.seed(1)
 
@@ -57,8 +56,8 @@ def main():
     x_np = torch.from_numpy(np.sin(steps))
     y_np = torch.from_numpy(np.cos(steps))
 
-    train_x = Variable(torch.zeros(seq_size, hidden_dim, input_size))
-    train_y = Variable(torch.zeros(seq_size, hidden_dim, input_size))
+    train_x = Variable(torch.zeros(seq_size, hidden_dim, input_size, dtype=torch.float32))
+    train_y = Variable(torch.zeros(seq_size, hidden_dim, input_size, dtype=torch.float32))
 
     for seq in range(seq_size):
         for h in range(hidden_dim):
@@ -67,6 +66,12 @@ def main():
                 train_y[seq][h][i] = y_np[seq]
 
     # print(train_x)
+
+    #
+    # batch_first：这个是我们数据的格式描述，在 pytorch 中我们经常以 batch 分组来训练数据。
+    # 这里的 batch_size 表示 batch 是否在输入数据的第一个维度
+    # 如果在第一个维度则为 True，第二个维度是序列长度，默认为 False，第一个维度是序列长度，第二个维度是batch_size。
+    #
 
     # Initialize hidden state with zeros
     h_state = Variable(torch.zeros(layer_dim, seq_size, hidden_dim, dtype=torch.float32))
