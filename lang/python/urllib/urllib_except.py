@@ -15,9 +15,12 @@ except URLError as ex:
     print('We failed to reach a server. URL = [%s]' % url)
     print('Reason:', ex.reason)
 except HTTPError as ex:
-    print('The server couldn\'t fulfill the request.')
-    print('Error code:', ex.code)
-    print('Error message:', ex.read())
+    if ex.code == 404:
+        print('Error code: 404, Not found')
+    else:
+        print('The server couldn\'t fulfill the request.')
+        print('Error code: ', ex.code)
+        print('Error message: ', ex.read())
 except ContentTooShortError as ex:
     # 当从 URL 读取的内容比预期的要短时，会抛出此异常。
     # 这通常在使用 urlopen 与文件类对象（如 urlopen(url, data)）一起使用时发生。
