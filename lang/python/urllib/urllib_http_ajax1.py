@@ -2,6 +2,7 @@
 # From: https://blog.csdn.net/weixin_57023347/article/details/132780256
 #
 
+import os
 import urllib.parse
 import urllib.request
 
@@ -33,9 +34,13 @@ def get_html_content(request):
     print(html_content)
     return html_content
 
+# 必须保证当前目录下已经存在 ./douban 目录
+if not os.path.exists('./douban'):
+    # 如果不存在就创建这个文件夹
+    os.mkdir('douban')
+
 # 保存 json 内容
 def save_json_data(page, content):
-    # 需要自己在当前目录下新建一个 douban 的目录
     fp = open('./douban/douban_' + str(page) + '.json', 'w', encoding='utf-8')
     fp.write(content)
 
