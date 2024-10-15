@@ -8,7 +8,7 @@ import urllib.request
 # 创建 Request 对象
 def create_request(page):
     # base_url = 'https://movie.douban.com/j/chart/top_listtype=5&interval_id=100%3A90&action=&'
-    base_url = "https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&"
+    base_url = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&'
 
     url_args = {
         'page_start': (page - 1) * 20,
