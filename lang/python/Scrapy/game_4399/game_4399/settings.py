@@ -66,6 +66,18 @@ ROBOTSTXT_OBEY = True
 #    "game_4399.pipelines.Game4399Pipeline": 300,
 #}
 
+ITEM_PIPELINES = {
+    # 管道程序的所在路径：优先级
+
+    # 300 表示管道的优先级，数字越小优先级越高
+    # 优先级高的管道会比优先级低的管道先拿到数据
+    "game_4399.pipelines.Game4399Pipeline": 300,
+    # "game_4399.pipelines.Game4399MysqlPipeline": 300,
+
+    # 优先级比GamePipeline高，可以通过运行结果看出
+    "game_4399.pipelines.OtherPipeline": 299
+}
+
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True
@@ -91,18 +103,6 @@ ROBOTSTXT_OBEY = True
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
-
-ITEM_PIPELINES = {
-    # 管道程序的所在路径：优先级
-
-    # 300 表示管道的优先级，数字越小优先级越高
-    # 优先级高的管道会比优先级低的管道先拿到数据
-   "game_4399.pipelines.Game4399Pipeline": 300,
-   # "game_4399.pipelines.Game4399MysqlPipeline": 300,
-
-   # 优先级比GamePipeline高，可以通过运行结果看出
-   "game_4399.pipelines.OtherPipeline": 299
-}
 
 # 配置MySQL
 MYSQL = {
