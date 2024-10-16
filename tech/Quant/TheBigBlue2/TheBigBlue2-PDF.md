@@ -1,4 +1,4 @@
-# The Big Blue Trading System
+# The Big Blue-2 Trading System
 
 ## 1. Introduction to Intraday Trading
 
@@ -299,7 +299,7 @@ Big Blue-2交易系统开发完成后的分析，涵盖了对系统性能的全�
 
 ## 8. 初始版源码
 
-![The Big Blue 初始版源码](./TheBigBlue.png)
+![The Big Blue2 初始版源码](./TheBigBlue2.png)
 
 ## 9. 参考文章
 
