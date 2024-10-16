@@ -72,6 +72,7 @@ ITEM_PIPELINES = {
     # 300 表示管道的优先级，数字越小优先级越高
     # 优先级高的管道会比优先级低的管道先拿到数据
     "game_4399.pipelines.Game4399Pipeline": 300,
+    "game_4399.pipelines.Game4399JsonPipeline": 300,
     # "game_4399.pipelines.Game4399MysqlPipeline": 300,
 
     # 优先级比GamePipeline高，可以通过运行结果看出

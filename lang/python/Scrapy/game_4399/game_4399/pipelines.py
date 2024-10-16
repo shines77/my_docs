@@ -7,6 +7,7 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 import pymysql
+import json
 
 # 导入 MySQL 配置
 from game_4399.settings import MYSQL
@@ -48,6 +49,34 @@ class Game4399Pipeline:
         if self.f:
             self.f.close()
 
+class Game4399JsonPipeline:
+    def __init__(self):
+        self.f = None
+
+    def open_spider(self, spider):
+        print('[Game4399JsonPipeline]: 爬虫开启了...')
+        self.f = open('./game_data.json', mode='a', encoding='utf-8')
+
+    def process_item(self, item, spider):
+        print('[Game4399JsonPipeline]: 爬虫进行中...')
+
+        try:
+            content = json.dumps(dict(item), ensure_ascii=False) + "\n"
+            self.f.write(content)
+        except:
+            self.logger.error(f'Writting file error: {content}\n')
+            if self.f:
+                self.f.close
+                self.f = None
+        finally:
+            pass
+
+        return item
+
+    def close_spider(self, spider):
+        print('[Game4399JsonPipeline]: 爬虫关闭了...')
+        if self.f:
+            self.f.close()
 
 # 默认情况下管道是不开启的, 需要在 settings.py 文件中进行设置
 class Game4399MysqlPipeline:
