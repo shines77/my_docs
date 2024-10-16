@@ -1,4 +1,4 @@
-# The Big Blue trading system
+# The Big Blue Trading System
 
 ## 1. Introduction to Intraday Trading
 
@@ -133,7 +133,9 @@ Big Blue-2交易系统使用了以下类型的过滤规则：
 
 本小节讨论了在日内交易系统中使用的各种过滤规则，这些规则通过逻辑开关来开启或关闭交易。强调了过滤规则在任何交易系统开发中的重要性，但同时也提醒我们，过滤规则必须谨慎使用，因为过度使用过滤规则就像过度拟合交易系统的参数或逻辑一样容易，而纯粹的数据拟合是不可取的。
 
-### 5.1 The Pivot Counter-Trend Pattern
+## 6. Intraday Patterns
+
+### 6.1 The Pivot Counter-Trend Pattern
 
 枢轴点逆势模式（Pivot Counter-Trend Pattern），这是Big Blue-2交易系统中使用的主要日内交易模式。
 
@@ -171,7 +173,7 @@ Big Blue-2交易系统使用了以下类型的过滤规则：
 
 本小节强调了枢轴点逆势模式在日内交易中的重要性，并提供了详细的计算方法、交易逻辑和历史测试结果，以展示这种模式的有效性。
 
-### 5.2 The Cluster Counter-Trend Pattern
+### 6.2 The Cluster Counter-Trend Pattern
 
 簇逆势模式（Cluster Counter-Trend Pattern），这是Big Blue-2交易系统中使用的另一种主要的日内交易模式。
 
@@ -204,7 +206,7 @@ Big Blue-2交易系统使用了以下类型的过滤规则：
 
 本节强调了簇逆势模式在日内交易中的重要性，并提供了详细的模式识别方法、交易逻辑和历史测试结果，以展示这种模式的有效性。通过在市场中识别出这些价格簇，并在这些价格水平附近设置限价单，交易者可以在市场反转时捕捉到利润机会。
 
-### 5.3 The Breakout Pattern
+### 6.3 The Breakout Pattern
 
 突破模式（Breakout Pattern）。
 
@@ -238,7 +240,7 @@ Big Blue-2交易系统使用了以下类型的过滤规则：
 
 本小节强调了突破模式在日内交易中的重要性，并提供了详细的交易设置、过滤逻辑和历史测试结果，以展示这种模式的有效性。通过在市场强势突破时进入交易，并使用过滤逻辑来避免频繁交易和假突破，交易者可以在市场出现明显趋势时捕捉利润机会。
 
-### 5.4 The Extreme Counter-Trend Pattern
+### 6.4 The Extreme Counter-Trend Pattern
 
 极端逆势模式（Extreme Counter-Trend Pattern）。
 
@@ -267,7 +269,7 @@ Big Blue-2交易系统使用了以下类型的过滤规则：
 
 本小节强调了极端逆势模式在日内交易中的重要性，并提供了详细的交易设置、交易逻辑和历史测试结果，以展示这种模式的有效性。通过识别市场的极端波动并设置相应的止损单，交易者可以在市场出现显著反向调整时捕捉利润机会。
 
-## 6. Post Development Analysis
+## 7. Post Development Analysis
 
 Big Blue-2交易系统开发完成后的分析，涵盖了对系统性能的全面评估和一些关键问题的讨论。
 
