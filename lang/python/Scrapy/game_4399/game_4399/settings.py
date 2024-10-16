@@ -74,6 +74,7 @@ ITEM_PIPELINES = {
     "game_4399.pipelines.Game4399Pipeline": 300,
     "game_4399.pipelines.Game4399JsonPipeline": 300,
     # "game_4399.pipelines.Game4399MysqlPipeline": 300,
+    # "game_4399.pipelines.Game4399MongoPipeline": 300,
 
     # 优先级比GamePipeline高，可以通过运行结果看出
     "game_4399.pipelines.OtherPipeline": 299

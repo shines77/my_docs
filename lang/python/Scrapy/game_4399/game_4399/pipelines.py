@@ -7,6 +7,7 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 import pymysql
+import pymongo
 import json
 
 # 导入 MySQL 配置
@@ -128,6 +129,40 @@ class Game4399MysqlPipeline:
         print('[Game4399MysqlPipeline]: 爬虫关闭了...')
         if self.conn:
             self.conn.close()
+
+class Game4399MongoPipeline(object):
+    def __init__(self):
+        # 配置MongoDB数据库
+        MONGO_HOST = "127.0.0.1"    # 主机IP
+        MONGO_PORT = 27017          # 端口号
+        MONGO_DB = "database"       # 库名
+        MONGO_COLL = "gameinfo"     # collection名
+
+        # 连接数据库
+        self.client = pymongo.MongoClient(host = MONGO_HOST, port = MONGO_PORT)
+
+        # 数据库登录需要帐号密码的话
+        # self.client.admin.authenticate(settings['MINGO_USER'], settings['MONGO_PSW'])
+        self.client = pymongo.MongoClient()
+
+        # 获得数据库的句柄
+        self.db = self.client[MONGO_DB]
+
+        # 获得集合 collection 的句柄
+        self.coll = self.db[MONGO_COLL]
+
+    # 该方法在spider被开启时被调用
+    def open_spider(self, spider):
+        pass
+
+    def process_item(self, item, spider):
+        self.coll.insert(dict(item))  # 向数据库插入一条记录
+        return item
+
+    # 该方法在spider被关闭时被调用
+    def close_spider(self, spider):
+        if self.client:
+            self.client.close()
 
 # 自定义一个管道程序, 记得在 settings.py 文件中配置, 否则不生效
 class OtherPipeline:
