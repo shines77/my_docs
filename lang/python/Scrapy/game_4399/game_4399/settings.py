@@ -106,7 +106,7 @@ REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 
-# 配置MySQL
+# 配置 MySQL
 MYSQL = {
     "host": "localhost",    # 主机
     "port": 3306,           # 端口
@@ -114,3 +114,21 @@ MYSQL = {
     "password": "xxxx",     # 密码
     "database": "xxxx"      # 数据库名称
 }
+
+# 配置 MongoDB 数据库
+MONGO = {
+    "host": "127.0.0.1"     # 主机IP
+    "port": 27017           # 端口号
+    "user": "xxxx",         # 用户名
+    "password": "xxxx",     # 密码
+    "db": "database"        # 库名
+    "coll": "gameinfo"      # collection名
+}
+
+# Mongo 的另一种配置方式
+MONGO_HOST = '127.0.0.1'    # 主机IP
+MONGO_PORT = 27017          # 端口号
+MONGO_USER = 'xxxx'         # 用户名
+MONGO_PASSWORD = 'xxxx'     # 密码
+MONGO_DB = 'database'       # 库名
+MONGO_COLL = 'gameinfo'     # collection名

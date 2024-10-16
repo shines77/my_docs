@@ -10,8 +10,13 @@ import pymysql
 import pymongo
 import json
 
+# 把 scrapy 配置文件导入到 settings 字典中, 用法: settings['MONGO_HOST']
+from scrapy.conf import settings
+
 # 导入 MySQL 配置
 from game_4399.settings import MYSQL
+# 导入 Mongo 配置
+from game_4399.settings import MONGO
 
 class Game4399Pipeline:
     def __init__(self):
@@ -132,24 +137,34 @@ class Game4399MysqlPipeline:
 
 class Game4399MongoPipeline(object):
     def __init__(self):
-        # 配置MongoDB数据库
-        MONGO_HOST = "127.0.0.1"    # 主机IP
-        MONGO_PORT = 27017          # 端口号
-        MONGO_DB = "database"       # 库名
-        MONGO_COLL = "gameinfo"     # collection名
+        # 配置 MongoDB 数据库
+        Mongo_Host = MYSQL['host']      # 主机IP
+        Mongo_Port = MYSQL['port']      # 端口号
+        Mongo_User = MYSQL['user']      # 用户名
+        Mongo_Password = MYSQL['password']  # 密码
+        Mongo_Db = MYSQL['db']          # 库名
+        Mongo_Coll = MYSQL['coll']      # collection名
+
+        # 配置 MongoDB 数据库 (另一种配置方式的用法)
+        # Mongo_Host = settings['MONGO_HOST']         # 主机IP
+        # Mongo_Port = settings['MONGO_PORT']         # 端口号
+        # Mongo_User = settings['MONGO_USER']         # 用户名
+        # Mongo_Password = settings['MONGO_PASSWORD'] # 密码
+        # Mongo_Db = settings['MONGO_DB']             # 库名
+        # Mongo_Coll = settings['MONGO_COLL']         # collection名
 
         # 连接数据库
-        self.client = pymongo.MongoClient(host = MONGO_HOST, port = MONGO_PORT)
+        self.client = pymongo.MongoClient(host = Mongo_Host, port = Mongo_Port)
 
         # 数据库登录需要帐号密码的话
-        # self.client.admin.authenticate(settings['MINGO_USER'], settings['MONGO_PSW'])
+        # self.client.admin.authenticate(Mongo_User, Mongo_Db)
         self.client = pymongo.MongoClient()
 
         # 获得数据库的句柄
-        self.db = self.client[MONGO_DB]
+        self.db = self.client[Mongo_Db]
 
         # 获得集合 collection 的句柄
-        self.coll = self.db[MONGO_COLL]
+        self.coll = self.db[Mongo_Coll]
 
     # 该方法在spider被开启时被调用
     def open_spider(self, spider):
