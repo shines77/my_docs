@@ -117,11 +117,11 @@ MYSQL = {
 
 # 配置 MongoDB 数据库
 MONGO = {
-    "host": "127.0.0.1"     # 主机IP
-    "port": 27017           # 端口号
+    "host": "127.0.0.1",    # 主机IP
+    "port": 27017,          # 端口号
     "user": "xxxx",         # 用户名
     "password": "xxxx",     # 密码
-    "db": "database"        # 库名
+    "db": "database",       # 库名
     "coll": "gameinfo"      # collection名
 }
 

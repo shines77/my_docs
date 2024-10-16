@@ -11,7 +11,8 @@ import pymongo
 import json
 
 # 把 scrapy 配置文件导入到 settings 字典中, 用法: settings['MONGO_HOST']
-from scrapy.conf import settings
+# 好像这种方法已失效, 无法找到 scrapy.conf 模块, ModuleNotFoundError: No module named 'scrapy.conf'
+# from scrapy.conf import settings
 
 # 导入 MySQL 配置
 from game_4399.settings import MYSQL
