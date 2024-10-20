@@ -26,7 +26,7 @@ $$y = h(x) = \frac{1}{1 + e^{-(\theta_0 + \theta_1 x_1 + \theta_2 x_2 + ... + \t
 
 $$y = h(x) = g(z) = g(\theta^Tx) = \frac{1}{1 + e^{-\theta^Tx}}$$
 
-其中，$\theta = \begin{bmatrix} \theta_0 \\ \theta_1 \\ ... \\ \theta_n \end{bmatrix}$，$x = \begin{bmatrix} x_0 \\ x_1 \\ ... \\ x_n \end{bmatrix}$ 。
+其中，$\theta = \begin{bmatrix} \theta_0 \\ \theta_1 \\ ... \\ \theta_n \end{bmatrix}$，$x = \begin{bmatrix} x_0 \\ x_1 \\ ... \\ x_n \end{bmatrix}$ ，$x_0 = 1$ 。
 
 **线性回归的拟合图，最直观的方法就是将直线“掰弯”**：(浅蓝色曲线)
 
@@ -59,7 +59,7 @@ $$J(\theta) = -\frac{1}{n} \sum_{i=1}^{n} cost(h(x), y)$$
 
 由于 y 的取值为0或1，结合上面两个公式可以得到：
 
-$$J(\theta) = -\frac{1}{n} \sum_{i=1}^{n} (y_i\ln{(h(x_i))} + (1-y_i)\ln{(1 - h(x_i))})$$
+$$J(\theta) = -\frac{1}{n} \sum_{i=1}^{n} (y_i\ln{(h(x_i))} + (1-y_i) \cdot  \ln{(1 - h(x_i))})$$
 
 这就是 `逻辑回归` 的损失函数，也称为 `交叉熵损失函数`。
 
@@ -67,17 +67,61 @@ $$J(\theta) = -\frac{1}{n} \sum_{i=1}^{n} (y_i\ln{(h(x_i))} + (1-y_i)\ln{(1 - h(
 
 ### 4.1 随机梯度下降
 
-梯度下降是通过 J(w) 对 w 的 `一阶导数` 来找下降方向，并且以迭代的方式来更新参数，更新方式为:
+梯度下降是通过 $J(\theta)$ 对 $\theta$ 的 `一阶导数` 来找下降方向，并且以迭代的方式来更新参数，更新方式为:
 
-$$g_i = $$
+$$g_i = \frac{d J(\theta)}{d \theta_i} = (p(x_i) - y_i) \cdot x_i$$
 
-其中 k 为迭代次数。每次更新参数后，可以通过比较小于阈值或者到达最大迭代次数来停止迭代。
+$$\theta_{i}^{k + 1} = \theta_{i}^{k} - \eta \cdot g_i $$
+
+其中 k 为迭代次数，$\eta$ 为学习率。每次更新参数后，可以通过比较 $|J(W^{k+1}) - J(W^{k})|$ 小于阈值或者到达最大迭代次数来停止迭代。
 
 ### 4.2 牛顿法
 
 (略...)
 
-## 5. 优缺点
+## 5. 代码
+
+python 实现：
+
+```python
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, confusion_matrix
+
+# 加载数据集
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# 为了演示二分类，我们只选择两个类
+X = X[y != 2]
+y = y[y != 2]
+
+# 划分训练集和测试集
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# 特征缩放
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# 创建逻辑回归分类器实例
+log_reg = LogisticRegression()
+
+# 训练模型
+log_reg.fit(X_train, y_train)
+
+# 预测
+y_pred = log_reg.predict(X_test)
+
+# 评估模型
+print(confusion_matrix(y_test, y_pred))
+print(classification_report(y_test, y_pred))
+```
+
+## 6. 优缺点
 
 **优点**：
 
@@ -93,7 +137,7 @@ $$g_i = $$
 
 2. 预测结果呈“S”型，因此从 log(odds) 向概率转化的过程是非线性的，在两端随着 log(odds) 值的变化，概率变化很小，边际值太小，slope 太小，而中间概率的变化很大，很敏感。导致很多区间的变量变化对目标概率的影响没有区分度，无法确定阀值。
 
-## X. 参考文章
+## 7. 参考文章
 
 - [广义线性模型（4）逻辑回归（Logistic regression）](https://mp.weixin.qq.com/s?__biz=MzUyODk0Njc1NQ==&mid=2247486663&idx=1&sn=41b1a5aef4696cbd844b7ae30cf68121&chksm=fbf54048cacd8fb3198ece7d5640f5952c7f5fb104f78dde9b0c629ec65e700e5209c2f41f6a&scene=27)
 
