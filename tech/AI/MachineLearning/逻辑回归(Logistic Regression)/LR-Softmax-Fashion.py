@@ -1,52 +1,6 @@
-# 逻辑回归Softmax多分类模型
-
-## 1. 概述
-
-`Softmax 回归` (Softmax regression)，也称为多项 (Multinomial) 或多类 (Multi-Class) 的 Logistic 回归，是 Logistic 回归在多分类问题上的推广。
-
-## 2. 模型
-
-`Softmax 回归` 跟 `线性回归` 一样将输入特征与权重做线性叠加，与线性回归的一个主要不同在于，`Softmax 回归` 的输出值个数等于标签里的类别数。比如一共有 4 种特征和 3 种输出动物类别（狗、猫、鸡），则权重包含 12 个标量（带下标的 w）、偏差包含3个标量（带下标的 b）。
-
-最后，再对这些输出值进行 Softmax 函数运算。
-
-## 3. Softmax 函数
-
-![Softmax 函数](./LR-Softmax.png)
-
-Softmax 回归的决策函数可以表示为：
-
-$$\hat{y} = argmax(\hat{y}^{(i)})$$
-
-## 4. 损失函数
-
-给定 N 个训练样本 $\{(x^{(n)}, y^{(n)})\}_{(n-1)}^N$，样本一共有 C 个类别，用 C 维的 one-hot 向量 $y \in \{0, 1\}^C$ 来表示类别标签。
-
-
-采用 `交叉熵损失函数`，`Softmax 回归` 模型的损失函数为：
-
-$$L(W, b) = -\frac{1}{N} \sum_{n=1}^N \sum_{c=1}^C y_c^{(n)} \cdot \log{\hat{y_c}}^{(n)} = -\frac{1}{N} \sum_{n=1}^N (y^{(n)})^T \cdot \log{\hat{y}^{(n)}}$$
-
-其中，$\hat{y}^{(n)} = Softmax(x^{(n)} W^T + b)$ 为样本 $x^{(n)}$ 在每个类别的后验概率。
-
-## 5. 梯度
-
-损失函数 $L(W)$ 关于 W 的梯度为：
-
-$$\frac{d L(W)}{d W} = -\frac{1}{N} \sum_{n=1}^{N} x(n)(y^{(n)} - \hat{y}^{(n)})^T$$
-
-采用梯度下降法，Softmax 回归的训练过程为：
-
-1. 初始化 W_0 = 0；
-2. 迭代更新：
-
-$$ W_{t+1} = W_{t} + \eta \cdot (\frac{1}{N} \sum_{n=1}^{N} x(n)(y^{(n)} - \hat{y}^{(n)})^T)$$
-
-## 6. 代码
-
-采用 `Fashion-MNIST` 数据集，进行图像多分类问题。
-
-```python
+#
+# From： https://blog.csdn.net/weixin_45666566/article/details/107595200
+#
 import torch
 import torchvision
 import numpy as np
@@ -204,8 +158,3 @@ pred_labels = get_fashion_mnist_labels(net(X).argmax(axis=1))
 titles = [true + '\n' + pred for true, pred in zip(true_labels, pred_labels)]
 
 show_fashion_mnist(X[0:9], titles[0:9])
-```
-
-## 7. 参考文章
-
-- [深度学习模型系列一——多分类模型——Softmax 回归](https://blog.csdn.net/weixin_45666566/article/details/107595200)
