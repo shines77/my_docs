@@ -43,6 +43,9 @@ train_iter, test_iter = load_data_fashion_mnist(batch_size)
 num_inputs = 784    # 由于softmax回归输入要求是向量，所以对于28×28的图片，应该拉长成784的向量作为输入
 num_outputs = 10    # 10分类问题，输出为长度为10的向量，里面记录样本在各个类别上的预测概率
 
+num_epochs = 10
+lr = 0.1
+
 net = nn.Sequential(
     # 将输入展平
     nn.Flatten(),
@@ -62,7 +65,7 @@ net.apply(init_weights)
 loss_func = nn.CrossEntropyLoss()
 
 # 5. 梯度下降算法
-trainer = torch.optim.SGD(net.parameters(), lr=0.1)
+trainer = torch.optim.SGD(net.parameters(), lr=lr)
 
 def evaluate_accuracy(data_iter, net):
     acc_sum, n = 0.0, 0
@@ -91,7 +94,6 @@ def train_ch3(net, train_iter, test_iter, loss_func, num_epochs, optimizer):
               % (epoch + 1, train_l_sum / n, train_acc_sum / n, test_acc))
 
 # 6. 训练过程
-num_epochs = 10
 train_ch3(net, train_iter, test_iter, loss_func, num_epochs, trainer)
 
 def get_fashion_mnist_labels(labels):
