@@ -47,8 +47,7 @@ train_iter, test_iter = load_data_fashion_mnist(batch_size)
 num_inputs = 784    # 由于softmax回归输入要求是向量，所以对于28×28的图片，应该拉长成784的向量作为输入
 num_outputs = 10    # 10分类问题，输出为长度为10的向量，里面记录样本在各个类别上的预测概率
 
-num_epochs = 10
-num_iters = 64
+num_epochs = 20
 lr = 0.1
 
 def load_data_and_label(dataset_iter, input_dim, output_dim):
@@ -79,10 +78,10 @@ std = StandardScaler()
 train_data = std.fit_transform(train_data)
 test_data  = std.fit_transform(test_data)
 
-# solver='lbfgs', solver='liblinear', multi_class="multinomial"， max_iter=num_iters
+# solver='lbfgs', solver='liblinear', multi_class="multinomial"， max_iter=num_epochs
 # multi_class‌：多分类策略，'ovr' 表示一对一，'multinomial' 表示多类逻辑回归。
 # 其中 liblinear 不支持 'multinomial' 模式。
-model_softmax_regression = linear_model.LogisticRegression(solver='lbfgs', multi_class="multinomial")
+model_softmax_regression = linear_model.LogisticRegression(solver='lbfgs', multi_class="multinomial", penalty='l2', C=1, max_iter=num_epochs)
 model_softmax_regression.fit(train_data, train_label)
 
 y_predict = model_softmax_regression.predict(test_data)
