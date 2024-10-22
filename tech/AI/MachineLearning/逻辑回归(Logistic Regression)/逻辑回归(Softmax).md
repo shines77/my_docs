@@ -12,7 +12,7 @@
 
 ## 3. Softmax 函数
 
-![Softmax 函数](./LR-Softmax.png)
+![Softmax 函数](./images/LR-Softmax.png)
 
 Softmax 回归的决策函数可以表示为：
 
@@ -20,7 +20,7 @@ $$\hat{y} = argmax(\hat{y}^{(i)})$$
 
 ## 4. 损失函数
 
-给定 N 个训练样本 $\{(x^{(n)}, y^{(n)})\}_{(n-1)}^N$，样本一共有 C 个类别，用 C 维的 one-hot 向量 $y \in \{0, 1\}^C$ 来表示类别标签。
+给定 N 个训练样本 $\{(x^{(n)}, y^{(n)})\}_{n=1}^N$，样本一共有 C 个类别，用 C 维的 one-hot 向量 $y \in \{0, 1\}^C$ 来表示类别标签。
 
 
 采用 `交叉熵损失函数`，`Softmax 回归` 模型的损失函数为：
@@ -196,14 +196,14 @@ def show_fashion_mnist(images, labels):
 
 train_ch3(net, train_iter, test_iter, cross_entropy, num_epochs, batch_size, [W, b], lr)
 
-for X, y in test_iter:
+for x, y in test_iter:
     break
 
 true_labels = get_fashion_mnist_labels(y)
-pred_labels = get_fashion_mnist_labels(net(X).argmax(axis=1))
+pred_labels = get_fashion_mnist_labels(net(x).argmax(axis=1))
 titles = [true + '\n' + pred for true, pred in zip(true_labels, pred_labels)]
 
-show_fashion_mnist(X[0:9], titles[0:9])
+show_fashion_mnist(x[0:9], titles[0:9])
 ```
 
 ## 7. 参考文章

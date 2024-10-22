@@ -40,7 +40,7 @@ batch_size = 256
 train_iter, test_iter = load_data_fashion_mnist(batch_size)
 
 # 2. 定义网络模型
-num_inputs = 784    # 由于softmax回归输入要求是向量，所以对于24×24的图片，应该拉长成784的向量作为输入
+num_inputs = 784    # 由于softmax回归输入要求是向量，所以对于28×28的图片，应该拉长成784的向量作为输入
 num_outputs = 10    # 10分类问题，输出为长度为10的向量，里面记录样本在各个类别上的预测概率
 
 net = nn.Sequential(

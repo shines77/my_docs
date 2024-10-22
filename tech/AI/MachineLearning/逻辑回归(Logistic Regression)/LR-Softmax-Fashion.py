@@ -27,8 +27,8 @@ def load_data_fashion_mnist(batch_size, root='./datasets/FashionMNIST'):
     mnist_test = torchvision.datasets.FashionMNIST(root=root,
                                                    train=False, download=True, transform=transform)
     '''
-    上面的 mnist_train,mnist_test 都是 torch.utils.data.Dataset 的子类，所以可以使用len()获取数据集的大小
-    训练集和测试集中的每个类别的图像数分别是6000，1000，两个数据集分别有10个类别
+    上面的 mnist_train, mnist_test 都是 torch.utils.data.Dataset 的子类，所以可以使用len()获取数据集的大小
+    训练集和测试集中的每个类别的图像数分别是 6000，1000，两个数据集分别有10个类别
     '''
     # mnist 是 torch.utils.data.dataset 的子类，因此可以将其传入torch.utils.data.DataLoader来创建一个DataLoader实例来读取数据
     # 在实践中，数据读取一般是训练的性能瓶颈，特别是模型较简单或者计算硬件性能比较高的时候
@@ -61,23 +61,25 @@ b = torch.zeros(num_outputs, dtype=torch.float)
 W.requires_grad_(requires_grad=True)
 b.requires_grad_(requires_grad=True)
 
-def softmax(X):
-    X_exp = X.exp()
+def softmax(x):
+    x_exp = x.exp()
     # 行元素求和
-    partition = X_exp.sum(dim=1, keepdim=True)
+    partition = x_exp.sum(dim=1, keepdim=True)
     # 这里应用了广播机制
-    return X_exp / partition
+    return x_exp / partition
 
-def net(X):
-    return softmax(torch.mm(X.view((-1, num_inputs)), W) + b)
+def net(x):
+    return softmax(torch.mm(x.view((-1, num_inputs)), W) + b)
 
 def sgd(params, lr, batch_size):
     # 为了和原书保持一致，这里除以了batch_size，但是应该是不用除的，因为一般用PyTorch计算loss时就默认已经
     # 沿batch维求了平均了。
     for param in params:
+        # 这里必须除以 batch_size
         param.data -= lr * param.grad / batch_size # 注意这里更改param时用的param.data
 
 def cross_entropy(y_hat, y):
+    # About x.gather() function: https://blog.csdn.net/u013250861/article/details/139223852
     return - torch.log(y_hat.gather(1, y.view(-1, 1)))
 
 def accuracy(y_hat, y):
@@ -85,19 +87,20 @@ def accuracy(y_hat, y):
 
 def evaluate_accuracy(data_iter, net):
     acc_sum, n = 0.0, 0
-    for X, y in data_iter:
-        acc_sum += (net(X).argmax(dim=1) == y).float().sum().item()
+    for x, y in data_iter:
+        acc_sum += (net(x).argmax(dim=1) == y).float().sum().item()
         n += y.shape[0]
     return acc_sum / n
 
-num_epochs, lr = 5, 0.1
+num_epochs = 5
+lr = 0.1
 
 def train_ch3(net, train_iter, test_iter, loss, num_epochs, batch_size,
               params=None, lr=None, optimizer=None):
     for epoch in range(num_epochs):
         train_l_sum, train_acc_sum, n = 0.0, 0.0, 0
-        for X, y in train_iter:
-            y_hat = net(X)
+        for x, y in train_iter:
+            y_hat = net(x)
             l = loss(y_hat, y).sum()
 
             # 梯度清零
@@ -156,6 +159,6 @@ def show_figure(net, test_iter):
     pred_labels = get_fashion_mnist_labels(net(x).argmax(axis=1))
     titles = [true + '\n' + pred for true, pred in zip(true_labels, pred_labels)]
 
-    show_fashion_mnist(X[0:9], titles[0:9])
+    show_fashion_mnist(x[0:9], titles[0:9])
 
-show_fashion_mnist(X[0:9], titles[0:9])
+show_figure(net, test_iter)

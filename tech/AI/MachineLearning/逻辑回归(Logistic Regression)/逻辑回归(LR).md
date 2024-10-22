@@ -30,19 +30,19 @@ $$y = h(x) = g(z) = g(\theta^Tx) = \frac{1}{1 + e^{-\theta^Tx}}$$
 
 **线性回归的拟合图，最直观的方法就是将直线“掰弯”**：(浅蓝色曲线)
 
-![逻辑回归的拟合图](./ML-LR.png)
+![逻辑回归的拟合图](./images/ML-LR.png)
 
 我们在线性回归的函数上再套一层 sigmoid 函数，这样就转换成了求概率 [0, 1] 的问题。
 
 **sigmoid 函数图像**：(y 值的取值刚好在 (0, 1) 的范围内)
 
-![sigmoid 函数图像](./LR-sigmoid.png)
+![sigmoid 函数图像](./images/LR-sigmoid.png)
 
 ## 3. 损失函数
 
 损失函数采用 `对数损失函数` (logarithmic loss function) 或 `对数似然损失函数` (loglikelihood loss function)：
 
-$$L(Y, P(Y | X)) = -\ln{P(Y | X)}$$
+$$L(Y, P(Y | X)) = -\log{P(Y | X)}$$
 
 由于 $h(x) \in (0, 1)$ ，这一点的性质刚好与概率 $p \in [0, 1]$ 的性质吻合（当做概率使用的理由不止这点），故而我们可以将 $h(x)$ 值当做数据被标记为 1 类的概率，即：
 
@@ -51,7 +51,7 @@ $$p(y = 0 | x; \theta) = 1 - h(x)$$
 
 当给 y 定为 1 时，即属于1类时，$h(x)$ 越趋近于1，被预测为1类的概率就越大，损失（误差）就越小；反之，当给定 y 为 0 时，即属于0类时，$h(x)$ 越趋近于 1，被预测为0类的概率就越小，损失（误差）就越大，于是，我们可以定义损失函数：
 
-$$cost(h(x), y) = \begin{cases} -\ln{h(x)}, y = 1\\ -\ln{(1 - h(x))}, y = 0 \end{cases}$$
+$$cost(h(x), y) = \begin{cases} -\log{h(x)}, y = 1\\ -\log{(1 - h(x))}, y = 0 \end{cases}$$
 
 对所有数据集中 x 损失累加然后求平均，有：
 
@@ -59,7 +59,7 @@ $$J(\theta) = -\frac{1}{n} \sum_{i=1}^{n} cost(h(x), y)$$
 
 由于 y 的取值为0或1，结合上面两个公式可以得到：
 
-$$J(\theta) = -\frac{1}{n} \sum_{i=1}^{n} (y_i\ln{(h(x_i))} + (1-y_i) \cdot  \ln{(1 - h(x_i))})$$
+$$J(\theta) = -\frac{1}{n} \sum_{i=1}^{n} (y_i\log{(h(x_i))} + (1-y_i) \cdot  \log{(1 - h(x_i))})$$
 
 这就是 `逻辑回归` 的损失函数，也称为 `交叉熵损失函数`。
 
@@ -96,25 +96,25 @@ X = iris.data
 y = iris.target
 
 # 为了演示二分类，我们只选择两个类
-X = X[y != 2]
+x = x[y != 2]
 y = y[y != 2]
 
 # 划分训练集和测试集
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=42)
 
 # 特征缩放
 scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+x_train = scaler.fit_transform(x_train)
+x_test = scaler.transform(x_test)
 
 # 创建逻辑回归分类器实例
 log_reg = LogisticRegression()
 
 # 训练模型
-log_reg.fit(X_train, y_train)
+log_reg.fit(x_train, y_train)
 
 # 预测
-y_pred = log_reg.predict(X_test)
+y_pred = log_reg.predict(x_test)
 
 # 评估模型
 print(confusion_matrix(y_test, y_pred))
