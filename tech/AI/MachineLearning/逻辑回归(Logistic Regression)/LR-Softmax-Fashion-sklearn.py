@@ -6,6 +6,7 @@ import torch
 import torchvision
 from torch import nn
 from sklearn import linear_model
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report
 # from d2l import torch as d2l
 from matplotlib import pyplot as plt
@@ -47,7 +48,7 @@ num_inputs = 784    # 由于softmax回归输入要求是向量，所以对于28�
 num_outputs = 10    # 10分类问题，输出为长度为10的向量，里面记录样本在各个类别上的预测概率
 
 num_epochs = 10
-num_iters = 128
+num_iters = 64
 lr = 0.1
 
 def load_data_and_label(dataset_iter, input_dim, output_dim):
@@ -74,14 +75,22 @@ test_data, test_label = load_data_and_label(test_iter, num_inputs, num_outputs)
 print(train_data.shape)
 print(train_label.shape)
 
-# solver='lbfgs', solver='liblinear', multi_class="multinomial"
-model_softmax_regression = linear_model.LogisticRegression(solver='liblinear', max_iter=num_iters)
+std = StandardScaler()
+train_data = std.fit_transform(train_data)
+test_data  = std.fit_transform(test_data)
+
+# solver='lbfgs', solver='liblinear', multi_class="multinomial"， max_iter=num_iters
+# multi_class‌：多分类策略，'ovr' 表示一对一，'multinomial' 表示多类逻辑回归。
+# 其中 liblinear 不支持 'multinomial' 模式。
+model_softmax_regression = linear_model.LogisticRegression(solver='lbfgs', multi_class="multinomial")
 model_softmax_regression.fit(train_data, train_label)
 
 y_predict = model_softmax_regression.predict(test_data)
 accurcy = np.sum(y_predict == test_label) / len(test_data)
 
+print("")
 print("accurcy = %0.4f" % accurcy)
+print("")
 
 ##
 ## From: https://blog.csdn.net/m0_47256162/article/details/135439913
@@ -92,6 +101,7 @@ train_accuracy = accuracy_score(train_label, model_softmax_regression.predict(tr
 test_accuracy  = accuracy_score(test_label, model_softmax_regression.predict(test_data))
 print(f"Train集精度: {train_accuracy: .4f}")
 print(f"Test 集精度: {test_accuracy: .4f}")
+print("")
 
 # 9. 打印训练集和测试集的模型评估指标
 train_predictions = model_softmax_regression.predict(train_data)
