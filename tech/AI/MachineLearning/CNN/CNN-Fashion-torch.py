@@ -14,7 +14,7 @@ import numpy as np
 import sys
 
 # -----------------------------获取并读取FashionMNIST数据集函数，返回小批量train，test-----------------------------------
-def load_data_fashion_mnist(batch_size, image_size, root='./datasets/FashionMNIST'):
+def load_data_fashion_mnist(batch_size, image_size, root='~/.datasets/FashionMNIST'):
     data_transform = transforms.Compose([
         # transforms.ToPILImage(),
         # 这一步取决于后续的数据读取方式，如果使用内置数据集读取方式则不需要

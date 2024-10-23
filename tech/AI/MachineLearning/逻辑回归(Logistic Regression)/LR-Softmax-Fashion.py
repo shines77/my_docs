@@ -17,7 +17,7 @@ import sys
 # import d2lzh_pytorch as d2l
 
 # -----------------------------获取并读取FashionMNIST数据集函数，返回小批量train，test-----------------------------------
-def load_data_fashion_mnist(batch_size, root='./datasets/FashionMNIST'):
+def load_data_fashion_mnist(batch_size, root='~/.datasets/FashionMNIST'):
     trans = []
     trans.append(torchvision.transforms.ToTensor())
 
