@@ -18,7 +18,7 @@ def load_data_fashion_mnist(batch_size, image_size, root='./datasets/FashionMNIS
     data_transform = transforms.Compose([
         # transforms.ToPILImage(),
         # 这一步取决于后续的数据读取方式，如果使用内置数据集读取方式则不需要
-        transforms.Resize(image_size),
+        # transforms.Resize(image_size),
         transforms.ToTensor()
     ])
 
@@ -48,7 +48,7 @@ def load_data_fashion_mnist(batch_size, image_size, root='./datasets/FashionMNIS
 
 # 1. 获取训练集和测试集的DataLoader迭代器
 image_size = 28
-batch_size = 256
+batch_size = 64
 
 train_iter, test_iter = load_data_fashion_mnist(batch_size, image_size)
 
@@ -64,7 +64,7 @@ num_outputs = 10    # 10分类问题，输出为长度为10的向量，里面记
 # 设置训练轮数为10轮
 num_epochs = 10
 # 学习率
-lr = 0.01
+lr = 0.001
 
 # 3. 定义模型结构
 
@@ -74,9 +74,9 @@ lr = 0.01
 #
 # Fixed: self.fc1 = nn.Linear(64 * image_size * image_size, 128)
 #
-class SimpleCNN(nn.Module):
+class FashionCNN(nn.Module):
     def __init__(self, image_size = 28, in_channels = 1, out_channels = 10):
-        super(SimpleCNN, self).__init__()
+        super(FashionCNN, self).__init__()
         self.image_size = image_size
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -87,7 +87,11 @@ class SimpleCNN(nn.Module):
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
+        # 2x2最大池化
+        x = F.max_pool2d(x, 2)
         x = F.relu(self.conv2(x))
+        # 2x2最大池化
+        x = F.max_pool2d(x, 2)
         # print("x.shape = ", x.shape)
         # 将卷积后的特征图展平，以便输入全连接层
         x = x.view(-1, 64 * self.image_size * self.image_size)
@@ -100,14 +104,16 @@ class SimpleCNN(nn.Module):
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # 将模型移动到设备上（CPU或GPU）
-net = SimpleCNN().to(device)
+# 如果 CNN 使用了 max_pool2d 最大池化，那么 image_size 由实际输出的大小为准，
+# 不使用最大池化的话，则使用原始的图片的 image_size 大小。
+net = FashionCNN(7).to(device)
 
 # 定义损失函数为：交叉熵损失函数
 criterion = nn.CrossEntropyLoss()
 
 # 定义优化器为随机梯度下降（SGD）优化器，设置学习率为0.001，动量为0.9
-optimizer = torch.optim.SGD(net.parameters(), lr=lr, momentum=0.9)
-# optimizer = torch.optim.Adam(net.parameters(), lr=lr)
+# optimizer = torch.optim.SGD(net.parameters(), lr=lr, momentum=0.9)
+optimizer = torch.optim.Adam(net.parameters(), lr=lr)
 
 def extend_label(label, output_dim):
     extended_label = np.zeros(output_dim, dtype=float)
@@ -121,12 +127,13 @@ def extend_labels(labels, output_dim):
     return torch.tensor(np.array(extended_labels, dtype=float), dtype=torch.float)
 
 # 4. 训练模型
-
+print('batch_size = %d\n' % batch_size)
+per_step = 256 / batch_size * 16
 for epoch in range(num_epochs):
     # 设置模型为训练模式
     net.train()
     running_loss = 0.0
-    for i, data in enumerate(train_iter):
+    for step, data in enumerate(train_iter):
         # 将数据和标签移动到设备上（CPU或GPU）
         inputs, labels = data[0].to(device), data[1].to(device)
 
@@ -158,9 +165,10 @@ for epoch in range(num_epochs):
 
         # 累加损失值
         running_loss += loss.item()
-        if (i % 16) == 15:
-            print("i = %d (%d)" % ((i + 1), (i + 1) * batch_size))
-    print('Epoch %d loss: %.3f' % (epoch + 1, running_loss / len(train_iter))) # 输出当前轮次的平均损失值
+        if (step % per_step) == (per_step - 1):
+            print("step = %d (%d)" % ((step + 1), (step + 1) * batch_size))
+    # 输出当前轮次的平均损失值
+    print('Epoch %d/%d loss: %.5f' % (epoch + 1, num_epochs, running_loss / len(train_iter)))
 
 # 5. 验证测试集
 
@@ -185,8 +193,8 @@ with torch.no_grad():
         correct += (predicted == labels).sum().item()
 
 # 输出模型在测试数据集上的准确率
-print('Accuracy of the network on the test images: %d %%' % (
-        100 * correct / total))
+print('Accuracy of the network on the test images: %0.2f %%' % (
+        100.0 * correct / total))
 
 def evaluate_accuracy(data_iter, net):
     acc_sum, n = 0.0, 0
@@ -250,3 +258,41 @@ def show_figure(net, test_iter):
     show_fashion_mnist(x[0:9], titles[0:9])
 
 show_figure(net, test_iter)
+
+'''
+Output:
+
+batch_size = 256
+
+Epoch 1 loss: 0.597
+Epoch 2 loss: 0.359
+Epoch 3 loss: 0.310
+Epoch 4 loss: 0.278
+Epoch 5 loss: 0.256
+Epoch 6 loss: 0.239
+Epoch 7 loss: 0.222
+Epoch 8 loss: 0.211
+Epoch 9 loss: 0.200
+Epoch 10 loss: 0.189
+
+Accuracy of the network on the test images: 91 %
+
+----------------------------------
+Output:
+
+batch_size = 64
+
+Epoch 1/10 loss: 0.45434
+Epoch 2/10 loss: 0.29076
+Epoch 3/10 loss: 0.24785
+Epoch 4/10 loss: 0.21675
+Epoch 5/10 loss: 0.19337
+Epoch 6/10 loss: 0.17104
+Epoch 7/10 loss: 0.15336
+Epoch 8/10 loss: 0.13416
+Epoch 9/10 loss: 0.11915
+Epoch 10/10 loss: 0.10145
+
+Accuracy of the network on the test images: 92.10 %
+
+'''
