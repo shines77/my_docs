@@ -95,7 +95,7 @@ def main():
     np.random.seed(1)
 
     train_data = torchvision.datasets.MNIST(
-        root='./mnist',
+        root='~/.datasets/mnist',
         train=True,
         transform=torchvision.transforms.ToTensor(),
         download=True
@@ -104,7 +104,7 @@ def main():
     train_loader = Data.DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True)
 
     test_data = torchvision.datasets.MNIST(
-        root='./mnist',
+        root='~/.datasets/mnist',
         train=False,
         transform=torchvision.transforms.ToTensor()
     )
