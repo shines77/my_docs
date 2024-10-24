@@ -4,6 +4,22 @@
 import torch
 import torch.nn as nn
 
+__all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
+           'resnet152', 'resnext50_32x4d', 'resnext101_32x8d',
+           'wide_resnet50_2', 'wide_resnet101_2']
+
+model_urls = {
+    'resnet18': 'https://download.pytorch.org/models/resnet18-f37072fd.pth',
+    'resnet34': 'https://download.pytorch.org/models/resnet34-b627a593.pth',
+    'resnet50': 'https://download.pytorch.org/models/resnet50-0676ba61.pth',
+    'resnet101': 'https://download.pytorch.org/models/resnet101-63fe2227.pth',
+    'resnet152': 'https://download.pytorch.org/models/resnet152-394f9c45.pth',
+    'resnext50_32x4d': 'https://download.pytorch.org/models/resnext50_32x4d-7cdf4587.pth',
+    'resnext101_32x8d': 'https://download.pytorch.org/models/resnext101_32x8d-8ba56ff5.pth',
+    'wide_resnet50_2': 'https://download.pytorch.org/models/wide_resnet50_2-95faca4d.pth',
+    'wide_resnet101_2': 'https://download.pytorch.org/models/wide_resnet101_2-32ee1156.pth',
+}
+
 class BasicBlock(nn.Module):
     """搭建BasicBlock模块"""
     expansion = 1
@@ -127,14 +143,47 @@ class ResNet(nn.Module):
             Y = self.fc(Y)
         return Y
 
-# 构建 ResNet-34 模型
-def resnet34(num_classes=1000, include_top=True):
-    return ResNet(BasicBlock, [3, 4, 6, 3], num_classes=num_classes, include_top=include_top)
+# 构建 ResNet-18 模型
+def resnet34(num_classes=1000, include_top=True, progress=True, **kwargs):
+    return ResNet(BasicBlock, [2, 2, 2, 2], progress=progress, num_classes=num_classes, include_top=include_top, **kwargs)
 
+# 构建 ResNet-34 模型
+def resnet34(num_classes=1000, include_top=True, progress=True, **kwargs):
+    return ResNet(BasicBlock, [3, 4, 6, 3], progress=progress, num_classes=num_classes, include_top=include_top, **kwargs)
 
 # 构建 ResNet-50 模型
-def resnet50(num_classes=1000, include_top=True):
-    return ResNet(BottleNeck, [3, 4, 6, 3], num_classes=num_classes, include_top=include_top)
+def resnet50(num_classes=1000, include_top=True, progress=True, **kwargs):
+    return ResNet(BottleNeck, [3, 4, 6, 3], progress=progress, num_classes=num_classes, include_top=include_top, **kwargs)
+
+# 构建 ResNet-101 模型
+def resnet101(num_classes=1000, include_top=True, progress=True, **kwargs):
+    return ResNet(BottleNeck, [3, 4, 23, 3], progress=progress, num_classes=num_classes, include_top=include_top, **kwargs)
+
+# 构建 ResNet-152 模型
+def resnet152(num_classes=1000, include_top=True, progress=True, **kwargs):
+    return ResNet(BottleNeck, [3, 8, 36, 3], progress=progress, num_classes=num_classes, include_top=include_top, **kwargs)
+
+# 构建 ResNeXt-50 32x4d 模型
+def resnext50_32x4d(num_classes=1000, include_top=True, progress=True, **kwargs):
+    kwargs['groups'] = 32
+    kwargs['width_per_group'] = 4
+    return ResNet(BottleNeck, [3, 4, 6, 3], progress=progress, num_classes=num_classes, include_top=include_top, **kwargs)
+
+# 构建 ResNeXt-101 32x8d 模型
+def resnext101_32x8d(num_classes=1000, include_top=True, progress=True, **kwargs):
+    kwargs['groups'] = 32
+    kwargs['width_per_group'] = 8
+    return ResNet(BottleNeck, [3, 4, 23, 3], progress=progress, num_classes=num_classes, include_top=include_top, **kwargs)
+
+# 构建 Wide ResNet-50-2 模型
+def wide_resnet50_2(num_classes=1000, include_top=True, progress=True, **kwargs):
+    kwargs['width_per_group'] = 64 * 2
+    return ResNet(BottleNeck, [3, 4, 6, 3], progress=progress, num_classes=num_classes, include_top=include_top, **kwargs)
+
+# 构建 Wide ResNet-100-2 模型
+def wide_resnet101_2(num_classes=1000, include_top=True, progress=True, **kwargs):
+    kwargs['width_per_group'] = 64 * 2
+    return ResNet(BottleNeck, [3, 4, 23, 3], progress=progress, num_classes=num_classes, include_top=include_top, **kwargs)
 
 # 模型网络结构可视化
 net = resnet34()
