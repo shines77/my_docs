@@ -64,7 +64,7 @@ PyTorch 官方 ResNet 源码：[https://github.com/pytorch/vision/blob/master/to
 
 ![文件目录结构](./images/ResNet-file-struction.png)
 
-注：本文的 `data_set` 目录跟上图不一样，以下代码中，`./data_set` 目录被移至 `~/Datasets/flower-photos` 目录（'~' 表示当前用户目录）中。
+注：本文的 `data_set` 目录跟上图不一样，以下代码中，`./data_set` 目录被移至 `~/.datasets/flower-photos` 目录（'~' 表示当前用户目录）中。
 
 model.py
 

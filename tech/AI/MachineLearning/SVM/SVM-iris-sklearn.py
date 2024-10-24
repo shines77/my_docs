@@ -16,6 +16,14 @@ y = iris.target
 # 划分训练集和测试集
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=42)
 
+print('')
+print('x_train.shape ', x_train.shape)
+print('y_train.shape ', y_train.shape)
+print('')
+print('x_train = ', x_train[:9])
+print('y_train = ', y_train[:9])
+print('')
+
 # 特征缩放
 scaler = StandardScaler()
 x_train = scaler.fit_transform(x_train)
@@ -48,10 +56,14 @@ y_predict = svm_classifier.predict(x_test)
 
 # 评估模型
 print(confusion_matrix(y_test, y_predict))
+print('')
 print(classification_report(y_test, y_predict))
 
 # 输出训练集的准确率
-print('evaluate_accuracy = %0.2f %%\n' % (svm_classifier.score(x_train, y_train) * 100.0))
+print('(train) evaluate_accuracy = %0.2f %%' % (svm_classifier.score(x_train, y_train) * 100.0))
+print('')
+print('(test) evaluate_accuracy = %0.2f %%' % (svm_classifier.score(x_test, y_test) * 100.0))
+print('')
 
 #
 # 验证测试集
@@ -63,7 +75,7 @@ y_train_1d = y_train.reshape((-1))
 comp = zip(y_train_1d, y_train_hat)
 print(list(comp))
 
-print(svm_classifier.score(x_test,y_test))
+print('')
 y_test_hat = svm_classifier.predict(x_test)
 y_test_1d = y_test.reshape((-1))
 comp = zip(y_test_1d, y_test_hat)
