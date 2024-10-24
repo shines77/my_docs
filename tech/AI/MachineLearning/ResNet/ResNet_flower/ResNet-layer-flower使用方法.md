@@ -54,7 +54,7 @@ python ./train.py
 
 结果如下：
 
-```
+```bash
 Using cpu device.
 Using batch_size=4 dataloader workers every process.
 Using 3306 train_images for training, 364 test_images for validation.

@@ -2,3 +2,4 @@
 /datasets
 /class_indices.json
 /__pycache__
+*.pth
