@@ -173,3 +173,41 @@ def train_model():
 
 if __name__ == '__main__':
     train_model()
+
+'''
+Output:
+
+Using cpu device.
+Using batch_size=4 dataloader workers every process.
+Using 3306 train_images for training, 364 test_images for validation.
+
+model_weight_path =  C:\Users\xxxxxxxx\.resnet_models\resnet34-pre-b627a593.pth
+
+train epoch[1/5] loss:1.792.: 100%|████████████████████████████| 827/827 [21:44<00:00,  1.58s/it]
+valid epoch[1/5].: 100%|███████████████████████████████████████| 91/91 [01:05<00:00,  1.39it/s]
+[epoch 1] train_loss: 1.427  val_accuracy: 0.560
+epoch_time: 1369.7485845999909
+
+train epoch[2/5] loss:1.318.: 100%|████████████████████████████| 827/827 [21:02<00:00,  1.53s/it]
+valid epoch[2/5].: 100%|███████████████████████████████████████| 91/91 [01:05<00:00,  1.38it/s]
+[epoch 2] train_loss: 1.254  val_accuracy: 0.604
+epoch_time: 1327.7789544000407
+
+train epoch[3/5] loss:0.542.: 100%|████████████████████████████| 827/827 [25:06<00:00,  1.82s/it]
+valid epoch[3/5].: 100%|███████████████████████████████████████| 91/91 [01:07<00:00,  1.34it/s]
+[epoch 3] train_loss: 1.145  val_accuracy: 0.651
+epoch_time: 1573.9696433999925
+
+train epoch[4/5] loss:1.821.: 100%|████████████████████████████| 827/827 [21:54<00:00,  1.59s/it]
+valid epoch[4/5].: 100%|███████████████████████████████████████| 91/91 [01:08<00:00,  1.34it/s]
+[epoch 4] train_loss: 1.059  val_accuracy: 0.640
+epoch_time: 1382.749822599988
+
+train epoch[5/5] loss:0.503.: 100%|████████████████████████████| 827/827 [21:52<00:00,  1.59s/it]
+valid epoch[5/5].: 100%|███████████████████████████████████████| 91/91 [01:07<00:00,  1.36it/s]
+[epoch 5] train_loss: 0.987  val_accuracy: 0.665
+epoch_time: 1379.9763674999704
+
+Total_time: 1:57:14
+Finished Training!
+'''
