@@ -1,5 +1,6 @@
 #
 # From: https://blog.csdn.net/Like_July_moon/article/details/136750962
+# From: https://blog.csdn.net/weixin_41362649/article/details/129850761
 #
 import numpy as np
 from sklearn import datasets
@@ -51,8 +52,8 @@ def load_data_fashion_mnist(batch_size, image_size, root='~/.datasets/FashionMNI
     # targets表示图像对应的类别标签（0-9）
     # mnist_test  = TensorDataset(torch.tensor(mnist_test.data, dtype=torch.float), mnist_test.targets)
     '''
-    上面的 mnist_train,mnist_test 都是 torch.utils.data.Dataset 的子类，所以可以使用len()获取数据集的大小
-    训练集和测试集中的每个类别的图像数分别是6000，1000，两个数据集分别有10个类别
+    上面的 mnist_train, mnist_test 都是 torch.utils.data.Dataset 的子类，所以可以使用len()获取数据集的大小
+    训练集和测试集中的每个类别的图像数分别是 60000，1000，两个数据集分别有10个类别
     '''
     # mnist 是 torch.utils.data.dataset 的子类，因此可以将其传入torch.utils.data.DataLoader来创建一个DataLoader实例来读取数据
     # 在实践中，数据读取一般是训练的性能瓶颈，特别是模型较简单或者计算硬件性能比较高的时候
@@ -134,12 +135,13 @@ y_train_hat = svm_classifier.predict(x_train)
 y_train_1d = y_train.reshape((-1))
 comp = zip(y_train_1d[:20], y_train_hat[:20])
 print(list(comp))
-
 print('')
+
 y_test_hat = svm_classifier.predict(x_test)
 y_test_1d = y_test.reshape((-1))
 comp = zip(y_test_1d[:20], y_test_hat[:20])
 print(list(comp))
+print('')
 
 # 绘制可视化图像
 plt.figure()
