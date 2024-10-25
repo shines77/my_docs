@@ -46,9 +46,15 @@
 
 1. **词表的大小**：从 ChatGLM 的 150528 缩小为 65024（一个直观的体验是 ChatGLM2 及以后的版本加载速度比 ChatGLM 快不少）
 
-2. **位置编码**：位置编码从每个 GLMBlock 一份提升为全局一份。
+2. **位置编码**：位置编码从每个 GLMBlock 一份提升为全局一份。并且使用了 `RoPE` 替换 `二维位置编码`。这也是 GLM 中提出的亮点设计之一。但是目前大部分主流的 LLMs 都在使用 `RoPE`，所以大势所趋。当前版本仍然采用了最初的 `RoPE` 设计，事实上现在的 `RoPE` 经过了xPOS → 线性内插 →  NTK-Aware Scaled RoPE → … 若干次进化。
 
-3. **Self Attention 之后的前馈网络不同**：ChatGLM2、3 用 GELU（Gaussian Error Linear Unit）做激活；ChatGLM 用 Swish-1 做激活。而且 ChatGLM2、3 应该是修正了之前的一个 bug，因为 GLU（Gated Linear Unit）本质上一半的入参是用来做门控制的，不需要输出到下层，所以 ChatGLM2、3 看起来前后维度不一致 (27392 -> 13696) 反而是正确的。
+3. **Multi-Query Attention**：这是一种共享机制的 Attention，是 Multi-Head Attention(MHA) 一种变体，相比 Multi-Head Attention，其 Query 部分没有区别，Key 和 Value 可以只用一个 Head。计算时，对 Key 和 Value 进行 expand 或者 repeat 操作，使它们填充到与 Query 一样的维度，后续计算就与 Multi-Head Attention 没区别。
+
+4. **Attention Mask**: V1 的 attention mask 分了 2 部分，Part A 和 Part B，Part A 部分是双向 Attention（代码中的prefix_attention_mask），Part B 部分是 Causal Attention (原代码文件中的 get_masks 函数)。在 V2 版本，全部换成了 Causal Attention，不再区分是 Part A 还是 Part B，完全变成了 `decoder-only` 的架构。
+
+5. **多目标任务**：Chat 版本主要还是用的 gMask 生成式任务，但是在 V1 版本的代码还能看到 mask、gMask 等字样，V2 已经摒弃了这些特殊 token，原因与 Attention Mask 一致，均因为变成了`decoder-only` 的架构，不再需要区分 Part A 和 Part B。
+
+6. **Self Attention 之后的前馈网络不同**：ChatGLM 用 GELU（Gaussian Error Linear Unit）做激活；ChatGLM2、3 用 Swish-1 做激活。而且 ChatGLM2、3 应该是修正了之前的一个 bug，因为 GLU（Gated Linear Unit）本质上一半的入参是用来做门控制的，不需要输出到下层，所以 ChatGLM2、3 看起来前后维度不一致 (27392 -> 13696) 反而是正确的。
 
 **主要创新**
 
@@ -86,11 +92,11 @@ ChatGLM3 在模型架构上与 ChatGLM2 完全一致，但在其他方面还是�
 
 综上所述，`ChatGLM` 是一个具有创新性和实用性的对话语言模型，为中英双语场景提供了一个高效和智能的解决方案。它不仅展示了人工智能语言模型在问答和对话领域的最新进展，也为下游开发者和应用者提供了一个便捷和灵活的平台。`ChatGLM` 的开源和内测将促进人工智能在各个领域的应用和创新。
 
-
-
 ## x. 参考文章
 
 - [ChatGLM系列模型](https://blog.csdn.net/GuiBin1/article/details/140825385)
+
+- [万字长文带你了解ChatGLM系列](https://zhuanlan.zhihu.com/p/696394009)
 
 - [深入解析 ChatGLM 模型：核心原理、优势与未来应用前景](https://blog.csdn.net/weixin_43114209/article/details/142691956)
 
