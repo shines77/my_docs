@@ -46,7 +46,7 @@
 
 1. **词表的大小**：从 ChatGLM 的 150528 缩小为 65024（一个直观的体验是 ChatGLM2 及以后的版本加载速度比 ChatGLM 快不少）
 
-2. **位置编码**：位置编码从每个 GLMBlock 一份提升为全局一份。并且使用了 `RoPE` 替换 `二维位置编码`。这也是 GLM 中提出的亮点设计之一。但是目前大部分主流的 LLMs 都在使用 `RoPE`，所以大势所趋。当前版本仍然采用了最初的 `RoPE` 设计，事实上现在的 `RoPE` 经过了xPOS → 线性内插 →  NTK-Aware Scaled RoPE → … 若干次进化。
+2. **位置编码**：位置编码从每个 GLMBlock 一份提升为全局一份。并且使用了 `RoPE` 替换了 `二维位置编码`，虽然这也是 GLM 中提出的亮点设计之一，但是目前大部分主流的 LLMs 都在使用 `RoPE`，所以大势所趋。当前版本仍然采用了最初的 `RoPE` 设计，事实上现在的 `RoPE` 经过了xPOS → 线性内插 →  NTK-Aware Scaled RoPE → … 若干次进化。
 
 3. **Multi-Query Attention**：这是一种共享机制的 Attention，是 Multi-Head Attention(MHA) 一种变体，相比 Multi-Head Attention，其 Query 部分没有区别，Key 和 Value 可以只用一个 Head。计算时，对 Key 和 Value 进行 expand 或者 repeat 操作，使它们填充到与 Query 一样的维度，后续计算就与 Multi-Head Attention 没区别。
 
