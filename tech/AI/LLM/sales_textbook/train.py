@@ -363,5 +363,14 @@ Step: 2620 Training Loss: 3.482 Validation Loss: 5.222
 Step: 2640 Training Loss: 3.439 Validation Loss: 4.961
 Step: 2660 Training Loss: 3.482 Validation Loss: 4.858
 Step: 2680 Training Loss: 3.295 Validation Loss: 4.837
+.........
+
+Step: 4880 Training Loss: 2.703 Validation Loss: 4.89
+Step: 4900 Training Loss: 2.875 Validation Loss: 4.91
+Step: 4920 Training Loss: 2.932 Validation Loss: 4.941
+Step: 4940 Training Loss: 2.854 Validation Loss: 5.247
+Step: 4960 Training Loss: 2.786 Validation Loss: 4.704
+Step: 4980 Training Loss: 2.851 Validation Loss: 4.753
+Step: 4999 Training Loss: 2.859 Validation Loss: 4.829
 
 '''
