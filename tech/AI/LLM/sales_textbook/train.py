@@ -69,15 +69,15 @@ if torch.cuda.is_available():
     torch.cuda.manual_seed_all(TorchRandSeed)
 
 # Step 1: Read the dataset
-dataset_read_done = False
+dataset_read_ok = False
 if os.path.exists('sales_textbook.txt'):
     with open ('sales_textbook.txt', 'r', encoding='utf-8') as f:
         text = f.read()
         if len(text) > 0:
-            dataset_read_done = True
+            dataset_read_ok = True
 
 # Download the dataset from url, if the file is not exists.
-if (not os.path.exists('sales_textbook.txt')) or (not dataset_read_done):
+if (not os.path.exists('sales_textbook.txt')) or (not dataset_read_ok):
     url = 'https://huggingface.co/datasets/goendalf666/sales-textbook_for_convincing_and_selling/raw/main/sales_textbook.txt'
 
     print('Start to downloading url = %s' % url)
@@ -88,7 +88,7 @@ if (not os.path.exists('sales_textbook.txt')) or (not dataset_read_done):
     print('Dataset downloaded done and save to [%s].' % 'sales_textbook.txt')
 
 # Read the dataset
-if not dataset_read_done:
+if not dataset_read_ok:
     with open ('sales_textbook.txt', 'r', encoding='utf-8') as f:
         text = f.read()
 
@@ -156,7 +156,8 @@ div_term = torch.exp(torch.arange(0, d_model, 2).float() * (- math.log(10000.0) 
 position_encoding_lookup_table[:, 0::2] = torch.sin(position * div_term)
 position_encoding_lookup_table[:, 1::2] = torch.cos(position * div_term)
 # add batch to the first dimension
-position_encoding_lookup_table = position_encoding_lookup_table.unsqueeze(0).expand(batch_size, -1, -1)
+position_encoding_lookup_table = position_encoding_lookup_table.unsqueeze(0)
+position_encoding_lookup_table = position_encoding_lookup_table.expand(batch_size, -1, -1)
 
 print("Position Encoding Look-up Table: ", position_encoding_lookup_table.shape)
 print(position_encoding_lookup_table)
@@ -176,7 +177,7 @@ print('')
 # Step 5: Transformer Block
 
 # Initialize the model
-model = Model().to(device)
+model = Model(max_token_value + 1).to(device)
 
 # get batch
 def get_batch_data(split: str):

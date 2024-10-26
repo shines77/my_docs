@@ -1,5 +1,5 @@
 
 /datasets
-model-sales-textbook.pt
 /__pycache__
+*.pt
 *.pth
