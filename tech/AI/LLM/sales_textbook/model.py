@@ -56,15 +56,22 @@ class Attention(nn.Module):
         self.Wq = nn.Linear(d_model, d_model // num_heads, bias=False)
         self.Wk = nn.Linear(d_model, d_model // num_heads, bias=False)
         self.Wv = nn.Linear(d_model, d_model // num_heads, bias=False)
+        # self.mask
         self.register_buffer('mask', torch.tril(torch.ones(context_length, context_length)))
         self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
+        # [batch_size, d_model, d_head = d_model / num_heads]
         B, T, C = x.shape
         q = self.Wq(x)
         k = self.Wk(x)
         v = self.Wv(x)
-
+        #
+        # Attention(Q, K, V) = softmax((Q * K(T)) / Sqrt(d_key)) * V
+        # d_key = d_model / num_heads
+        #
+        # K(T) = k.transpose(-2, -1)
+        #
         weights = (q @ k.transpose(-2, -1)) / math.sqrt(d_model // num_heads)
         weights = weights.masked_fill(self.mask[:T, :T] == 0, float('-inf'))
         weights = F.softmax(weights, dim=-1)
