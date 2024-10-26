@@ -1,4 +1,5 @@
 import math
+import random
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
@@ -17,15 +18,22 @@ num_heads = 4
 # 我们的代码中通过 d_model / num_heads = 来获取 head_size
 
 # Number of transformer blocks
-num_layers = 8
+num_blocks = 8
 
 # Dropout rate
 dropout = 0.1
 # Use GPU if it's available.
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+# Torch manual randomize seed
 TORCH_SEED = 1337
-torch.manual_seed(TORCH_SEED)
+# Generate a random number as a seed
+TorchRandSeed = random.randint(-9223372036854775808, 18446744073709551615)
+# Or fixed use of a randomize seed
+TorchRandSeed = TORCH_SEED
+torch.manual_seed(TorchRandSeed)
+if torch.cuda.is_available():
+    torch.cuda.manual_seed_all(TorchRandSeed)
 
 # Define feed forward network
 class FeedForwardNetwork(nn.Module):
@@ -40,7 +48,6 @@ class FeedForwardNetwork(nn.Module):
 
     def forward(self, x):
         return self.ffn(x)
-
 
 # Define Scaled Dot Product Attention
 class Attention(nn.Module):
@@ -64,9 +71,7 @@ class Attention(nn.Module):
         weights = self.dropout(weights)
 
         output = weights @ v
-
         return output
-
 
 # Define Multi-head Attention
 class MultiHeadAttention(nn.Module):
@@ -82,7 +87,6 @@ class MultiHeadAttention(nn.Module):
         out = self.dropout(self.projection_layer(head_outputs))
         return out
 
-
 # Define Transformer Block
 class TransformerBlock(nn.Module):
     def __init__(self):
@@ -96,7 +100,6 @@ class TransformerBlock(nn.Module):
         x = x + self.mha(self.ln1(x))
         x = x + self.ffn(self.ln2(x))
         return x
-
 
 # Define the model
 class Model(nn.Module):
@@ -116,6 +119,7 @@ class Model(nn.Module):
         div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-math.log(10000.0) / d_model))
         position_encoding_lookup_table[:, 0::2] = torch.sin(position * div_term)
         position_encoding_lookup_table[:, 1::2] = torch.cos(position * div_term)
+
         # change position_encoding_lookup_table from (context_length, d_model) to (T, d_model)
         position_embedding = position_encoding_lookup_table[:T, :].to(device)
         x = self.token_embedding_lookup_table(idx) + position_embedding

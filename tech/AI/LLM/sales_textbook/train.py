@@ -19,6 +19,16 @@ import pandas as pd
 # from aim import Run
 from model import Model
 
+def filepath_filter(filepath):
+    # Windows operation is 'nt' or 'windows'
+    path_separator = os.sep
+    # Whether is windows?
+    if path_separator == '\\':
+        new_filepath = filepath.replace('/', path_separator)
+        return new_filepath
+    else:
+        return filepath
+
 # Hyperparameters
 
 # How many batches per training step
@@ -32,7 +42,7 @@ num_heads = 4
 # 我们的代码中通过 d_model / num_heads = 来获取 head_size
 
 # Number of transformer blocks
-num_layers = 8
+num_blocks = 8
 
 # 0.001
 learning_rate = 1e-3
@@ -55,7 +65,8 @@ TorchRandSeed = random.randint(-9223372036854775808, 18446744073709551615)
 # Or fixed use of a randomize seed
 TorchRandSeed = TORCH_SEED
 torch.manual_seed(TorchRandSeed)
-torch.cuda.manual_seed_all(TorchRandSeed)
+if torch.cuda.is_available():
+    torch.cuda.manual_seed_all(TorchRandSeed)
 
 # Step 1: Read the dataset
 dataset_read_done = False
@@ -101,6 +112,7 @@ print(f"The maximum value in the tokenized text is: {max_token_value}")
 print(f"数据集合计有 {len(total_tokens):,} tokens")
 print('')
 
+# 将 77,919 个 tokens 转换到 Pytorch 张量中
 tokenized_text = torch.tensor(tokenized_text, dtype=torch.long, device=device)
 
 # Split train and validation
@@ -126,12 +138,12 @@ for i, x in enumerate(x_batch):
 print('')
 
 # Step 3: Word Embedding
-input_embedding_lookup_table = nn.Embedding(max_token_value + 1, d_model)
+token_embedding_lookup_table = nn.Embedding(max_token_value + 1, d_model)
 # tensor[4, 16, 64]: [batch_size, context_length, d_model]
-x_batch_embedding = input_embedding_lookup_table(x_batch.data)
-y_batch_embedding = input_embedding_lookup_table(y_batch.data)
+x_batch_embedding = token_embedding_lookup_table(x_batch.data)
+y_batch_embedding = token_embedding_lookup_table(y_batch.data)
 
-print(input_embedding_lookup_table.weight.data)
+# print(token_embedding_lookup_table.weight.data)
 print(x_batch_embedding.shape, y_batch_embedding.shape)
 
 # Step 4: Position Embedding
@@ -150,5 +162,65 @@ print("Position Encoding Look-up Table: ", position_encoding_lookup_table.shape)
 print(position_encoding_lookup_table)
 print('')
 
+# Add positional encoding into the input embedding vector
+input_embedding_x = x_batch_embedding + position_encoding_lookup_table # [4, 16, 64] [batch_size, context_length, d_model]
+input_embedding_y = y_batch_embedding + position_encoding_lookup_table
+
+x = input_embedding_x
+y = input_embedding_y
+
+x_plot = input_embedding_x[0].detach().cpu().numpy()
+print("Final Input Embedding of x: \n", pd.DataFrame(x_plot))
+print('')
+
+# Step 5: Transformer Block
+
 # Initialize the model
-# model = Model().to(device)
+model = Model().to(device)
+
+# get batch
+def get_batch_data(split: str):
+    data = train_data if split == 'train' else val_data
+    idxs = torch.randint(low=0, high=len(data) - context_length, size=(batch_size,))
+    x = torch.stack([data[idx:idx + context_length] for idx in idxs]).to(device)
+    y = torch.stack([data[idx + 1:idx + context_length + 1] for idx in idxs]).to(device)
+    return x, y
+
+# calculate the loss
+@torch.no_grad()
+def estimate_loss():
+    out = {}
+    model.eval()
+    for split in ['train', 'valid']:
+        losses = torch.zeros(eval_iters)
+        for k in range(eval_iters):
+            x_batch, y_batch = get_batch_data(split)
+            logits, loss = model(x_batch, y_batch)
+            losses[k] = loss.item()
+        out[split] = losses.mean()
+    model.train()
+    return out
+
+# Create the optimizer
+optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
+tracked_losses = list()
+for step in range(max_iters):
+    if step % eval_iters == 0 or step == max_iters - 1:
+        losses = estimate_loss()
+        tracked_losses.append(losses)
+        print('Step:', step, 'Training Loss:', round(losses['train'].item(), 3), 'Validation Loss:', round(losses['valid'].item(), 3))
+        # run.track(round(losses['train'].item(), 3), name='Training Loss')
+        # run.track(round(losses['valid'].item(), 3), name='Validation Loss')
+
+    xb, yb = get_batch_data('train')
+    logits, loss = model(xb, yb)
+    optimizer.zero_grad(set_to_none=True)
+    loss.backward()
+    optimizer.step()
+
+# Save the model
+model_dir = filepath_filter('./model')
+if not os.path.exists(model_dir):
+    os.makedirs(model_dir)
+
+torch.save(model.state_dict(), filepath_filter('{}/model-sales-textbook.pt'.format(model_dir)))
