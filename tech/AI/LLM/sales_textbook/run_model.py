@@ -92,6 +92,7 @@ if dataset_read_ok:
         # ask = "In today's highly competitive market, where customers have numerous options to choose from, it is"
         # ask = "Furthermore, building rapport allows you to differentiate yourself from competitors. "
         ask = "Furthermore, building rapport allows you"
+        ask = "The product is a"
         if (ask == 'bye'):
             break
         tokens = word2tokens(ask)
