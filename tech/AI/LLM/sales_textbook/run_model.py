@@ -45,9 +45,29 @@ if os.path.exists('sales_textbook.txt'):
 # Step 2: Tokenization
 
 # Using TikToken to tokenize the source text
-encoding = tiktoken.get_encoding('cl100k_base')
+cl100k_base = tiktoken.get_encoding('cl100k_base')
+
+#
+# From: https://github.com/openai/tiktoken/blob/main/README.md
+#
+# In production, load the arguments directly instead of accessing private attributes
+# See openai_public.py for examples of arguments for specific encodings
+cl100k_im = tiktoken.Encoding(
+    # If you're changing the set of special tokens, make sure to use a different name
+    # It should be clear from the name what behaviour to expect.
+    name = "cl100k_im",
+    pat_str = cl100k_base._pat_str,
+    mergeable_ranks = cl100k_base._mergeable_ranks,
+    special_tokens = {
+        **cl100k_base._special_tokens,
+        "<|pad|>": 100263,
+        "<|start|>": 100264,
+        "<|end|>": 100265,
+    }
+)
+
 # size of tokenized source text is 77,919
-tokenized_text = encoding.encode(text)
+tokenized_text = cl100k_im.encode(text)
 # size of vocabulary is 3,771
 vocab_size = len(set(tokenized_text))
 max_token_value = max(tokenized_text)
@@ -74,7 +94,7 @@ def word2tokens(text):
     # tokens = []
     # for word in text:
     #     tokens.append(token_embedding_lookup_table(word).numpy())
-    tokens = encoding.encode(text)
+    tokens = cl100k_im.encode(text)
     print('tokens = ', tokens)
     tokens = torch.tensor(tokens)
     tokens = tokens[:context_length]
@@ -84,7 +104,7 @@ def word2tokens(text):
     return tokens
 
 def token2word(tokens):
-    return encoding.decode(tokens)
+    return cl100k_im.decode(tokens)
 
 if dataset_read_ok:
     while True:
