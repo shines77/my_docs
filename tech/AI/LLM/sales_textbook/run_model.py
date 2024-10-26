@@ -21,6 +21,9 @@ num_heads = 4
 # Number of transformer blocks
 num_blocks = 8
 
+# Instead of using the cpu, we'll use the GPU if it's available.
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
 def filepath_filter(filepath):
     # Windows operation is 'nt' or 'windows'
     path_separator = os.sep
@@ -57,7 +60,8 @@ print('')
 # Step 3: Word Embedding
 token_embedding_lookup_table = nn.Embedding(max_token_value + 1, d_model)
 
-model = Model()
+# Initialize the model
+model = Model(max_token_value + 1).to(device)
 state_dict = torch.load(filepath_filter('./model/model-sales-textbook.pt'))
 model.load_state_dict(state_dict)
 
@@ -80,15 +84,13 @@ def word2tokens(text):
     return tokens
 
 def token2word(tokens):
-    text = ''
-    text = text + encoding.decode(tokens) + ' '
-    return text
+    return encoding.decode(tokens)
 
 if dataset_read_ok:
     while True:
         # ask = input('请输入你的问题: ')
         # ask = "In today's highly competitive market, where customers have numerous options to choose from, it is"
-        ask = "Furthermore, building rapport allows you to differentiate yourself from competitors. "
+        # ask = "Furthermore, building rapport allows you to differentiate yourself from competitors. "
         ask = "Furthermore, building rapport allows you"
         if (ask == 'bye'):
             break
@@ -101,4 +103,4 @@ if dataset_read_ok:
         print('')
         break
 else:
-    print('Token read failed.\n')
+    print('Token file read failed.\n')

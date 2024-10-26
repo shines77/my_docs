@@ -224,7 +224,9 @@ model_dir = filepath_filter('./model')
 if not os.path.exists(model_dir):
     os.makedirs(model_dir)
 
-torch.save(model.state_dict(), filepath_filter('{}/model-sales-textbook.pt'.format(model_dir)))
+model_file = filepath_filter('{}/model-sales-textbook.pt'.format(model_dir))
+torch.save(model.state_dict(), model_file)
+print(f'\nModel have saved to file {model_file}\n')
 
 '''
 Output:
