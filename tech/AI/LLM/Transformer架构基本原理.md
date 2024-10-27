@@ -184,7 +184,7 @@ Position Embedding Look-Up Table:
 
 ## 6. Step 4: Transformer Block
 
-![Transformer Block](./images/transformer-block.png)
+![Transformer Block](./images/transformer-block.jpg)
 
 Transformer Block 是一个如下三层组成的 stack：
 
