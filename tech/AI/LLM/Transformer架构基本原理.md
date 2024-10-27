@@ -8,9 +8,9 @@
 
 `Transformer` 架构最初旨在用于训练语言翻译模型，然而，2018 年 OpenAI 团队发现，`Transformer` 架构是字符预测的关键解决方案。一旦对整个互联网数据进行了训练，该模型就有可能理解任何文本的上下文，并连贯地完成任何句子，就像人类一样。
 
-## 2. 结构
+## 2. 模型结构
 
-`Transformer` 模型由两部分组成：编码器 (encoder) 和解码器 (decoder)。一般来说，仅编码器 (encoder-only) 架构擅长从文本中提取信息，用于分类和回归等任务，而仅解码器 (decoder-only) 模型专门用于生成文本。例如，专注于文本生成的 GPT 属于仅解码器 (decoder-only) 模型的范畴。
+`Transformer` 模型由两部分组成：编码器 (Encoder) 和解码器 (Decoder)。一般来说，仅编码器 (encoder-only) 架构擅长从文本中提取信息，用于分类和回归等任务，而仅解码器 (decoder-only) 模型专门用于生成文本。例如，专注于文本生成的 GPT 属于仅解码器 (decoder-only) 模型的范畴。
 
 ## x. 参考文章
 
