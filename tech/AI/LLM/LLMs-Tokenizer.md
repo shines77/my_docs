@@ -26,7 +26,7 @@ BPE 算法具有以下优势：
 
 我个人认为 BPE 抹杀了 Word 作为自然语言的较小的一个单位作为语义上的表达，Word 可以拆分只能是因为词缀，而不能强行拆分。BPE 并不是一个完美的编码方式。
 
-## 2. Byte-Lvel Encoding
+## 2. Byte-Level Encoding
 
 
 
