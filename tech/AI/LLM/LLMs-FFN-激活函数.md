@@ -2,7 +2,7 @@
 
 ## 1. 激活函数
 
-前馈神经网络 (FFN, 或称 MLP)中，常用的激活函数有：
+在前馈神经网络 (FFN, 或称 MLP)中，常用的激活函数有：
 
 - Sigmoid
 - Tanh
@@ -24,6 +24,8 @@ Sigmoid 的函数图像：
 ![Sigmoid 函数图像](./images/sigmoid-graph.png)
 
 我们可以看到，取值范围是：(0, 1) 。
+
+python 代码：
 
 ```python
 import torch
@@ -50,6 +52,8 @@ plt.show()
 
 如果想把取值范围更改为 (-1, 1)，可以使用算式 2 * Sigmoid - 1 获得，我们可以称这个新函数为 newfun，但一般我们如果需要 (-1, 1) 的取值范围，可以使用 tanh 函数，因为它的梯度消失的问题相比 newfun 更好。
 
+下面是 newfun 和 tanh 函数的比较：
+
 ![Sigmoid，newfun和Tanh的比较](./images/sigmoid-newfunc-tanh-compare.png)
 
 注：图中绿色曲线是相应函数的梯度。
@@ -61,6 +65,8 @@ $$Tanh(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}} = 1 - \frac{2}{1 + e^{2x}} = \frac
 函数图像：
 
 ![Tanh 函数图像](./images/tanh-graph.png)
+
+python 代码：
 
 ```python
 import torch
@@ -116,6 +122,29 @@ $$ReLU(x) = Max(0, x)$$
 
 ![ReLU 函数图像](./images/ReLU-graph.png)
 
+python 代码：
+
+```python
+import torch
+from matplotlib import pyplot as plt
+# %matplotlib inline
+
+x = torch.arange(-8.0, 8.0, 0.1, requires_grad=True)
+relu = torch.nn.ReLU()
+y = relu(x)
+
+# 解决中文乱码问题
+# plt.rcParams['font.family'] = 'SimHei'
+plt.figure(figsize=(8, 4))
+plt.title('ReLU(x)')
+plt.xlabel('x')
+plt.ylabel('ReLU(x)')
+plt.grid()
+plt.plot(x.detach(), y.detach(), color='blue', label='ReLU(x)', linewidth=2)
+plt.legend(['ReLU(x)'], loc='upper left')
+plt.show()
+```
+
 ### 1.4 Leaky-ReLU
 
 公式：
@@ -125,6 +154,29 @@ $$Leaky.ReLU(x) = \begin{aligned}\begin{cases} & \alpha \cdot x, \\ & x, \end{ca
 函数图像：
 
 ![Leaky-ReLU 函数图像](./images/Leaky-ReLU-graph.png)
+
+python 代码：
+
+```python
+import torch
+from matplotlib import pyplot as plt
+# %matplotlib inline
+
+x = torch.arange(-8.0, 8.0, 0.1, requires_grad=True)
+leaky_relu = torch.nn.LeakyReLU(negative_slope=0.1)
+y = leaky_relu(x)
+
+# 解决中文乱码问题
+# plt.rcParams['font.family'] = 'SimHei'
+plt.figure(figsize=(8, 4))
+plt.title('Leaky-ReLU(x)')
+plt.xlabel('x')
+plt.ylabel('Leaky-ReLU(x)')
+plt.grid()
+plt.plot(x.detach(), y.detach(), color='blue', label='Leaky-ReLU(x)', linewidth=2)
+plt.legend(['Leaky-ReLU(x)'], loc='upper left')
+plt.show()
+```
 
 ## x. 参考文章
 
