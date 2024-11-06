@@ -14,10 +14,10 @@ LangChain 简化了 LLM 应用程序生命周期的每个阶段：
 
 具体来说，该框架由以下开源库组成：
 
-- `**langchain-core**`：基础抽象和 LangChain 表达式语言。
-- `**langchain-community**`：第三方集成。
-  - 合作伙伴包（例如 `**langchain-openai**`、`**langchain-anthropic**` 等）：一些集成已被进一步拆分为仅依赖于 `**langchain-core**`的轻量级包。
-- `**langchain**`：构成应用程序认知架构的 Chain、Agent 和检索策略。
+- **`langchain-core`**：基础抽象和 LangChain 表达式语言。
+- **`langchain-community`**：第三方集成。
+  - 合作伙伴包（例如 **`langchain-openai`**、**`langchain-anthropic`** 等）：一些集成已被进一步拆分为仅依赖于 **`langchain-core`** 的轻量级包。
+- **`langchain`**：构成应用程序认知架构的 Chain、Agent 和检索策略。
 - **LangGraph**：通过将步骤建模为图中的边和节点，使用 LLM 构建健壮且有状态的多参与者应用程序。与 LangChain 平滑集成，但也可以不使用它。
 - **LangServe**：将 LangChain 链部署为 REST API。
 - **LangSmith**：一个开发者平台，让您可以调试、测试、评估和监控 LLM 应用程序。
