@@ -71,12 +71,48 @@ LangChain 简化了 LLM 应用程序生命周期的每个阶段：
 
 ### Log your first trace
 
+我们提供多种方式将 Trace 记录到 LangSmith。下面，我们将重点介绍如何使用 `traceable` 。请参阅 [Annotate code for tracing](https://docs.smith.langchain.com/observability/how_to_guides/tracing/annotate_code) 页面上的更多信息。
+
+使用之前，您需要先导入如下的环境变量：
+
+```bash
+export LANGCHAIN_TRACING_V2=true
+export LANGCHAIN_API_KEY=<your-api-key>
+
+# The below examples use the OpenAI API, though it's not necessary in general
+export OPENAI_API_KEY=<your-openai-api-key>
+```
+
+也可以把环境变量写到 `.env` 配置文件里，使用 `python-dotenv` 库来读取该配置文件：
+
+`.env` 文件内容（跟 python 脚本放在同一个目录下）：
+
+```
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_ENDPOINT="https://api.smith.langchain.com"
+LANGCHAIN_API_KEY="<your-api-key>"
+LANGCHAIN_PROJECT="<your-project-name>"
+
+OPENAI_API_KEY="<your-openai-api-key>"
+# Only for test, no use.
+OPENAI_URL="https://api.platform.openai.com"
+```
+
 python 版本：
 
 ```python
 import openai
 from langsmith.wrappers import wrap_openai
 from langsmith import traceable
+
+import os
+# pip install -U python-dotenv
+from dotenv import load_dotenv, find_dotenv
+
+# read local .env file
+# 默认的文件路径是 '.env', 可在 find_dotenv(env_filepath) 中指定文件和路径.
+_ = load_dotenv(find_dotenv())
+print('os.environ.OPENAI_URL = ', os.environ.get('OPENAI_URL'))
 
 # Auto-trace LLM calls in-context
 client = wrap_openai(openai.Client())
@@ -93,11 +129,25 @@ pipeline("Hello, world!")
 # Out:  Hello there! How can I assist you today?
 ```
 
+- 查看一个 [简单的输出 Trace](https://smith.langchain.com/public/b37ca9b1-60cd-4a2a-817e-3c4e4443fdc0/r) 。
+- 请参阅 [how-to guides](https://docs.smith.langchain.com/observability/how_to_guides) 页面更多关于 Tracing 的信息。
+
 ### Run your first evaluation
+
+评估需要一个系统来测试，数据作为测试用例，以及可选的评估人员来对结果进行评分。这里我们使用一个内置的精度评估器。
 
 python 版本：
 
 ```python
+import os
+# pip install -U python-dotenv
+from dotenv import load_dotenv, find_dotenv
+
+# read local .env file
+# 默认的文件路径是 '.env', 可在 find_dotenv(env_filepath) 中指定文件和路径.
+_ = load_dotenv(find_dotenv())
+print('os.environ.OPENAI_URL = ', os.environ.get('OPENAI_URL'))
+
 from langsmith import Client, evaluate
 client = Client()
 
@@ -132,6 +182,8 @@ experiment_results = evaluate(
 )
 ```
 
+- 请参阅 [how-to guides](https://docs.smith.langchain.com/evaluation/how_to_guides) 页面更多关于 evaluation 的信息。
+
 ## 2. LangSmith
 
 ### 概念
@@ -159,6 +211,15 @@ Project 是 Trace 的集合。您可以将 Project 视为与单个应用程序�
 python 版本：
 
 ```python
+import os
+# pip install -U python-dotenv
+from dotenv import load_dotenv, find_dotenv
+
+# read local .env file
+# 默认的文件路径是 '.env', 可在 find_dotenv(env_filepath) 中指定文件和路径.
+_ = load_dotenv(find_dotenv())
+print('os.environ.OPENAI_URL = ', os.environ.get('OPENAI_URL'))
+
 from langsmith import evaluate, Client
 from langsmith.schemas import Example, Run
 
@@ -184,6 +245,8 @@ evaluate(
 ## 3. 参考文章
 
 - [LangChain Introduction](https://python.langchain.com/docs/introduction/)
+
+- [中文版: LangChain Introduction](https://www.langchain.com.cn/docs/introduction/)
 
 - [Get started with LangSmith](https://docs.smith.langchain.com/)
 
