@@ -52,7 +52,7 @@ prompt_infos = [
 #
 # See: https://python.langchain.com/api_reference/langchain/chat_models/langchain.chat_models.base.init_chat_model.html
 #
-llm = init_chat_model("gpt-4o", model_provider="openai", temperature=0)
+llm = init_chat_model("gpt-3.5-turbo", model_provider="openai", temperature=0)
 
 # 构建目标链
 from langchain.chains.llm import LLMChain
