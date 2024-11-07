@@ -41,7 +41,7 @@ LangChain 简化了 LLM 应用程序生命周期的每个阶段：
 
 ### 操作指南
 
-在这里，您会找到“我该如何……？”这类问题的简短答案。这些操作指南不会深入覆盖主题——您会在教程和 API 参考中找到材料。然而，这些指南将帮助您快速完成常见任务。
+在这里，您会找到“我该如何……？”这类问题的简短答案。这些操作指南不会深入覆盖主题——您会在 [教程](https://python.langchain.com/docs/tutorials/) 和 [API 参考](https://python.langchain.com/api_reference/) 中找到材料。然而，这些指南将帮助您快速完成常见任务。
 
 在这里查看 [LangGraph 特定的操作指南](https://langchain-ai.github.io/langgraph/how-tos/)。
 
@@ -53,7 +53,7 @@ LangChain 简化了 LLM 应用程序生命周期的每个阶段：
 
 ### API 参考
 
-前往参考部分获取 LangChain Python 包中所有类和方法的完整文档。
+前往参考部分获取 LangChain Python 包中所有类和方法的完整文档: [API 参考](https://python.langchain.com/api_reference/) 。
 
 ### 生态系统
 
@@ -253,3 +253,5 @@ evaluate(
 - [LangChain: LangSmith Concepts](https://docs.smith.langchain.com/observability/concepts)
 
 - [LangChain: LangGraph](https://langchain-ai.github.io/langgraph/)
+
+- [使用LangSmith来快速学习LangChain](https://zhuanlan.zhihu.com/p/671324891)

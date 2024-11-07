@@ -1,3 +1,6 @@
+#
+# From: https://zhuanlan.zhihu.com/p/671324891
+#
 # from langchain.chat_models import AzureChatOpenAI
 from langchain.chat_models import init_chat_model
 import os
@@ -46,7 +49,10 @@ prompt_infos = [
 # from langchain.llms import OpenAI
 # llm = OpenAI()
 # llm = AzureChatOpenAI(deployment_name="GPT-4", temperature=0)
-llm = init_chat_model(model_provider="openai", temperature=0)
+#
+# See: https://python.langchain.com/api_reference/langchain/chat_models/langchain.chat_models.base.init_chat_model.html
+#
+llm = init_chat_model("gpt-4o", model_provider="openai", temperature=0)
 
 # 构建目标链
 from langchain.chains.llm import LLMChain
@@ -59,7 +65,7 @@ for info in prompt_infos:
         template=info['template'],
         input_variables=["input"]
     )
-    print("目标提示:\\n", prompt)
+    print("目标提示:\n\n", prompt)
 
     chain = LLMChain(
         llm=llm,
@@ -73,15 +79,15 @@ from langchain.chains.router.llm_router import LLMRouterChain, RouterOutputParse
 from langchain.chains.router.multi_prompt_prompt import MULTI_PROMPT_ROUTER_TEMPLATE as RounterTemplate
 
 destinations = [f"{p['key']}: {p['description']}" for p in prompt_infos]
-router_template = RounterTemplate.format(destinations="\\n".join(destinations))
-print("路由模板:\\n", router_template)
+router_template = RounterTemplate.format(destinations="\n".join(destinations))
+print("路由模板:\n\n", router_template)
 
 router_prompt = PromptTemplate(
     template=router_template,
     input_variables=["input"],
     output_parser=RouterOutputParser(),
 )
-print("路由提示:\\n", router_prompt)
+print("路由提示:\n\n", router_prompt)
 
 router_chain = LLMRouterChain.from_llm(
     llm,
