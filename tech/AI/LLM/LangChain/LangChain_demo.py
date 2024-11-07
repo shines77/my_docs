@@ -11,8 +11,9 @@ warnings.filterwarnings('ignore')
 # os.environ["OPENAI_API_KEY"] = 'Your Key'
 
 # read local .env file
+# 默认的文件路径是 '.env', 可在 find_dotenv(env_filepath) 中指定文件和路径.
 _ = load_dotenv(find_dotenv())
-print('os.environ.URL = ', os.environ.get('URL'))
+print('os.environ.OPENAI_URL = ', os.environ.get('OPENAI_URL'))
 
 # 构建两个场景的模板
 flower_care_template = """
@@ -45,7 +46,7 @@ prompt_infos = [
 # from langchain.llms import OpenAI
 # llm = OpenAI()
 # llm = AzureChatOpenAI(deployment_name="GPT-4", temperature=0)
-llm = init_chat_model("GPT-4", temperature=0)
+llm = init_chat_model(model_provider="openai", temperature=0)
 
 # 构建目标链
 from langchain.chains.llm import LLMChain
