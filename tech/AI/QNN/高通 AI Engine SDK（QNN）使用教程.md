@@ -53,9 +53,9 @@ Qualcomm® AI Engine Direct SDK 提供工具和可扩展的每个加速器库，
 
 3. Qualcomm® AI Engine Direct 模型转换器是一款帮助客户编写 Qualcomm® 序列的工具AI引擎直接 API 调用以构建 Qualcomm® AI Engine Direct 训练网络的图形表示形式，该网络作为工具的输入提供。 转换器输出以下文件：
 
-  - .cpp 源文件（例如 model.cpp），包含构建所需的 Qualcomm® AI Engine Direct API 调用网络图
+    - .cpp 源文件（例如 model.cpp），包含构建所需的 Qualcomm® AI Engine Direct API 调用网络图
 
-  - .bin 二进制文件（例如 model.bin），包含作为 float32 数据的网络权重和偏差
+    - .bin 二进制文件（例如 model.bin），包含作为 float32 数据的网络权重和偏差
 
     客户端可以选择指示转换器输出量化模型而不是默认模型，如图所示量化模型 .cpp。在这种情况下 model.bin 文件将 包含量化数据，并且 model.cpp 将引用量化张量数据类型和 包括量化编码。某些 Qualcomm® AI Engine Direct 后端库可能需要量化模型， 例如HTP 或 DSP（请参阅 general/api:后端补充 了解有关受支持的信息 数据类型）。有关转换器量化功能和选项的详细信息，请参见量化支持。
 
