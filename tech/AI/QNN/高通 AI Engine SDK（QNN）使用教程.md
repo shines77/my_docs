@@ -69,7 +69,7 @@ source ${QNN_SDK_ROOT}/bin/envsetup.sh
 新建 Conda 环境（推荐）：
 
 ```bash
-conda create -n qnn python==3.8
+conda create -n qnn python==3.12
 conda activate qnn
 ```
 
@@ -312,8 +312,8 @@ qnn-net-run --model models/qnn/libmodel.so --input_list /path/to/your/input.txt 
 ```
 
 > 1. basic: captures execution and init time.
-2. detailed: in addition to basic, captures per Op timing for execution, if a backend supports it.
-3. client: captures only the performance metrics measured by qnn-net-run.
+> 2. detailed: in addition to basic, captures per Op timing for execution, if a backend supports it.
+> 3. client: captures only the performance metrics measured by qnn-net-run.
 
 会在 output 文件夹下生成 profile 文件，在 Linux 下，可以使用 `qnn-profile-viewer` 对 profile 文件进行分析：
 
