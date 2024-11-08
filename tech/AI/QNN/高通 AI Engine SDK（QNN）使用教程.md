@@ -1,6 +1,6 @@
 # 高通 AI Engine SDK（QNN）使用教程
 
-## 1. 简介
+## 1. 概述
 
 ### 1.1 什么是 QNN
 
@@ -16,6 +16,56 @@ QNN 是高通发布的神经网络推理引擎，是 SNPE 的升级版，其主�
 - SNPE 模型使用容器（DL container）格式保存，QNN 模型使用 cpp，json 和 bin 文件保存；
 - SNPE 模型在运行前无需编译，可以直接在不同平台下运行，QNN 的模型需要先编译到对应平台，才可以运行；
 - SNPE 模型转化（snpe-xxx-to-dlc）和模型量化（snpe-dlc-quantize）在 QNN 中被合并到一个步骤（qnn-xxx-converter）
+
+### 1.3 软件架构
+
+Qualcomm® AI Engine Direct API 和相关软件堆栈提供应用程序所需的所有构造 在所需的硬件加速器核心上构建、优化和执行网络模型。
+
+Qualcomm AI Engine 直接组件 - 高级视图
+
+![Qualcomm AI Engine 直接组件 - 高级视图](./images/QNN-component.png)
+
+### 1.4 软件堆栈
+
+Qualcomm®AI Engine Direct 架构旨在提供统一的 API 以及模块化和可扩展性 每个加速器库构成了全栈人工智能解决方案的可重用基础，QTI 自有框架和第三方框架。
+
+采用 Qualcomm AI Engine Direct 的 AI 软件堆栈
+
+![采用 Qualcomm AI Engine Direct 的 AI 软件堆栈](./images/QNN-AI-software-stack.png)
+
+Qualcomm® AI Engine Direct SDK 包含的工具可帮助客户将经过训练的深度学习网络集成到他们的 应用程序。基本集成工作流程如下图所示：
+
+Qualcomm AI Engine直接集成工作流程
+
+![Qualcomm AI Engine直接集成工作流程](./images/QNN-integrated-workflow.png)
+
+### 1.5 集成工作流程
+
+Qualcomm® AI Engine Direct SDK 提供工具和可扩展的每个加速器库，支持统一的 API 在 QTI 芯片组上灵活集成和高效执行 ML/DL 神经网络。 Qualcomm® AI Engine Direct API 旨在支持经过训练的神经网络的推理，因此客户负责 在他们选择的训练框架中训练 ML/DL 网络。训练过程一般是 在服务器主机上、设备外完成。一旦网络经过培训，客户就可以使用 Qualcomm® AI Engine Direct 做好准备 在设备上部署并运行。
+
+训练与推理工作流程
+
+![QNN 练与推理工作流程](./images/QNN-workflow.png)
+
+1. 客户通过提供经过训练的网络模型文件作为输入来调用 Qualcomm® AI Engine Direct 转换器工具。 网络必须在 Qualcomm® AI Engine Direct 转换器工具支持的框架中进行训练。 有关 Qualcomm® AI Engine Direct 转换器的更多详细信息，请参阅工具部分。
+
+2. 当源模型包含 Qualcomm® 本身不支持的操作 AI Engine Direct 后端时， 客户端需要向转换器提供 OpPackage 定义文件，表达自定义/客户端 定义的操作。或者，他们可以使用 OpPackage 生成器工具来生成 框架代码来实现并将其自定义操作编译到 OpPackage 库中。 请参阅 qnn-op-package-generator 了解使用详情。
+
+3. Qualcomm® AI Engine Direct 模型转换器是一款帮助客户编写 Qualcomm® 序列的工具AI引擎直接 API 调用以构建 Qualcomm® AI Engine Direct 训练网络的图形表示形式，该网络作为工具的输入提供。 转换器输出以下文件：
+
+  - .cpp 源文件（例如 model.cpp），包含构建所需的 Qualcomm® AI Engine Direct API 调用网络图
+
+  - .bin 二进制文件（例如 model.bin），包含作为 float32 数据的网络权重和偏差
+
+    客户端可以选择指示转换器输出量化模型而不是默认模型，如图所示量化模型 .cpp。在这种情况下 model.bin 文件将 包含量化数据，并且 model.cpp 将引用量化张量数据类型和 包括量化编码。某些 Qualcomm® AI Engine Direct 后端库可能需要量化模型， 例如HTP 或 DSP（请参阅 general/api:后端补充 了解有关受支持的信息 数据类型）。有关转换器量化功能和选项的详细信息，请参见量化支持。
+
+4. 客户可以选择使用 Qualcomm® AI Engine Direct 模型库生成工具来生成模型库。 请参阅 qnn-model-lib-generator 了解使用详情。
+
+5. 客户通过动态加载模型库将 Qualcomm® AI Engine Direct 模型集成到其应用程序中 或编译并静态链接 model.cpp 和 model.bin。 为了准备和执行模型（即运行推理），客户端还需要加载所需的 Qualcomm® AI Engine Direct 后端加速器和 OpPackage 库。 Qualcomm® AI Engine Direct OpPackage 库已注册并 由后端加载。
+
+6. 客户端可以选择保存上下文二进制缓存以及准备好的和最终确定的图表。看 上下文缓存供参考。 这样的图可以从缓存中重复加载，而不需要模型 .cpp/库  任何进一步。从缓存加载模型图比通过准备加载模型图要快得多 模型 .cpp/库中提供的一系列图形组合 API 调用。缓存的图表不能 进一步修改；它们旨在部署准备好的图表，从而实现更快的 客户端应用程序的初始化。
+
+7. 客户可以选择使用 Qualcomm 神经处理 SDK 生成的深度学习容器 (DLC) 与提供的 libQnnModelDlc.so 库结合使用，从应用程序中的 DLC 路径生成 QNN 图形句柄。这提供了单一格式 用于跨产品使用并支持无法编译到共享模型库的大型模型。使用详情 可以在利用 DLC 中找到。
 
 ## 2. Linux 端
 
@@ -379,3 +429,7 @@ Execute Stats (Overall):
 ## 5. 参考文章
 
 - [高通 AI Engine SDK（QNN）使用教程（环境配置、模型转换、量化、推理、分析）](https://blog.csdn.net/weixin_51031772/article/details/141331531)
+
+- [Qualcomm® AI Engine Direct 使用手册（1）](https://blog.csdn.net/weixin_38498942/article/details/135091982)
+
+- [Qualcomm® AI Engine Direct 使用手册（2）](https://blog.csdn.net/weixin_38498942/article/details/135132781)
