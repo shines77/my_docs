@@ -12,6 +12,8 @@ NVIDIA 于 2006 年 11 月在 G80 系列中引入的 Tesla 统一图形和计算
 
 ## 2. nVidia 显卡硬件架构
 
+![GPU 完整架构](./images/GPU-full-arch.png)
+
 nVidia 的显卡用 SM、SP 和 Warp 组成。
 
 ### 2.1 SM（Streaming Multiprocessor）
@@ -32,13 +34,35 @@ SP（标量处理器，Scalar Processor），GPU 最基本的处理单元，也�
 
 一个 SP 可以执行一个 thread，但是实际上并不是所有的 thread 能够在同一时刻执行。Nvidia 把 32 个 thread 组成一个 warp，warp 是调度和运行的基本单元。warp 中所有 threads 并行的执行相同的指令。warp 由 SM 的硬件 warp scheduler 负责调度，一个 SM 同一个时刻可以执行多个 warp，这取决于 warp scheduler 的数量。目前每个 warp 包含 32 个 threads（nVidia 保留修改数量的权利）。
 
+### 2.4 更多细节
+
+GPU 的共享存储器的 SIMT 多处理器模型
+
+![GPU的共享存储器的SIMT多处理器模型](./images/GPU-SIMT-model.png)
+
+对于每个 SM（Streaming Multiprocessor），都有以下四种类型的存储器区域：
+
+- 每个 SP (标量处理器，Scalar Processor) 上都有一组本地的 32 位寄存器（Registers）；
+
+- 并行数据缓存或共享存储器 (Shared Memory)，由该 SM 下的所有 SP (标量处理器核心) 共享；
+
+- 只读固定缓存 (Constant Cache)，由该 SM 下的所有 SP (标量处理器核心) 共享，可加速从固定存储器空间进行的读取操作（这是一个只读区域）；
+
+- 一个只读纹理缓存(Texture Cache)，由该 SM 下的所有 SP (标量处理器核心) 共享，加速从纹理存储器空间进行的读取操作（这是一个只读区域），每个 SM 都会通过实现不同寻址模型和数据过滤的纹理单元访问纹理缓存。
+
+![GPU 硬件架构](./images/GPU-hardware-structure.png)
+
 ## 3. CUDA 软件架构
 
-nVidia 的 CUDA 软件架构主要用 Kernel、Grid、Block 组成。
+CUDA 在软件方面组成有：一个 CUDA 库、一个应用程序编程接口 (API) 及其运行库 (Runtime)、两个较高级别的通用数学库，即 CUFFT 和 CUBLAS 。
+
+CUDA 程序构架分为两部分：Host 和 Device。一般而言，Host 指的是 CPU，Device 指的是 GPU。在 CUDA 程序构架中，主程序还是由 CPU 来执行，而当遇到数据并行处理的部分，CUDA 就会将程序编译成 GPU 能执行的程序，并传送到 GPU，而这个程序在 CUDA 里称做核函数（kernel function）。
+
+nVidia 的 CUDA 软件架构主要用 Kernel、Grid、Block 和 Thread 组成。
 
 ### 3.1 Kernel
 
-具体到我们如何调用 GPU 上的线程实现我们的算法，则是通过 Kernel 实现的。在 GPU 上调用的函数成为 CUDA 核函数（Kernel function），核函数会被 GPU 上的多个线程执行。我们可以通过如下方式来定义一个 kernel：
+我们如何调用 GPU 上的线程实现我们的算法，则是通过 Kernel 实现的。在 GPU 上调用的函数成为 CUDA 核函数（kernel function），核函数会被 GPU 上的多个线程执行。我们可以通过如下方式来定义一个 kernel：
 
 ```cpp
 kernel_function<<<grid, block>>>(param1, param2, param3....);
@@ -46,13 +70,21 @@ kernel_function<<<grid, block>>>(param1, param2, param3....);
 
 ### 3.2 Grid
 
-Grid 是由一个单独的 Kernel 启动的，所有线程组成一个 Grid，Grid 中所有线程共享 global memory。Grid 由很多 Block 组成，可以是一维二维或三维。
+Grid 是由一个单独的 Kernel 启动的，一个 Grid 由许多 Block 组成，可以是一维、二维或三维，Grid 中所有线程共享 global memory。
 
 ### 3.3 Block
 
-一个 Grid 由许多 Block 组成，Block 由许多 thread 组成，同样可以有一维、二维或者三维。Block 内部的多个 thread 可以同步（synchronize），可访问共享内存（share memory）。
+Thread Block (线程块)，一个 Block 由许多 thread 组成，同样可以有一维、二维或者三维。Block 内部的多个 thread 可以同步（synchronize），可访问共享内存（share memory）。
 
-一个完整的 kernel 函数的格式为：
+### 3.4 Thread
+
+一个 Thread 对应一个 SP (Scalar Processor)，是 GPU 最基本的处理单元，也称为 CUDA core 。
+
+![Block-Thread 排列示意图](./images/CUDA-block-threadidx.png)
+
+### 3.5 kernel function
+
+一个更完整的 kernel 函数的格式为：
 
 ```cpp
 kernel_function<<<Dg, Db, Ns, S>>>(param list);
@@ -86,7 +118,7 @@ addKernel<<<(dim3 grid(arr_len + 512 - 1), 1, 1), dim3 block(512, 1, 1)>>>(a, b,
 
 ![kernel、grid、block 的组织方式](./images/CUDA-software-arch.png)
 
-### 4. grid 与 block 的理解
+### 3.6 grid 与 block 的理解
 
 1. 只修改 block，且 block 是一维的：
 
@@ -149,6 +181,72 @@ __global__ void addKernel(float *pA, float *pB, float *pC, int size)
     if (index >= size)
         return;
     pC[index] = pA[index] + pB[index];
+}
+```
+
+### 3.7 完整示例
+
+实现两个向量相加 arr_c[] = arr_a[] + arr_b[] 。
+
+```cpp
+#include <cuda.h>
+#include <cuda_runtime_api.h>
+
+#include <cmath>
+#include <iostream>
+
+#define CUDA_CHECK(call)                                           \
+    {                                                              \
+        const cudaError_t error = call;                            \
+        if (error != cudaSuccess) {                                \
+            fprintf(stderr, "Error: %s:%d, ", __FILE__, __LINE__); \
+            fprintf(stderr, "code: %d, reason: %s\n", error,       \
+                    cudaGetErrorString(error));                    \
+            exit(1);                                               \
+        }                                                          \
+    }
+
+__global__ void addKernel(float *pA, float *pB, float *pC, int size)
+{
+    // 计算当前数组中的索引
+    int index = blockIdx.x * blockDim.x + threadIdx.x;
+    if (index >= size)
+        return;
+
+    pC[index] = pA[index] + pB[index];
+}
+
+int main()
+{
+    float a[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    float b[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+
+    int arr_len = 16;
+
+    float *dev_a, *dev_b, *dev_c;
+    CUDA_CHECK(cudaMalloc(&dev_a, sizeof(float) * arr_len));
+    CUDA_CHECK(cudaMalloc(&dev_b, sizeof(float) * arr_len));
+    CUDA_CHECK(cudaMalloc(&dev_c, sizeof(float) * arr_len));
+
+    CUDA_CHECK(cudaMemcpy(dev_a, a, sizeof(float) * arr_len, cudaMemcpyHostToDevice));
+    CUDA_CHECK(cudaMemcpy(dev_b, b, sizeof(float) * arr_len, cudaMemcpyHostToDevice));
+
+    int *count;
+    CUDA_CHECK(cudaMalloc(&count, sizeof(int)));
+    CUDA_CHECK(cudaMemset(count, 0, sizeof(int)));
+
+    addKernel<<<arr_len + 512 - 1, 512>>>(dev_a, dev_b, dev_c, arr_len);
+    float *output = (float *)malloc(arr_len * sizeof(float));
+
+    CUDA_CHECK(cudaMemcpy(output, dev_c, sizeof(float) * arr_len, cudaMemcpyDeviceToHost));
+
+    std::cout << " output add" << std::endl;
+    for (int i = 0; i < arr_len; i++) {
+        std::cout << " " << output[i];
+    }
+    std::cout << std::endl;
+
+    return 0;
 }
 ```
 
