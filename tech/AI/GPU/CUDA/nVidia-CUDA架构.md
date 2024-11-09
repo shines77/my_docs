@@ -52,6 +52,37 @@ Grid 是由一个单独的 Kernel 启动的，所有线程组成一个 Grid，Gr
 
 一个 Grid 由许多 Block 组成，Block 由许多 thread 组成，同样可以有一维、二维或者三维。Block 内部的多个 thread 可以同步（synchronize），可访问共享内存（share memory）。
 
+一个完整的 kernel 函数的格式为：
+
+```cpp
+kernel_function<<<Dg, Db, Ns, S>>>(param list);
+```
+
+- **Dg**：表示一个 grid 有多少个 block，可以是一维、二维或三维。三维的表示法为：Dim3 Dg(Dg.x, Dg.y, 1)，表示 grid 中每行有 Dg.x 个 block，每列有 Dg.y 个 block，第三维恒为 1 (目前一个核函数只有一个grid)。整个 grid 中共有 Dg.x * Dg.y 个 block，其中 Dg.x 和 Dg.y 最大值为 65535。
+
+- **Db**：表示一个 block 有多少个 thread，可以是一维、二维或三维。三维的表示法为：Dim3 Db(Db.x, Db.y, Db.z)，表示整个 block 中每行有 Db.x 个 thread，每列有 Db.y 个 thread，高度为 Db.z 。Db.x 和 Db.y 最大值为 512，Db.z 最大值为 62。一个 block 中共有 Db.x * Db.y * Db.z 个 thread。计算能力为 1.0, 1.1 的硬件该乘积的最大值为 768，计算能力为 1.2, 1.3 的硬件支持的最大值为 1024 。
+
+- **Ns**：可选参数，用于设置每个 block 除了静态分配的 shared Memory 以外，最多能动态分配的 shared memory 大小，单位为 byte，不需要动态分配时该值为 0 或省略不写。
+
+- **S**：可选参数，类型为 cudaStream_t，默认值为零，表示该 kernel 函数处在哪个流之中。
+
+例如：
+
+```cpp
+// 一维的定义
+static const int arr_len = 16;
+addKernel<<<arr_len + 512 - 1, 512>>>(a, b, c, len);
+
+
+// 等价于
+dim3 grid(arr_len + 512 - 1, 1, 1), block(512, 1, 1);
+
+addKernel<<<dim3 grid, dim3 block>>>(a, b, c, len);
+
+// 上面的等价于
+addKernel<<<(dim3 grid(arr_len + 512 - 1), 1, 1), dim3 block(512, 1, 1)>>>(a, b, c, len);
+```
+
 如下图所示为 kernel、grid、block 的组织方式以及对应的硬件部分。
 
 ![kernel、grid、block 的组织方式](./images/CUDA-software-arch.png)
