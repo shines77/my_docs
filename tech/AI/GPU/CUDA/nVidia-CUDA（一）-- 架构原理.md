@@ -222,7 +222,7 @@ __global__ void addKernel(float *pA, float *pB, float *pC, int size)
         }                                                          \
     }
 
-__global__ void addKernel(float *pA, float *pB, float *pC, int size)
+__global__ void MatAdd(float *pA, float *pB, float *pC, int size)
 {
     // 计算当前数组中的索引
     int index = blockIdx.x * blockDim.x + threadIdx.x;
@@ -234,8 +234,8 @@ __global__ void addKernel(float *pA, float *pB, float *pC, int size)
 
 int main()
 {
-    float a[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-    float b[16] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    float a[16] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+    float b[16] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 
     int arr_len = 16;
 
@@ -251,12 +251,12 @@ int main()
     CUDA_CHECK(cudaMalloc(&count, sizeof(int)));
     CUDA_CHECK(cudaMemset(count, 0, sizeof(int)));
 
-    addKernel<<<arr_len + 512 - 1, 512>>>(dev_a, dev_b, dev_c, arr_len);
-    float *output = (float *)malloc(arr_len * sizeof(float));
+    MatAdd<<<arr_len + 512 - 1, 512>>>(dev_a, dev_b, dev_c, arr_len);
 
+    float *output = (float *)malloc(arr_len * sizeof(float));
     CUDA_CHECK(cudaMemcpy(output, dev_c, sizeof(float) * arr_len, cudaMemcpyDeviceToHost));
 
-    std::cout << " output add" << std::endl;
+    std::cout << " output add " << std::endl;
     for (int i = 0; i < arr_len; i++) {
         std::cout << " " << output[i];
     }
