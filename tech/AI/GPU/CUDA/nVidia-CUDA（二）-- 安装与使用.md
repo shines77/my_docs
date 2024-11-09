@@ -131,7 +131,7 @@ C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\lib
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\libnvvp
 ```
 
-如果已经添加过了的路径可以跳过，你的 CUDA 的安装路径可能不一样，请自行修改。
+如果已经添加过了的路径可以跳过，您的 CUDA 安装路径可能跟上面不一样，请自行修改。
 
 ## 5. 编程指南
 
