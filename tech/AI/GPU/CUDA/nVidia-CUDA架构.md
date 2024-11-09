@@ -73,13 +73,12 @@ kernel_function<<<Dg, Db, Ns, S>>>(param list);
 static const int arr_len = 16;
 addKernel<<<arr_len + 512 - 1, 512>>>(a, b, c, len);
 
-
 // 等价于
 dim3 grid(arr_len + 512 - 1, 1, 1), block(512, 1, 1);
 
 addKernel<<<dim3 grid, dim3 block>>>(a, b, c, len);
 
-// 上面的等价于
+// 也等价于
 addKernel<<<(dim3 grid(arr_len + 512 - 1), 1, 1), dim3 block(512, 1, 1)>>>(a, b, c, len);
 ```
 
@@ -87,9 +86,74 @@ addKernel<<<(dim3 grid(arr_len + 512 - 1), 1, 1), dim3 block(512, 1, 1)>>>(a, b,
 
 ![kernel、grid、block 的组织方式](./images/CUDA-software-arch.png)
 
+### 4. grid 与 block 的理解
+
+1. 只修改 block，且 block 是一维的：
+
+```cpp
+dim3 grid(1, 1, 1), block(16, 1, 1);
+
+__global__ void addKernel(float *pA, float *pB, float *pC, int size)
+{
+    // 计算当前数组中的索引, block 是一维的
+    int index = threadIdx.x;
+    if (index >= size)
+        return;
+    pC[index] = pA[index] + pB[index];
+}
+```
+
+2. 只修改 block，且 block 是二维的：
+
+```cpp
+dim3 grid(1, 1, 1), block(8, 2, 1);
+
+__global__ void addKernel(float *pA, float *pB, float *pC, int size)
+{
+    // 计算当前数组中的索引, block 是二维的
+    int index = threadIdx.x + blockDim.x * threadIdx.y;
+    if (index >= size)
+        return;
+    pC[index] = pA[index] + pB[index];
+}
+```
+
+3. grid、block 各改一个：
+
+```cpp
+dim3 grid(4, 1, 1), block(4, 1, 1)
+
+__global__ void addKernel(float *pA, float *pB, float *pC, int size)
+{
+    // 计算当前数组中的索引, grid.x 是一维的
+    int index = blockIdx.x * gridDim.x + threadIdx.x;
+    if (index >= size)
+        return;
+    pC[index] = pA[index] + pB[index];
+}
+```
+
+4. grid、block 各改两个：
+
+```cpp
+dim3 ggrid(2, 2, 1), block(2, 2, 1)
+
+__global__ void addKernel(float *pA, float *pB, float *pC, int size)
+{
+    // 计算当前数组中的索引, 在第几个块中 * 块的大小 + 块中的x, y维度（几行几列）
+    int index = (blockIdx.y * gridDim.x + blockIdx.x) * (blockDim.x * blockDim.y) + threadIdx.y * blockDim.y + threadIdx.x;
+    if (index >= size)
+        return;
+    pC[index] = pA[index] + pB[index];
+}
+```
 
 ## x. 参考文章
 
 - [异构计算--CUDA架构](https://blog.csdn.net/qq_44924694/article/details/126202388)
 
 - [CUDA并行架构](https://blog.csdn.net/qq_41636999/article/details/142392850)
+
+- [一文学会CUDA编程：深入了解CUDA编程与架构（一）](https://blog.csdn.net/laukal/article/details/140833238)
+
+- [一文搞懂CUDA](https://blog.csdn.net/qq_40647372/article/details/135213452)
