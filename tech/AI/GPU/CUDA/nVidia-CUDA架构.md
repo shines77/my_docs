@@ -36,9 +36,9 @@ SP（标量处理器，Scalar Processor），GPU 最基本的处理单元，也�
 
 一个 SM 一次最多能容纳的线程数量主要与底层硬件的计算能力有关，下表显示了在不同的计算能力的设备上，每个线程块上开启不同数量的线程时设备的利用率。
 
-![不用硬件的 max-thread-num 对照表](./images/nVidia-warp-max-thread-num.png]
+![不用硬件的 max-thread-num 对照表](./images/nVidia-warp-max-thread-num.png)
 
-关于 warp 的调度：
+**关于 warp 的调度**
 
 一个 SM 单元以 `max-thread-num` 个并行线程为一组来创建、管理、调度和执行线程，这样的线程组称为 **warp 块(束)**，即以线程 warp 块(束 为调度单位，同一时间只允许最多 `max-thread-num` 个线程执行指定、内存读取的操作，其他线程会被挂起，调度逻辑如下图所示的状态变化。
 
@@ -58,8 +58,6 @@ SP（标量处理器，Scalar Processor），GPU 最基本的处理单元，也�
 
 - 一个只读纹理缓存(Texture Cache)，由该 SM 下的所有 SP (标量处理器核心) 共享，加速从纹理存储器空间进行的读取操作（这是一个只读区域），每个 SM 都会通过实现不同寻址模型和数据过滤的纹理单元访问纹理缓存。
 
-GPU 的共享存储器的 SIMT 多处理器模型
-
 ![GPU的共享存储器的SIMT多处理器模型](./images/GPU-SIMT-model.png)
 
 ## 3. CUDA 软件架构
@@ -69,6 +67,8 @@ CUDA 在软件方面组成有：一个 CUDA 库、一个应用程序编程接口
 CUDA 程序构架分为两部分：Host 和 Device。一般而言，Host 指的是 CPU，Device 指的是 GPU。在 CUDA 程序构架中，主程序还是由 CPU 来执行，而当遇到数据并行处理的部分，CUDA 就会将程序编译成 GPU 能执行的程序，并传送到 GPU，而这个程序在 CUDA 里称做核函数（kernel function）。
 
 nVidia 的 CUDA 软件架构主要用 Kernel、Grid、Block 和 Thread 组成。
+
+![kernel、grid、block 的组织方式](./images/CUDA-software-arch.png)
 
 ### 3.1 Kernel
 
@@ -123,10 +123,6 @@ addKernel<<<dim3 grid, dim3 block>>>(a, b, c, len);
 // 也等价于
 addKernel<<<(dim3 grid(arr_len + 512 - 1), 1, 1), dim3 block(512, 1, 1)>>>(a, b, c, len);
 ```
-
-如下图所示为 kernel、grid、block 的组织方式以及对应的硬件部分。
-
-![kernel、grid、block 的组织方式](./images/CUDA-software-arch.png)
 
 ### 3.6 grid 与 block 的理解
 
