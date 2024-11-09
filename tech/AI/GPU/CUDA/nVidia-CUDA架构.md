@@ -32,7 +32,7 @@ SP（标量处理器，Scalar Processor），GPU 最基本的处理单元，也�
 
 ### 2.3 Warp
 
-一个 SP 可以执行一个 thread，但是实际上并不是所有的 thread 能够在同一时刻执行。Nvidia 把 32 个 thread 组成一个 warp，warp 是调度和运行的基本单元。warp 中所有 threads 并行的执行相同的指令。warp 由 SM 的硬件 warp scheduler 负责调度，一个 SM 同一个时刻可以执行多个 warp，这取决于 warp scheduler 的最大调度数量。目前每个 warp 包含 32 个 threads（这个值会根据不同的硬件拥有不同的上线，见下表）。
+一个 SP 可以执行一个 thread，但是实际上并不是所有的 thread 能够在同一时刻执行。Nvidia 把 32 个 thread 组成一个 warp，warp 是调度和运行的基本单元。warp 中所有 threads 并行的执行相同的指令。warp 由 SM 的硬件 warp scheduler 负责调度，一个 SM 同一个时刻可以执行多个 warp，这取决于 warp scheduler 的最大调度数量。目前每个 warp 包含 32 个 threads（这个值会根据不同的硬件拥有不同的上限，见下表）。
 
 **硬件利用率**
 
@@ -42,7 +42,7 @@ SP（标量处理器，Scalar Processor），GPU 最基本的处理单元，也�
 
 **关于 warp 的调度**
 
-一个 SM 单元以 `max-thread-num` 个并行线程为一组来创建、管理、调度和执行线程，这样的线程组称为 **warp 块(束)**，即以线程 warp 块(束 为调度单位，同一时间只允许最多 `max-thread-num` 个线程执行指定、内存读取的操作，其他线程会被挂起，调度逻辑如下图所示的状态变化。
+一个 SM 单元以 `max-thread-num` 个并行线程为一组来创建、管理、调度和执行线程，这样的线程组称为 **warp 块(束)**，即以线程 warp 块(束) 为调度单位，同一时间只允许最多 `max-thread-num` 个线程执行指定、内存读取的操作，其他线程会被挂起，调度逻辑如下图所示的状态变化。
 
 ![warp 块的五种状态转换](./images/warp-block-state-transfer.jpg)
 
@@ -58,7 +58,7 @@ SP（标量处理器，Scalar Processor），GPU 最基本的处理单元，也�
 
 - 只读固定缓存 (Constant Cache)，由该 SM 下的所有 SP (标量处理器核心) 共享，可加速从固定存储器空间进行的读取操作（这是一个只读区域）；
 
-- 一个只读纹理缓存(Texture Cache)，由该 SM 下的所有 SP (标量处理器核心) 共享，加速从纹理存储器空间进行的读取操作（这是一个只读区域），每个 SM 都会通过实现不同寻址模型和数据过滤的纹理单元访问纹理缓存。
+- 只读纹理缓存 (Texture Cache)，由该 SM 下的所有 SP (标量处理器核心) 共享，加速从纹理存储器空间进行的读取操作（这是一个只读区域），每个 SM 都会通过实现不同寻址模型和数据过滤的纹理单元访问纹理缓存。
 
 ![GPU的共享存储器的SIMT多处理器模型](./images/GPU-SIMT-model.png)
 
