@@ -1,4 +1,4 @@
-# nVidia CUDA 架构
+# nVidia CUDA 架构（一）-- 架构原理
 
 ## 1. CUDA 架构
 
