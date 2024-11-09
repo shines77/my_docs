@@ -32,6 +32,30 @@ SP（标量处理器，Scalar Processor），GPU 最基本的处理单元，也�
 
 一个 SP 可以执行一个 thread，但是实际上并不是所有的 thread 能够在同一时刻执行。Nvidia 把 32 个 thread 组成一个 warp，warp 是调度和运行的基本单元。warp 中所有 threads 并行的执行相同的指令。warp 由 SM 的硬件 warp scheduler 负责调度，一个 SM 同一个时刻可以执行多个 warp，这取决于 warp scheduler 的数量。目前每个 warp 包含 32 个 threads（nVidia 保留修改数量的权利）。
 
+## 3. CUDA 软件架构
+
+nVidia 的 CUDA 软件架构主要用 Kernel、Grid、Block 组成。
+
+### 3.1 Kernel
+
+具体到我们如何调用 GPU 上的线程实现我们的算法，则是通过 Kernel 实现的。在 GPU 上调用的函数成为 CUDA 核函数（Kernel function），核函数会被 GPU 上的多个线程执行。我们可以通过如下方式来定义一个 kernel：
+
+```cpp
+kernel_function<<<grid, block>>>(param1, param2, param3....);
+```
+
+### 3.2 Grid
+
+Grid 是由一个单独的 Kernel 启动的，所有线程组成一个 Grid，Grid 中所有线程共享 global memory。Grid 由很多 Block 组成，可以是一维二维或三维。
+
+### 3.3 Block
+
+一个 Grid 由许多 Block 组成，Block 由许多 thread 组成，同样可以有一维、二维或者三维。Block 内部的多个 thread 可以同步（synchronize），可访问共享内存（share memory）。
+
+如下图所示为 kernel、grid、block 的组织方式以及对应的硬件部分。
+
+![kernel、grid、block 的组织方式](./images/CUDA-software-arch.png)
+
 
 ## x. 参考文章
 
