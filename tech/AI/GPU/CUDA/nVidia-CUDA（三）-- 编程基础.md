@@ -65,7 +65,6 @@ threadId = blockIdx.x;
 dim3 dimGrid(M, N);
 dim3 dimBlock(1);
 
-
 // 那么
 threadId = blockIdx.y * blcokDim.x + blockIdx.x;
 ```
@@ -210,9 +209,11 @@ Torch 使用 CUDA 算子 主要分为三个步骤：
 
 **JIT 编译调用**
 
-just-in-time (JIT, 即时编译)，即 python 代码运行的时候再去编译 cpp 和 cuda 文件。
+just-in-time (JIT，即时编译)，即 python 代码运行的时候再去编译 cpp 和 cuda 文件。
 
-首先需要加载需要即时编译的文件，然后调用接口函数：
+首先需要加载需要即时编译的文件，然后调用接口函数。
+
+`run_time.py` ：
 
 ```python
 from torch.utils.cpp_extension import load
@@ -252,7 +253,7 @@ Kernel test passed.
 
 第二种编译的方式是通过 Setuptools，也就是编写 setup.py 。具体为，首先调用 Torch 的 CUDAExtension 模块，将算子注册为 add2，同时 include_dirs 加上头文件目录，ext_modules 加上算子及封装函数。
 
-具体代码如下：
+`setup.py` 代码如下：
 
 ```python
 from setuptools import setup
@@ -380,6 +381,8 @@ TORCH_LIBRARY(add2, m) {
 ```
 
 最后会在 build 目录下生成一个 libadd2.so ，通过如下方式在 python 端调用：
+
+`run_time.py` ：
 
 ```python
 import torch
