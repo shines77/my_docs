@@ -258,7 +258,7 @@ int main()
 }
 ```
 
-## x. 参考文章
+## 4. 参考文章
 
 - [异构计算--CUDA架构](https://blog.csdn.net/qq_44924694/article/details/126202388)
 
