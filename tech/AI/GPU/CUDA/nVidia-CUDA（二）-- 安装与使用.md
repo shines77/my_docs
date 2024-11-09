@@ -34,7 +34,7 @@ CUDA Toolkit 对应的最低驱动版本对照表：
 
 ![CUDA Toolkit 对应的最低驱动版本对照表](./images/CUDA-Minimum-Required-Driver.png)
 
-请参阅：[CUDA Toolkit 和 CUDA 版本兼容性所需的最低驱动程序版本](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html)
+更详细的信息，请参阅：[CUDA Toolkit 和 CUDA 版本兼容性所需的最低驱动程序版本](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html)
 
 查看当前 CUDA 的版本：
 

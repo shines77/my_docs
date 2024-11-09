@@ -94,7 +94,15 @@ Thread Block (线程块)，一个 Block 由许多 thread 组成，同样可以�
 
 ![Block-Thread 排列示意图](./images/CUDA-block-threadidx.png)
 
-### 3.5 kernel function
+### 3.5 CUDA 内存模型
+
+- 每个 Thread 都用自己的 registers（寄存器）
+- 每个 Thread 都有自己的 local memory（局部内存）
+- 每个 Thread Block (线程块) 内都有自己的 shared memory（共享内存），Thread Block (线程块) 内的所有线程共享这段内存资源
+- 每个 Grid 都有自己的 global memory（全局内存），不同的 Thread Block (线程块) 内的线程都可使用
+- 每个 Grid 都有自己的 constant memory（常量内存）和 texture memory（纹理内存），不同的 Thread Block (线程块) 内的线程都可使用
+
+### 3.6 kernel function
 
 一个更完整的 kernel 函数的格式为：
 
@@ -126,7 +134,7 @@ addKernel<<<dim3 grid, dim3 block>>>(a, b, c, len);
 addKernel<<<(dim3 grid(arr_len + 512 - 1), 1, 1), dim3 block(512, 1, 1)>>>(a, b, c, len);
 ```
 
-### 3.6 grid 与 block 的理解
+### 3.7 grid 与 block 的理解
 
 1. 只修改 block，且 block 是一维的：
 
@@ -192,7 +200,7 @@ __global__ void addKernel(float *pA, float *pB, float *pC, int size)
 }
 ```
 
-### 3.7 完整示例
+### 3.8 完整示例
 
 实现两个向量相加 arr_c[] = arr_a[] + arr_b[] 。
 
