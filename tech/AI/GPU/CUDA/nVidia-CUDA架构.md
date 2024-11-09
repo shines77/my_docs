@@ -111,7 +111,7 @@ dim3 grid(1, 1, 1), block(8, 2, 1);
 __global__ void addKernel(float *pA, float *pB, float *pC, int size)
 {
     // 计算当前数组中的索引, block 是二维的
-    int index = blockDim.x * threadIdx.y + threadIdx.x;
+    int index = threadIdx.y * blockDim.x + threadIdx.x;
     if (index >= size)
         return;
     pC[index] = pA[index] + pB[index];
@@ -144,7 +144,8 @@ __global__ void addKernel(float *pA, float *pB, float *pC, int size)
 {
     // 计算当前数组中的索引, 在第几个块中 * 块的大小 + 块中的x, y维度（几行几列）
     // Bugfix: 有个疑问, 下面的 threadIdx.y * blockDim.y 应该是 threadIdx.y * blockDim.x 才对 ?
-    int index = (blockIdx.y * gridDim.x + blockIdx.x) * (blockDim.x * blockDim.y) + threadIdx.y * blockDim.y + threadIdx.x;
+    // int index = (blockIdx.y * gridDim.x + blockIdx.x) * (blockDim.x * blockDim.y) + threadIdx.y * blockDim.y + threadIdx.x;
+    int index = (blockIdx.y * gridDim.x + blockIdx.x) * (blockDim.x * blockDim.y) + threadIdx.y * blockDim.x + threadIdx.x;
     if (index >= size)
         return;
     pC[index] = pA[index] + pB[index];
