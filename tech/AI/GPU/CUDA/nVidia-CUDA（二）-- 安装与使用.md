@@ -100,11 +100,44 @@ conda install tensorflow-gpu==2.2.0
 
 ## 4. 在 Windows 下安装
 
+请参考第 2、3 小节安装 CUDA Toolkit、cuDNN、python 和 tensorflow 的相应版本。
+
+唯一有点区别的地方是 cuDNN，它下载回来后是一个压缩包，需要自己把解压出来的文件和目录拷贝到 CUDA 的安装目录中。
+
+先安装好 CUDA Toolkit，然后使用如下命令：
+
+```bash
+set cuda
+```
+
+会显示 CUDA 的安装路径，例如：
+
+```text
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1
+```
+
+然后把 cuDNN 压缩包解压出来的文件如下：
+
+![cuDNN 解压出来的文件](./images/cuDNN-zip-files.png)
+
+把该目录下的所有文件夹和文件都拷贝到 `C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1` 目录中。
+
+然后把下列路径添加到 `系统环境变量` 中：
+
+```text
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\bin
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\include
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\lib
+C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.1\libnvvp
+```
+
+如果已经添加过了的路径可以跳过，你的 CUDA 的安装路径可能不一样，请自行修改。
+
 ## 5. 编程指南
 
-[CUDA C++ Programming Guide](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html)
+官方 CUDA 相关编程指南：[CUDA C++ Programming Guide](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html)
 
-## x. 参加文章
+## 6. 参加文章
 
 - [一文搞懂CUDA](https://blog.csdn.net/qq_40647372/article/details/135213452)
 
