@@ -50,7 +50,7 @@ CUDA Toolkit 对应的最低驱动版本对照表：
 
 ![GeForce-Nootbook](./images/GeForce-Nootbook.png)
 
-更详细的可以查阅：[Your GPU Compute Capability](https://developer.nvidia.com/cuda-gpus)
+更详细的 `计算能力` 可以查阅：[Your GPU Compute Capability](https://developer.nvidia.com/cuda-gpus) 。
 
 ### 2.2 cuDNN
 
