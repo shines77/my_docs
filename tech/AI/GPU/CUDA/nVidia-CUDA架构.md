@@ -32,19 +32,21 @@ SP（标量处理器，Scalar Processor），GPU 最基本的处理单元，也�
 
 ### 2.3 Warp
 
-一个 SP 可以执行一个 thread，但是实际上并不是所有的 thread 能够在同一时刻执行。Nvidia 把 32 个 thread 组成一个 warp，warp 是调度和运行的基本单元。warp 中所有 threads 并行的执行相同的指令。warp 由 SM 的硬件 warp scheduler 负责调度，一个 SM 同一个时刻可以执行多个 warp，这取决于 warp scheduler 的数量。目前每个 warp 包含 32 个 threads（nVidia 保留修改数量的权利）。
+一个 SP 可以执行一个 thread，但是实际上并不是所有的 thread 能够在同一时刻执行。Nvidia 把 32 个 thread 组成一个 warp，warp 是调度和运行的基本单元。warp 中所有 threads 并行的执行相同的指令。warp 由 SM 的硬件 warp scheduler 负责调度，一个 SM 同一个时刻可以执行多个 warp，这取决于 warp scheduler 的最大调度数量。目前每个 warp 包含 32 个 threads（这个值会根据不同的硬件拥有不同的上线，见下表）。
+
+一个 SM 一次最多能容纳的线程数量主要与底层硬件的计算能力有关，下表显示了在不同的计算能力的设备上，每个线程块上开启不同数量的线程时设备的利用率。
+
+![不用硬件的 max-thread-num 对照表](./images/nVidia-warp-max-thread-num.png]
 
 关于 warp 的调度：
 
-一个 SM 单元以 32 个并行线程为一组来创建、管理、调度和执行线程，这样的线程组称为 **warp 块(束)**，即以线程 warp 块(束 为调度单位，同一时间只允许最多 32 个线程执行指定、内存读取的操作，其他线程会被挂起，调度逻辑如下图所示的状态变化。
+一个 SM 单元以 `max-thread-num` 个并行线程为一组来创建、管理、调度和执行线程，这样的线程组称为 **warp 块(束)**，即以线程 warp 块(束 为调度单位，同一时间只允许最多 `max-thread-num` 个线程执行指定、内存读取的操作，其他线程会被挂起，调度逻辑如下图所示的状态变化。
 
 ![warp 块的五种状态转换](./images/warp-block-state-transfer.jpg)
 
 ### 2.4 更多细节
 
-GPU 的共享存储器的 SIMT 多处理器模型
-
-![GPU的共享存储器的SIMT多处理器模型](./images/GPU-SIMT-model.png)
+![GPU 硬件架构](./images/GPU-hardware-structure.png)
 
 对于每个 SM（Streaming Multiprocessor），都有以下四种类型的存储器区域：
 
@@ -56,7 +58,9 @@ GPU 的共享存储器的 SIMT 多处理器模型
 
 - 一个只读纹理缓存(Texture Cache)，由该 SM 下的所有 SP (标量处理器核心) 共享，加速从纹理存储器空间进行的读取操作（这是一个只读区域），每个 SM 都会通过实现不同寻址模型和数据过滤的纹理单元访问纹理缓存。
 
-![GPU 硬件架构](./images/GPU-hardware-structure.png)
+GPU 的共享存储器的 SIMT 多处理器模型
+
+![GPU的共享存储器的SIMT多处理器模型](./images/GPU-SIMT-model.png)
 
 ## 3. CUDA 软件架构
 
@@ -265,3 +269,5 @@ int main()
 - [一文学会CUDA编程：深入了解CUDA编程与架构（一）](https://blog.csdn.net/laukal/article/details/140833238)
 
 - [一文搞懂CUDA](https://blog.csdn.net/qq_40647372/article/details/135213452)
+
+- [CUDA与OpenCL架构](https://www.cnblogs.com/huliangwen/articles/5003504.html)
