@@ -42,6 +42,16 @@ CUDA Toolkit 对应的最低驱动版本对照表：
 
 另外，Windows 下还可以使用 `nvcc --version` 命令查询 CUDA 版本，使用 `set cuda` 命令查询 CUDA 的环境变量。
 
+**显卡的计算能力**
+
+查看显卡对应的计算能力，例如：本机 RTX 4060 Laptop 的计算能力为 8.9 。
+
+![GeForce-and-Titan](./images/GeForce-and-Titan.png)
+
+![GeForce-Nootbook](./images/GeForce-Nootbook.png)
+
+更详细的可以查阅：[Your GPU Compute Capability](https://developer.nvidia.com/cuda-gpus)
+
 ### 2.2 cuDNN
 
 cuDNN 是用于深度神经网络的 GPU 加速库。它强调性能、易用性和低内存开销。NVIDIA cuDNN 以集成到更高级别的机器学习框架中，如谷歌的 Tensorflow、加州大学伯克利分校的流行 caffe 软件。简单的插入式设计可以让开发人员专注于设计和实现神经网络模型，而不是简单调整性能，同时还可以在 GPU 上实现高性能现代并行计算。
@@ -97,3 +107,5 @@ conda install tensorflow-gpu==2.2.0
 ## x. 参加文章
 
 - [一文搞懂CUDA](https://blog.csdn.net/qq_40647372/article/details/135213452)
+
+- [关于cuda、cudnn环境配置](https://blog.csdn.net/weixin_47166887/article/details/124457997)
