@@ -125,7 +125,7 @@ dim3 grid(4, 1, 1), block(4, 1, 1)
 
 __global__ void addKernel(float *pA, float *pB, float *pC, int size)
 {
-    // 计算当前数组中的索引, grid.x 是一维的
+    // 计算当前数组中的索引, grid 是一维的
     int index = blockIdx.x * gridDim.x + threadIdx.x;
     if (index >= size)
         return;
@@ -137,7 +137,7 @@ __global__ void addKernel(float *pA, float *pB, float *pC, int size)
 
 ```cpp
 // 相当于 dim3 grid(gridDim.x, gridDim.y, 1)
-// 相当于 block(blockDim.x, blockDim.y, 1)
+// 相当于 dim3 block(blockDim.x, blockDim.y, 1)
 dim3 grid(2, 2, 1), block(2, 2, 1)
 
 __global__ void addKernel(float *pA, float *pB, float *pC, int size)
