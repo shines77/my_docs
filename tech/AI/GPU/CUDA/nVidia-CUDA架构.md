@@ -14,19 +14,21 @@ NVIDIA 于 2006 年 11 月在 G80 系列中引入的 Tesla 统一图形和计算
 
 nVidia 的显卡用 SM、SP 和 Warp 组成。
 
-### 2.1 SM（streaming multiprocessor）
+### 2.1 SM（Streaming Multiprocessor）
 
-一个 SM 用多个 SP 和其他资源组成，也叫 GPU 大核，其他资源如：warp scheduler，register，shared memory 等。register 和 shared memory 是 SM 的稀缺资源，CUDA 将这些资源分配给所有驻留在 SM 中的 threads。因此，这些有限的资源就使每个 SM 中 active warps 有非常严格的限制，也就限制了并行能力。如下图所示，是一个 SM 的基本组成，其中每个绿色小块代表一个 SP 。
+SM（多线程流处理器，Streaming Multiprocessor），一个 SM 用多个 SP 和其他资源组成，也叫 GPU 大核，其他资源如：warp scheduler，register，shared memory 等。register 和 shared memory 是 SM 的稀缺资源，CUDA 将这些资源分配给所有驻留在 SM 中的 threads。因此，这些有限的资源就使每个 SM 中 active warps 有非常严格的限制，也就限制了并行能力。如下图所示，是一个 SM 的基本组成，其中每个绿色小块代表一个 SP 。
 
-### 2.2 SP（streaming processor）
+GPU 的 SM 总数量由具体的架构决定，例如：Ada Lovelace 架构的 RTX 4090 的 SMs/CUs 数量是 128 ，CUDA Cores/流处理器：16384 个，也就是说每个 SM 中有 16384/128 = 128 个 SP 。
 
-SP（流处理器，streaming processor），GPU 最基本的处理单元，也称为 CUDA core ，最后具体的指令和任务都是在 SP 上处理的。GPU 进行并行计算，也就是很多个 SP 同时做处理。
+### 2.2 SP（Scalar Processor）
+
+SP（标量处理器，Scalar Processor），GPU 最基本的处理单元，也称为 CUDA core ，最后具体的指令和任务都是在 SP 上处理的。GPU 进行并行计算，也就是很多个 SP 同时做处理。
 
 每个 SM 包含的 SP 数量依据 GPU 架构而不同，Fermi 架构 GF100 是 32个，GF10X 是 48 个，Kepler 架构是 192 个，Maxwell 是 128 个。当一个 kernel 启动后，thread 会被分配到很多 SM 中执行。大量的 thread 可能会被分配到不同的 SM ，但是同一个 block 中的 thread 必然在同一个 SM 中并行执行。
 
 ![nVidia 显卡硬件架构](./images/nVidia-display-card-arch.jpeg)
 
-### 2.3 Warp 调度
+### 2.3 Warp
 
 一个 SP 可以执行一个 thread，但是实际上并不是所有的 thread 能够在同一时刻执行。Nvidia 把 32 个 thread 组成一个 warp，warp 是调度和运行的基本单元。warp 中所有 threads 并行的执行相同的指令。warp 由 SM 的硬件 warp scheduler 负责调度，一个 SM 同一个时刻可以执行多个 warp，这取决于 warp scheduler 的数量。目前每个 warp 包含 32 个 threads（nVidia 保留修改数量的权利）。
 
