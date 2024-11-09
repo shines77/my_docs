@@ -32,7 +32,7 @@ SP（标量处理器，Scalar Processor），GPU 最基本的处理单元，也�
 
 ### 2.3 Warp
 
-一个 SP 可以执行一个 thread，但是实际上并不是所有的 thread 能够在同一时刻执行。Nvidia 把 32 个 thread 组成一个 warp，warp 是调度和运行的基本单元。warp 中所有 threads 并行的执行相同的指令。warp 由 SM 的硬件 warp scheduler 负责调度，一个 SM 同一个时刻可以执行多个 warp，这取决于 warp scheduler 的最大调度数量。目前每个 warp 包含 32 个 threads（这个值会根据不同的硬件拥有不同的上限，见下表）。
+一个 SP 可以执行一个 thread，但是实际上并不是所有的 thread 能够在同一时刻执行。Nvidia 把 32 个 thread 组成一个 warp，warp 是调度和运行的基本单元。warp 中所有 threads 并行的执行相同的指令。warp 由 SM 的硬件 warp scheduler 负责调度，一个 SM 同一个时刻可以执行多个 warp，这取决于 warp scheduler 的最大调度数量。目前每个 warp 包含 32 个 threads（nVidia 保留了修改这个值的权力）。
 
 **关于 warp 的调度**
 
