@@ -34,15 +34,9 @@ SP（标量处理器，Scalar Processor），GPU 最基本的处理单元，也�
 
 一个 SP 可以执行一个 thread，但是实际上并不是所有的 thread 能够在同一时刻执行。Nvidia 把 32 个 thread 组成一个 warp，warp 是调度和运行的基本单元。warp 中所有 threads 并行的执行相同的指令。warp 由 SM 的硬件 warp scheduler 负责调度，一个 SM 同一个时刻可以执行多个 warp，这取决于 warp scheduler 的最大调度数量。目前每个 warp 包含 32 个 threads（这个值会根据不同的硬件拥有不同的上限，见下表）。
 
-**硬件利用率**
-
-一个 SM 一次最多能容纳的线程数量主要与底层硬件的计算能力有关，下表显示了在不同的计算能力的设备上，每个线程块上开启不同数量的线程时设备的利用率。
-
-![不用硬件的 max-thread-num 对照表](./images/nVidia-warp-max-thread-num.png)
-
 **关于 warp 的调度**
 
-一个 SM 单元以 `max-thread-num` 个并行线程为一组来创建、管理、调度和执行线程，这样的线程组称为 **warp 块(束)**，即以线程 warp 块(束) 为调度单位，同一时间只允许最多 `max-thread-num` 个线程执行指定、内存读取的操作，其他线程会被挂起，调度逻辑如下图所示的状态变化。
+一个 SM 单元以 32 个并行线程为一组来创建、管理、调度和执行线程，这样的线程组称为 **warp 束**，即以线程 **warp 束** 为调度单位，同一时间只允许最多 32 个线程执行指定、内存读取的操作，其他线程会被挂起，调度逻辑如下图所示的状态变化。
 
 ![warp 块的五种状态转换](./images/warp-block-state-transfer.jpg)
 
@@ -87,6 +81,12 @@ Grid 是由一个单独的 Kernel 启动的，一个 Grid 由许多 Block 组成
 ### 3.3 Block
 
 Thread Block (线程块)，一个 Block 由许多 thread 组成，同样可以有一维、二维或者三维。Block 内部的多个 thread 可以同步（synchronize），可访问共享内存（share memory）。
+
+**硬件利用率**
+
+一个 SM 一次最多能容纳的线程数量主要与底层硬件的计算能力有关，下表显示了在不同的计算能力的设备上，每个线程块上开启不同数量的线程时设备的利用率。
+
+![不用硬件的 max-thread-num 对照表](./images/nVidia-warp-max-thread-num.png)
 
 ### 3.4 Thread
 
