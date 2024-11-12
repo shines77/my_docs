@@ -17,7 +17,7 @@ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
 sudo apt-get update
 
 # 安装 gcc 快照
-apt-get install gcc-snapshot
+sudo apt-get install gcc-snapshot
 
 sudo apt-get update
 ```
@@ -123,10 +123,10 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 84 --slave /u
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 94 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-9 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-9 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-9 --slave /usr/bin/g++ g++ /usr/bin/g++-9
 ```
 
-`gcc 10.3.0`：(要求 `Ubuntu 18.04`)
+`gcc 10.5.0`：(要求 `Ubuntu 18.04`)
 
 ```shell
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 103 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-10 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10 --slave /usr/bin/g++ g++ /usr/bin/g++-10
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 105 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-10 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-10 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-10 --slave /usr/bin/g++ g++ /usr/bin/g++-10
 ```
 
 `gcc 11.1.0`：(要求 `Ubuntu 18.04`)
