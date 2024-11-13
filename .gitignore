@@ -5,7 +5,6 @@ __pycache__/
 
 # C extensions
 *.so
-
 # Distribution / packaging
 .Python
 env/
@@ -21,6 +20,10 @@ parts/
 sdist/
 var/
 *.egg-info/
+
+# PyCharm
+.idea
+
 .installed.cfg
 *.egg
 
