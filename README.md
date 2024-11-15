@@ -8,30 +8,55 @@
 
 .
 ├── github
+
 ├── html
+
 ├── lang
+
 │   ├── ASM
+
 │   ├── C
+
 │   ├── C#
+
 │   ├── C++
+
 │   ├── golang
+
 │   ├── Java
+
 │   ├── JavaScript
+
 │   ├── node.js
+
 │   ├── python
+
 │   ├── Rust
+
 │   └── TypeScript
+
 ├── linux
+
 │   ├── app
-│   │   ├── cmake
-│   │   ├── gogs
-│   │   └── mysql
-│   ├── centos
-│   ├── cmake
-│   ├── gdb
-│   ├── git
-│   ├── shell
-│   ├── ubuntu
+
+│   │   ├── [cmake](./blob/master/linux/app/cmake)
+
+│   │   ├── [gogs](./blob/master/linux/app/gogs)
+
+│   │   └── [mysql](./blob/master/linux/app/mysql)
+
+│   ├── [centos](./blob/master/linux/centos)
+
+│   ├── [cmake](./blob/master/linux/cmake)
+
+│   ├── [gdb](./blob/master/linux/gdb)
+
+│   ├── [git](./blob/master/linux/git)
+
+│   ├── [shell](./blob/master/linux/shell)
+
+│   ├── [ubuntu](./blob/master/linux/ubuntu)
+
 ├── misc
 │   ├── algorithm
 │   ├── math
@@ -48,20 +73,35 @@
 ├── system
 │   ├── Win7
 │   └── Windows
+
 ├── tech
+
 │   ├── AI
+
 │   │   ├── [3D](./blob/master/tech/AI/3D)
+
 │   │   ├── [AIGC](./blob/master/tech/AI/AIGC)
+
 │   │   ├── [AlphaGO](./blob/master/tech/AI/AlphaGO)
+
 │   │   ├── [ANN](./blob/master/tech/AI/ANN)
+
 │   │   ├── [FaceRecognition](./blob/master/tech/AI/FaceRecognition)
+
 │   │   ├── [GPU](./blob/master/tech/AI/GPU)
+
 │   │   ├── [LLM](./blob/master/tech/AI/LLM)
+
 │   │   ├── [MachineLearning](./blob/master/tech/AI/MachineLearning)
+
 │   │   ├── [NLP](./blob/master/tech/AI/NLP)
+
 │   │   ├── [PyTorch](./blob/master/tech/AI/PyTorch)
+
 │   │   ├── [QNN](./blob/master/tech/AI/QNN)
+
 │   │   └── [TensorFlow](./blob/master/tech/AI/TensorFlow)
+
 │   ├── android
 │   ├── asm
 │   ├── audio
@@ -77,9 +117,13 @@
 │   ├── kv
 │   ├── misc
 │   ├── nosql
+
 │   ├── [Quant](./blob/master/tech/Quant)
+
 │   ├── rust
+
 │   ├── [string-match](./blob/master/tech/string-match])
+
 │   ├── sudoku
 │   ├── thread
 │   ├── url
@@ -87,6 +131,7 @@
 │   ├── web
 │   ├── webgl
 │   └── windows
+
 ├── tools
 │   ├── chrome
 │   ├── git
@@ -102,8 +147,9 @@
 │       ├── minifilter
 │       ├── mstsc
 │       └── visual_studio
+
 └── work
     ├── ipsec_vpn
     ├── misc
     └── switcher
-
+```
