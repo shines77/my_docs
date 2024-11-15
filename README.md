@@ -2,7 +2,7 @@
 
 ## 简介
 
-我所有的技术文档及相关代码 (Linux Tips、机器学习、LLM、量化交易等)
+我所有的技术文档及相关代码 ([Linux Tips](./blob/master/linux)、[Python 开发](./blob/master/lang/python)、[机器学习](./blob/master/tech/AI/MachineLearning)、[LLM](./blob/master/tech/AI/LLM)、[量化交易](./blob/master/tech/Quant) 等)
 
 ## 目录结构
 
@@ -13,12 +13,17 @@
 │   ├── ASM<br/>
 │   ├── C<br/>
 │   ├── C#<br/>
-│   ├── C++<br/>
+│   ├── [C++](./blob/master/lang/C++)<br/>
 │   ├── golang<br/>
 │   ├── Java<br/>
 │   ├── JavaScript<br/>
 │   ├── node.js<br/>
-│   ├── python<br/>
+│   ├── [python: Python 相关代码](./blob/master/lang/python)<br/>
+│   │   ├── [DrissionPage: 浏览器爬虫](./blob/master/lang/python/DrissionPage)<br/>
+│   │   ├── [requests: 网络库](./blob/master/lang/python/requests)<br/>
+│   │   ├── [Scrapy: 爬虫](./blob/master/lang/python/Scrapy)<br/>
+│   │   ├── [selenium: 浏览器爬虫](./blob/master/lang/python/selenium)<br/>
+│   │   └── [urllib: 网络库](./blob/master/lang/python/urllib)<br/>
 │   ├── Rust<br/>
 │   └── TypeScript<br/>
 ├── [linux](./blob/master/linux)<br/>
