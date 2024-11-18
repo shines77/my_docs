@@ -46,7 +46,7 @@
 
 1. **词表的大小**：从 ChatGLM 的 150528 缩小为 65024（一个直观的体验是 ChatGLM2 及以后的版本加载速度比 ChatGLM 快不少）
 
-2. **位置编码**：位置编码从每个 GLMBlock 一份提升为全局一份。并且使用了 `RoPE` 替换了 `二维位置编码`，虽然这也是 GLM 中提出的亮点设计之一，但是目前大部分主流的 LLMs 都在使用 `RoPE`，所以大势所趋。当前版本仍然采用了最初的 `RoPE` 设计，事实上现在的 `RoPE` 经过了xPOS → 线性内插 →  NTK-Aware Scaled RoPE → … 若干次进化。
+2. **位置编码**：位置编码从每个 GLMBlock 一份提升为全局一份。并且使用了 `RoPE` 替换了 `二维位置编码`，虽然这也是 GLM 中提出的亮点设计之一，但是目前大部分主流的 LLMs 都在使用 `RoPE`，所以大势所趋。当前版本仍然采用了最初的 `RoPE` 设计，事实上现在的 `RoPE` 经过了 xPOS → 线性内插 →  NTK-Aware Scaled RoPE → … 若干次进化。
 
 3. **Multi-Query Attention**：这是一种共享机制的 Attention，是 Multi-Head Attention(MHA) 一种变体，相比 Multi-Head Attention，其 Query 部分没有区别，Key 和 Value 可以只用一个 Head。计算时，对 Key 和 Value 进行 expand 或者 repeat 操作，使它们填充到与 Query 一样的维度，后续计算就与 Multi-Head Attention 没区别。
 
@@ -72,7 +72,7 @@ ChatGLM3 在模型架构上与 ChatGLM2 完全一致，但在其他方面还是�
 
 1. **更大的基础模型**：ChatGLM3-6B 的基础模型 ChatGLM3-6B-Base 采用了更多样的训练数据、更充分的训练步数和更合理的训练那策略。在语义、数学、推理、代码、只是等不同角度的数据集上测评显示，ChatGLM3-6B-Base 具有在 10B 以下的基础模型中最强的性能。
 
-2. **更完整的功能支持**：ChatGLM3-6B 采用了个全新设计的 Prompt 格式，除正常的多轮对话外。同时原生支持工具调用（Function Call）、代码执行（Code Interpreter）和 Agent 任务等复杂场景。
+2. **更完整的功能支持**：ChatGLM3-6B 采用了全新设计的 Prompt 格式，除正常的多轮对话外。同时原生支持工具调用（Function Call）、代码执行（Code Interpreter）和 Agent 任务等复杂场景。
 
 3. **更全面的开源序列**：除了对话模型 ChatGLM3-6B 外，还开源了基础模型 ChatGLM3-6B-Base、长文本对话模型 ChatGLM3-6B-32K。以上所有权重对学术研究完全开放，在填写问卷进行登记后亦允许免费商业使用。
 
