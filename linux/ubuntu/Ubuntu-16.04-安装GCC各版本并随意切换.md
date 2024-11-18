@@ -32,6 +32,82 @@ sudo: add-apt-repository: command not found
 
 注意：在添加了 `ppa` 源以后，一定要记得执行 `sudo apt-get update` 命令，才会让添加的 `ppa` 生效。
 
+注：由于 Ubuntu 20.04 版本或更高的版本，添加 `ppa:ubuntu-toolchain-r/test` 会失败，故可以使用手动添加源地址的方法。
+
+关于 `ubuntu-toolchain-r` 的信息可以来这里查阅：[Ubuntu - ToolChain](https://wiki.ubuntu.com/ToolChain) 。
+
+找到其中 `PPA packages` 的部分，有如下的链接：
+
+```shell
+https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test
+```
+
+打开上面的链接，展开页面中的 `Technical details about this PPA`，有一个 `Display sources.list entries for:` 的下拉列表，选择你当前 Ubuntu 的版本，例如是 `Focal(20.04)`，即可得到：
+
+```shell
+deb https://ppa.launchpadcontent.net/ubuntu-toolchain-r/test/ubuntu focal main
+deb-src https://ppa.launchpadcontent.net/ubuntu-toolchain-r/test/ubuntu focal main
+```
+
+Signing key (签名的 key，后面可能会用到)：
+
+```text
+4096R/C8EC952E2A0E1FBDC5090F6A2C277A0A352154E5
+```
+
+由于 `https://ppa.launchpadcontent.net` 这个源，国内的服务器访问不了，所以我们更换为国内能访问的镜像源，例如：
+
+```shell
+deb https://launchpad.proxy.ustclug.org/ubuntu-toolchain-r/test/ubuntu focal main
+deb-src https://launchpad.proxy.ustclug.org/ubuntu-toolchain-r/test/ubuntu focal main
+```
+
+其他的镜像源还有：
+
+```bash
+# 中科院镜像源
+https://launchpad.proxy.ustclug.org
+
+# 清华大学镜像源
+https://mirrors.tuna.tsinghua.edu.cn
+
+# 阿里云镜像源 (阿里云好像没有 gcc 的 ppa)
+https://mirrors.aliyun.com
+或者
+http://mirrors.cloud.aliyuncs.com
+```
+
+把 `https://ppa.launchpadcontent.net` 更换为上面的某一个镜像源即可。
+
+用 `vim` 新建一个源 list 文件，例如：
+
+```
+sudo vim /etc/apt/sources.list.d/ubuntu-toolchain-r-ubuntu-test-focal.list
+```
+
+把上面的两条源地址写到这个源 list 文件里，保存退出。
+
+添加完源以后，使用 `apt update` 命令更新一下源，看源是否能访问。如果提示需要输入 key 之类的就说明能访问，否则更新会卡住并报错。
+
+（注：如果更新成功，并且没有提示你输入 key，则可跳过下面这一步。）
+
+如果能访问的话，并提示要输入 key 之类的，则重新执行添加 `ppa` 的命令：
+
+```bash
+$ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+
+ Toolchain test builds; see https://wiki.ubuntu.com/ToolChain
+
+ More info: https://launchpad.net/~ubuntu-toolchain-r/+archive/ubuntu/test
+Press [ENTER] to continue or Ctrl-c to cancel adding it.
+```
+
+他会问你，按回车继续？或者 `Ctrl + C` 取消？按回车即可，这个时候 `ppa` 就添加成功了。
+
+最后，执行 `apt update` 更新一下，即可安装 `gcc-11`、`gcc-12` (注：好像 gcc 12.x 安装的名字不叫这个，可以自己研究一下)、`gcc-13` 等等，目前已支持到 `gcc-15` (截止 2024年11月18日)。
+
+建议也可以执行一下 `apt upgrade` ，因为新添加了源，系统也会更新一些东西。
+
 ## 2. 安装 gcc
 
 `Ubuntu 14.04` 系统默认安装的版本是 `gcc-4.8`，`Ubuntu 16.04` 系统默认安装的版本是 `gcc-5.4`，过于老旧，可以先安装默认的版本，接着再安装 `gcc-6`、`gcc-7` 等等！
@@ -61,6 +137,9 @@ sudo apt-get install gcc-8 g++-8
 sudo apt-get install gcc-9 g++-9
 sudo apt-get install gcc-10 g++-10
 sudo apt-get install gcc-11 g++-11
+......
+# (截止到 2024年11月18日 已支持到 gcc-15 了)
+sudo apt-get install gcc-15 g++-15
 ```
 
 （注意：`gcc-4.8` 安装的版本是 `4.8.5`，比 `Ubuntu 14.04` 系统默认安装的版本 `4.8.4` 略高。 `gcc-5` 目前已经更新到了 `5.5.0`，`gcc-6` 目前则已经更新到了 `6.5.0` 版本。最后验证日期：`2021` 年 `11` 月 `7` 日。）
@@ -135,6 +214,18 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 105 --slave 
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 111 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-11 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11 --slave /usr/bin/g++ g++ /usr/bin/g++-11
 ```
 
+`gcc 11.4.0`：(要求 `Ubuntu 20.04`)
+
+```shell
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 114 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-11 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11 --slave /usr/bin/g++ g++ /usr/bin/g++-11
+```
+
+`gcc 13.1.0`：(要求 `Ubuntu 20.04`)
+
+```shell
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 131 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-13 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-13 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-13 --slave /usr/bin/g++ g++ /usr/bin/g++-13
+```
+
 ## 4. 切换 gcc 版本
 
 ### 4.1. 切换 `gcc` 版本的命令
@@ -175,6 +266,8 @@ sudo update-alternatives --config gcc
 ----------------------------------------------------------------
 
 ## 6. 更新历史
+
+* `2024` / `11` / `18` ：更新了 `ppa:ubuntu-toolchain-r/test` 源访问不了的解决办法，支持到 `Ubuntu 20.04`。
 
 * `2021` / `11` / `07` ：更新到 `gcc 11.1.0`，但 `Ubuntu 16.04` 最高只支持到 `gcc 9.4`。
 
