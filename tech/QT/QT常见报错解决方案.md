@@ -15,6 +15,8 @@
 
     [Qt开发，报错：error: C2001: 常量中有换行符](https://blog.csdn.net/weixin_43782998/article/details/121032388)
 
+    [Qt记录：Qt编程遇C2001错误，提示“常量中有换行符”](https://blog.csdn.net/qq_43521843/article/details/116864525)
+
     问题分析：代码编码格式导致，程序中有对中文编码格式处理，而文件格式不是中文格式。
 
     解决方案：
