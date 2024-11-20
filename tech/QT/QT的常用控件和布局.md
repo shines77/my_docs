@@ -20,7 +20,7 @@ QList<QObject *> children = parentObject->findChildren<QObject *>("childObjectNa
 事件传递：
 
 ```cpp
-bool MyObject::event(QEvent *event) {
+bool MyObject::event(QEvent * event) {
     if (event->type() == QEvent::KeyPress) {
         // 处理键盘事件
         return true;
@@ -79,69 +79,69 @@ QObject::connect(lineEdit, &QLineEdit::textChanged, [=](const QString &text) {
 
 1. 在类的声明中声明信号(Signal)：
 
-在类的声明中使用 `signals` 关键字声明信号。信号可以带参数，参数类型可以是任何 Qt 支持的数据类型。
+    在类的声明中使用 `signals` 关键字声明信号。信号可以带参数，参数类型可以是任何 Qt 支持的数据类型。
 
-```cpp
-class MyObject : public QObject {
-    Q_OBJECT
-public:
-    MyObject() {}
+    ```cpp
+    class MyObject : public QObject {
+        Q_OBJECT
+    public:
+        MyObject() {}
 
-signals:
-    void mySignal(int value);
-};
-```
+    signals:
+        void mySignal(int value);
+    };
+    ```
 
 2. 在类的声明中声明槽(Slot)：
 
-在类的声明中使用 `slots` 关键字声明槽。槽函数可以是任何成员函数，用于处理信号触发时的操作。
+    在类的声明中使用 `slots` 关键字声明槽。槽函数可以是任何成员函数，用于处理信号触发时的操作。
 
-```cpp
-class MyObject : public QObject {
-    Q_OBJECT
-public:
-    MyObject() {}
+    ```cpp
+    class MyObject : public QObject {
+        Q_OBJECT
+    public:
+        MyObject() {}
 
-public slots:
-    void mySlot(int value) {
-        qDebug() << "Received value: " << value;
-    }
-};
+    public slots:
+        void mySlot(int value) {
+            qDebug() << "Received value: " << value;
+        }
+    };
 ```
 
 3. 在类的实现中使用信号
 
-在类的成员函数中使用 `emit` 关键字来触发信号。当槽函数与信号连接后，信号被触发时，连接的槽函数将被调用。
+    在类的成员函数中使用 `emit` 关键字来触发信号。当槽函数与信号连接后，信号被触发时，连接的槽函数将被调用。
 
-```cpp
-class MyObject : public QObject {
-    Q_OBJECT
-public:
-    MyObject() {}
+    ```cpp
+    class MyObject : public QObject {
+        Q_OBJECT
+    public:
+        MyObject() {}
 
-signals:
-    void mySignal(int value);
+    signals:
+        void mySignal(int value);
 
-public slots:
-    void triggerSignal() {
-        emit mySignal(42);  // 触发信号并传递参数
-    }
-};
-```
+    public slots:
+        void triggerSignal() {
+            emit mySignal(42);  // 触发信号并传递参数
+        }
+    };
+    ```
 
 4. 信号(Signal)与槽(Slot)的连接
 
-使用 QObject::connect() 函数将信号(Signal)与槽(Slot)连接起来。连接成功后，当信号被触发时，与之连接的槽函数将被调用。
+    使用 QObject::connect() 函数将信号(Signal)与槽(Slot)连接起来。连接成功后，当信号被触发时，与之连接的槽函数将被调用。
 
-```cpp
-MyObject * obj = new MyObject();
-QObject::connect(obj, &MyObject::mySignal, obj, &MyObject::mySlot);
+    ```cpp
+    MyObject * obj = new MyObject();
+    QObject::connect(obj, &MyObject::mySignal, obj, &MyObject::mySlot);
 
-// 当信号触发时, mySlot() 函数将被调用
-obj->triggerSignal();
-```
+    // 当信号触发时, mySlot() 函数将被调用
+    obj->triggerSignal();
+    ```
 
-这种自定义信号(Signal)和槽(Slot)的机制使得不同对象能够在特定事件发生时进行通信，是 Qt 中事件驱动编程的核心机制之一。
+    这种自定义信号(Signal)和槽(Slot)的机制使得不同对象能够在特定事件发生时进行通信，是 Qt 中事件驱动编程的核心机制之一。
 
 ## 4. lambda 表达式
 
