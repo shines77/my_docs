@@ -2,9 +2,9 @@
 
 ## 1. 需求
 
-Qt 中，有时候需要给一个 Widget 设置一个 css，但 css 设置比较内容比较长，包含比较多的换行，我们想直接才 css 文件直接把字符串复制过来，怎么办？
+在 Qt 中，有时候需要给一个 Widget 设置 qss，但 qss 内容比较长，还包含很多换行，我们想直接从 css 文件直接把字符串复制过来，怎么办？
 
-这个时候可以使用 C++ 引入的 raw string literals (原始字符串字面量)。
+这个时候可以使用 C++ 11 引入的 raw string literals (原始字符串字面量)。
 
 ## 2. raw string literals
 
@@ -19,9 +19,9 @@ R"delimiter(string)delimiter"
 
 ## 3. 用法
 
-要在 Qt 中使用 raw string 字面量，编译器必须支持 C++ 11，VS 需要 2015 以及 2015 以后的版本。
+要在 Qt 中使用 raw string 字面量，编译器必须支持 C++ 11，Visual Studio 需要 2015 以及 2015 以后的版本。
 
-同时，要在 qmake 项目配置文件 xxxxxxxx.pro 中加入：
+同时，要在 qmake 项目配置文件 xxxxxxxx.pro 中添加如下设置：
 
 ```bash
 CONFIG += c++11
@@ -91,7 +91,7 @@ This is a line break:\nNew line here.\nAnd a tab:\tTab character here.
 
 **更多长字符串的用法**
 
-表示 json 字符串，css 长字符串，佛像长字符串等等。
+表示 json 字符串，qss 长字符串，佛像长字符串等等。
 
 范例：
 
@@ -109,7 +109,7 @@ int main()
     std::cout << json_body << std::endl;
 
     // css 长字符串
-    std::string css_style = R"(QWidget QListWidget {
+    std::string qss_style = R"(QWidget QListWidget {
     color: rgb(51, 51, 51);
     background-color: rgb(247, 247, 247);
     border: 1px solid rgb(247, 247, 247);
@@ -136,7 +136,7 @@ QWidget QListWidget::item:selected:!active {
     color: rgb(51,51,51);
 })";
 
-    std::cout << css_style << std::endl;
+    std::cout << qss_style << std::endl;
 
     // '佛祖' 长字符串
     std::string fozu = R"(
