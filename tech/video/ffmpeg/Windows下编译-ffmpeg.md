@@ -12,7 +12,7 @@ Windows下编译 FFmpeg 有很多种方法，一种是 MinGW + msys + gcc 环境
 
 ## 2. 准备工作
 
-您最好新建一个目录专门用来保存以下下载的文件。例如：F:\ffmpeg 。
+您最好新建一个目录专门用来保存以下下载的文件。例如：F:\ffmpeg 。这里更推荐安装 mingw-w64，所以 2.1 ~ 2.3 小节可以跳过。
 
 ### 2.1 下载 MinGW 和 MSYS
 
@@ -70,7 +70,7 @@ gcc version 6.3.0 (MinGW.org GCC-6.3.0-1)
 
 可以看到官方最新版的 MinGW 的 gcc 版本也只到了 6.3.0 版本，如果想用更新的 gcc 版本，可以安装 mingw-w64，下一节会介绍。
 
-### 2.4 mingw-w64 安装
+### 2.4 安装 mingw-w64
 
 首先，进去官网地址：[https://www.mingw-w64.org](https://www.mingw-w64.org)，左侧点击 “Downloads”，然后在 Downloads 页面是右侧，找到 “MinGW-W64-builds” 并点击，会跳转到如下内容：
 
@@ -96,7 +96,7 @@ POSIX 是一种 UNIX API 标准，而 Win32 是 Windows 的API标准。这两者
 
 DWARF（DW2，dwarf-2）和 SEH（零开销 exception）是两种不同的异常处理模型。DWARF 仅适用于 32 位系统，没有永久的运行时开销，但需要整个调用堆栈被启用。SEH 将可用于 64 位 GCC 4.8。
 
-*msvcrt 和 ucrt 的区别**
+**msvcrt 和 ucrt 的区别**
 
 MSVCRT（Microsoft Visual C++ Runtime）和 UCRT（Universal C Runtime）是 Microsoft Windows 上的两种C标准库变体。MSVCRT 在所有 Microsoft Windows 版本中都默认可用，但由于向后兼容性问题，它已经过时，不兼容 C99 并且缺少一些功能。而 UCRT 是一个较新的版本，也是 Microsoft Visual Studio 默认使用的版本。它应该像使用 MSVC 编译的代码一样工作和表现。
 
@@ -106,17 +106,34 @@ MSVCRT（Microsoft Visual C++ Runtime）和 UCRT（Universal C Runtime）是 Mic
 
 由于以上 github 仓库提供的 `mingw-w64 Release` 的版本选择不是很多，更多的 mingw-w64 版本可以在这里找到：[windows上安装mingw教程及mingw64国内下载地址汇总](https://blog.csdn.net/FL1623863129/article/details/142673029) 。
 
-下载完成后，把压缩包里的目录和文件解压到 C 盘，并把 mingw-w64 的根目录更名为 'C:\mingw-w64' 。
+下载完成后，把压缩包里的目录和文件解压到 C 盘，并把 mingw-w64 的根目录更名为 'C:\mingw64'，其实它本来就叫这个名字，不用改。
 
 **添加环境变量**
 
-类似的，把 `C:\mingw-w64\bin` 目录添加到系统的 `Path` 路径即可。
+类似的，把 `C:\mingw64\bin` 目录添加到系统的 `Path` 路径即可。
 
 另外，这种安装方式是不带 `msys` 的，你还需要单独安装一个 `msys2`，链接见上，并配置 `msys2` 的环境变量。
 
 **其他**
 
 这个版本跟前面介绍的 `MinGW` 32 位版本是冲突的，系统环境变量里只能配置其中一个，建议选择 `ming32-w64` 。
+
+**gcc版本**
+
+检查 gcc 的版本，可以看到是 `14.2.0` 。
+
+```bash
+$ gcc -v
+
+Using built-in specs.
+COLLECT_GCC=C:\mingw64\bin\gcc.exe
+COLLECT_LTO_WRAPPER=C:/mingw64/bin/../libexec/gcc/x86_64-w64-mingw32/14.2.0/lto-wrapper.exe
+Target: x86_64-w64-mingw32
+Configured with: ../../../src/gcc-14.2.0/configure --host=x86_64-w64-mingw32 --build=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 --prefix=/mingw64 --with-sysroot=/c/buildroot/x86_64-1420-posix-seh-msvcrt-rt_v12-rev0/mingw64 --enable-host-shared --disable-multilib --enable-languages=c,c++,fortran,lto --enable-libstdcxx-time=yes --enable-threads=posix --enable-libgomp --enable-libatomic --enable-lto --enable-graphite --enable-checking=release --enable-fully-dynamic-string --enable-version-specific-runtime-libs --enable-libstdcxx-filesystem-ts=yes --disable-libssp --disable-libstdcxx-pch --disable-libstdcxx-debug --enable-bootstrap --disable-rpath --disable-win32-registry --disable-nls --disable-werror --disable-symvers --with-gnu-as --with-gnu-ld --with-arch=nocona --with-tune=core2 --with-libiconv --with-system-zlib --with-gmp=/c/buildroot/prerequisites/x86_64-w64-mingw32-static --with-mpfr=/c/buildroot/prerequisites/x86_64-w64-mingw32-static --with-mpc=/c/buildroot/prerequisites/x86_64-w64-mingw32-static --with-isl=/c/buildroot/prerequisites/x86_64-w64-mingw32-static --with-pkgversion='x86_64-posix-seh-rev0, Built by MinGW-Builds project' --with-bugurl=https://github.com/niXman/mingw-builds LD_FOR_TARGET=/c/buildroot/x86_64-1420-posix-seh-msvcrt-rt_v12-rev0/mingw64/bin/ld.exe --with-boot-ldflags='-pipe -fno-ident -L/c/buildroot/x86_64-1420-posix-seh-msvcrt-rt_v12-rev0/mingw64/opt/lib -L/c/buildroot/prerequisites/x86_64-zlib-static/lib -L/c/buildroot/prerequisites/x86_64-w64-mingw32-static/lib  -Wl,--disable-dynamicbase -static-libstdc++ -static-libgcc'
+Thread model: posix
+Supported LTO compression algorithms: zlib
+gcc version 14.2.0 (x86_64-posix-seh-rev0, Built by MinGW-Builds project)
+```
 
 ## x. 参考文章
 
