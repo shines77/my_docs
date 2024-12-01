@@ -1,4 +1,11 @@
-# Windows 下编译 FFmpeg（一）-- MSYS2和mingw-w64
+# Windows 下编译 FFmpeg（一）-- MSYS2 和 mingw-w64
+
+## 导航
+
+- [Windows下编译FFmpeg（一）-- MSYS2 和 mingw-w64](./Windows下编译FFmpeg（一）--MSYS2和mingw-w64.md)
+- [Windows下编译FFmpeg（二）-- MinGW32 和 msys 1.0](./WWindows下编译FFmpeg（二）--MinGW32和msys-1.0.md)
+- [Windows下编译FFmpeg（三）-- 依赖库的下载与安装](./Windows下编译FFmpeg（三）--依赖库的下载与安装.md)
+- [Windows下编译FFmpeg（四）-- FFmpeg 编译选项](./Windows下编译FFmpeg（四）--FFmpeg编译选项.md)
 
 ## 1. 前言
 
@@ -226,7 +233,7 @@ gcc version 14.2.0 (Rev2, Built by MSYS2 project)
 
 这里可以看到，gcc 的版本是 `14.2.0` 。
 
-### 4. 手动安装 mingw-w64
+## 4. 手动安装 mingw-w64
 
 有些时候，如果你觉得 `MSYS 2.0` 自带的 mingw-w64 版本太旧或太新，你可以选择自己手动安装 mingw-w64。
 
@@ -311,4 +318,10 @@ gcc version 14.2.0 (x86_64-posix-seh-rev0, Built by MinGW-Builds project)
 
 - [【软件教程】MingW-W64-builds不同版本之间的区别](https://blog.csdn.net/zhangjiuding/article/details/129556458)
 
+- [史上最全msys2下载配置操作步骤](https://blog.csdn.net/xuxu_123_/article/details/136574282)
+
+- [超详细教程：windows安装MSYS2（mingw && gcc）](https://blog.csdn.net/ymzhu385/article/details/121449628)
+
 - [Windows下使用MinGW+msys编译ffmpeg](https://www.cnblogs.com/shines77/p/3500337.html)
+
+- [MSYS2 官网](https://www.msys2.org/)

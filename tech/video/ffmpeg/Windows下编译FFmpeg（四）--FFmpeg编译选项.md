@@ -2,10 +2,10 @@
 
 ## 导航
 
-- [Windows下编译FFmpeg（一）-- MSYS2和mingw-w64](./Windows下编译FFmpeg（一）--MSYS2和mingw-w64.md)
-- [Windows下编译FFmpeg（二）-- MinGW32和msys 1.0](./WWindows下编译FFmpeg（二）--MinGW32和msys-1.0.md)
-- [Windows下编译FFmpeg（三）-- 其他依赖库的下载](./Windows下编译FFmpeg（三）--其他依赖库的下载.md)
-- [Windows下编译FFmpeg（四）-- FFmpeg编译选项](./Windows下编译FFmpeg（四）--FFmpeg编译选项.md)
+- [Windows下编译FFmpeg（一）-- MSYS2 和 mingw-w64](./Windows下编译FFmpeg（一）--MSYS2和mingw-w64.md)
+- [Windows下编译FFmpeg（二）-- MinGW32 和 msys 1.0](./WWindows下编译FFmpeg（二）--MinGW32和msys-1.0.md)
+- [Windows下编译FFmpeg（三）-- 依赖库的下载与安装](./Windows下编译FFmpeg（三）--依赖库的下载与安装.md)
+- [Windows下编译FFmpeg（四）-- FFmpeg 编译选项](./Windows下编译FFmpeg（四）--FFmpeg编译选项.md)
 
 ## 1. 前言
 
