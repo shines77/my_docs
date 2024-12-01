@@ -45,7 +45,7 @@ FFmpeg 根据 [GNU 宽通用公共许可证 (LGPL) 2.1](http://www.gnu.org/licen
 
 以下是链接 FFmpeg 库时 LGPL 合规性的清单。这不是遵守许可证的唯一方法，但我们认为这是最简单的方法。还有一些项目与 LGPL 合规性并不真正相关，但无论如何都是好主意。
 
-- 编译 FFmpeg 时不带“--enable-gpl”且不 带“--enable-nonfree”。
+- 编译 FFmpeg 时不带“--enable-gpl”，且不带“--enable-nonfree”。
 - 使用动态链接（在 Windows 上，这意味着链接到 dll）来链接 FFmpeg 库。
 - 分发 FFmpeg 的源代码，无论您是否修改过它。
 - 确保源代码与您正在分发的库二进制文件完全对应。
@@ -53,7 +53,7 @@ FFmpeg 根据 [GNU 宽通用公共许可证 (LGPL) 2.1](http://www.gnu.org/licen
 - 解释如何在添加到源代码根目录的文本文件中编译 FFmpeg，例如配置行。
 - 使用 tarball 或 zip 文件来分发源代码。
 - 将 FFmpeg 源代码托管在与您分发的二进制文件相同的网络服务器上。
-- 添加“此软件使用根据 <a href=http://www.gnu.org/licenses/old-licenses/lgpl-2.1 许可的 <a href=http://ffmpeg.org>FFmpeg</a> 代码.html>LGPLv2.1</a> 及其源代码可以在<a href=link_to_your_sources>此处</a>下载到您网站上有应用程序下载链接的每个页面。
+- 添加 "`This software uses code of <a href=http://ffmpeg.org>FFmpeg</a> licensed under the <a href=http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html>LGPLv2.1</a> and its source can be downloaded <a href=link_to_your_sources>here</a>`" 到您网站上有应用程序下载链接的每个页面。
 - 在程序“关于框”中提及“此软件使用 LGPLv2.1 下的 FFmpeg 项目中的库”。
 - 在您的 EULA 中提及您的程序使用 LGPLv2.1 下的 FFmpeg。
 - 如果您的 EULA 声明对该代码的所有权，您必须明确 提及您不拥有 FFmpeg，以及在哪里可以找到相关所有者。
