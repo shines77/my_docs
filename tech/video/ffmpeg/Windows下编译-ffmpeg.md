@@ -129,7 +129,25 @@ Using built-in specs.
 COLLECT_GCC=C:\mingw64\bin\gcc.exe
 COLLECT_LTO_WRAPPER=C:/mingw64/bin/../libexec/gcc/x86_64-w64-mingw32/14.2.0/lto-wrapper.exe
 Target: x86_64-w64-mingw32
-Configured with: ../../../src/gcc-14.2.0/configure --host=x86_64-w64-mingw32 --build=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 --prefix=/mingw64 --with-sysroot=/c/buildroot/x86_64-1420-posix-seh-msvcrt-rt_v12-rev0/mingw64 --enable-host-shared --disable-multilib --enable-languages=c,c++,fortran,lto --enable-libstdcxx-time=yes --enable-threads=posix --enable-libgomp --enable-libatomic --enable-lto --enable-graphite --enable-checking=release --enable-fully-dynamic-string --enable-version-specific-runtime-libs --enable-libstdcxx-filesystem-ts=yes --disable-libssp --disable-libstdcxx-pch --disable-libstdcxx-debug --enable-bootstrap --disable-rpath --disable-win32-registry --disable-nls --disable-werror --disable-symvers --with-gnu-as --with-gnu-ld --with-arch=nocona --with-tune=core2 --with-libiconv --with-system-zlib --with-gmp=/c/buildroot/prerequisites/x86_64-w64-mingw32-static --with-mpfr=/c/buildroot/prerequisites/x86_64-w64-mingw32-static --with-mpc=/c/buildroot/prerequisites/x86_64-w64-mingw32-static --with-isl=/c/buildroot/prerequisites/x86_64-w64-mingw32-static --with-pkgversion='x86_64-posix-seh-rev0, Built by MinGW-Builds project' --with-bugurl=https://github.com/niXman/mingw-builds LD_FOR_TARGET=/c/buildroot/x86_64-1420-posix-seh-msvcrt-rt_v12-rev0/mingw64/bin/ld.exe --with-boot-ldflags='-pipe -fno-ident -L/c/buildroot/x86_64-1420-posix-seh-msvcrt-rt_v12-rev0/mingw64/opt/lib -L/c/buildroot/prerequisites/x86_64-zlib-static/lib -L/c/buildroot/prerequisites/x86_64-w64-mingw32-static/lib  -Wl,--disable-dynamicbase -static-libstdc++ -static-libgcc'
+Configured with: ../../../src/gcc-14.2.0/configure --host=x86_64-w64-mingw32 --build=x86_64-w64-mingw32 \
+--target=x86_64-w64-mingw32 --prefix=/mingw64 \
+--with-sysroot=/c/buildroot/x86_64-1420-posix-seh-msvcrt-rt_v12-rev0/mingw64 \
+--enable-host-shared --disable-multilib --enable-languages=c,c++,fortran,lto --enable-libstdcxx-time=yes \
+--enable-threads=posix --enable-libgomp --enable-libatomic --enable-lto --enable-graphite --enable-checking=release \
+--enable-fully-dynamic-string --enable-version-specific-runtime-libs --enable-libstdcxx-filesystem-ts=yes \
+--disable-libssp --disable-libstdcxx-pch --disable-libstdcxx-debug --enable-bootstrap --disable-rpath \
+--disable-win32-registry --disable-nls --disable-werror --disable-symvers --with-gnu-as --with-gnu-ld \
+--with-arch=nocona --with-tune=core2 --with-libiconv --with-system-zlib \
+--with-gmp=/c/buildroot/prerequisites/x86_64-w64-mingw32-static \
+--with-mpfr=/c/buildroot/prerequisites/x86_64-w64-mingw32-static \
+--with-mpc=/c/buildroot/prerequisites/x86_64-w64-mingw32-static \
+--with-isl=/c/buildroot/prerequisites/x86_64-w64-mingw32-static \
+--with-pkgversion='x86_64-posix-seh-rev0, Built by MinGW-Builds project' \
+--with-bugurl=https://github.com/niXman/mingw-builds \
+LD_FOR_TARGET=/c/buildroot/x86_64-1420-posix-seh-msvcrt-rt_v12-rev0/mingw64/bin/ld.exe \
+--with-boot-ldflags='-pipe -fno-ident -L/c/buildroot/x86_64-1420-posix-seh-msvcrt-rt_v12-rev0/mingw64/opt/lib \
+-L/c/buildroot/prerequisites/x86_64-zlib-static/lib -L/c/buildroot/prerequisites/x86_64-w64-mingw32-static/lib  \
+-Wl,--disable-dynamicbase -static-libstdc++ -static-libgcc'
 Thread model: posix
 Supported LTO compression algorithms: zlib
 gcc version 14.2.0 (x86_64-posix-seh-rev0, Built by MinGW-Builds project)
