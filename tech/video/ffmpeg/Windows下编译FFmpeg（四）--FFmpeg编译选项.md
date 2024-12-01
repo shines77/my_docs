@@ -29,6 +29,229 @@ FFmpeg 的命令行工具包括：
 
 FFmpeg 因其强大的功能和灵活性而被广泛应用于视频网站、视频编辑软件、视频转换工具等多种场景。
 
+## 2. FFmpeg 编译选项
+
+### 2.1 基本编译开关
+
+首先，可以增加一些常规编译选项来减小最终编译包的大小。可以使用 ./configure -h 命令来列出 configure 程序支持的编译选项，每一项编译选项后都有对应的解释。
+
+以下是一些常用的编译开关：
+
+```bash
+--enable-shared: 编译 dll 版本
+--enable-static: 编译 静态库 版本
+--cpu=i686: CPU 类型
+--arch=x86_32: x86_32 位版本
+--arch=x86_64: x86_amd64 位版本
+--host-os=win32: Windows 32 位系统
+--host-os=win64: Windows 64 位系统
+--disable-debug: 禁用 debug 版本
+--enable-memalign-hack: 内存分配对齐 hack，这个开关已失效。
+--extra-cflags=-I/mingw/include: include 目录
+--extra-ldflags=-L/mingw/lib: lib 目录
+--prefix=./output: bin 输出目录
+--enable-asm: 允许编译 asm 代码
+--enable-inline-asm: 允许编译内联 asm 代码
+--toolchain=msvc: 交叉编译
+```
+
+允许 GPL 3.0 协议的模块：
+
+```bash
+--enable-gpl --enable-version3 --enable-nonfree
+```
+
+禁用 GPL 协议的模块：
+
+```bash
+不带 --enable-gpl，且不带 --enable-nonfree 编译选项
+```
+
+### 2.2 常规编译开关
+
+能够直接减小编译包大小的编译开关有如下几个：
+
+```bash
+--enable-small: 允许使用最小文件大小(MinReleaseSize)编译，但可能编译时间会变长
+--disable-doc: 禁止编译文档，可以避免将文档编译入包中
+--disable-htmlpages: 禁止编译html文档，可以避免将文档编译入包中
+--disable-manpages: 禁止编译man文档，可以避免将文档编译入包中
+--disable-podpages: 禁止编译pod文档，可以避免将文档编译入包中
+--disable-txtpages: 禁止编译txt文档，可以避免将文档编译入包中
+--disable-runtime-cpudetect: 禁止运行时检测CPU性能，可以编出较小的包，这个不推荐
+```
+
+### 2.3 减少不必要的工具
+
+最开始介绍了 ffmpeg 是基于 libav 开发的一套工具，除了 ffmpeg 之外，基于 libav 开发的工具还有：ffplay、ffprobe 以及 ffserver。这些不必要的工具是可以禁止掉的，相关选项为：
+
+```bash
+--disable-programs: 禁止编译命令行工具
+--disable-ffmpeg: 禁止编译 ffmpeg 工具，这个不推荐
+--disable-ffplay: 禁止编译 ffplay 工具
+--disable-ffprobe: 禁止编译 ffprobe 工具
+--disable-ffserver: 禁止编译 ffserver 工具，某些版本可能已移除
+```
+
+### 2.4 减少不必要的模块
+
+```bash
+libavcodec: --disable-avcodec
+libavformat: --disable-avformat
+libavfilter: --disable-avfilter
+libswscale: --disable-swscale
+libpostproc: --disable-postproc
+libavdevice: --disable-avdevice
+libswresample: --disable-swresample
+libavresample: --enable-avresample
+```
+
+libav 包含以下几个模块：
+
+- libavcodec: 该模块主要负责解码与编码，若无需该模块，可使用 --disable-avcodec 禁止编译，不过该模块为 libav 核心模块，非特殊情况最好不要禁止；
+
+- libavformat: 该模块主要负责解封装与封装，若无需该模块，可使用 --disable-avformat 禁止编译，不过该模块为 libav 核心模块，非特殊情况最好不要禁止；
+
+- libavfilter: 该模块主要负责音视频的过滤，包括裁剪、位置、水印等，若无需该模块，可使用 --disable-avfilter 禁止编译；
+
+- libswscale: 该模块主要负责对原始视频数据进行场景转换、色彩映射以及格式转换，若无需该模块，可使用 --disable-swscale 禁止编译；
+
+- libpostproc: 该模块主要负责对音视频进行后期处理，若无需该模块，可使用 --disable-postproc 禁止编译；
+
+- libavdevice: 该模块主要负责与硬件设备的交互，若无需该模块，可使用 --disable-avdevice 禁止编译；
+
+- libswresample: 该模块主要负责对原始音频数据进行格式转换，若无需该模块，可使用 --disable-swresample 禁止编译；
+
+- libavresample: 该模块主要负责音视频封装编解码格式预设，该模块默认不编译，若要进行编译，使用 --enable-avresample 。FFmpeg 5.0 及以后的版本，已取消该模块。
+
+### 2.5 减少不必要的设备
+
+libav 可以从硬件设备中获取输入，同时也可以输出至硬件设备。可以指定支持的输入输出设备来避免不必要的编译：
+
+```bash
+--disable-devices: 禁止所有设备的编译
+--disable-indevs: 禁止所有输入设备的编译
+--disable-indev=NAME: 禁止特定输入设备的编译
+--enable-indev=NAME: 允许特定输入设备的编译，搭配 –disable-indevs 可以实现单纯指定支持的输入设备
+--disable-outdevs: 禁止所有输出设备的编译
+--disable-outdev=NAME: 禁止特定输出设备的编译
+--enable-outdev=NAME: 允许特定输出设备的编译，搭配 –disable-outdevs 可以实现单纯指定支持的输出设备
+```
+
+关于 libav 支持的输入输出设备名称，可以使用 `./configure --list-indevs` 和 `./configure --list-outdevs` 命令获取。
+
+### 2.6 减少不必要的解析器
+
+libav 可以对输入的数据进行格式检测，该功能由解析器 (parser) 负责。可以指定支持的解析器来避免不必要的编译：
+
+```bash
+--disable-parsers: 禁止所有解析器的编译
+--disable-parser=NAME: 禁止特定解析器的编译
+--enable-parser=NAME: 允许特定解析器的编译，搭配 --disable-parsers 可以实现单纯指定支持的解析器
+```
+
+关于 libav 支持的解析器名称，可以使用 `./configure --list-parsers` 命令获取。
+
+### 2.7 减少不必要的二进制流过滤器
+
+libav 可以将输入的数据转为二进制数据，同时可以对二进制数据进行特殊的处理，该功能由二进制流过滤器(bit stream filter)负责。可以指定支持的二进制流过滤器来避免不必要的编译：
+
+```bash
+--disable-bsfs: 禁止所有二进制流过滤器的编译
+--disable-bsf=NAME: 禁止特定二进制流过滤器的编译
+--enable-bsf=NAME: 允许特定二进制流过滤器的编译，搭配 –disable-bsfs 可以实现单纯指定支持的二进制流过滤器
+```
+
+关于 libav 支持二进制流过滤器名称，可以使用 `./configure --list-bsfs` 命令获取。
+
+### 2.8 减少不必要的协议
+
+libav 对于如何读入数据及输出数据制定了一套协议，同时 libav 内置了一些满足协议的方式，这些方式可以通过 `./configure --list-protocols` 列出。可以指定支持的输入输出方式来避免不必要的编译：
+
+```bash
+--disable-protocols: 禁止所有输入输出方式的编译
+--disable-protocol=NAME: 禁止特定输入输出方式的编译
+--enable-protocol=NAME: 允许特定输入输出方式的编译，搭配 –disable-protocols 可以实现单纯指定支持的输入输出方式
+```
+
+必须指定至少一种输入输出方式，通常通过使用 `--disable-protocols` 搭配 `--enable-protocol=NAME` 来完成。
+
+### 2.9 减少不必要的组件
+
+libav 处理音视频的流程中，负责解封装的是分离器 (demuxer)、负责封装的是复用器 (muxer)、负责音视频解码的为解码器 (decoder)、负责编码的为编码器 (encoder) 。
+
+可以从 libav 所支持的四个组件的类型来减少不必要的编译。可以使用以下命令获取组件所支持的类型：
+
+```bash
+./configure --list-demuxers
+./configure --list-muxers
+./configure --list-decoders
+./configure --list-encoders
+```
+
+（1）分离器：
+
+```bash
+--disable-demuxers: 禁止所有分离器的编译
+--disable-demuxer=NAME: 禁止特定分离器的编译
+--enable-demuxer=NAME: 允许特定分离器的编译，搭配 -–disable-demuxers
+```
+
+（2）复用器：
+
+```bash
+--disable-muxers: 禁止所有复用器的编译
+--disable-muxer=NAME: 禁止特定复用器的编译
+--enable-muxer=NAME: 允许特定复用器的编译，搭配 --disable-muxers
+```
+
+（3）解码器：
+
+```bash
+--disable-decoders: 禁止所有解码器的编译
+--disable-decoder=NAME: 禁止特定解码器的编译
+--enable-decoder=NAME: 允许特定解码器的编译，搭配 --disable-decoders
+```
+
+（4）编码器：
+
+```bash
+--disable-encoders: 禁止所有编码器的编译
+--disable-encoder=NAME: 禁止特定编码器的编译
+--enable-encoder=NAME: 允许特定编码器的编译，搭配 -–disable-encoders
+```
+
+至此，通过对项目的特殊定制，可以最大化的减小编译包的大小，避免编译包太大造成最终产品体积过大的问题。
+
+## 3. 编译和使用
+
+### 3.1  mingw-w64 + GCC
+
+使用 MSVC 2015 64 bit，在 MSYS 2.0 终端里输入：
+
+```bash
+'/c/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/amd64/vcvars64.bat'
+```
+
+FFmpeg 7.1，编译成 dll，UCRT64 环境：
+
+```bash
+./configure --enable-shared --arch=x86_64 --host-os=win64 --disable-debug \
+--extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
+--prefix=./output --enable-asm --enable-inline-asm \
+--disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
+--disable-ffplay --disable-ffprobe \
+--disable-decoders --enable-decoder=h264 --enable-decoder=mjpeg \
+--enable-decoder=hevc --enable-decoder=aac --disable-encoders --enable-encoder=aac --disable-avfilter \
+--disable-avdevice --disable-swscale --disable-demuxers --enable-demuxer=h264 --enable-demuxer=hevc \
+--enable-demuxer=mjpeg --enable-demuxer=aac --enable-demuxer=avi --enable-demuxer=mov \
+--enable-demuxer=mpegps --disable-iconv --disable-filters --enable-bsfs --disable-muxers \
+--enable-muxer=avi --enable-muxer=mp4 --enable-muxer=adts --disable-protocols --enable-protocol=file \
+--disable-parsers --enable-parser=h264 --enable-parser=hevc --enable-parser=mjpeg --disable-devices \
+--enable-asm --enable-inline-asm --enable-hardcoded-tables --enable-hwaccel=h264_dxva2 \
+--enable-hwaccel=hevc_dxva2 --disable-network
+```
+
 ## x. FFmpeg 许可和法律注意事项
 
 法律问题始终是问题和困惑的根源。这是试图澄清最重要的问题。通常的免责声明适用，这不是法律建议
