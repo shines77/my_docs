@@ -22,10 +22,11 @@ MinGW (Minimalist GNU on Windows)：一个可自由使用和自由发布的 Wind
 
 到：[https://sourceforge.net/projects/mingw/files/](https://sourceforge.net/projects/mingw/files/) 去下载即可。
 
-　　1. 有一个绿色的按钮 `Download Latest Version`，点击该按钮“[Download Latest Version mingw-get-setup.exe (86.5 kB)](https://sourceforge.net/projects/mingw/files/latest/download)”会自动开始下载；
-　　2. 如果跳转页面后没有自动下载，可点击“`Problems Downloading?`”按钮，手动点击 `direct link` 链接下载，或者选择别的镜像地址；
+1. 有一个绿色的按钮 `Download Latest Version`，点击该按钮“[Download Latest Version mingw-get-setup.exe (86.5 kB)](https://sourceforge.net/projects/mingw/files/latest/download)”会自动开始下载；
 
-　　提示：msys 此处就不用再下载了，最新版的 mingw-get-setup.exe 中已经包含了 msys1.0，后面安装的时候就可以看到该选项。
+2. 如果跳转页面后没有自动下载，可点击“`Problems Downloading?`”按钮，手动点击 `direct link` 链接下载，或者选择别的镜像地址；
+
+提示：msys 此处就不用再下载了，最新版的 mingw-get-setup.exe 中已经包含了 msys1.0，后面安装的时候就可以看到该选项。
 
 ### 2.2 安装 MinGW
 
@@ -71,50 +72,58 @@ gcc version 6.3.0 (MinGW.org GCC-6.3.0-1)
 
 ### 2.4 mingw-w64 安装
 
-首先，进去官网地址：[https://www.mingw-w64.org](https://www.mingw-w64.org)，左侧点击 “Downloads”，然后在 Downloads 页面是右侧，找到 “Sources” 并点击。
+首先，进去官网地址：[https://www.mingw-w64.org](https://www.mingw-w64.org)，左侧点击 “Downloads”，然后在 Downloads 页面是右侧，找到 “MinGW-W64-builds” 并点击，会跳转到如下内容：
 
-会看到如下内容，可以直接点击“SourceForge”链接跳转到 sourceforge.net 的下载目录，或者点击其中某个版本号直接下载某个版本，例如选择 `11.0.0`，则是下载 `mingw-w64-v11.0.0.zip` 文件。更推荐自己手动选择版本，最新的版本已到 `12.0.0` 。
+**MinGW-W64-builds**
 
-```
-Sources
+Installation: [GitHub](https://github.com/niXman/mingw-builds-binaries/releases)
 
-Tarballs for the mingw-w64 sources are hosted on SourceForge.
+**MSYS2**
 
-The latest version from the 11.x series is 11.0.0.
+Installation: [GitHub](http://msys2.github.io/)
 
-The latest version from the 10.x series is 10.0.0.
+点击上面第一个 GitHub 的链接：[https://github.com/niXman/mingw-builds-binaries/releases](https://github.com/niXman/mingw-builds-binaries/releases)
 
-The latest version from the 9.x series is 9.0.0.
+这里选择 `x86_64-14.2.0-release-posix-seh-msvcrt-rt_v12-rev0.7z` 版本。
 
-The latest version from the 8.x series is 8.0.2.
+我们要开发兼容 Linux、Unix、Mac OS 操作系统下的程序，所以要选择 `posix` 版本，`seh` 是异常处理模式，不支持 32 位异常处理。选择 msvcrt 链接方式是为了更好的兼容性，MSYS2 官方比较推荐新的 ucrt 链接方式。
 
-The latest version from the 7.x series is 7.0.0.
+**posix 和 win32 的区别**
 
-The latest version from the 6.x series is 6.0.0.
+POSIX 是一种 UNIX API 标准，而 Win32 是 Windows 的API标准。这两者之间有一些区别，例如在 mingw-w64 中，使用 posix 线程将启用 C++11/C11 多线程功能，并使 libgcc 依赖于 libwinpthreads。而使用 win32 线程则不会启用 C++11 多线程功能。
 
-The latest version from the 5.x series is 5.0.4.
+**dwarf 和 seh 的区别**
 
-The old wiki has instructions for building native and cross toolchains.
+DWARF（DW2，dwarf-2）和 SEH（零开销 exception）是两种不同的异常处理模型。DWARF 仅适用于 32 位系统，没有永久的运行时开销，但需要整个调用堆栈被启用。SEH 将可用于 64 位 GCC 4.8。
 
-Details on how to get the mingw-w64 code from Git and an Git-web viewer are available on SourceForge.
-```
+*msvcrt 和 ucrt 的区别**
 
-下载完成后，例如我下载的是：mingw-w64-v11.0.1.zip，把其中的 `mingw-w64-v11.0.1` 解压到 `C:\`，并把 `C:\mingw-w64-v11.0.1` 目录更名为 'C:\mingw-w64' 。
+MSVCRT（Microsoft Visual C++ Runtime）和 UCRT（Universal C Runtime）是 Microsoft Windows 上的两种C标准库变体。MSVCRT 在所有 Microsoft Windows 版本中都默认可用，但由于向后兼容性问题，它已经过时，不兼容 C99 并且缺少一些功能。而 UCRT 是一个较新的版本，也是 Microsoft Visual Studio 默认使用的版本。它应该像使用 MSVC 编译的代码一样工作和表现。
+
+关于 `msvcrt` 和 `ucrt` 两种链接方式的选择可以参考以下问答：
+
+[在 msys2 中的 mingw64 、ucrt64 、clang64 的区别与相同点有啥？](https://www.zhihu.com/question/463666011)
+
+由于以上 github 仓库提供的 `mingw-w64 Release` 的版本选择不是很多，更多的 mingw-w64 版本可以在这里找到：[windows上安装mingw教程及mingw64国内下载地址汇总](https://blog.csdn.net/FL1623863129/article/details/142673029) 。
+
+下载完成后，把压缩包里的目录和文件解压到 C 盘，并把 mingw-w64 的根目录更名为 'C:\mingw-w64' 。
 
 **添加环境变量**
 
 类似的，把 `C:\mingw-w64\bin` 目录添加到系统的 `Path` 路径即可。
 
-另外，这种安装方式是不带 `msys` 的，你可能还需要单独安装一个 `msys` 。
+另外，这种安装方式是不带 `msys` 的，你还需要单独安装一个 `msys2`，链接见上，并配置 `msys2` 的环境变量。
 
 **其他**
 
-关于 mingw64-w64 的更多信息，可以参考：[windows上安装mingw教程及mingw64国内下载地址汇总](https://blog.csdn.net/FL1623863129/article/details/142673029)
+这个版本跟前面介绍的 `MinGW` 32 位版本是冲突的，系统环境变量里只能配置其中一个，建议选择 `ming32-w64` 。
 
 ## x. 参考文章
 
 - [MinGW下载安装教程 傻瓜式操作【超详细】](https://blog.csdn.net/qq_38196449/article/details/136125995)
 
 - [windows上安装mingw教程及mingw64国内下载地址汇总](https://blog.csdn.net/FL1623863129/article/details/142673029)
+
+- [【软件教程】MingW-W64-builds不同版本之间的区别](https://blog.csdn.net/zhangjiuding/article/details/129556458)
 
 - [Windows下使用MinGW+msys编译ffmpeg](https://www.cnblogs.com/shines77/p/3500337.html)
