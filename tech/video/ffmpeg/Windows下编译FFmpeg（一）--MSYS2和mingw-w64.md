@@ -176,12 +176,24 @@ pacman -S mingw-w64-ucrt-x86_64-gcc
 
 类似的，`MINGW64` 环境的命令就是：`pacman -S mingw-w64-msvcrt-x86_64-gcc` 。
 
+**安装包前缀对照表**：
+
+| Name    | Package prefix |
+|---------|----------------|
+| MSYS    | None |
+| MINGW32 | mingw-w64-i686- |
+| MINGW64 | mingw-w64-x86_64- |
+| UCRT64  | mingw-w64-ucrt-x86_64- |
+| CLANG32 | mingw-w64-clang-i686- |
+| CLANG64 | mingw-w64-clang-x86_64- |
+| CLANGARM64 | mingw-w64-clang-aarch64- |
+
 其他需要安装的工具，还有：
 
 ```bash
 pacman -S git make cmake
 pacman -S --needed base-devel
-pacman -S autoconf autogen
+pacman -S autoconf autogen pkg-config
 pacman -S mingw-w64-ucrt-x86_64-gdb
 ```
 
@@ -192,7 +204,53 @@ pacman -S mingw-w64-msvcrt-i686-gcc
 pacman -S mingw-w64-msvcrt-i686-gdb
 ```
 
-### 3.6 mingw-w64 环境变量
+### 3.6 mingw-w64 toolchain
+
+安装 UCRT64 环境的 GCC 可以直接安装 mingw-w64-ucrt-x86_64-toolchain 这个包，这是 MSYS2 所定义的一个 Group，简单说就是一个包组，是包含 UCRT64 环境 C 编译器的软件包的一个组合包。包含了：
+
+```bash
+mingw-w64-ucrt-x86_64-binutils
+mingw-w64-ucrt-x86_64-crt-git
+mingw-w64-ucrt-x86_64-gcc
+mingw-w64-ucrt-x86_64-gcc-ada
+mingw-w64-ucrt-x86_64-gcc-fortran
+mingw-w64-ucrt-x86_64-gcc-libgfortran
+mingw-w64-ucrt-x86_64-gcc-libs
+mingw-w64-ucrt-x86_64-gcc-objc
+mingw-w64-ucrt-x86_64-libgccjit
+mingw-w64-ucrt-x86_64-gdb
+mingw-w64-ucrt-x86_64-gdb-multiarch
+mingw-w64-ucrt-x86_64-headers-git
+mingw-w64-ucrt-x86_64-libmangle-git
+mingw-w64-ucrt-x86_64-libwinpthread-git
+mingw-w64-ucrt-x86_64-winpthreads-git
+mingw-w64-ucrt-x86_64-make
+mingw-w64-ucrt-x86_64-pkgconf
+mingw-w64-ucrt-x86_64-tools-git
+mingw-w64-ucrt-x86_64-winstorecompat-git
+```
+
+安装命令是：
+
+```bash
+pacman -S mingw-w64-ucrt-x86_64-toolchain
+```
+
+toolchain 安装包的好处安装得更完整，但是同时，也会安装一些没用的安装包，占用的磁盘空间会更大。
+
+**toolchain 安装包名的对照表**：
+
+| Name    | Package prefix |
+|---------|----------------|
+| MSYS    | None |
+| MINGW32 | mingw-w64-i686-toolchain |
+| MINGW64 | mingw-w64-x86_64-toolchain |
+| UCRT64  | mingw-w64-ucrt-x86_64-toolchain |
+| CLANG32 | mingw-w64-clang-i686-toolchain |
+| CLANG64 | mingw-w64-clang-x86_64-toolchain |
+| CLANGARM64 | mingw-w64-clang-aarch64-toolchain |
+
+### 3.7 mingw-w64 环境变量
 
 例如，你的 MSYS 2.0 的安装路径是 `C:\msys64`，使用的是 `UCRT64` 环境，则把 `C:\msys64\ucrt64\bin` 目录添加到系统的 `Path` 中。
 
