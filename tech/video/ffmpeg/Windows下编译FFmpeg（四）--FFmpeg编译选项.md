@@ -33,23 +33,26 @@ FFmpeg 因其强大的功能和灵活性而被广泛应用于视频网站、视�
 
 ### 2.1 基本编译开关
 
-首先，可以增加一些常规编译选项来减小最终编译包的大小。可以使用 ./configure -h 命令来列出 configure 程序支持的编译选项，每一项编译选项后都有对应的解释。
+首先，可以增加一些常规编译选项来减小最终编译包的大小。可以使用 `./configure -h` 命令来列出 configure 程序支持的编译选项，每一项编译选项后都有对应的解释。
 
 以下是一些常用的编译开关：
 
 ```bash
---enable-shared: 编译 dll 版本
---enable-static: 编译 静态库 版本
+--enable-shared: 编译 dll 动态库版本
+--enable-static: 编译静态库版本
+--disable-shared: 禁用 dll 动态库版本
+--disable-static: 禁用静态库版本
 --cpu=i686: CPU 类型
 --arch=x86_32: x86_32 位版本
 --arch=x86_64: x86_amd64 位版本
 --host-os=win32: Windows 32 位系统
 --host-os=win64: Windows 64 位系统
+--target-os=win64: 目标 OS
 --disable-debug: 禁用 debug 版本
 --enable-memalign-hack: 内存分配对齐 hack，这个开关已失效。
 --extra-cflags=-I/mingw/include: include 目录
 --extra-ldflags=-L/mingw/lib: lib 目录
---prefix=./output: bin 输出目录
+--prefix=./build: 安装目录
 --enable-asm: 允许编译 asm 代码
 --enable-inline-asm: 允许编译内联 asm 代码
 --toolchain=msvc: 交叉编译
@@ -236,9 +239,9 @@ libav 处理音视频的流程中，负责解封装的是分离器 (demuxer)、�
 FFmpeg 7.1，编译成 dll，UCRT64 环境：
 
 ```bash
-./configure --enable-shared --arch=x86_64 --host-os=win64 --disable-debug \
+./configure --enable-shared --arch=x86_64 --host-os=win64 --target-os=win64 --disable-debug \
 --extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
---prefix=./output --enable-asm --enable-inline-asm \
+--prefix=./build --enable-asm --enable-inline-asm \
 --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
 --disable-ffplay --disable-ffprobe \
 --disable-decoders --enable-decoder=h264 --enable-decoder=mjpeg \
