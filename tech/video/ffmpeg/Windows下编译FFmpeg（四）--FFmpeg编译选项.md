@@ -39,8 +39,8 @@ FFmpeg 因其强大的功能和灵活性而被广泛应用于视频网站、视�
 
 ```bash
 --enable-shared: 编译生成 dll 动态库版本
---enable-static: 编译生成静态库版本，这是默认值
---disable-static: 不生成静态库版本
+--enable-static: 编译生成静态库版本，这是默认值，可不写
+--disable-static: 不生成静态库版本，由于 exe 是静态链接，使用了该选项则不会编译 exe
 --cpu=i686: 选择最小要求的 CPU 类型 (影响指令选择, 可能会导致比较旧的CPU崩溃)
 --arch=x86_32: x86_32 位版本
 --arch=x86_64: x86_amd64 位版本
@@ -230,21 +230,13 @@ libav 处理音视频的流程中，负责解封装的是分离器 (demuxer)、�
 
 ### 3.1 mingw-w64 + MSYS 2.0 + GCC
 
-使用 MSVC 2015 64 bit，则 `vcvars64.bat` 的路径是：
+这种方式是完全只使用 mingw-w64 和 gcc，完全不需要 msvc 。
+
+进入你的 FFmpeg 源码目录，例如：
 
 ```bash
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\amd64\vcvars64.bat
+cd /c/Project/OpenSrc/ffmpeg/ffmpeg-7.1
 ```
-
-在 MSYS 2.0 终端里输入：
-
-```bash
-export PATH=$PATH:'/c/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/amd64'
-
-'/c/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/amd64/vcvars64.bat'
-```
-
-注：这一步不是必须的。
 
 FFmpeg 7.1，编译成 dll，UCRT64 环境，LGPL 2.1：
 
@@ -314,8 +306,6 @@ FFmpeg 7.1，编译成静态库，UCRT64 环境，LGPL 2.1：
 FFmpeg 7.1，编译成 dll，UCRT64 环境，GPL 3.0：
 
 ```bash
-cd /c/Project/OpenSrc/ffmpeg/ffmpeg-7.1
-
 ./configure --enable-shared --disable-static --pkg-config-flags=--static \
 --enable-gpl --enable-version3 --enable-nonfree \
 --arch=x86_64 --host-os=win64 --disable-debug \
@@ -348,7 +338,11 @@ cd /c/Project/OpenSrc/ffmpeg/ffmpeg-7.1
 
 ### 3.2 mingw-w64 + MSYS 2.0 + MSVC
 
-这种方式特别的地方是，先用 MSVC 的命令行启动一个 Shell，然后再执行一个脚本跳转到 MSYS 2.0 Shell，这样就能继承 MSVC 命令行的设置。
+这种方式特别的地方是，它是用 MSVC 的 cl.exe 来编译代码的。
+
+先启动 MSVC 的命令行，然后再执行一个脚本跳转到 MSYS 2.0 Shell，这样就能继承 MSVC 命令行的设置。
+
+#### 3.2.1 启动命令行
 
 以 MSVC 2015 为例，从系统的开始菜单找到“Visual Studio 2015”一栏，在里面找到“VS2015 x64 本机工具命令提示符”，其他的命令行还有：
 
@@ -360,15 +354,31 @@ VS2015 x64 x86 兼容工具命令提示符
 
 等等，不要弄错了，只有“VS2015 x64 本机工具命令提示符”是纯 64 位的命令行。
 
-然后，切换到 MSYS 2.0 的目录，执行：
+#### 3.2.2 msys2_shell.cmd
+
+先把 MSYS 2.0 安装目录 C:\msys64 下的 msys2_shell.cmd 中的：
 
 ```bash
-C:
-cd C:\msys64
-.\msys2_shell.cmd -ucrt64
+rem set MSYS2_PATH_TYPE=inherit
 ```
 
-这样做的目的是为了让打开的 MSYS 2.0 shell 继承 vs2015 的环境路径。
+去掉前面的注释 "rem", 改成如下所示：
+
+```bash
+set MSYS2_PATH_TYPE=inherit
+```
+
+保存，退出。这样是为了将 vs 的环境继承给 MSYS2 。
+
+然后，在 MSVC 2015 的命令行里执行如下命令：
+
+```bash
+C:\msys64\msys2_shell.cmd -ucrt64
+```
+
+这样就会跳出一个新的 MSYS2 的 shell 终端，该 shell 就继承了 vs2015 的环境路径。
+
+你可以尝试在新的 MSYS2 shell 里输入：`$ echo $PATH`，将会看到继承了 vs2015 的 Path 设置。
 
 启动参数和环境对照表：
 
@@ -382,11 +392,150 @@ cd C:\msys64
 | CLANG64 | -clang64 |
 | CLANGARM64 | -clangarm64 |
 
-另外，还有其他启动参数：
+另外，还有其他启动参数，一般无需设置，如下：
 
-- -mintty ：启动 mintty 终端。
-- -conemu ：启动 conemu 终端。
-- -defterm ：启动 defterm 终端。
+- **-mintty** ：启动 mintty 终端。
+- **-conemu** ：启动 conemu 终端。
+- **-defterm** ：启动 defterm 终端。
+
+更多参数请自行阅读 msys2_shell.cmd 的源码。
+
+#### 3.2.3 配置路径
+
+在开始配置之前，我们还需要做一件事情：
+
+```bash
+$ which cl link yasm
+```
+
+检查一下这三个执行文件的路径对不对，如果是：
+
+```bash
+/c/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/HostX64/x64/cl
+/usr/bin/link
+/usr/bin/yasm
+```
+
+把 `C:\msys64\usr\bin\link.exe` 改名为 `C:\msys64\usr\bin\link.exe.bak` ，
+
+把 `C:\msys64\usr\bin\yasm.exe` 改名为 `C:\msys64\usr\bin\yasm.exe.bak` 。
+
+yasm 1.3.0 版的 Windows 修正版可以到下面的网站下载：
+
+- [vsyasm 1.3.0 2015-June-09 32bits for Visual Studio 2010, 2012 and 2013](http://www.megastormsystems.com/repository/Tools/yasm-1.3.0_2015-06-09_32bits.zip)
+- [vsyasm 1.3.0 2015-June-09 64bits for Visual Studio 2010, 2012 and 2013](http://www.megastormsystems.com/repository/Tools/yasm-1.3.0_2015-06-09_64bits.zip)
+
+把其中的 vsyasm.exe 拷贝到 `C:\msys64\ucrt64\bin` 目录下，并改名为 `yasm.exe` 。
+
+yasm 官网的地址是：[http://yasm.tortall.net/Download.html](http://yasm.tortall.net/Download.html)，如果觉得上面的修正版不好用，也可以在官网下载。
+
+再次检查路径：
+
+```bash
+$ which cl link yasm
+
+/c/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/HostX64/x64/cl
+/c/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/HostX64/x64/link
+/ucrt64/bin/yasm
+```
+
+#### 3.2.4 编译选项
+
+编译选项跟上一小节的 mingw-w64 + MSYS 2.0 + GCC 的差不多，主要的不同是可以加上 `--toolchain=msvc` 参数了，如下：
+
+```bash
+--toolchain=msvc --host-os=win64 --target-os=win64
+```
+
+除了以上参数，还需要修改 include 和 lib 的路径，找出你的 MSVC 版本的 cl.exe 到相应的 include、lib 目录的相对路径。
+
+以 MSVC 2019 为例，相对路径为：
+
+```bash
+--extra-cflags=-I../../../../include --extra-ldflags=-L../../../../lib
+```
+
+进入你的 FFmpeg 源码目录，例如：
+
+```bash
+cd /c/Project/OpenSrc/ffmpeg/ffmpeg-7.1
+```
+
+**修改 config.h**
+
+这里有个要注意的地方，在 `./configure` 配置完了以后，先别急着编译，先把新生成的 `config.h` 文件打开后保存为 UTF-8 格式。不做这一步在话，在 make 编译的时候，会出现如下无数的 warning，非常的烦人，烦还不是重点，一直显示 warning 会拖慢整个编译速度。可以用 UltraEdit 或者任何一款可以保存为 UTF-8 格式的编辑软件。
+
+```bash
+.\config.h(1): warning C4828: 文件包含在偏移 0x813 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+.\config.h(1): warning C4828: 文件包含在偏移 0x813 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+.\config.h(1): warning C4828: 文件包含在偏移 0x813 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
+```
+
+**编译选项**
+
+FFmpeg 7.1，编译成 dll，UCRT64 环境，LGPL 2.1，MSVC 工具链：
+
+```bash
+./configure --enable-shared --disable-static --pkg-config-flags=--static \
+--arch=x86_64 --toolchain=msvc --host-os=win64 --target-os=win64 --disable-debug \
+--extra-cflags=-I../../../../include --extra-ldflags=-L../../../../lib \
+--prefix=./build_msvc_shared --enable-asm --enable-inline-asm \
+--disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
+--enable-ffmpeg --disable-ffplay --disable-ffprobe \
+--enable-avfilter --enable-avdevice --disable-swscale --disable-iconv \
+--disable-decoders --enable-decoder=h264 --enable-decoder=hevc \
+--enable-decoder=mpeg4 --enable-decoder=mjpeg --enable-decoder=aac \
+--disable-encoders --enable-encoder=h264_nvenc --enable-encoder=hevc_nvenc \
+--enable-encoder=mpeg4 --enable-encoder=mjpeg --enable-encoder=aac --enable-encoder=png \
+--disable-demuxers --enable-demuxer=h264 --enable-demuxer=hevc \
+--enable-demuxer=mpegvideo --enable-demuxer=mjpeg --enable-demuxer=aac \
+--enable-demuxer=avi --enable-demuxer=mov --enable-demuxer=mpegps \
+--disable-muxers --enable-muxer=h264 --enable-muxer=hevc \
+--enable-muxer=mp4 --enable-muxer=mjpeg \
+--enable-muxer=avi --enable-muxer=adts \
+--disable-filters --enable-filter=fps --enable-filter=framerate \
+--enable-filter=fsync --enable-filter=gblur --enable-bsfs \
+--disable-protocols --enable-protocol=file --enable-protocol=http --enable-protocol=https \
+--disable-parsers --enable-parser=h264 --enable-parser=hevc \
+--enable-parser=mpeg4video --enable-parser=mjpeg --enable-parser=png \
+--disable-indevs --enable-indev=gdigrab --enable-indev=vfwcap --enable-indev=dshow \
+--disable-outdevs \
+--disable-libvpl --enable-hardcoded-tables \
+--enable-hwaccel=h264_nvdec --enable-hwaccel=h264_dxva2 \
+--enable-hwaccel=hevc_nvdec --enable-hwaccel=hevc_dxva2
+```
+
+FFmpeg 7.1，编译成静态库，UCRT64 环境，LGPL 2.1，MSVC 工具链：
+
+```bash
+./configure --enable-static --pkg-config-flags=--static \
+--arch=x86_64 --toolchain=msvc --host-os=win64 --target-os=win64 --disable-debug \
+--extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
+--prefix=./build_msvc_static --enable-asm --enable-inline-asm \
+--disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
+--enable-ffmpeg --disable-ffplay --disable-ffprobe \
+--enable-avfilter --enable-avdevice --disable-swscale --disable-iconv \
+--disable-decoders --enable-decoder=h264 --enable-decoder=hevc \
+--enable-decoder=mpeg4 --enable-decoder=mjpeg --enable-decoder=aac \
+--disable-encoders --enable-encoder=h264_nvenc --enable-encoder=hevc_nvenc \
+--enable-encoder=mpeg4 --enable-encoder=mjpeg --enable-encoder=aac --enable-encoder=png \
+--disable-demuxers --enable-demuxer=h264 --enable-demuxer=hevc \
+--enable-demuxer=mpegvideo --enable-demuxer=mjpeg --enable-demuxer=aac \
+--enable-demuxer=avi --enable-demuxer=mov --enable-demuxer=mpegps \
+--disable-muxers --enable-muxer=h264 --enable-muxer=hevc \
+--enable-muxer=mp4 --enable-muxer=mjpeg \
+--enable-muxer=avi --enable-muxer=adts \
+--disable-filters --enable-filter=fps --enable-filter=framerate \
+--enable-filter=fsync --enable-filter=gblur --enable-bsfs \
+--disable-protocols --enable-protocol=file --enable-protocol=http --enable-protocol=https \
+--disable-parsers --enable-parser=h264 --enable-parser=hevc \
+--enable-parser=mpeg4video --enable-parser=mjpeg --enable-parser=png \
+--disable-indevs --enable-indev=gdigrab --enable-indev=vfwcap --enable-indev=dshow \
+--disable-outdevs \
+--enable-libvpl --enable-hardcoded-tables \
+--enable-hwaccel=h264_nvdec --enable-hwaccel=h264_dxva2 \
+--enable-hwaccel=hevc_nvdec --enable-hwaccel=hevc_dxva2
+```
 
 ## x. FFmpeg 许可和法律注意事项
 
@@ -430,5 +579,7 @@ FFmpeg 是 FFmpeg 项目创始人 Fabrice Bellard 的商标。
 ## y. 参考文章
 
 - [Windows编译和使用ffmpeg](https://blog.csdn.net/sinat_38854292/article/details/123234643)
+
+- [win10下编译ffmpeg和x264](https://zhuanlan.zhihu.com/p/540376835)
 
 - [FFmpeg 许可和法律注意事项](https://ffmpeg.github.net.cn/legal.html)

@@ -68,4 +68,4 @@ pacman -S ucrt64/mingw-w64-ucrt-x86_64-libvpl
 
 - [在windows上编译FFmpeg](https://zhuanlan.zhihu.com/p/707298876)
 
-- []()
+- [在Windows下编译ffmpeg完全手册](https://blog.51cto.com/u_15329201/3418475)
