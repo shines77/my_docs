@@ -38,24 +38,24 @@ FFmpeg 因其强大的功能和灵活性而被广泛应用于视频网站、视�
 以下是一些常用的编译开关：
 
 ```bash
---enable-shared: 编译 dll 动态库版本
---enable-static: 编译静态库版本
---disable-shared: 禁用 dll 动态库版本
---disable-static: 禁用静态库版本
---cpu=i686: CPU 类型
+--enable-shared: 编译生成 dll 动态库版本
+--enable-static: 编译生成静态库版本，这是默认值
+--disable-static: 不生成静态库版本
+--cpu=i686: 选择最小要求的 CPU 类型 (影响指令选择, 可能会导致比较旧的CPU崩溃)
 --arch=x86_32: x86_32 位版本
 --arch=x86_64: x86_amd64 位版本
---host-os=win32: Windows 32 位系统
---host-os=win64: Windows 64 位系统
---target-os=win64: 目标 OS
---disable-debug: 禁用 debug 版本
+--host-os=win32: 当前 OS 类型, Windows 32 位系统
+--host-os=win64: 当前 OS 类型, Windows 64 位系统
+--target-os=win64: 目标 OS 类型, 不要加这个选项，设为 win64 可能会导致使用 msvc 的 lib.exe 来编译 dll
+--disable-debug: 禁用 debugging 信息和符号
 --enable-memalign-hack: 内存分配对齐 hack，这个开关已失效。
 --extra-cflags=-I/mingw/include: include 目录
 --extra-ldflags=-L/mingw/lib: lib 目录
 --prefix=./build: 安装目录
 --enable-asm: 允许编译 asm 代码
 --enable-inline-asm: 允许编译内联 asm 代码
---toolchain=msvc: 交叉编译
+--toolchain=msvc: 设置工具链
+--enable-cross-compile: 允许交叉编译
 ```
 
 允许 GPL 3.0 协议的模块：
@@ -75,7 +75,7 @@ FFmpeg 因其强大的功能和灵活性而被广泛应用于视频网站、视�
 能够直接减小编译包大小的编译开关有如下几个：
 
 ```bash
---enable-small: 允许使用最小文件大小(MinReleaseSize)编译，但可能编译时间会变长
+--enable-small: 允许使用最小文件大小(MinReleaseSize)编译，而不是追求执行效率
 --disable-doc: 禁止编译文档，可以避免将文档编译入包中
 --disable-htmlpages: 禁止编译html文档，可以避免将文档编译入包中
 --disable-manpages: 禁止编译man文档，可以避免将文档编译入包中
@@ -230,20 +230,31 @@ libav 处理音视频的流程中，负责解封装的是分离器 (demuxer)、�
 
 ### 3.1  mingw-w64 + GCC
 
-使用 MSVC 2015 64 bit，在 MSYS 2.0 终端里输入：
+使用 MSVC 2015 64 bit，则 `vcvars64.bat` 的路径是：
 
 ```bash
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\amd64\vcvars64.bat
+```
+
+在 MSYS 2.0 终端里输入：
+
+```bash
+export PATH=$PATH:'/c/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/amd64'
+
 '/c/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/amd64/vcvars64.bat'
 ```
+
+注：这一步不是必须的。
 
 FFmpeg 7.1，编译成 dll，UCRT64 环境：
 
 ```bash
-./configure --enable-shared --arch=x86_64 --host-os=win64 --target-os=win64 --disable-debug \
+./configure --enable-shared --disable-static --pkg-config-flags=--static \
+--arch=x86_64 --host-os=win64 --disable-debug \
 --extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
 --prefix=./build --enable-asm --enable-inline-asm \
 --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
---disable-ffplay --disable-ffprobe \
+--enable-ffmpeg --disable-ffplay --disable-ffprobe \
 --disable-decoders --enable-decoder=h264 --enable-decoder=mjpeg \
 --enable-decoder=hevc --enable-decoder=aac --disable-encoders --enable-encoder=aac --disable-avfilter \
 --disable-avdevice --disable-swscale --disable-demuxers --enable-demuxer=h264 --enable-demuxer=hevc \
@@ -251,8 +262,29 @@ FFmpeg 7.1，编译成 dll，UCRT64 环境：
 --enable-demuxer=mpegps --disable-iconv --disable-filters --enable-bsfs --disable-muxers \
 --enable-muxer=avi --enable-muxer=mp4 --enable-muxer=adts --disable-protocols --enable-protocol=file \
 --disable-parsers --enable-parser=h264 --enable-parser=hevc --enable-parser=mjpeg --disable-devices \
---enable-asm --enable-inline-asm --enable-hardcoded-tables --enable-hwaccel=h264_dxva2 \
+--enable-hardcoded-tables --enable-hwaccel=h264_dxva2 \
 --enable-hwaccel=hevc_dxva2 --disable-network
+```
+
+FFmpeg 7.1，编译成静态库，UCRT64 环境：
+
+```bash
+./configure -enable-static --pkg-config-flags=--static \
+--arch=x86_64 --host-os=win64 --disable-debug \
+--extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
+--prefix=./static_build --enable-asm --enable-inline-asm \
+--disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
+--enable-ffmpeg --disable-ffplay --disable-ffprobe \
+--disable-decoders --enable-decoder=h264 --enable-decoder=mjpeg \
+--enable-decoder=hevc --enable-decoder=aac --disable-encoders --enable-encoder=aac --disable-avfilter \
+--disable-avdevice --disable-swscale --disable-demuxers --enable-demuxer=h264 --enable-demuxer=hevc \
+--enable-demuxer=mjpeg --enable-demuxer=aac --enable-demuxer=avi --enable-demuxer=mov \
+--enable-demuxer=mpegps --disable-iconv --disable-filters --enable-bsfs --disable-muxers \
+--enable-muxer=avi --enable-muxer=mp4 --enable-muxer=adts --disable-protocols --enable-protocol=file \
+--enable-protocol=http --enable-protocol=https \
+--disable-parsers --enable-parser=h264 --enable-parser=hevc --enable-parser=mjpeg --disable-devices \
+--enable-hardcoded-tables --enable-hwaccel=h264_dxva2 \
+--enable-hwaccel=hevc_dxva2
 ```
 
 ## x. FFmpeg 许可和法律注意事项
