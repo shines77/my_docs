@@ -246,7 +246,7 @@ export PATH=$PATH:'/c/Program Files (x86)/Microsoft Visual Studio 14.0/VC/bin/am
 
 注：这一步不是必须的。
 
-FFmpeg 7.1，编译成 dll，UCRT64 环境：
+FFmpeg 7.1，编译成 dll，UCRT64 环境，LGPL 2.1：
 
 ```bash
 ./configure --enable-shared --disable-static --pkg-config-flags=--static \
@@ -256,17 +256,19 @@ FFmpeg 7.1，编译成 dll，UCRT64 环境：
 --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
 --enable-ffmpeg --disable-ffplay --disable-ffprobe \
 --disable-decoders --enable-decoder=h264 --enable-decoder=mjpeg \
---enable-decoder=hevc --enable-decoder=aac --disable-encoders --enable-encoder=aac --disable-avfilter \
---disable-avdevice --disable-swscale --disable-demuxers --enable-demuxer=h264 --enable-demuxer=hevc \
---enable-demuxer=mjpeg --enable-demuxer=aac --enable-demuxer=avi --enable-demuxer=mov \
---enable-demuxer=mpegps --disable-iconv --disable-filters --enable-bsfs --disable-muxers \
---enable-muxer=avi --enable-muxer=mp4 --enable-muxer=adts --disable-protocols --enable-protocol=file \
---disable-parsers --enable-parser=h264 --enable-parser=hevc --enable-parser=mjpeg --disable-devices \
+--enable-decoder=hevc --enable-decoder=aac --disable-encoders --enable-encoder=aac
+--disable-avfilter --disable-avdevice --disable-swscale --disable-demuxers \
+--enable-demuxer=h264 --enable-demuxer=hevc --enable-demuxer=mjpeg --enable-demuxer=aac \
+--enable-demuxer=avi --enable-demuxer=mov --enable-demuxer=mpegps --disable-iconv \
+--disable-filters --enable-bsfs --disable-muxers --enable-muxer=avi --enable-muxer=mp4 \
+--enable-muxer=adts --disable-protocols --enable-protocol=file --enable-protocol=http --enable-protocol=https \
+--disable-parsers --enable-parser=h264 --enable-parser=hevc --enable-parser=mjpeg
+--disable-indevs --disable-outdevs --enable-indev=gdigrab --enable-indev=dshow  \
 --enable-hardcoded-tables --enable-hwaccel=h264_dxva2 \
 --enable-hwaccel=hevc_dxva2 --disable-network
 ```
 
-FFmpeg 7.1，编译成静态库，UCRT64 环境：
+FFmpeg 7.1，编译成静态库，UCRT64 环境，LGPL 2.1：
 
 ```bash
 ./configure -enable-static --pkg-config-flags=--static \
@@ -276,13 +278,39 @@ FFmpeg 7.1，编译成静态库，UCRT64 环境：
 --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
 --enable-ffmpeg --disable-ffplay --disable-ffprobe \
 --disable-decoders --enable-decoder=h264 --enable-decoder=mjpeg \
---enable-decoder=hevc --enable-decoder=aac --disable-encoders --enable-encoder=aac --disable-avfilter \
---disable-avdevice --disable-swscale --disable-demuxers --enable-demuxer=h264 --enable-demuxer=hevc \
---enable-demuxer=mjpeg --enable-demuxer=aac --enable-demuxer=avi --enable-demuxer=mov \
---enable-demuxer=mpegps --disable-iconv --disable-filters --enable-bsfs --disable-muxers \
---enable-muxer=avi --enable-muxer=mp4 --enable-muxer=adts --disable-protocols --enable-protocol=file \
---enable-protocol=http --enable-protocol=https \
---disable-parsers --enable-parser=h264 --enable-parser=hevc --enable-parser=mjpeg --disable-devices \
+--enable-decoder=hevc --enable-decoder=aac --disable-encoders --enable-encoder=aac \
+--disable-avfilter --disable-avdevice --disable-swscale --disable-demuxers \
+--enable-demuxer=h264 --enable-demuxer=hevc --enable-demuxer=mjpeg --enable-demuxer=aac \
+--enable-demuxer=avi --enable-demuxer=mov --enable-demuxer=mpegps --disable-iconv \
+--disable-filters --enable-bsfs --disable-muxers --enable-muxer=avi --enable-muxer=mp4 \
+--enable-muxer=adts --disable-protocols --enable-protocol=file --enable-protocol=http --enable-protocol=https \
+--disable-parsers --enable-parser=h264 --enable-parser=hevc --enable-parser=mjpeg \
+--disable-indevs --disable-outdevs --enable-indev=gdigrab --enable-indev=dshow \
+--enable-hardcoded-tables --enable-hwaccel=h264_dxva2 \
+--enable-hwaccel=hevc_dxva2
+```
+
+FFmpeg 7.1，编译成 dll，UCRT64 环境，GPL 3.0：
+
+```bash
+cd /c/Project/OpenSrc/ffmpeg/ffmpeg-7.1
+
+./configure --enable-shared --disable-static --pkg-config-flags=--static \
+--enable-gpl --enable-version3 --enable-nonfree \
+--arch=x86_64 --host-os=win64 --disable-debug \
+--extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
+--prefix=./build_shared_gpl --enable-asm --enable-inline-asm \
+--disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
+--enable-ffmpeg --disable-ffplay --disable-ffprobe \
+--disable-decoders --enable-decoder=h264 --enable-decoder=mjpeg \
+--enable-decoder=hevc --enable-decoder=aac --disable-encoders --enable-encoder=aac \
+--disable-avfilter --disable-avdevice --disable-swscale --disable-demuxers \
+--enable-demuxer=h264 --enable-demuxer=hevc --enable-demuxer=mjpeg --enable-demuxer=aac \
+--enable-demuxer=avi --enable-demuxer=mov --enable-demuxer=mpegps --disable-iconv \
+--disable-filters --enable-bsfs --disable-muxers --enable-muxer=avi --enable-muxer=mp4 \
+--enable-muxer=adts --disable-protocols --enable-protocol=file --enable-protocol=http --enable-protocol=https \
+--disable-parsers --enable-parser=h264 --enable-parser=hevc --enable-parser=mjpeg \
+--disable-indevs --disable-outdevs --enable-indev=gdigrab --enable-indev=dshow \
 --enable-hardcoded-tables --enable-hwaccel=h264_dxva2 \
 --enable-hwaccel=hevc_dxva2
 ```

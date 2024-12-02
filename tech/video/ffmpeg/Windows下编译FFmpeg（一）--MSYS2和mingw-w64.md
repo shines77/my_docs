@@ -193,7 +193,7 @@ pacman -S mingw-w64-ucrt-x86_64-gcc
 ```bash
 pacman -S git make cmake
 pacman -S --needed base-devel
-pacman -S autoconf autogen pkg-config
+pacman -S autoconf autogen diffutils pkg-config
 pacman -S mingw-w64-ucrt-x86_64-gdb
 ```
 

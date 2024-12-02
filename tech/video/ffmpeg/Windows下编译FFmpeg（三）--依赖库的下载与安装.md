@@ -23,6 +23,16 @@ SDL2 依赖：
 pacman -S mingw-w64-ucrt-x86_64-SDL2
 ```
 
+自己编译 FFmpeg 的时候，一般不建议把所有外部库都包含进去，很多是用不上的，有些在当下的使用环境里毫无意义，比如，alsa 是 Linux 专用的，AppKit 是 MacOS 专用的，libdc1394 是用来读取 1394 接口数字摄像机的，早就过时了，xvid 并不比当前 FFmpeg 内置的 MPEG-4 编解码器更好，通常人们并不用 FFmpeg 通过 openjpeg 库来处理 jpeg2000 静态图像。总之，如果知道用不上，或者搞不懂是一个外部库是干什么的，也不知道怎么使用，就不要选。
+
+给 FFmpeg 加上 nVidia 硬件编解码器的支持。通过 pacman 安装 ffnvcodec：
+
+```bash
+pacman -S  ucrt64/mingw-w64-ucrt-x86_64-ffnvcodec-headers
+```
+
+configure 的选项不用修改，因为跟 nVidia 硬件相关的库都是自动检测的。这个库只需要一些 .h 文件，因为真正运行的代码是随着 nVidia 的驱动程序安装的几个 DLL，并且 FFmpeg 使用动态加载的方式寻找和使用这些 DLL，所以连导入库也不需要，如果系统里没有安装这些 DLL，FFmpeg 会在被要求使用相关功能时报错，而不会一启动就因为缺少 DLL而无法运行。
+
 INTEL 的 CPU 里面也有一套硬件视频编解码器，它用到的库叫做 libvpl。我们先安装 libvpl：
 
 ```bash
