@@ -342,17 +342,22 @@ FFmpeg 7.1，编译成 dll，UCRT64 环境，GPL 3.0：
 
 先启动 MSVC 的命令行，然后再执行一个脚本跳转到 MSYS 2.0 Shell，这样就能继承 MSVC 命令行的设置。
 
+注：由于我编译的是 FFmpeg 7.1 版本，其中包含少量 C 语言的新标准 C11、C17 代码。而 MSVC 对 C11 的支持是从 Visual Studio 2019 版本 16.8 开始的。
+
+所以低于 VS 2019 的版本都不能编译带有 C11 标准的版本，如果是 FFmpeg 的旧版本，可以尝试从 VS 2015 一个个开始测试是否能 `configure` 和编译。
+
 #### 3.2.1 启动命令行
 
-以 MSVC 2015 为例，从系统的开始菜单找到“Visual Studio 2015”一栏，在里面找到“VS2015 x64 本机工具命令提示符”，其他的命令行还有：
+这里以 MSVC 2019 为例，从系统的开始菜单找到“Visual Studio 2015”一栏，其中有下列命令行快捷方式：
 
 ```bash
-VS2015 x86 本机工具命令提示符
-VS2015 x86 x64 兼容工具命令提示符
-VS2015 x64 x86 兼容工具命令提示符
+x86 Native Tools Command Prompt for VS 2019
+x64 Native Tools Command Prompt for VS 2019
+x86_x64 Cross Tools Command Prompt for VS 2019
+x64_x86 Cross Tools Command Prompt for VS 2019
 ```
 
-等等，不要弄错了，只有“VS2015 x64 本机工具命令提示符”是纯 64 位的命令行。
+注意，只有“x64 Native Tools Command Prompt for VS 2019”是纯 64 位的命令行。
 
 #### 3.2.2 msys2_shell.cmd
 
@@ -370,15 +375,15 @@ set MSYS2_PATH_TYPE=inherit
 
 保存，退出。这样是为了将 vs 的环境继承给 MSYS2 。
 
-然后，在 MSVC 2015 的命令行里执行如下命令：
+然后，在 MSVC 2019 的命令行里执行如下命令：
 
 ```bash
 C:\msys64\msys2_shell.cmd -ucrt64
 ```
 
-这样就会跳出一个新的 MSYS2 的 shell 终端，该 shell 就继承了 vs2015 的环境路径。
+这样就会跳出一个新的 MSYS2 的 shell 终端，该 shell 就继承了 vs2019 的环境路径。
 
-你可以尝试在新的 MSYS2 shell 里输入：`$ echo $PATH`，将会看到继承了 vs2015 的 Path 设置。
+你可以尝试在新的 MSYS2 shell 里输入：`$ echo $PATH`，将会看到继承了 vs2019 的 Path 设置。
 
 启动参数和环境对照表：
 
@@ -411,7 +416,7 @@ $ which cl link yasm
 检查一下这三个执行文件的路径对不对，如果是：
 
 ```bash
-/c/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/HostX64/x64/cl
+/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Tools/MSVC/14.29.30133/bin/HostX64/x64/cl
 /usr/bin/link
 /usr/bin/yasm
 ```
@@ -425,7 +430,7 @@ yasm 1.3.0 版的 Windows 修正版可以到下面的网站下载：
 - [vsyasm 1.3.0 2015-June-09 32bits for Visual Studio 2010, 2012 and 2013](http://www.megastormsystems.com/repository/Tools/yasm-1.3.0_2015-06-09_32bits.zip)
 - [vsyasm 1.3.0 2015-June-09 64bits for Visual Studio 2010, 2012 and 2013](http://www.megastormsystems.com/repository/Tools/yasm-1.3.0_2015-06-09_64bits.zip)
 
-把其中的 vsyasm.exe 拷贝到 `C:\msys64\ucrt64\bin` 目录下，并改名为 `yasm.exe` 。
+把其中的 `vsyasm.exe` 拷贝到 `C:\msys64\ucrt64\bin` 目录下，并改名为 `yasm.exe` 。
 
 yasm 官网的地址是：[http://yasm.tortall.net/Download.html](http://yasm.tortall.net/Download.html)，如果觉得上面的修正版不好用，也可以在官网下载。
 
@@ -434,14 +439,14 @@ yasm 官网的地址是：[http://yasm.tortall.net/Download.html](http://yasm.to
 ```bash
 $ which cl link yasm
 
-/c/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/HostX64/x64/cl
-/c/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.16.27023/bin/HostX64/x64/link
+/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Tools/MSVC/14.29.30133/bin/HostX64/x64/cl
+/c/Program Files (x86)/Microsoft Visual Studio/2019/BuildTools/VC/Tools/MSVC/14.29.30133/bin/HostX64/x64/link
 /ucrt64/bin/yasm
 ```
 
 #### 3.2.4 编译选项
 
-编译选项跟上一小节的 mingw-w64 + MSYS 2.0 + GCC 的差不多，主要的不同是可以加上 `--toolchain=msvc` 参数了，如下：
+编译选项跟上一小节的 mingw-w64 + MSYS 2.0 + GCC 的差不多，主要的不同是加上了 `--toolchain=msvc` 参数，如下：
 
 ```bash
 --toolchain=msvc --host-os=win64 --target-os=win64
@@ -452,8 +457,11 @@ $ which cl link yasm
 以 MSVC 2019 为例，相对路径为：
 
 ```bash
---extra-cflags=-I../../../../include --extra-ldflags=-L../../../../lib
+--extra-cflags="-I../../../../include" --extra-ldflags="-LIBPATH:../../../../lib"
 ```
+
+这里最坑爹的是 `--extra-ldflags` 必须使用 "-LIBPATH:路径"，而不能使用 "-L路径" 。
+打开 config.log 查看记录，发现使用了 `./compat/windows/mslink` 来链接，而 mslink 一定要用 "-LIBPATH:路径" 来指定 lib 库路径。
 
 进入你的 FFmpeg 源码目录，例如：
 
@@ -471,6 +479,29 @@ cd /c/Project/OpenSrc/ffmpeg/ffmpeg-7.1
 .\config.h(1): warning C4828: 文件包含在偏移 0x813 处开始的字符，该字符在当前源字符集中无效(代码页 65001)。
 ```
 
+或者更简单的方法，把 `config.h` 文件中的中文手动翻译为英文，例如：
+
+```bash
+# 可能看到的是乱码, 需要先转换为 UTF-8 后才能看到正常的中文
+#define CC_IDENT "用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30157 版"
+
+修改为：
+
+#define CC_IDENT "Microsoft (R) C/C++ Optimized Compiler for x64 version 19.29.30157"
+```
+
+**拷贝 ffnvcodec 头文件**
+
+在第三章里，我们介绍了 nVidia 硬件编解码器的支持 ffnvcodec，由于它只需要头文件就能被 `./configure` 自动检测到，所以我们把它从 MSYS 2.0 里拷贝一份到 MSVC 2019 的 include 目录下即可，例如：
+
+```bash
+拷贝 C:\msys64\ucrt64\include 下的 ffnvcodec 文件夹到
+
+C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Tools\MSVC\14.29.30133\include 目录下面。
+···
+
+ffnvcodec 的安装请参考第三章。
+
 **编译选项**
 
 FFmpeg 7.1，编译成 dll，UCRT64 环境，LGPL 2.1，MSVC 工具链：
@@ -478,7 +509,8 @@ FFmpeg 7.1，编译成 dll，UCRT64 环境，LGPL 2.1，MSVC 工具链：
 ```bash
 ./configure --enable-shared --disable-static --pkg-config-flags=--static \
 --arch=x86_64 --toolchain=msvc --host-os=win64 --target-os=win64 --disable-debug \
---extra-cflags=-I../../../../include --extra-ldflags=-L../../../../lib \
+--extra-cflags="-I../../../../include" \
+--extra-ldflags="-LIBPATH:../../../../lib" --enable-cross-compile \
 --prefix=./build_msvc_shared --enable-asm --enable-inline-asm \
 --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
 --enable-ffmpeg --disable-ffplay --disable-ffprobe \
@@ -510,7 +542,8 @@ FFmpeg 7.1，编译成静态库，UCRT64 环境，LGPL 2.1，MSVC 工具链：
 ```bash
 ./configure --enable-static --pkg-config-flags=--static \
 --arch=x86_64 --toolchain=msvc --host-os=win64 --target-os=win64 --disable-debug \
---extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
+--extra-cflags="-I../../../../include" \
+--extra-ldflags="-LIBPATH:../../../../lib" --enable-cross-compile \
 --prefix=./build_msvc_static --enable-asm --enable-inline-asm \
 --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
 --enable-ffmpeg --disable-ffplay --disable-ffprobe \
@@ -532,7 +565,7 @@ FFmpeg 7.1，编译成静态库，UCRT64 环境，LGPL 2.1，MSVC 工具链：
 --enable-parser=mpeg4video --enable-parser=mjpeg --enable-parser=png \
 --disable-indevs --enable-indev=gdigrab --enable-indev=vfwcap --enable-indev=dshow \
 --disable-outdevs \
---enable-libvpl --enable-hardcoded-tables \
+--disable-libvpl --enable-hardcoded-tables \
 --enable-hwaccel=h264_nvdec --enable-hwaccel=h264_dxva2 \
 --enable-hwaccel=hevc_nvdec --enable-hwaccel=hevc_dxva2
 ```
