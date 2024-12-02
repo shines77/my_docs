@@ -31,13 +31,23 @@ pacman -S mingw-w64-ucrt-x86_64-SDL2
 pacman -S  ucrt64/mingw-w64-ucrt-x86_64-ffnvcodec-headers
 ```
 
-configure 的选项不用修改，因为跟 nVidia 硬件相关的库都是自动检测的。这个库只需要一些 .h 文件，因为真正运行的代码是随着 nVidia 的驱动程序安装的几个 DLL，并且 FFmpeg 使用动态加载的方式寻找和使用这些 DLL，所以连导入库也不需要，如果系统里没有安装这些 DLL，FFmpeg 会在被要求使用相关功能时报错，而不会一启动就因为缺少 DLL而无法运行。
+configure 的选项不用修改，因为跟 nVidia 硬件相关的库都是自动检测的。这个库只需要一些 .h 文件，因为真正运行的代码是随着 nVidia 的驱动程序安装的几个 DLL，并且 FFmpeg 使用动态加载的方式寻找和使用这些 DLL，所以连导入库也不需要，如果系统里没有安装这些 DLL，FFmpeg 会在被要求使用相关功能时报错，而不会一启动就因为缺少 DLL 而无法运行。
 
-INTEL 的 CPU 里面也有一套硬件视频编解码器，它用到的库叫做 libvpl。我们先安装 libvpl：
+`./configure` 完以后，会看到多了几个跟 nVidia 相关的模块。
+
+```bash
+External libraries providing hardware acceleration:
+cuda                    d3d11va                 dxva2                   nvdec
+cuvid                   d3d12va                 ffnvcodec               nvenc
+```
+
+INTEL 的 CPU 里面也有一套硬件视频编解码器，它用到的库叫做 libvpl 。我们先安装 libvpl ：
 
 ```bash
 pacman -S ucrt64/mingw-w64-ucrt-x86_64-libvpl
 ```
+
+添加编译开关 `--enable-libvp` 。
 
 其他依赖库:
 

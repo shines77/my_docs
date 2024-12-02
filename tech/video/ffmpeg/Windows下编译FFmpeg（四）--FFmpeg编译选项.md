@@ -228,7 +228,7 @@ libav 处理音视频的流程中，负责解封装的是分离器 (demuxer)、�
 
 ## 3. 编译和使用
 
-### 3.1  mingw-w64 + GCC
+### 3.1 mingw-w64 + MSYS 2.0 + GCC
 
 使用 MSVC 2015 64 bit，则 `vcvars64.bat` 的路径是：
 
@@ -252,42 +252,63 @@ FFmpeg 7.1，编译成 dll，UCRT64 环境，LGPL 2.1：
 ./configure --enable-shared --disable-static --pkg-config-flags=--static \
 --arch=x86_64 --host-os=win64 --disable-debug \
 --extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
---prefix=./build --enable-asm --enable-inline-asm \
+--prefix=./build_shared --enable-asm --enable-inline-asm \
 --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
 --enable-ffmpeg --disable-ffplay --disable-ffprobe \
---disable-decoders --enable-decoder=h264 --enable-decoder=mjpeg \
---enable-decoder=hevc --enable-decoder=aac --disable-encoders --enable-encoder=aac
---disable-avfilter --disable-avdevice --disable-swscale --disable-demuxers \
---enable-demuxer=h264 --enable-demuxer=hevc --enable-demuxer=mjpeg --enable-demuxer=aac \
---enable-demuxer=avi --enable-demuxer=mov --enable-demuxer=mpegps --disable-iconv \
---disable-filters --enable-bsfs --disable-muxers --enable-muxer=avi --enable-muxer=mp4 \
---enable-muxer=adts --disable-protocols --enable-protocol=file --enable-protocol=http --enable-protocol=https \
---disable-parsers --enable-parser=h264 --enable-parser=hevc --enable-parser=mjpeg
---disable-indevs --disable-outdevs --enable-indev=gdigrab --enable-indev=dshow  \
---enable-hardcoded-tables --enable-hwaccel=h264_dxva2 \
---enable-hwaccel=hevc_dxva2 --disable-network
+--enable-avfilter --enable-avdevice --disable-swscale --disable-iconv \
+--disable-decoders --enable-decoder=h264 --enable-decoder=hevc \
+--enable-decoder=mpeg4 --enable-decoder=mjpeg --enable-decoder=aac \
+--disable-encoders --enable-encoder=h264_nvenc --enable-encoder=hevc_nvenc \
+--enable-encoder=mpeg4 --enable-encoder=mjpeg --enable-encoder=aac --enable-encoder=png \
+--disable-demuxers --enable-demuxer=h264 --enable-demuxer=hevc \
+--enable-demuxer=mpegvideo --enable-demuxer=mjpeg --enable-demuxer=aac \
+--enable-demuxer=avi --enable-demuxer=mov --enable-demuxer=mpegps \
+--disable-muxers --enable-muxer=h264 --enable-muxer=hevc \
+--enable-muxer=mp4 --enable-muxer=mjpeg \
+--enable-muxer=avi --enable-muxer=adts \
+--disable-filters --enable-filter=fps --enable-filter=framerate \
+--enable-filter=fsync --enable-filter=gblur --enable-bsfs \
+--disable-protocols --enable-protocol=file --enable-protocol=http --enable-protocol=https \
+--disable-parsers --enable-parser=h264 --enable-parser=hevc \
+--enable-parser=mpeg4video --enable-parser=mjpeg --enable-parser=png \
+--disable-indevs --enable-indev=gdigrab --enable-indev=vfwcap --enable-indev=dshow \
+--disable-outdevs \
+--enable-libvpl --enable-hardcoded-tables \
+--enable-hwaccel=h264_nvdec --enable-hwaccel=h264_dxva2 \
+--enable-hwaccel=hevc_nvdec --enable-hwaccel=hevc_dxva2 \
+--disable-network
 ```
 
 FFmpeg 7.1，编译成静态库，UCRT64 环境，LGPL 2.1：
 
 ```bash
-./configure -enable-static --pkg-config-flags=--static \
+./configure --enable-static --pkg-config-flags=--static \
 --arch=x86_64 --host-os=win64 --disable-debug \
 --extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
---prefix=./static_build --enable-asm --enable-inline-asm \
+--prefix=./build_static --enable-asm --enable-inline-asm \
 --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
 --enable-ffmpeg --disable-ffplay --disable-ffprobe \
---disable-decoders --enable-decoder=h264 --enable-decoder=mjpeg \
---enable-decoder=hevc --enable-decoder=aac --disable-encoders --enable-encoder=aac \
---disable-avfilter --disable-avdevice --disable-swscale --disable-demuxers \
---enable-demuxer=h264 --enable-demuxer=hevc --enable-demuxer=mjpeg --enable-demuxer=aac \
---enable-demuxer=avi --enable-demuxer=mov --enable-demuxer=mpegps --disable-iconv \
---disable-filters --enable-bsfs --disable-muxers --enable-muxer=avi --enable-muxer=mp4 \
---enable-muxer=adts --disable-protocols --enable-protocol=file --enable-protocol=http --enable-protocol=https \
---disable-parsers --enable-parser=h264 --enable-parser=hevc --enable-parser=mjpeg \
---disable-indevs --disable-outdevs --enable-indev=gdigrab --enable-indev=dshow \
---enable-hardcoded-tables --enable-hwaccel=h264_dxva2 \
---enable-hwaccel=hevc_dxva2
+--enable-avfilter --enable-avdevice --disable-swscale --disable-iconv \
+--disable-decoders --enable-decoder=h264 --enable-decoder=hevc \
+--enable-decoder=mpeg4 --enable-decoder=mjpeg --enable-decoder=aac \
+--disable-encoders --enable-encoder=h264_nvenc --enable-encoder=hevc_nvenc \
+--enable-encoder=mpeg4 --enable-encoder=mjpeg --enable-encoder=aac --enable-encoder=png \
+--disable-demuxers --enable-demuxer=h264 --enable-demuxer=hevc \
+--enable-demuxer=mpegvideo --enable-demuxer=mjpeg --enable-demuxer=aac \
+--enable-demuxer=avi --enable-demuxer=mov --enable-demuxer=mpegps \
+--disable-muxers --enable-muxer=h264 --enable-muxer=hevc \
+--enable-muxer=mp4 --enable-muxer=mjpeg \
+--enable-muxer=avi --enable-muxer=adts \
+--disable-filters --enable-filter=fps --enable-filter=framerate \
+--enable-filter=fsync --enable-filter=gblur --enable-bsfs \
+--disable-protocols --enable-protocol=file --enable-protocol=http --enable-protocol=https \
+--disable-parsers --enable-parser=h264 --enable-parser=hevc \
+--enable-parser=mpeg4video --enable-parser=mjpeg --enable-parser=png \
+--disable-indevs --enable-indev=gdigrab --enable-indev=vfwcap --enable-indev=dshow \
+--disable-outdevs \
+--enable-libvpl --enable-hardcoded-tables \
+--enable-hwaccel=h264_nvdec --enable-hwaccel=h264_dxva2 \
+--enable-hwaccel=hevc_nvdec --enable-hwaccel=hevc_dxva2
 ```
 
 FFmpeg 7.1，编译成 dll，UCRT64 环境，GPL 3.0：
@@ -302,18 +323,70 @@ cd /c/Project/OpenSrc/ffmpeg/ffmpeg-7.1
 --prefix=./build_shared_gpl --enable-asm --enable-inline-asm \
 --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
 --enable-ffmpeg --disable-ffplay --disable-ffprobe \
---disable-decoders --enable-decoder=h264 --enable-decoder=mjpeg \
---enable-decoder=hevc --enable-decoder=aac --disable-encoders --enable-encoder=aac \
---disable-avfilter --disable-avdevice --disable-swscale --disable-demuxers \
---enable-demuxer=h264 --enable-demuxer=hevc --enable-demuxer=mjpeg --enable-demuxer=aac \
---enable-demuxer=avi --enable-demuxer=mov --enable-demuxer=mpegps --disable-iconv \
---disable-filters --enable-bsfs --disable-muxers --enable-muxer=avi --enable-muxer=mp4 \
---enable-muxer=adts --disable-protocols --enable-protocol=file --enable-protocol=http --enable-protocol=https \
---disable-parsers --enable-parser=h264 --enable-parser=hevc --enable-parser=mjpeg \
---disable-indevs --disable-outdevs --enable-indev=gdigrab --enable-indev=dshow \
---enable-hardcoded-tables --enable-hwaccel=h264_dxva2 \
---enable-hwaccel=hevc_dxva2
+--enable-avfilter --enable-avdevice --disable-swscale --disable-iconv \
+--disable-decoders --enable-decoder=h264 --enable-decoder=hevc \
+--enable-decoder=mpeg4 --enable-decoder=mjpeg --enable-decoder=aac \
+--disable-encoders --enable-encoder=h264_nvenc --enable-encoder=hevc_nvenc \
+--enable-encoder=mpeg4 --enable-encoder=mjpeg --enable-encoder=aac --enable-encoder=png \
+--disable-demuxers --enable-demuxer=h264 --enable-demuxer=hevc \
+--enable-demuxer=mpegvideo --enable-demuxer=mjpeg --enable-demuxer=aac \
+--enable-demuxer=avi --enable-demuxer=mov --enable-demuxer=mpegps \
+--disable-muxers --enable-muxer=h264 --enable-muxer=hevc \
+--enable-muxer=mp4 --enable-muxer=mjpeg \
+--enable-muxer=avi --enable-muxer=adts \
+--disable-filters --enable-filter=fps --enable-filter=framerate \
+--enable-filter=fsync --enable-filter=gblur --enable-bsfs \
+--disable-protocols --enable-protocol=file --enable-protocol=http --enable-protocol=https \
+--disable-parsers --enable-parser=h264 --enable-parser=hevc \
+--enable-parser=mpeg4video --enable-parser=mjpeg --enable-parser=png \
+--disable-indevs --enable-indev=gdigrab --enable-indev=vfwcap --enable-indev=dshow \
+--disable-outdevs \
+--enable-libvpl --enable-hardcoded-tables \
+--enable-hwaccel=h264_nvdec --enable-hwaccel=h264_dxva2 \
+--enable-hwaccel=hevc_nvdec --enable-hwaccel=hevc_dxva2
 ```
+
+### 3.2 mingw-w64 + MSYS 2.0 + MSVC
+
+这种方式特别的地方是，先用 MSVC 的命令行启动一个 Shell，然后再执行一个脚本跳转到 MSYS 2.0 Shell，这样就能继承 MSVC 命令行的设置。
+
+以 MSVC 2015 为例，从系统的开始菜单找到“Visual Studio 2015”一栏，在里面找到“VS2015 x64 本机工具命令提示符”，其他的命令行还有：
+
+```bash
+VS2015 x86 本机工具命令提示符
+VS2015 x86 x64 兼容工具命令提示符
+VS2015 x64 x86 兼容工具命令提示符
+```
+
+等等，不要弄错了，只有“VS2015 x64 本机工具命令提示符”是纯 64 位的命令行。
+
+然后，切换到 MSYS 2.0 的目录，执行：
+
+```bash
+C:
+cd C:\msys64
+.\msys2_shell.cmd -ucrt64
+```
+
+这样做的目的是为了让打开的 MSYS 2.0 shell 继承 vs2015 的环境路径。
+
+启动参数和环境对照表：
+
+| Name    | Parameter |
+|---------|-----------|
+| MSYS    | -msys 或 -msys2 |
+| MINGW32 | -mingw32 |
+| MINGW64 | -mingw64 |
+| UCRT64  | -ucrt64 |
+| CLANG32 | -clang32 |
+| CLANG64 | -clang64 |
+| CLANGARM64 | -clangarm64 |
+
+另外，还有其他启动参数：
+
+- -mintty ：启动 mintty 终端。
+- -conemu ：启动 conemu 终端。
+- -defterm ：启动 defterm 终端。
 
 ## x. FFmpeg 许可和法律注意事项
 

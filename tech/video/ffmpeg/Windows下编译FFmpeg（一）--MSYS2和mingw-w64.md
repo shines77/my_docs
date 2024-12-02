@@ -174,7 +174,7 @@ MSYS 2.0 安装好以后，系统开始菜单里 `MSYS 2.0` 下面会有不同�
 pacman -S mingw-w64-ucrt-x86_64-gcc
 ```
 
-类似的，`MINGW64` 环境的命令就是：`pacman -S mingw-w64-msvcrt-x86_64-gcc` 。
+类似的，`MINGW64` 环境的命令就是：`pacman -S mingw-w64-x86_64-gcc` 。
 
 **安装包前缀对照表**：
 
@@ -191,18 +191,25 @@ pacman -S mingw-w64-ucrt-x86_64-gcc
 其他需要安装的工具，还有：
 
 ```bash
-pacman -S git make cmake
+pacman -S git make cmake yasm
 pacman -S --needed base-devel
-pacman -S autoconf autogen diffutils pkg-config
+pacman -S autoconf autogen pkg-config
 pacman -S mingw-w64-ucrt-x86_64-gdb
+pacman -S mingw-w64-ucrt-x86_64-nasm
+pacman -S mingw-w64-ucrt-x86_64-diffutils
 ```
+
+据说，mingw-w64-ucrt-x86_64-nasm 版本比默认的 nasm 性能更好，但要注意每个你要用的环境都要单独安装，diffutils 也类似。
 
 其他环境下以此类推，例如：`MINGW32` 环境，命令如下：
 
 ```bash
-pacman -S mingw-w64-msvcrt-i686-gcc
-pacman -S mingw-w64-msvcrt-i686-gdb
+pacman -S mingw-w64-i686-gdb
+pacman -S mingw-w64-i686-nasm
+pacman -S mingw-w64-i686-diffutils
 ```
+
+环境的前缀对照表请参考上文。
 
 ### 3.6 mingw-w64 toolchain
 
