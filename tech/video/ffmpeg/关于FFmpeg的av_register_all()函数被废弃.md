@@ -2,11 +2,11 @@
 
 ## 1. 原因
 
-从 FFmpeg 4.0 开始，av_register_all() 函数已被废弃，并且在未来的版本中可能会被移除。av_register_all() 函数在旧版本的 FFmpeg 中用于注册所有的复用器（muxer）、解复用器（demuxer）、编码器、解码器和协议等。
+从 FFmpeg 4.0 开始，av_register_all() 函数已被废弃，并且在未来的版本中可能会被移除。av_register_all() 函数在旧版本的 FFmpeg 中用于注册所有的复用器（muxer）、解复用器（demuxer）、编码器（encoder）、解码器（decoder）和协议等。
 
 解释：
 
-FFmpeg 团队为了减少库的依赖性和体积，将注册函数移到了特定的库中。这意味着如果你只使用某些编解码器或者协议，你可以只链接那些你需要的库，从而减少程序的大小和对系统资源的需求。
+FFmpeg 团队为了减少库的依赖性和体积，将注册函数移到了特定的库中。如果你只使用某些编解码器或者协议，你可以只链接那些你需要的库，从而减少程序的大小和对系统资源的需求。
 
 更确切的废弃信息来自于 APIchanges 中：
 
@@ -25,13 +25,15 @@ FFmpeg 团队为了减少库的依赖性和体积，将注册函数移到了特�
 
 例如，如果你只需要使用 libavcodec 中的 h264 解码器，你应该只链接 libavcodec 和 libavformat。
 
-对于旧代码，你需要根据你的需求，手动替换掉 av_register_all() 。这通常意味着你需要显式地注册你需要的解码器和协议。
+对于旧代码，你需要根据你的需求，手动替换掉 av_register_all()，这通常意味着你需要显式地注册你需要的解码器和协议。
 
-例如，使用 avcodec_register_all() 来注册编解码器，使用 av_protocol_register_all() 来注册所有协议。
+例如：
 
-如果你依然需要加载所有编解码器，你可以使用 avcodec_register_all() 来代替 av_register_all()。
+- 你可以使用 avcodec_register_all() 来加载所有编解码器。
 
-如果你依然需要加载所有文件格式和协议，你可以使用 avformat_register_all() 来代替 av_register_all()。
+- 你可以使用 avformat_register_all() 来加载所有文件格式。
+
+- 你可以使用 av_protocol_register_all() 来加载所有协议。
 
 确保你的代码只链接必要的库，以减少程序的大小和潜在的安全风险。
 
