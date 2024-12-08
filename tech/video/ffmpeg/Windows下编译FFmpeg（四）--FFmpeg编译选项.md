@@ -265,7 +265,7 @@ FFmpeg 7.1，编译成 dll，UCRT64 环境，LGPL 2.1：
 --enable-parser=mpeg4video --enable-parser=mjpeg --enable-parser=png \
 --disable-indevs --enable-indev=gdigrab --enable-indev=vfwcap --enable-indev=dshow \
 --disable-outdevs \
---enable-libvpl --enable-hardcoded-tables \
+--enable-libvpl --enable-libmfx --enable-hardcoded-tables \
 --enable-hwaccel=h264_nvdec --enable-hwaccel=h264_dxva2 \
 --enable-hwaccel=hevc_nvdec --enable-hwaccel=hevc_dxva2 \
 --disable-network
