@@ -56,6 +56,7 @@ FFmpeg 因其强大的功能和灵活性而被广泛应用于视频网站、视�
 --enable-inline-asm: 允许编译内联 asm 代码
 --toolchain=msvc: 设置工具链
 --enable-cross-compile: 允许交叉编译
+--disable-network: 禁用网络支持
 ```
 
 允许 GPL 3.0 协议的模块：
@@ -238,11 +239,36 @@ libav 处理音视频的流程中，负责解封装的是分离器 (demuxer)、�
 cd /c/Project/OpenSrc/ffmpeg/ffmpeg-7.1
 ```
 
+obs_studio 的编译选项，dll 方式，GPL 3.0：
+
+```bash
+./configure --enable-shared \
+--enable-gpl --enable-version3 --enable-nonfree \
+--arch=x86_64 --extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
+--target-os=mingw32 \
+--prefix="./build_shared_gpl3" \
+--disable-debug \
+--pkg-config=pkg-config --pkg-config-flags=--static \
+--enable-ffmpeg --disable-ffplay --disable-ffprobe \
+--disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
+--enable-libmfx --enable-hardcoded-tables
+--disable-postproc \
+--enable-hwaccel=h264_nvdec --enable-hwaccel=h264_dxva2 \
+--enable-hwaccel=hevc_nvdec --enable-hwaccel=hevc_dxva2
+```
+
+暂时移除的选项：
+
+```bash
+--enable-nvenc \
+--enable-libopus \
+```
+
 FFmpeg 7.1，编译成 dll，UCRT64 环境，LGPL 2.1：
 
 ```bash
 ./configure --enable-shared --disable-static --pkg-config-flags=--static \
---arch=x86_64 --host-os=win64 --disable-debug \
+--arch=x86_64 --disable-debug \
 --extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
 --prefix=./build_shared --enable-asm --enable-inline-asm \
 --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
@@ -267,15 +293,14 @@ FFmpeg 7.1，编译成 dll，UCRT64 环境，LGPL 2.1：
 --disable-outdevs \
 --enable-libvpl --enable-libmfx --enable-hardcoded-tables \
 --enable-hwaccel=h264_nvdec --enable-hwaccel=h264_dxva2 \
---enable-hwaccel=hevc_nvdec --enable-hwaccel=hevc_dxva2 \
---disable-network
+--enable-hwaccel=hevc_nvdec --enable-hwaccel=hevc_dxva2
 ```
 
 FFmpeg 7.1，编译成静态库，UCRT64 环境，LGPL 2.1：
 
 ```bash
 ./configure --enable-static --pkg-config-flags=--static \
---arch=x86_64 --host-os=win64 --disable-debug \
+--arch=x86_64 --disable-debug \
 --extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
 --prefix=./build_static --enable-asm --enable-inline-asm \
 --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
@@ -308,7 +333,7 @@ FFmpeg 7.1，编译成 dll，UCRT64 环境，GPL 3.0：
 ```bash
 ./configure --enable-shared --disable-static --pkg-config-flags=--static \
 --enable-gpl --enable-version3 --enable-nonfree \
---arch=x86_64 --host-os=win64 --disable-debug \
+--arch=x86_64 --disable-debug \
 --extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
 --prefix=./build_shared_gpl --enable-asm --enable-inline-asm \
 --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
@@ -570,6 +595,50 @@ FFmpeg 7.1，编译成静态库，UCRT64 环境，LGPL 2.1，MSVC 工具链：
 --disable-libvpl --enable-hardcoded-tables \
 --enable-hwaccel=h264_nvdec --enable-hwaccel=h264_dxva2 \
 --enable-hwaccel=hevc_nvdec --enable-hwaccel=hevc_dxva2
+```
+
+## 4. MSVC 下使用 FFmpeg
+
+在 Visual Studio 的 MSVC 中使用引入 FFmpeg 静态/动态库，调用 FFmpeg 代码。其中 SDL2 不是必须的，仅举例用。
+
+**include 路径设置**
+
+配置属性 → VC++目录 → 常规，外部包含目录 → 编辑。
+
+```bash
+{your_ffmpeg_source_dir}\build_xxxx\include
+或者
+{your_msys64_dir}\usr\local\ffmpeg\include
+
+{your_msys64_dir}\usr\local\sdl2\include
+```
+
+**lib 路径设置**
+
+配置属性 → 链接器 → 常规，附加库目录 → 编辑。
+
+```bash
+{your_ffmpeg_source_dir}\build_xxxx\lib
+或者
+{your_msys64_dir}\usr\local\ffmpeg\lib
+
+{your_msys64_dir}\usr\local\sdl2\lib
+```
+
+**lib 库名设置**
+
+配置属性 → 链接器 → 输入，附加依赖项 → 编辑。
+
+```bash
+avcodec.lib
+avdevice.lib
+avfilter.lib
+avformat.lib
+avutil.lib
+postproc.lib
+swresample.lib
+swscale.lib
+SDL2.lib
 ```
 
 ## x. FFmpeg 许可和法律注意事项

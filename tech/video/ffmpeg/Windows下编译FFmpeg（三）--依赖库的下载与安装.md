@@ -164,14 +164,31 @@ tar xzvf libvpx-1.15.0.tar.gz
 cd libvpx-1.15.0
 ```
 
+这里注意，如果在 MinGW 环境下编译 libvpx 要用到 yasm 编译汇编代码，这里不能使用 Windows 版的 yasm 版本，请使用 `which yasm` 查看路径，并改回 MinGW 版本的 yasm 。或者使用 `--as=nasm` 编译选项，选择 `nasm` 编译汇编代码。
+
 配置，编译并安装：
 
 （如果不加 `--enable-pic`，在编译 FFmpeg 时会报错“relocation R_X86_64_32 against `.rodata.str1.1' can not be used when making a shared object; recompile with -fPIC”。）
 
 ```bash
-./configure --prefix=/usr/local/libvpx --enable-pic --disable-examples --disable-unit-tests
+./configure --prefix=/usr/local/libvpx --enable-static --enable-libyuv --enable-pic --as=nasm --disable-examples --disable-unit-tests
 make
 make install
+```
+
+`--enable-vp8 --enable-vp9 --enable-libyuv` 保留选项。
+
+其中 `--enable-shared` 只支持 ELF, OS/2, and Darwin 系统。
+
+**报错**
+
+编译 `1.15.0 ` 版时报错，改用 `1.13.1` 版：
+
+```bash
+    [CXX] vp9/ratectrl_rtc.cc.o
+make[1]: *** [Makefile:188：vp9/ratectrl_rtc.cc.o] 错误 1
+make: *** [Makefile:17：.DEFAULT] 错误 2
+
 ```
 
 给环境变量 `PKG_CONFIG_PATH` 添加 libvpx 的 pkgconfig 路径，也就是在 `/etc/profile` 文件末尾添加如下一行内容：
