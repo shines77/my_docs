@@ -278,6 +278,57 @@ install -m 0644 ffnvcodec.pc 'C:/msys64/usr/lib/pkgconfig'
 
 这次就正常了。
 
+**FFmpeg配置时的问题**
+
+FFmpeg 在配置过程中会生成这样的测试代码：
+
+```cpp
+#include <ffnvcodec/nvEncodeAPI.h>
+NV_ENCODE_API_FUNCTION_LIST flist;
+void f(void) { struct { const GUID guid; } s[] = { { NV_ENC_PRESET_HQ_GUID } }; }
+int main(void) { return 0; }
+```
+
+其中 `NV_ENC_PRESET_HQ_GUID` 这个值在 `ffnvcodec` 中的头文件是没有的，导致识别不了 `--enable-nvenc`。可以自己添加到 `/ffnvcodec/nvEncodeAPI.h` 文件中，大约 244 行左右，写在 `NV_ENC_PRESET_P7_GUID` 这个值的后面，加入自己伪造的 `NV_ENC_PRESET_HQ_GUID` ，即可检测通过了。
+
+```cpp
+// {B974B872-2CE6-7D69-9EAE-4BC9016D0798}
+static const GUID NV_ENC_PRESET_HQ_GUID  =
+{ 0x974B872, 0x2CE6, 0x7D69, { 0x9E, 0xAE, 0x4B, 0xC9, 0x01, 0x6D, 0x07, 0x98 } };
+```
+
+**FFmpeg编译选项**
+
+```bash
+./configure \
+    --enable-gpl \
+    --enable-nonfree \
+    --enable-cuda \
+    --enable-cuvid \
+    --enable-nvenc \
+    --enable-nvdec \
+    --enable-libnpp \
+    --enable-shared \
+    --enable-avisynth \
+    --enable-ffnvcodec \
+    --extra-cflags="-I/usr/local/cuda/include" \
+    --extra-ldflags="-L/usr/local/cuda/lib64"
+```
+
+**参数说明**
+
+- **--enable-cuda**：启用 CUDA 支持。
+
+- **--enable-cuvid**：启用 NVIDIA CUVID 硬件解码支持。
+
+- **--enable-nvenc**：启用 NVENC 硬件编码支持。
+
+- **--enable-nvdec**：启用 NVDEC 硬件解码支持。
+
+- **--enable-libnpp**：启用 NVIDIA Performance Primitives (NPP) 库支持。
+
+- **--extra-cflags** 和 **--extra-ldflags**：指定 CUDA 头文件和库的路径。
+
 ## x. 参考文章
 
 - [在windows上编译FFmpeg](https://zhuanlan.zhihu.com/p/707298876)

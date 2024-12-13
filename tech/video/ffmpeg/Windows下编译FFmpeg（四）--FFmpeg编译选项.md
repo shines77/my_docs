@@ -278,7 +278,7 @@ FFmpeg 4.2.10，编译成 dll，UCRT64 环境，LGPL 3.0，有 libx264、libx265
 --enable-ffmpeg --disable-ffplay --disable-ffprobe \
 --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
 --enable-dxva2 --enable-d3d11va \
- --enable-cuvid --enable-nvenc --enable-nvdec --enable-ffnvcodec \
+--enable-nvenc --enable-nvdec --enable-ffnvcodec \
 --enable-libx264 --enable-libx265 --enable-libxvid \
 --enable-libopus \
 --enable-hardcoded-tables \
@@ -295,7 +295,7 @@ FFmpeg 4.2.10 版本不支持的选项：
 下列命令支持，但暂时没有相应的依赖库或头文件：
 
 ```bash
---enable-amf --enable-cuda
+--enable-amf --enable-cuda --enable-cuvid
 ```
 
 FFmpeg 7.1，编译成 dll，UCRT64 环境，LGPL 3.0 ：
@@ -314,7 +314,6 @@ x --enable-libwebp --enable-libxml2 --enable-libzimg --enable-libzvbi --enable-o
 ble-runtime-cpudetect --enable-swresample --enable-version3 --enable-vulkan --enable-zlib --enable-librav1e --enable-libvp
 l --enable-libsvtav1 --enable-liblc3 --enable-amf --enable-nvenc --logfile=config.log --enable-shared
 ```
-
 
 FFmpeg 7.1，编译成 dll，UCRT64 环境，LGPL 2.1：
 
