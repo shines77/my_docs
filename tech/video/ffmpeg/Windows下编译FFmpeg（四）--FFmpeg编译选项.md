@@ -241,6 +241,8 @@ cd /c/Project/OpenSrc/ffmpeg/ffmpeg-7.1
 
 obs_studio 的编译选项，dll 方式，GPL 3.0：
 
+(From: [https://github.com/obsproject/obs-deps](https://github.com/obsproject/obs-deps)，旧版本的 `/obs-deps/CI/windows/build_ffmpeg.sh` )
+
 ```bash
 ./configure --enable-shared \
 --enable-gpl --enable-version3 --enable-nonfree \
@@ -263,6 +265,56 @@ obs_studio 的编译选项，dll 方式，GPL 3.0：
 --enable-nvenc \
 --enable-libopus \
 ```
+
+FFmpeg 4.2.10，编译成 dll，UCRT64 环境，LGPL 3.0，有 libx264、libx265、nvenc、amf 硬件加速等：
+
+```bash
+./configure --enable-shared --disable-debug \
+--enable-gpl --enable-version3 --enable-nonfree \
+--arch=x86_64 --extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
+--prefix="./build_shared_gpl" \
+--enable-asm --enable-inline-asm \
+--pkg-config=pkg-config --pkg-config-flags=--static \
+--enable-ffmpeg --disable-ffplay --disable-ffprobe \
+--disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
+--enable-dxva2 --enable-d3d11va \
+ --enable-cuvid --enable-nvenc --enable-nvdec --enable-ffnvcodec \
+--enable-libx264 --enable-libx265 --enable-libxvid \
+--enable-libopus \
+--enable-hardcoded-tables \
+--enable-hwaccel=h264_nvdec --enable-hwaccel=h264_dxva2 \
+--enable-hwaccel=hevc_nvdec --enable-hwaccel=hevc_dxva2
+```
+
+FFmpeg 4.2.10 版本不支持的选项：
+
+```
+--enable-d3d12va --enable-vulkan
+```
+
+下列命令支持，但暂时没有相应的依赖库或头文件：
+
+```bash
+--enable-amf --enable-cuda
+```
+
+FFmpeg 7.1，编译成 dll，UCRT64 环境，LGPL 3.0 ：
+
+(MSYS 2.0 安装包 ucrt64/mingw-w64-ucrt-x86_64-libx264 自带的 FFmpeg 编译选项)
+
+```bash
+--prefix=/ucrt64 --target-os=mingw32 --arch=x86_64 --cc=gcc --cxx=g++ --disable-debug --disable-stripping
+ --disable-doc --enable-dxva2 --enable-d3d11va --enable-d3d12va --enable-frei0r --enable-gmp --enable-gnutls --enable-gpl
+--enable-iconv --enable-libaom --enable-libass --enable-libbluray --enable-libcaca --enable-libdav1d --enable-libfontconfi
+g --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libjxl --enable-l
+ibmodplug --enable-libmp3lame --enable-libopencore_amrnb --enable-libopencore_amrwb --enable-libopenjpeg --enable-libopus
+--enable-libplacebo --enable-librsvg --enable-librtmp --enable-libssh --enable-libsoxr --enable-libspeex --enable-libsrt -
+-enable-libtheora --enable-libvidstab --enable-libvorbis --enable-libx264 --enable-libx265 --enable-libxvid --enable-libvp
+x --enable-libwebp --enable-libxml2 --enable-libzimg --enable-libzvbi --enable-openal --enable-pic --enable-postproc --ena
+ble-runtime-cpudetect --enable-swresample --enable-version3 --enable-vulkan --enable-zlib --enable-librav1e --enable-libvp
+l --enable-libsvtav1 --enable-liblc3 --enable-amf --enable-nvenc --logfile=config.log --enable-shared
+```
+
 
 FFmpeg 7.1，编译成 dll，UCRT64 环境，LGPL 2.1：
 
