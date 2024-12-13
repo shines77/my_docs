@@ -213,15 +213,39 @@ env | grep PKG_CONFIG_PATH
 
 在 Windows 上编译 FFmpeg 并启用 NVENC 支持，需要确保正确配置 NVIDIA 的硬件加速库（nv-codec-headers）和 CUDA 工具包。以下是详细的步骤：
 
-### 3.1 安装 CUDA 工具包
+### 3.1 安装 CUDA Toolkit
 
-NVENC 依赖于 NVIDIA 的 CUDA 工具包。
+NVENC 依赖于 NVIDIA 的 [CUDA Toolkit](https://developer.nvidia.com/cuda-toolkit) 。
 
-- 下载并安装 CUDA 工具包：[NVIDIA CUDA 下载页面](https://developer.nvidia.com/cuda-downloads) 。
+- 下载并安装 CUDA Toolkit：[CUDA Toolkit 下载页面](https://developer.nvidia.com/cuda-downloads) 。
 
 - 安装时，确保选择将 CUDA 添加到系统环境变量（PATH）。
 
-### 3.2 下载并配置 nv-codec-headers
+首先，要注意一点，`CUDA Toolkit` 是跟你的显卡驱动息息相关的，`CUDA Toolkit` 和显卡驱动的对应关系，可以查看这里：
+
+[https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html](https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html)
+
+根据这个对照表，选择最新且与你的显卡驱动匹配的版本。旧版本的 `CUDA Toolkit` 在这里可以找到：
+
+[https://developer.nvidia.com/cuda-toolkit-archive](https://developer.nvidia.com/cuda-toolkit-archive)
+
+### 3.2 下载 Video Codec SDK
+
+Video Codec SDK 跟下面的 `nv-codec-headers`，后者专门为 `MinGW` 环境特别修改过，但没有包含 `lib` 文件。
+
+下载地址：[https://developer.nvidia.com/video-codec-sdk](https://developer.nvidia.com/video-codec-sdk)
+
+旧版本的下载地址是：[https://developer.nvidia.com/video-codec-sdk-archive](https://developer.nvidia.com/video-codec-sdk-archive)
+
+例如，我选择的是：`Video_Codec_SDK 12.1.14` 版本。
+
+另外，经过实践，发现 FFmpeg 跟 Video Codec SDK 的版本之间有一定的关联性，因为新版的 `Video Codec SDK` 中废弃了很多 preset，参数 之类，所以旧版本的 FFmpeg 用太新的 Video Codec SDK 可能会报错。
+
+例如，我用的 `FFmpeg 4.2.10` 版，最高只能适配到 `Video_Codec_SDK 11.1.5` ，再高就报错了。两者关系可以根据报错信息，搜索相应版本的源码中是否有这个 GUID 或 Enum 定义即可知晓。
+
+这里有一个范例仓库：[Video Codec SDK Samples](https://github.com/NVIDIA/video-sdk-samples)
+
+### 3.3 下载并配置 nv-codec-headers
 
 nv-codec-headers 是 NVIDIA 提供的用于硬件加速编码的头文件。
 
@@ -264,16 +288,16 @@ install -m 0755 -d '/usr/local/lib/pkgconfig'
 install -m 0644 ffnvcodec.pc '/usr/local/lib/pkgconfig'
 ```
 
-可以看到，它想安装到 `C:/msys64/usr/local` 这个目录，但 `C:/msys64/usr` 目录下并没有 `local` 子目录，所以它安装到了 MSYS 2.0 默认的系统目录 `/usr/local/include` 中了，所以我们可以给它指定 `PREFIX` 安装路径，例如：
+可以看到，它想安装到 `C:/msys64/usr/local` 这个目录，但 `C:/msys64/usr` 目录下并没有 `local` 子目录，所以它安装到了 MSYS 2.0 默认的系统目录 `/usr/local/include` 中了，所以我们可以给它指定 `PREFIX` 安装路径为 `C:/msys64/ucrt64` (物理路径)，也就是绝对路径 `/ucrt64`，例如：
 
 ```bash
-$ make PREFIX=C:/msys64/usr install
+$ make PREFIX=/ucrt64 install
 
-sed 's#@@PREFIX@@#C:/msys64/usr#' ffnvcodec.pc.in > ffnvcodec.pc
-install -m 0755 -d 'C:/msys64/usr/include/ffnvcodec'
-install -m 0644 include/ffnvcodec/*.h 'C:/msys64/usr/include/ffnvcodec'
-install -m 0755 -d 'C:/msys64/usr/lib/pkgconfig'
-install -m 0644 ffnvcodec.pc 'C:/msys64/usr/lib/pkgconfig'
+sed 's#@@PREFIX@@#C:/msys64/ucrt64#' ffnvcodec.pc.in > ffnvcodec.pc
+install -m 0755 -d 'C:/msys64/ucrt64/include/ffnvcodec'
+install -m 0644 include/ffnvcodec/*.h 'C:/msys64/ucrt64/include/ffnvcodec'
+install -m 0755 -d 'C:/msys64/ucrt64/lib/pkgconfig'
+install -m 0644 ffnvcodec.pc 'C:/msys64/ucrt64/lib/pkgconfig'
 ```
 
 这次就正常了。

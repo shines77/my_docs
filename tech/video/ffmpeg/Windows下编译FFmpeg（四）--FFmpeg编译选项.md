@@ -268,17 +268,20 @@ obs_studio 的编译选项，dll 方式，GPL 3.0：
 
 FFmpeg 4.2.10，编译成 dll，UCRT64 环境，LGPL 3.0，有 libx264、libx265、nvenc、amf 硬件加速等：
 
+(设置 CUDA 的 include 和 lib 路径) (由于 CUDA 是 Windows 版的，gcc 需要交叉编译，添加 --enable-cross-compile)
+
 ```bash
 ./configure --enable-shared --disable-debug \
 --enable-gpl --enable-version3 --enable-nonfree \
---arch=x86_64 --extra-cflags=-I/ucrt64/include --extra-ldflags=-L/ucrt64/lib \
---prefix="./build_shared_gpl" \
+--arch=x86_64 --prefix="./build_shared_gpl" --enable-cross-compile \
+--extra-cflags="-I/ucrt64/include -I\"/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.1/include\"" \
+--extra-ldflags="-L/ucrt64/lib -L\"/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.1/lib/x64\"" \
 --enable-asm --enable-inline-asm \
 --pkg-config=pkg-config --pkg-config-flags=--static \
 --enable-ffmpeg --disable-ffplay --disable-ffprobe \
 --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages \
 --enable-dxva2 --enable-d3d11va \
---enable-nvenc --enable-nvdec --enable-ffnvcodec \
+--enable-cuda --enable-cuvid --enable-nvenc --enable-nvdec --enable-ffnvcodec \
 --enable-libx264 --enable-libx265 --enable-libxvid \
 --enable-libopus \
 --enable-hardcoded-tables \
