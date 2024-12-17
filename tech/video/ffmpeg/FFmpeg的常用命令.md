@@ -172,6 +172,12 @@ Use -preset p2 instead of -preset p6 in above command line.
 ffmpeg -y -vsync 0 -hwaccel cuda -hwaccel_output_format cuda -i input.mp4 -c:a copy -c:v h264_nvenc -preset p2 -tune ll -b:v 5M -bufsize 167K -maxrate 10M -qmin 0 output.mp4
 ```
 
+### 列出所有 dshow 支持的视频，音频设备
+
+```bash
+ffmpeg -list_devices true -f dshow -i dummy
+```
+
 ## x. 参考文章
 
 - [DeepSeek 大模型 2.5](https://chat.deepseek.com)
