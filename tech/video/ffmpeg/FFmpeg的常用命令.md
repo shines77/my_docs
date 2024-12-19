@@ -178,6 +178,20 @@ ffmpeg -y -vsync 0 -hwaccel cuda -hwaccel_output_format cuda -i input.mp4 -c:a c
 ffmpeg -list_devices true -f dshow -i dummy
 ```
 
+### Windows 音视频录制
+
+录制摄像头和麦克风的音视频，保存为 H.264 和 AAC 格式，视频码率为 2000kb /s，音频码率为 128 kb/s，图像格式为默认 (yuv422p)，图像大小为摄像头默认大小 (640x480)：
+
+```bash
+.\ffmpeg -f dshow -i video="HD WebCam" -f dshow -i audio="麦克风 (Realtek High Definition Audio)" -vcodec libx264 -b:v 2000k -acodec aac -b:a 128k -strict -2 mycamera.mp4
+```
+
+跟以上相同，图像格式改为 yuv420p ，压缩率更高一些：
+
+```bash
+.\ffmpeg -f dshow -i video="HD WebCam" -f dshow -i audio="麦克风 (Realtek High Definition Audio)" -vcodec libx264 -b:v 2000k -pix_fmt yuv420p -acodec aac -b:a 128k -strict -2 mycamera.mp4
+```
+
 ## x. 参考文章
 
 - [DeepSeek 大模型 2.5](https://chat.deepseek.com)

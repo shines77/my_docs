@@ -237,6 +237,8 @@ libav 处理音视频的流程中，负责解封装的是分离器 (demuxer)、�
 
 ```bash
 cd /c/Project/OpenSrc/ffmpeg/ffmpeg-7.1
+或
+cd /c/Project/OpenSrc/ffmpeg/ffmpeg-4.2.10
 ```
 
 obs_studio 的编译选项，dll 方式，GPL 3.0：
@@ -268,12 +270,12 @@ obs_studio 的编译选项，dll 方式，GPL 3.0：
 
 FFmpeg 4.2.10，编译成 dll，UCRT64 环境，LGPL 3.0，有 libx264、libx265、nvenc、amf 硬件加速等：
 
-(设置 CUDA 的 include 和 lib 路径) (由于 CUDA 是 Windows 版的，gcc 需要交叉编译，添加 --enable-cross-compile)
+(设置 CUDA 的 include 和 lib 路径)
 
 ```bash
 ./configure --enable-shared --disable-debug \
 --enable-gpl --enable-version3 --enable-nonfree \
---arch=x86_64 --prefix="./build_shared_gpl" --enable-cross-compile \
+--arch=x86_64 --prefix="./build_shared_gpl" \
 --extra-cflags="-I/ucrt64/include -I\"/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.1/include\"" \
 --extra-ldflags="-L/ucrt64/lib -L\"/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.1/lib/x64\"" \
 --enable-asm --enable-inline-asm \
@@ -548,6 +550,8 @@ $ which cl link yasm
 
 ```bash
 cd /c/Project/OpenSrc/ffmpeg/ffmpeg-7.1
+或
+cd /c/Project/OpenSrc/ffmpeg/ffmpeg-4.2.10
 ```
 
 **修改 config.h**
