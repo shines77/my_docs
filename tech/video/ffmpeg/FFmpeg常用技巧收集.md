@@ -18,7 +18,11 @@
 
 ## 5. 录屏/摄像头
 
+- [如何用FFmpeg API采集摄像头视频和麦克风音频，并实现录制文件的功能](https://www.cnblogs.com/lidabo/p/8662955.html) | 推荐指数：★★★★
+
 - [FFmpeg获取DirectShow设备数据（摄像头，录屏）](https://blog.csdn.net/leixiaohua1020/article/details/38284961) | 推荐指数：★★★
+
+
 
 ## 6. 收流/推流
 
