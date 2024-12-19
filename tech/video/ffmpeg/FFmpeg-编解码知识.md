@@ -8,7 +8,7 @@ FFmpeg 是库和工具的集合来处理多媒体内容，如音频、视频、�
 
 ```cpp
 libavcodec      // 提供了更广泛的编解码器的实现。
-libavformat     // 实现流协议，容器格式和基本I / O访问。
+libavformat     // 实现流协议，容器格式和基本 I/O 访问。
 libavutil       // 包括哈希尔，解压缩器和杂项效用函数。
 libavfilter     // 提供了通过一系列过滤器来改变已解码的音频和视频的意思。
 libavdevice     // 提供了访问捕获和播放设备的抽象。
@@ -41,21 +41,9 @@ avcodec_close()                 // 关闭解码器。
 avformat_close_input()          // 关闭输入视频文件。
 ```
 
-使用avformat_open_input() 函数可以打开一个视频文件，获取时网络摄像头的rtsp地址。详解这里就不多说了，可以看雷神的该函数的解析。
+使用 avformat_open_input() 函数可以打开一个视频文件，获取时网络摄像头的 rtsp 地址。详解这里就不多说了，可以看雷神的该函数的解析。
 
 ## 3. FFmpeg 数据结构
-
-**AVFormatContext**
-
-封装格式上下文结构体，也是统领全局的结构体，保存了视频文件封装格式相关信息。
-
-```cpp
-iformat:     输入视频的 AVInputFormat
-nb_streams:  输入视频的 AVStream 个数
-streams:     输入视频的 AVStream []数组
-duration:    输入视频的时长（以微秒为单位）
-bit_rate:    输入视频的码率
-```
 
 **AVInputFormat**
 
@@ -69,6 +57,18 @@ id:          封装格式 ID
 // 一些封装格式处理的接口函数
 ```
 
+**AVFormatContext**
+
+封装格式上下文结构体，也是统领全局的结构体，保存了视频文件封装格式相关信息。
+
+```cpp
+iformat:     输入视频的 AVInputFormat
+nb_streams:  输入视频的 AVStream 个数
+streams:     输入视频的 AVStream [] 数组
+duration:    输入视频的时长（以微秒为单位）
+bit_rate:    输入视频的码率
+```
+
 **AVStream**
 
 视频文件中每个音/视频流对应一个该结构体。
@@ -78,20 +78,6 @@ id:              序号
 codec:           流对应的 AVCodecContext
 time_base:       该流的时基
 r_frame_rate:    该流的帧率
-```
-
-**AVCodecContext**
-
-编码器上下文结构体，保存了音/视频码相关信息。
-
-```cpp
-codec:       编解码器的AVCodec
-width:       图像的宽（只针对视频）
-height:      图像的高（只针对视频）
-pix_fmt:     像素格式（只针对视频）
-sample_rate: 采样率（ 只针对音频）
-channels:    声道数（只针对音频）
-sample_fmt:  采样格式（只针对音频）
 ```
 
 **AVCodec**
@@ -106,6 +92,21 @@ id:          编解码器ID
 // 一些编解码的接口函数
 ```
 
+**AVCodecContext**
+
+编码器上下文结构体，保存了音/视频码相关信息。
+
+```cpp
+codec:       编解码器的 AVCodec
+width:       图像的宽（只针对视频）
+height:      图像的高（只针对视频）
+pix_fmt:     像素格式（只针对视频）
+sample_rate: 采样率（只针对音频）
+channels:    声道数（只针对音频）
+sample_fmt:  采样格式（只针对音频）
+frame_size:  帧的大小（对于音频，就是每帧的 sample 个数）
+```
+
 **AVPacket**
 
 存储一帧音/视频压缩编码数据。
@@ -113,9 +114,10 @@ id:          编解码器ID
 ```cpp
 pts:         显示时间戳
 dts:         解码时间戳
+duration:    帧的持续时间
 data:        压缩编码数据
 size:        压缩编码数据大小
-stream_index: 所属的 AVStream
+stream_index: 所属的 AVStream 索引
 ```
 
 **AVFrame**
@@ -129,6 +131,7 @@ width:       图像的宽（只针对视频）。
 height:      图像的高（只针对视频）。
 key_frame:   是否为关键帧（只针对视频）。
 pict_type:   帧类型（只针对视频）。例如: I， P， B。
+pts:         显示时间戳
 ```
 
 ## 4. 释放资源的顺序
