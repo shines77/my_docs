@@ -2,6 +2,7 @@
 
 ## 1. 视频
 
+- [FFmpeg 开发之 AVFilter 使用流程总结](https://www.cnblogs.com/lidabo/p/15963533.html) | 推荐指数：★★★
 
 ## 2. 音频
 
@@ -29,6 +30,22 @@
 - [FFmpeg流媒体处理-收流与推流](https://www.cnblogs.com/leisure_chn/p/10623968.html) | 推荐指数：★★★★★
 
 - [最简单的基于FFmpeg的推流器（以推送RTMP为例）](https://blog.csdn.net/leixiaohua1020/article/details/39803457) | 推荐指数：★★★
+
+- [ffmpeg播放RTSP的一点优化](https://www.cnblogs.com/lidabo/p/17510822.html) | 推荐指数：★★★
+
+    ```cpp
+    // 1. 画质优化: 通过增大“buffer_size”参数来提高画质，减少花屏现象
+    av_dict_set(&options, "buffer_size", "1024000", 0);
+
+    // 2. 如设置 20s 超时，默认参数打开 RTSP 流时，若连接不上，会出现卡死在打开函数的情况
+    av_dict_set(&options, "stimeout", "20000000", 0);
+
+    // 3. 最大延迟时间
+    av_dict_set(&options, "max_delay", "500000", 0);
+
+    // 4. 以 tcp 方式打开，也可以选择 udp
+    av_dict_set(&options, "rtsp_transport", "tcp", 0);
+    ```
 
 
 ## 7. 直播
