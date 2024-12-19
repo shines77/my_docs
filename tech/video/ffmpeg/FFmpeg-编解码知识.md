@@ -4,7 +4,7 @@
 
 FFmpeg 是库和工具的集合来处理多媒体内容，如音频、视频、字幕和相关的元数据。
 
-包含以下库：
+包含以下库:
 
 ```cpp
 libavcodec      // 提供了更广泛的编解码器的实现。
@@ -16,7 +16,7 @@ libswresample   // 实现音频混合和重采样程序。
 libswscale      // 实现颜色转换和缩放程序。
 ```
 
-工具：
+工具:
 
 ```cpp
 ffmpeg          // 是用于操纵，转换和流式传输多媒体内容的命令行工具箱。
@@ -27,7 +27,7 @@ ffserver        // 是一种多媒体流媒体服务器，用于直播。
 
 ## 2. FFmpeg 解码函数
 
-FFmpeg 解码函数简介：
+FFmpeg 解码函数简介:
 
 ```cpp
 av_register_all()               // 注册所有组件，此函数 4.0 以上版本已经废弃。
@@ -50,11 +50,11 @@ avformat_close_input()          // 关闭输入视频文件。
 封装格式上下文结构体，也是统领全局的结构体，保存了视频文件封装格式相关信息。
 
 ```cpp
-iformat：    输入视频的 AVInputFormat
-nb_streams： 输入视频的 AVStream 个数
-streams：    输入视频的 AVStream []数组
-duration：   输入视频的时长（以微秒为单位）
-bit_rate：   输入视频的码率
+iformat:     输入视频的 AVInputFormat
+nb_streams:  输入视频的 AVStream 个数
+streams:     输入视频的 AVStream []数组
+duration:    输入视频的时长（以微秒为单位）
+bit_rate:    输入视频的码率
 ```
 
 **AVInputFormat**
@@ -62,73 +62,73 @@ bit_rate：   输入视频的码率
 每种封装格式（例如 FLV, MKV, MP4, AVI）对应一个该结构体。
 
 ```cpp
-name：       封装格式名称
-long_name：  封装格式的长名称
-extensions： 封装格式的扩展名
-id：         封装格式ID
+name:        封装格式名称
+long_name:   封装格式的长名称
+extensions:  封装格式的扩展名
+id:          封装格式 ID
 // 一些封装格式处理的接口函数
 ```
 
 **AVStream**
 
-视频文件中每个视频（音频）流对应一个该结构体。
+视频文件中每个音/视频流对应一个该结构体。
 
 ```cpp
-id：序号
-codec：          流对应的AVCodecContext
-time_base：      该流的时基
-r_frame_rate：   该流的帧率
+id:              序号
+codec:           流对应的 AVCodecContext
+time_base:       该流的时基
+r_frame_rate:    该流的帧率
 ```
 
 **AVCodecContext**
 
-编码器上下文结构体，保存了视频（音频）编解码相关信息。
+编码器上下文结构体，保存了音/视频码相关信息。
 
 ```cpp
-codec：      编解码器的AVCodec
-width：      图像的宽（只针对视频）
+codec:       编解码器的AVCodec
+width:       图像的宽（只针对视频）
 height:      图像的高（只针对视频）
-pix_fmt：    像素格式（只针对视频）
-sample_rate：采样率（ 只针对音频）
-channels：   声道数（只针对音频）
-sample_fmt： 采样格式（只针对音频）
+pix_fmt:     像素格式（只针对视频）
+sample_rate: 采样率（ 只针对音频）
+channels:    声道数（只针对音频）
+sample_fmt:  采样格式（只针对音频）
 ```
 
 **AVCodec**
 
-每种视频（音频）编解码器（例如 H.264 解码器）对应一个该结构体。
+每种音/视频编解码器（例如 H.264 解码器）对应一个该结构体。
 
 ```cpp
-name：       编解码器名称
-long_name：  编解码器长名称
-type：       编解码器类型
-id：         编解码器ID
+name:        编解码器名称
+long_name:   编解码器长名称
+type:        编解码器类型
+id:          编解码器ID
 // 一些编解码的接口函数
 ```
 
 **AVPacket**
 
-存储一帧压缩编码数据。
+存储一帧音/视频压缩编码数据。
 
 ```cpp
-pts：        显示时间戳
-dts：        解码时间戳
-data：       压缩编码数据
-size：       压缩编码数据大小
-stream_index ：所属的 AVStream
+pts:         显示时间戳
+dts:         解码时间戳
+data:        压缩编码数据
+size:        压缩编码数据大小
+stream_index: 所属的 AVStream
 ```
 
 **AVFrame**
 
-存储一帧解码后像素（采样）数据。
+存储一帧解码后的像素或音频（采样）数据。
 
 ```cpp
-data：       解码后的图像像素数据（音频采样数据）。
-linesize：   对视频来说是图像中一行像素的大小；对音频来说是整个音频帧的大小。
-width：      图像的宽（只针对视频）。
-height:     图像的高（只针对视频）。
-key_frame：  是否为关键帧（只针对视频）。
-pict_type：  帧类型（只针对视频）。例如：I， P， B。
+data:        解码后的图像像素数据（音频采样数据）。
+linesize:    对视频来说是图像中一行像素的大小；对音频来说是整个音频帧的大小。
+width:       图像的宽（只针对视频）。
+height:      图像的高（只针对视频）。
+key_frame:   是否为关键帧（只针对视频）。
+pict_type:   帧类型（只针对视频）。例如: I， P， B。
 ```
 
 ## 4. 释放资源的顺序
@@ -141,7 +141,6 @@ avformat_close_input(&pAVFormatContext);
 ```
 
 这个顺序不能错，如果想关闭一个摄像头的取流地址不能单独调用 avformat_close_input(&pAVFormatContext); 因为你释放掉这个内存，里面的一些结构体没有被释放会导致程序崩溃。
-
 
 ## 5. 参考文章
 
