@@ -353,6 +353,111 @@ static const GUID NV_ENC_PRESET_HQ_GUID  =
 
 - **--extra-cflags** 和 **--extra-ldflags**：指定 CUDA 头文件和库的路径。
 
+## 4. 常用依赖库
+
+**libjpeg**
+
+因为 libyuv 依赖于 libjpeg，所以得先编译它，我们可以选择在 mingw-w64 环境下编译。
+
+由于编译过程可能会用到 yasm 汇编，前面的文章有介绍过，如何在 mingw-w64 环境下安装 yasm，最好使用 Windows 版的 yasm。
+
+libjpeg-turbo 下载：
+
+```bash
+git clone https://github.com/libjpeg-turbo/libjpeg-turbo.git
+```
+
+MinGW 环境下编译：
+
+```bash
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX="../build_release" -DCMAKE_BUILD_TYPE="Release" -G "MSYS Makefiles" ..
+cmake --build . --config Release
+cmake --build . --target install --config Release
+```
+
+这里我们把安装路径设置为 `../build-release`，待会有用，如果这个目录不会自动创建，在安装之前可以自己创建一下这个目录，也就是跟 `build` 目录同一级下新建一个 `build-release` 目录。
+
+编译和安装完以后，你会看到 `build-release` 目录下面创建了 bin, lib, include, share 等目录。
+
+给你的 Windows 添加两个系统环境变量，分别是 `JPEG_INCLUDE_DIR` 和 `JPEG_LIBRARY` 分别指向 `build-release` 目录下的 `include` 和 `lib` 目录。这在待会编译 `libyuv` 的时候，cmake 要检测这两个路径判断是否安装了 libjpeg。
+
+如果你也想把编译好的 libjpeg 安装到你的 mingw-w64 环境中，使用下面的 cmake 命令重新构建：
+
+```bash
+cmake -DCMAKE_INSTALL_PREFIX="/ucrt64" -DCMAKE_BUILD_TYPE="Release" -G "MSYS Makefiles" ..
+```
+
+然后象上面的命令一样，编译和安装，即会自动安装到 mingw-w64 所在的 MSYS 2.0 中。
+
+这里的安装路径不要写 "/ucrt64" 而不是 "/ucrt64/lib" 的原因，前面你也看到登录，他会自动在 `/ucrt64` 后面加 lib, bin, include 路径。
+
+由于 `mingw-w64` 可以通过 pacman 命令直接安装 libjpeg，所以其实这一步是可以不做的。
+
+**libyuv**
+
+libyuv 是 Google 开源的实现各种 YUV 与 RGB 之间相互转换、旋转、缩放的库。
+
+官网：[https://chromium.googlesource.com/libyuv/libyuv](https://chromium.googlesource.com/libyuv/libyuv)
+
+非官方镜像：[https://github.com/lemenkov/libyuv](https://github.com/lemenkov/libyuv)
+
+```bash
+git clone https://chromium.googlesource.com/libyuv/libyuv
+```
+
+由于我尝试了好多次，发现都不能在 mingw-w64 环境下编译 libyuv，所以在 Windows 上建议直接用 CMake-GUI 构建 libyuv，在 CMake-GUI 上选择 libyuv 的路径，生成路径设为 libyuv 根目录下的 `build_msvc`，点 `Configure` 按钮，成功后再点 `Generate` 按钮即可。
+
+如果按上面的配置好了 libjpeg，它会自己找到 libjpeg 所在的路径，用 MSVC 打开生成的 YUV.sln 文件，直接编译即可，没有遇到任何问题，简单快捷。
+
+下面还是介绍了在 mingw-w64 环境下编译的过程，但 make 的时候是会报错的，有兴趣可以自己试一下。
+
+**mingw-w64 下编译 libyuv**
+
+例如：在 mingw-w64 下的 UCRT64 环境，这会影响 PREFIX 安装路径的设置，请根据具体情况自行修改。
+
+编译和安装的命令如下：
+
+```bash
+mkdir build
+cd build
+
+cmake -DCMAKE_INSTALL_PREFIX="/ucrt64/lib" -DCMAKE_BUILD_TYPE="Release" -G "MSYS Makefiles" ..
+cmake --build . --config Release
+cmake --build . --target install --config Release
+```
+
+编译成功后，会在指定的安装路径下生成 libyuv.a 和 libyuv.so 文件‌。
+
+`-DCMAKE_VERBOSE_MAKEFILE=ON` 。
+
+**错误处理**
+
+如果你在用 cmake 构建的时候报如下错误时：
+
+```bash
+CMake Error at /ucrt64/share/cmake/Modules/CMakeTestCXXCompiler.cmake:73 (message):
+  The C++ compiler
+
+    "/ucrt64/bin/g++.exe"
+
+  is not able to compile a simple test program.
+```
+
+请在 CMakeLists.txt 中的 `project ( YUV C CXX )` 这句前面加入：
+
+```cmake
+INCLUDE(CMakeForceCompiler)
+# 这里要写绝对路径，不能用相对路径，因为 CMake 识别不了 MSYS 2.0 的相对路径...
+set(CMAKE_C_COMPILER "c:/msys64/ucrt64/bin/gcc.exe")
+set(CMAKE_CXX_COMPILER "c:/msys64/ucrt64/bin/g++.exe")
+```
+
+并把 CMakeTestCXXCompiler.cmake，CMakeTestCCompiler.cmake 报错的语句相应的代码注释掉，即可。
+
+但执行 `cmake --build . --config Release` 命令的时候会报错，无法完成编译。
+
 ## x. 参考文章
 
 - [在windows上编译FFmpeg](https://zhuanlan.zhihu.com/p/707298876)

@@ -4,6 +4,10 @@
 
 - [FFmpeg 开发之 AVFilter 使用流程总结](https://www.cnblogs.com/lidabo/p/15963533.html) | 推荐指数：★★★
 
+- [Android音视频——Libyuv使用实战](https://zhuanlan.zhihu.com/p/666127328) | 推荐指数：★★★★
+
+    源码在：[https://github.com/GitLqr/LQRLibyuv](https://github.com/GitLqr/LQRLibyuv)
+
 ## 2. 音频
 
 - [ffplay源码分析6-音频重采样](https://www.cnblogs.com/leisure_chn/p/10312713.html) | 推荐指数：★★★★

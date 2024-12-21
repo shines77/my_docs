@@ -192,6 +192,24 @@ ffmpeg -list_devices true -f dshow -i dummy
 .\ffmpeg -f dshow -i video="HD WebCam" -f dshow -i audio="麦克风 (Realtek High Definition Audio)" -vcodec libx264 -b:v 2000k -pix_fmt yuv420p -acodec aac -b:a 128k -strict -2 mycamera.mp4
 ```
 
+### 转码
+
+1. 将视频编码为 mpeg2 的 ts 文件，重新编码为 h264，音频编码为 aac ：
+
+```bash
+ffmpeg -y -i style.ts -vcodec libx264 -acodec aac -ac 2 strict -2 test.avi
+```
+
+* **-vcodec** 指定视频编码器
+* **-acodec** 指定音频编码器
+* **-ac**     设定声道数，1 是单声道，2 是立体声
+
+2. 某些情况下的转码，只需要转码音频，而视频直接复制，这时候可以用到copy命令。
+
+```bash
+ffmpeg -y -i style.ts -codec:v copy -codec:a copy test.avi
+```
+
 ## x. 参考文章
 
 - [DeepSeek 大模型 2.5](https://chat.deepseek.com)
