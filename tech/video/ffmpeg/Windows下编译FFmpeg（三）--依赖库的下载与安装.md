@@ -411,6 +411,8 @@ git clone https://chromium.googlesource.com/libyuv/libyuv
 
 如果按上面的配置好了 libjpeg，它会自己找到 libjpeg 所在的路径，用 MSVC 打开生成的 YUV.sln 文件，直接编译即可，没有遇到任何问题，简单快捷。
 
+建议把编译出来的 `yuv.lib` 更名为 `libyuv.lib`，或者直接拷贝一份并改名，这样更规范一点。
+
 下面还是介绍了在 mingw-w64 环境下编译的过程，但 make 的时候是会报错的，有兴趣可以自己试一下。
 
 **mingw-w64 下编译 libyuv**

@@ -12,3 +12,9 @@
     - [Magic-Doc](https://github.com/opendatalab/MinerU/blob/master/README_zh-CN.md#Magic-Doc) 网页与电子书提取
 
     Magic-PDF 是一款将 PDF 转化为 markdown 格式的工具。支持转换本地文档或者位于支持S3协议对象存储上的文件。
+
+- [复杂 PDF 解析实测——PDFlux 和 LlamaParse，谁更胜一筹](https://blog.csdn.net/gzx2001123/article/details/139170512)
+
+    ChatDOC PDF 解析器（即 PDFlux）的表现优于 LlamaParse。
+
+    ChatDOC PDF 解析器，网址：[https://pdflux.com/](https://pdflux.com/)
