@@ -279,7 +279,7 @@ typedef struct UT_hash_handle {
 
 ## 结论：选择哪个哈希表？
 
-在 C++ 中，boost::unordered_flat_map 似乎是全方位表现最好的，特别是在缓存热的时候。因此，它是一个很好的默认选择。然而，ankerl::unordered_dense 提供了最佳的迭代速度，在其他基准测试中表现合理，并且是一个独立的头文件。因此，如果迭代速度是您最重要的因素，或者您更喜欢单一头文件解决方案，它是一个很好的选择。它还提供了更快的查找，特别是当桶大且保持低负载因子时。emilib2 显示出很大的潜力，一旦准备好供公众使用，可能是 boost::unordered_flat_map 的一个好替代品。
+在 C++ 中，boost::unordered_flat_map 似乎是全方位表现最好的，特别是在缓存热的时候。因此，它是一个很好的默认选择。然而，ankerl::unordered_dense 提供了最佳的遍历速度，在其他基准测试中表现合理，并且是一个独立的头文件。因此，如果遍历速度是您最重要的因素，或者您更喜欢单一头文件解决方案，它是一个很好的选择。它还提供了更快的查找，特别是当桶大且保持低负载因子时。emilib2 显示出很大的潜力，一旦准备好供公众使用，可能是 boost::unordered_flat_map 的一个好替代品。
 
 在 C 中，结果表明 Verstable 和 CC 的 cc_map 是全方位表现优秀的，前者在迭代上更快。然而，它们并不是每个场景中表现最好的。如果您的用例偏向于特定操作或数据对，那么考虑其他选项是值得的，特别是如果您愿意使用低最大负载因子。特别是，STC 的 hmap 在插入整数键方面更快，M*LIB 的 DICT 拥有最快的查找现有整数键速度，stb_ds 的 hm 和 sh 具有最快的迭代速度。尽管在基准测试中没有显示，klib 的 khash 通常具有测试表中最低的内存开销，因此当内存有限时，它或消耗更少内存的 khashl 可能是最佳选择。
 
@@ -295,10 +295,10 @@ STC 的 hmap、klib 的 khash 和 M*LIB 的 DICT 和 DICT_OA 都是大型综合�
 
 ## 致谢
 
-我要感谢 Joaquín M López Muñoz、Martin Leitner-Ankerl、Patrick Pelissier 和 Attractive Chaos 在本文起草过程中提供的宝贵反馈。
+我要感谢 [Joaquín M López Muñoz](https://github.com/joaquintides)、[Martin Leitner-Ankerl](https://github.com/martinus)、[Patrick Pelissier](https://github.com/P-p-H-d) 和 [Attractive Chaos](https://github.com/attractivechaos) 在本文起草过程中提供的宝贵反馈。
 
 ## 讨论
 
-本文的评论属于 [此处](https://github.com/JacksonAllan/c_cpp_hash_tables_benchmark/discussions/1)。
+本文的评论在 [此处](https://github.com/JacksonAllan/c_cpp_hash_tables_benchmark/discussions/1)。
 
 本文还在 Reddit 的 [r/C_Programming](https://www.reddit.com/r/C_Programming/comments/1d3i962/an_extensive_benchmark_of_c_and_c_hash_tables/) 和 [r/cpp](https://old.reddit.com/r/cpp/comments/1d418aw/an_extensive_benchmark_of_c_and_c_hash_tables/) 上进行了讨论。
