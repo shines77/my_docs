@@ -60,7 +60,7 @@
 
 这个表的近似内存开销是每个桶一个字节，加上键值对填充，除了空桶的键值对大小。
 
-- [ankerl::unordered_dense v4.1.2：](https://github.com/martinus/unordered_dense)
+- [ankerl::unordered_dense](https://github.com/martinus/unordered_dense) v4.1.2：
 
 这个表采用 Robin Hood 排序——这是一种开放寻址变体，它移动键值对以保持它们从哈希到的桶的位移尽可能恒定——结合线性探测。然而，它对 Robin Hood 设计做了两个补充。首先，它不是在表的桶内存储键值对，而是在单独的数组中连续存储。表桶存储此数组的索引。其次，它存储每个键的哈希码的8位片段，以限制直接比较键的需要。这个表是同一作者早期表的后继者，我之所以没有在本文中包括早期的表，是因为它已被弃用，并且在我早期的测试中被证明较差。
 
