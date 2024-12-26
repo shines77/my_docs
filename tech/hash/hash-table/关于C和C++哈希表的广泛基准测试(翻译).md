@@ -70,7 +70,7 @@
 
 - [boost::unordered_flat_map](https://www.boost.org/doc/libs/1_85_0/libs/unordered/doc/html/unordered.html) v1.85.0：
 
-这个哈希表也是一个开放寻址表，存储哈希码片段在单独的数组中，并使用 SIMD 指令一次扫描多个桶的潜在键匹配。然而，它与 absl::flat_hash_map 有几个重要的不同。首先，键不是哈希到单个桶，而是哈希到 15 个桶组，这些组从一个端到另一个端连续填充：
+这个哈希表也是一个开放寻址哈希表，存储哈希码片段在单独的数组中，并使用 SIMD 指令一次扫描多个桶的潜在键匹配。然而，它与 absl::flat_hash_map 有几个重要的不同。首先，键不是哈希到单个桶，而是哈希到 15 个桶组，这些组从一个端到另一个端连续填充：
 
 在负载因子为 0.44 时，对 boost::unordered_flat_map 与 absl::flat_hash_map 中的键值对进行聚类
 
