@@ -8,4 +8,10 @@
 
 - [Spring Boot 最全面的入门教程](https://springdoc.cn/spring-boot-start/)
 
-- [ Spring Boot 参考文档 3.3.5](https://docs.springframework.org.cn/spring-boot/documentation.html)
+- [Spring Boot 参考文档 3.3.5](https://docs.springframework.org.cn/spring-boot/documentation.html)
+
+- [面试必问的40个SpringBoot面试题！](https://cloud.tencent.com/developer/article/2110061)
+
+- [SpringBoot面试题及答案（最新50道大厂版，持续更新）](https://blog.csdn.net/yanpenglei/article/details/134989397)
+
+    Spring Boot的自动配置原理基于 @SpringBootApplication 注解，它是 @Configuration、@EnableAutoConfiguration 和 @ComponentScan 的组合。
