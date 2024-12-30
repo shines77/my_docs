@@ -405,17 +405,17 @@ sudo iptables -t nat -A POSTROUTING -j MASQUERADE
 sudo iptables -t nat --list
 
 Chain PREROUTING (policy ACCEPT)
-target     prot opt source                destination         
+target     prot opt source                destination
 
 Chain INPUT (policy ACCEPT)
-target     prot opt source                destination         
+target     prot opt source                destination
 
 Chain OUTPUT (policy ACCEPT)
-target     prot opt source                destination         
+target     prot opt source                destination
 
 Chain POSTROUTING (policy ACCEPT)
-target     prot opt source                destination         
-MASQUERADE  all  --  anywhere             anywhere  
+target     prot opt source                destination
+MASQUERADE  all  --  anywhere             anywhere
 ```
 
 其中最后一条就是我们刚才添加的路由规则。
