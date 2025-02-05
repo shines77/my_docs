@@ -67,9 +67,27 @@ sudo apt-get install clang-9
 sudo apt-get install clang-10
 sudo apt-get install clang-11
 sudo apt-get install clang-12
+
+sudo apt-get install clang-18
 ```
 
-（最后验证日期：`2020` 年 `9` 月 `12` 日。）
+（上次验证日期：`2020` 年 `9` 月 `12` 日。）
+（最后验证日期：`2025` 年 `2` 月 `5` 日。）
+
+**安装 clang 的 libc++ 库**
+
+```bash
+# 安装默认版本的 libc++
+sudo apt-get install clang llvm libc++-dev libc++abi-dev
+
+# 安装 clang 12.0 版本的 libc++
+sudo apt-get install clang-12 llvm-12 libc++-12-dev libc++abi-12-dev
+
+# 安装 clang 18.0 版本的 libc++
+sudo apt-get install clang-18 llvm-18 libc++-18-dev libc++abi-18-dev
+```
+
+提示：可以使用 `apt-cache search libc++` 命令搜索。
 
 现在要刷新一下系统数据和设置，该步骤最好做一下（推荐），否则在使用 `locate`, `which` 等命令时，是搜索不到上面更新的 `clang` 相关的文件或目录的：
 
@@ -138,7 +156,13 @@ sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-11 110 --
 `clang 12.0`：
 
 ```shell
-sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 120 --slave /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-12 --slave /usr/bin/llvm-as llvm-as /usr/bin/llvm-as-12 --slave /usr/bin/llvm-link llvm-link /usr/bin/llvm-link-11 --slave /usr/bin/llvm-lib llvm-lib /usr/bin/llvm-lib-12 --slave /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-12 --slave /usr/bin/llvm-ranlib llvm-ranlib /usr/bin/llvm-ranlib-12 --slave /usr/bin/llvm-objdump llvm-objdump /usr/bin/llvm-objdump-12 --slave /usr/bin/llvm-cxxdump llvm-cxxdump /usr/bin/llvm-cxxdump-12 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-12 --slave /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-12 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-12
+sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-12 120 --slave /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-12 --slave /usr/bin/llvm-as llvm-as /usr/bin/llvm-as-12 --slave /usr/bin/llvm-link llvm-link /usr/bin/llvm-link-12 --slave /usr/bin/llvm-lib llvm-lib /usr/bin/llvm-lib-12 --slave /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-12 --slave /usr/bin/llvm-ranlib llvm-ranlib /usr/bin/llvm-ranlib-12 --slave /usr/bin/llvm-objdump llvm-objdump /usr/bin/llvm-objdump-12 --slave /usr/bin/llvm-cxxdump llvm-cxxdump /usr/bin/llvm-cxxdump-12 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-12 --slave /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-12 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-12
+```
+
+`clang 18.1.8`：
+
+```shell
+sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-18 181 --slave /usr/bin/llvm-ar llvm-ar /usr/bin/llvm-ar-18 --slave /usr/bin/llvm-as llvm-as /usr/bin/llvm-as-18 --slave /usr/bin/llvm-link llvm-link /usr/bin/llvm-link-18 --slave /usr/bin/llvm-lib llvm-lib /usr/bin/llvm-lib-18 --slave /usr/bin/llvm-nm llvm-nm /usr/bin/llvm-nm-18 --slave /usr/bin/llvm-ranlib llvm-ranlib /usr/bin/llvm-ranlib-18 --slave /usr/bin/llvm-objdump llvm-objdump /usr/bin/llvm-objdump-18 --slave /usr/bin/llvm-cxxdump llvm-cxxdump /usr/bin/llvm-cxxdump-18 --slave /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-18 --slave /usr/bin/llvm-tblgen llvm-tblgen /usr/bin/llvm-tblgen-18 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-18
 ```
 
 ## 4. 切换 clang 版本
@@ -185,5 +209,6 @@ sudo update-alternatives --config clang
 * `2020` / `09` / `12` ：`clang` 的第一个版本。
 * `2022` / `03` / `18` ：增加 `clang 9.x` 版本 (Ubuntu 16.04)。
 * `2022` / `03` / `20` ：增加 `clang 10.x`, `clang 11.x`, `clang 12.x` 版本 (Ubuntu 20.04)。
+* `2025` / `02` / `05` ：增加 `clang 18.1`, 版本 (Ubuntu 20.04)。
 
 <.end.>
