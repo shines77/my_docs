@@ -206,9 +206,9 @@ sudo update-alternatives --config clang
 
 ## 6. 更新历史：
 
-* `2020` / `09` / `12` ：`clang` 的第一个版本。
-* `2022` / `03` / `18` ：增加 `clang 9.x` 版本 (Ubuntu 16.04)。
-* `2022` / `03` / `20` ：增加 `clang 10.x`, `clang 11.x`, `clang 12.x` 版本 (Ubuntu 20.04)。
 * `2025` / `02` / `05` ：增加 `clang 18.1`, 版本 (Ubuntu 20.04)。
+* `2022` / `03` / `20` ：增加 `clang 10.x`, `clang 11.x`, `clang 12.x` 版本 (Ubuntu 20.04)。
+* `2022` / `03` / `18` ：增加 `clang 9.x` 版本 (Ubuntu 16.04)。
+* `2020` / `09` / `12` ：`clang` 的第一个版本。
 
 <.end.>
