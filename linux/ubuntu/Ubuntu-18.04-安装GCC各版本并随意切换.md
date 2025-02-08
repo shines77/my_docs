@@ -61,6 +61,7 @@ sudo apt-get install gcc-8 g++-8
 sudo apt-get install gcc-9 g++-9
 sudo apt-get install gcc-10 g++-10
 sudo apt-get install gcc-11 g++-11
+sudo apt-get install gcc-13 g++-13
 ```
 
 （注意：`gcc-4.8` 安装的版本是 `4.8.5`，比 `Ubuntu 14.04` 系统默认安装的版本 `4.8.4` 略高。 `gcc-5` 目前已经更新到了 `5.5.0`，`gcc-6` 目前则已经更新到了 `6.5.0` 版本。最后验证日期：`2021` 年 `11` 月 `7` 日。）
@@ -135,6 +136,12 @@ sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 103 --slave 
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 111 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-11 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-11 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-11 --slave /usr/bin/g++ g++ /usr/bin/g++-11
 ```
 
+`gcc 13.1.0`：
+
+```shell
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 131 --slave /usr/bin/gcc-ar gcc-ar /usr/bin/gcc-ar-13 --slave /usr/bin/gcc-nm gcc-nm /usr/bin/gcc-nm-13 --slave /usr/bin/gcc-ranlib gcc-ranlib /usr/bin/gcc-ranlib-13 --slave /usr/bin/g++ g++ /usr/bin/g++-13
+```
+
 ## 4. 切换 gcc 版本
 
 ### 4.1. 切换 `gcc` 版本的命令
@@ -156,8 +163,8 @@ sudo update-alternatives --config gcc
   4            /usr/bin/gcc-7     75        手动模式 (manual mode)
   5            /usr/bin/gcc-8     84        手动模式 (manual mode)
   6            /usr/bin/gcc-9     94        手动模式 (manual mode)
-  7            /usr/bin/gcc-9     103       手动模式 (manual mode)
-  8            /usr/bin/gcc-9     111       手动模式 (manual mode)
+  7            /usr/bin/gcc-10    103       手动模式 (manual mode)
+  8            /usr/bin/gcc-11    111       手动模式 (manual mode)
 ```
 
 注：为了方便，切换 `gcc` 的同时，我们也切换到相同版本的 `g++`。
@@ -177,6 +184,8 @@ sudo update-alternatives --config gcc
 ----------------------------------------------------------------
 
 ## 6. 更新历史
+
+* `2025` / `02` / `08` ：更新 `gcc 13.1.0`。
 
 * `2021` / `11` / `07` ：更新到 Ubuntu 18.04，`gcc 11.1.0`。
 
