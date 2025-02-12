@@ -276,7 +276,7 @@ $$\Pr[X_{i,j}<\beta]=\Pr[X_{i,j}<(1 - 1/2)\mathbb{E}[X_{i,j}]]=e^{-2^{2}\beta/2}
 
 $$\displaystyle\Pr\left[f(Y_{i,1},\ldots,Y_{i,2|A_{i}|})\geq\frac{1}{64}\delta\left(\frac{|A_{i}|}{\beta}\right)\right]\leq\exp\left(-\frac{2\left(\frac{1}{128}\delta\frac{|A_{i}|}{\beta}\right)^{2}}{2|A_{i}|}\right)=\exp\left(-|A_{i}|O(\beta^{2}\delta^{2})\right)$$
 
-由于 $|A_{i}|=n /dot {poly}(\delta)$ 且 $\delta=n^{o(1)}$，我们有：
+由于 $|A_{i}|=n*{poly}(\delta)$ 且 $\delta=n^{o(1)}$，我们有：
 
 $$|A_{i}|O(\beta^{2}\delta^{2})=n^{1 - o(1)}$$
 
