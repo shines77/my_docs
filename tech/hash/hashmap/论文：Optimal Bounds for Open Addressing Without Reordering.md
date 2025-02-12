@@ -372,13 +372,15 @@ $$\sum_{j = 1}^{\log\delta^{-1}}cj$$
 
 ### 证明
 
-根据引理 8，存在一个整数$1\leq i\leq\log\delta^{-1}$，使得第$(1 - 1/2^{i})n$次插入的期望成本至少为$ci\log\delta^{-1}$ 。如果$i = \log\delta^{-1}$，那么我们就完成了证明。否则，我们可以通过对$n$进行强归纳来完成证明，如下所述。
+根据引理 8，存在一个整数 $1\leq i\leq\log\delta^{-1}$，使得第 $(1 - 1/2^{i})n$ 次插入的期望成本至少为 $ci\log\delta^{-1}$ 。如果 $i = \log\delta^{-1}$，那么我们就完成了证明。否则，我们可以通过对 $n$ 进行强归纳来完成证明，如下所述。
 
-令$S$表示第$(1 - 1/2^{i})n$次插入后已占用位置的集合。基于$S$的某个结果进行条件设定，并将未来插入的第二层成本定义为插入操作对$[n]\setminus S$中的槽位进行探测的期望次数。为了分析第二层成本，我们可以想象$[n]\setminus S$中的槽位是哈希表中仅有的槽位，并且$S$中的槽位从每个元素的探测序列中移除。这个新的 “压缩” 哈希表大小为$n/2^{i}$，并将接收$n/2^{i}-\delta n=(n/2^{i})\cdot(1 - \delta 2^{i})$次插入操作，每次插入都采用贪心开放地址法。通过归纳法可知，“压缩” 哈希表中的最后一次插入的期望成本至少为
-$\sum_{j = 1}^{\log\delta^{-1}-i}cj$  (9)
-这相当于说完整哈希表中的最后一次插入的期望第二层成本至少为(9)。此外，尽管(9)是基于$S$的某个特定结果建立的，但由于它对每个单独的结果都成立，所以在没有任何条件设定的情况下也成立。
+令 $S$ 表示第 $(1 - 1/2^{i})n$ 次插入后已占用位置的集合。基于 $S$ 的某个结果进行条件设定，并将未来插入的第二层成本定义为插入操作对 $[n]\setminus S$ 中的槽位进行探测的期望次数。为了分析第二层成本，我们可以想象 $[n]\setminus S$ 中的槽位是哈希表中仅有的槽位，并且 $S$ 中的槽位从每个元素的探测序列中移除。这个新的 “压缩” 哈希表大小为 $n/2^{i}$，并将接收 $n/2^{i}-\delta n=(n/2^{i})\cdot(1 - \delta 2^{i})$ 次插入操作，每次插入都采用贪心开放地址法。通过归纳法可知，“压缩” 哈希表中的最后一次插入的期望成本至少为：
 
-最后，除了第二层成本，最后一次插入甚至在找到任何不在$S$中的槽位时，都必须至少进行$ci\log n$次期望探测（这是由于我们之前应用了引理8）。因此，最后一次插入所产生的总期望成本至少为：
+$$\sum_{j = 1}^{\log\delta^{-1}-i}cj$$  (9)
+
+这相当于说完整哈希表中的最后一次插入的期望第二层成本至少为 (9)。此外，尽管 (9)是基于 $S$ 的某个特定结果建立的，但由于它对每个单独的结果都成立，所以在没有任何条件设定的情况下也成立。
+
+最后，除了第二层成本，最后一次插入甚至在找到任何不在 $S$ 中的槽位时，都必须至少进行 $ci\log n$ 次期望探测（这是由于我们之前应用了引理 8）。因此，最后一次插入所产生的总期望成本至少为：
 
 $$ci\log\delta^{-1}+\sum_{j = 1}^{\log\delta^{-1}-i}cj\geq\sum_{j = 1}^{\log\delta^{-1}}cj$$
 
@@ -402,14 +404,14 @@ $$\sum_{j = 1}^{\log\delta^{-1}}cj=\Omega(\log^{2}\delta^{-1})$$
 
 这两个下界都将使用一组共享的定义：
 
-- 令$m = n(1 - \delta)$。
-- 令$k_{1},k_{2},\ldots,k_{m}$为要插入的键的集合。
-- 令$H_{i}(k_{j})$为键$k_{j}$的探测序列中的第$i$个元素。由于$H_{i}(k_{j})$的分布对于所有$k_{j}$都是相同的，我们有时会使用$H_{i}$作为简写。我们也会使用$h_{i}$来表示$H_{i}$的一个（非随机）特定结果。
-- 令$\mathcal{H}_{c}(k_{j})=\{H_{i}(k_{j}):i\in[c]\}$表示键$k_{j}$进行的前$c$次探测所组成的集合。同样，由于$\mathcal{H}_{c}(k_{j})$对于所有$k_{j}$具有相同的分布，我们有时会使用$\mathcal{H}_{c}$作为简写。
-- 对于$i\in[m]$，令$S_{i}\subset[n]$，$|S_{i}| = n - i$为一个随机变量，表示插入$i$个键后数组中未填充的槽位集合（其分布由哈希方案导出）。
-- 对于$i\in[m]$和$j\in\mathbb{N}$，令$X_{i,j}$为一个随机变量，用于指示在插入$k_{i}$时，由$H_{j}(k_{i})$索引的槽位是否为空。
-- 令$Y_{i}$为键$k_{i}$在探测序列中使用的位置。换句话说，键$k_{i}$被放置在槽位$H_{Y_{i}}(k_{i})$中。我们也会使用$y_{i}$来表示$Y_{i}$的一个（非随机）特定结果。注意，该槽位必须为空，所以$Y_{i}\in\{r:X_{i,r}=1\}$（在贪心算法中，会选择第一个可用的槽位 —— 在这种情况下，$Y_{i}=\min\{r:X_{i,r}=1\}$ ，但我们对算法是否贪心不做任何假设）。
-- 令$L_{i}$为随机变量，表示第$i$个键插入到数组中的位置。
+- 令 $m = n(1 - \delta)$。
+- 令 $k_{1},k_{2},\ldots,k_{m}$ 为要插入的键的集合。
+- 令 $H_{i}(k_{j})$ 为键 $k_{j}$ 的探测序列中的第 $i$ 个元素。由于 $H_{i}(k_{j})$ 的分布对于所有 $k_{j}$ 都是相同的，我们有时会使用 $H_{i}$ 作为简写。我们也会使用 $h_{i}$ 来表示 $H_{i}$ 的一个（非随机）特定结果。
+- 令 $\mathcal{H}_{c}(k_{j})=\{H_{i}(k_{j}):i\in[c]\}$ 表示键 $k_{j}$进行的前$c$次探测所组成的集合。同样，由于$\mathcal{H}_{c}(k_{j})$对于所有$k_{j}$具有相同的分布，我们有时会使用$\mathcal{H}_{c}$作为简写。
+- 对于 $i\in[m]$，令$S_{i}\subset[n]$，$|S_{i}| = n - i$为一个随机变量，表示插入 $i$ 个键后数组中未填充的槽位集合（其分布由哈希方案导出）。
+- 对于 $i\in[m]$和$j\in\mathbb{N}$，令 $X_{i,j}$ 为一个随机变量，用于指示在插入 $k_{i}$ 时，由 $H_{j}(k_{i})$ 索引的槽位是否为空。
+- 令 $Y_{i}$ 为键 $k_{i}$ 在探测序列中使用的位置。换句话说，键 $k_{i}$ 被放置在槽位 $H_{Y_{i}}(k_{i})$ 中。我们也会使用 $y_{i}$ 来表示 $Y_{i}$ 的一个（非随机）特定结果。注意，该槽位必须为空，所以 $Y_{i}\in\{r:X_{i,r}=1\}$（在贪心算法中，会选择第一个可用的槽位 —— 在这种情况下，$Y_{i}=\min\{r:X_{i,r}=1\}$ ，但我们对算法是否贪心不做任何假设）。
+- 令 $L_{i}$ 为随机变量，表示第 $i$ 个键插入到数组中的位置。
 
 ### 5.2 最坏情况期望探测复杂度
 
@@ -425,13 +427,19 @@ $$\sum_{j = 1}^{\log\delta^{-1}}cj=\Omega(\log^{2}\delta^{-1})$$
 
 令 $c$ 为对所有 $i$ 都成立的 $E[Y_{i}]$ 的任意上界。我们想要证明 $c=\Omega(\log\delta^{-1})$ 。注意，根据马尔可夫不等式，对于任何 $i\in[m]$，有 $\Pr[Y_{i}\leq 2c]\geq\frac{1}{2}$ 。
 
-令$\alpha=\left\lfloor\frac{\log\delta^{-1}}{3}\right\rfloor\in\Omega(\log\delta^{-1})$。对于$i\in[\alpha]$ ，令$a_{i}=n\left(1-\frac{1}{2^{3i}}\right)$ 。注意$a_{i}\leq a_{\log\delta^{-1}/3}\leq n\left(1-\frac{1}{2^{3\log\delta^{-1}/3}}\right)=n(1 - \delta)=m$ 。进一步注意$|S_{a_{i}}| = n - a_{i}=\frac{n}{2^{3i}}$，因为$S_{i}$表示仍未填充的槽位；并且注意$|S_{a_{i}}|$的大小，对于$i = 1,2,\ldots$ ，形成一个公比为$1/2^{3}=1/8$的几何序列。由此可知，对于任何$s_{a_{i}}\leftarrow S_{a_{i}}$，$s_{a_{i + 1}}\leftarrow S_{a_{i + 1}},\ldots$ ，$s_{a_{\alpha}}\leftarrow S_{a_{\alpha}}$ ，即使$s_{a_{i}}$之间不兼容（即$s_{a_{i + 1}}\not\subseteq s_{a_{i}}$），我们有
-$\left|s_{a_{i + 1}}\cup s_{a_{i + 2}}\cup\cdots\cup s_{a_{\alpha}}\right|\leq\sum_{j\geq i + 1}|s_{a_{j}}|\leq|s_{a_{i}}|/7$
-由于$\Pr[Y_{i}\leq 2c]\geq\frac{1}{2}$ ，对于任何$t < 2m - n = n(1 - 2\delta)$，我们有
-$\mathbb{E}[|\{i:Y_{i}\leq 2c\text{ 且 }t < i\leq m\}|]\geq\frac{m - t}{2}\geq\frac{n - t}{4}=\frac{|S_{t}|}{4}$
-因此，对于每个$j\in[\alpha - 1]$ ，存在某个$s_{a_{j}}\subseteq[n]$，使得
-$\displaystyle\mathbb{E}\left[|\{i:Y_{i}\leq 2c\text{ 且 }a_{j}<i\leq m\}|\,\bigg{|}\,S_{a_{j}}=s_{a_{j}}\right]\geq\frac{|s_{a_{j}}|}{4}$  (10)
-也就是说，我们找到了随机变量$S_{a_{j}}$的某个具体实例$s_{a_{j}}$，使得在$S_{a_{j}} = s_{a_{j}}$的条件下，$i > a_{j}$时$Y_{i}$的 “小” 值的期望数量至少为总体期望数量。需要注意的是，$s_{a_{1}},s_{a_{2}},\ldots$ 之间可能存在任意关系；它们作为$S_{a_{1}},S_{a_{2}},\ldots$ 的值不必相互兼容。也许令人惊讶的是，即便如此，我们仍然能够推断出$s_{a_{i}}$之间的关系。特别是，我们将在证明结束时表明，对于每个$j$和每次插入，在前$2c$次探测中探测到$s_{a_{j}}\setminus\bigcup_{k > j}s_{a_{k}}$中位置的期望次数为$\Omega(1)$。这将使我们推断出，在期望情况下，探测序列的前$2c$个元素至少包含$\Omega(\log\delta^{-1})$个不同的值，从而意味着$c=\Omega(\log\delta^{-1})$ 。
+令 $\alpha=\left\lfloor\frac{\log\delta^{-1}}{3}\right\rfloor\in\Omega(\log\delta^{-1})$ 。对于 $i\in[\alpha]$ ，令 $a_{i}=n\left(1-\frac{1}{2^{3i}}\right)$ 。注意 $a_{i}\leq a_{\log\delta^{-1}/3}\leq n\left(1-\frac{1}{2^{3\log\delta^{-1}/3}}\right)=n(1 - \delta)=m$ 。进一步注意 $|S_{a_{i}}| = n - a_{i}=\frac{n}{2^{3i}}$，因为 $S_{i}$ 表示仍未填充的槽位；并且注意 $|S_{a_{i}}|$ 的大小，对于 $i = 1,2,\ldots$ ，形成一个公比为 $1/2^{3}=1/8$ 的几何序列。由此可知，对于任何 $s_{a_{i}}\leftarrow S_{a_{i}}$，$s_{a_{i + 1}}\leftarrow S_{a_{i + 1}},\ldots$ ，$s_{a_{\alpha}}\leftarrow S_{a_{\alpha}}$ ，即使 $s_{a_{i}}$ 之间不兼容（即 $s_{a_{i + 1}}\not\subseteq s_{a_{i}}$ ），我们有：
+
+$$\left|s_{a_{i + 1}}\cup s_{a_{i + 2}}\cup\cdots\cup s_{a_{\alpha}}\right|\leq\sum_{j\geq i + 1}|s_{a_{j}}|\leq|s_{a_{i}}|/7$$
+
+由于 $\Pr[Y_{i}\leq 2c]\geq\frac{1}{2}$ ，对于任何 $t < 2m - n = n(1 - 2\delta)$，我们有：
+
+$$\mathbb{E}[|\{i:Y_{i}\leq 2c\text{ 且 }t < i\leq m\}|]\geq\frac{m - t}{2}\geq\frac{n - t}{4}=\frac{|S_{t}|}{4}$$
+
+因此，对于每个 $j\in[\alpha - 1]$ ，存在某个 $s_{a_{j}}\subseteq[n]$，使得：
+
+$$\displaystyle\mathbb{E}\left[|\{i:Y_{i}\leq 2c\text{ 且 }a_{j}<i\leq m\}|\,\bigg{|}\,S_{a_{j}}=s_{a_{j}}\right]\geq\frac{|s_{a_{j}}|}{4}$$  (10)
+
+也就是说，我们找到了随机变量 $S_{a_{j}}$ 的某个具体实例 $s_{a_{j}}$，使得在 $S_{a_{j}} = s_{a_{j}}$ 的条件下，$i > a_{j}$ 时 $Y_{i}$ 的 “小” 值的期望数量至少为总体期望数量。需要注意的是，$s_{a_{1}},s_{a_{2}},\ldots$ 之间可能存在任意关系；它们作为 $S_{a_{1}},S_{a_{2}},\ldots$ 的值不必相互兼容。也许令人惊讶的是，即便如此，我们仍然能够推断出 $s_{a_{i}}$ 之间的关系。特别是，我们将在证明结束时表明，对于每个 $j$ 和每次插入，在前 $2c$ 次探测中探测到 $s_{a_{j}}\setminus\bigcup_{k > j}s_{a_{k}}$ 中位置的期望次数为 $\Omega(1)$。这将使我们推断出，在期望情况下，探测序列的前 $2c$ 个元素至少包含 $\Omega(\log\delta^{-1})$ 个不同的值，从而意味着 $c=\Omega(\log\delta^{-1})$ 。
 
 令：
 
@@ -451,23 +459,27 @@ $$\begin{array}{lcl}t_{j}&=&\bigcup_{k > j}s_{a_{k}}\\v_{j}&=&s_{a_{j}}\setminus
 
 #### 证明
 
-不失一般性，假设$j < k$。根据$t_{j}$的定义，$s_{a_{k}}\subseteq t_{j}$。根据$v_{k}$的定义，$v_{k}\subseteq s_{a_{k}}$。最后，根据$v_{j}$的定义，$v_{j}\cap t_{j}=\emptyset$。因此，$v_{j}\cap v_{k}=\emptyset$。
+不失一般性，假设 $j < k$。根据 $t_{j}$ 的定义，$s_{a_{k}}\subseteq t_{j}$ 。根据 $v_{k}$的定义，$v_{k}\subseteq s_{a_{k}}$ 。最后，根据 $v_{j}$ 的定义，$v_{j}\cap t_{j}=\emptyset$。因此，$v_{j}\cap v_{k}=\emptyset$ 。
 
-正如我们前面看到的，$|t_{j}| = |s_{a_{j + 1}}\cup\cdots\cup s_{a_{\alpha}}|\leq|s_{a_{j}}|/7$。由于$\mathcal{L}_{i}\subseteq s_{a_{j}}\subseteq v_{j}\cup t_{j}$，我们有
-$\displaystyle\frac{\left|s_{a_{j}}\right|}{4}\leq\mathbb{E}\left[\left|\mathcal{L}_{i}\right|\right]=\mathbb{E}\left[\left|\mathcal{L}_{i}\cap v_{j}\right|\right]+\mathbb{E}\left[\left|\mathcal{L}_{i}\cap t_{j}\right|\right]\leq\mathbb{E}\left[\left|\mathcal{L}_{i}\cap v_{j}\right|\right]+\frac{\left|s_{a_{j}}\right|}{7}$
-相减可得
-$\displaystyle\mathbb{E}\left[\left|\mathcal{L}_{i}\cap v_{j}\right|\right]\geq\frac{\left|s_{a_{j}}\right|}{4}-\frac{\left|s_{a_{j}}\right|}{7}\geq\frac{\left|s_{a_{j}}\right|}{16}$  (11)
-证明的其余部分的高层次思路如下。我们想要论证$v_{j}$是不相交的集合，每个集合都有相当大（即$\Omega(1)$）的概率在给定探测序列的前$2c$次探测$\mathcal{H}_{2c}$中出现一个元素。由此，我们将能够推断出$c$在渐近意义上至少与$v_{j}$的数量一样大，而$v_{j}$的数量为$\Omega(\log\delta^{-1})$。
+正如我们前面看到的，$|t_{j}| = |s_{a_{j + 1}}\cup\cdots\cup s_{a_{\alpha}}|\leq|s_{a_{j}}|/7$。由于$\mathcal{L}_{i}\subseteq s_{a_{j}}\subseteq v_{j}\cup t_{j}$，我们有：
+
+$$\displaystyle\frac{\left|s_{a_{j}}\right|}{4}\leq\mathbb{E}\left[\left|\mathcal{L}_{i}\right|\right]=\mathbb{E}\left[\left|\mathcal{L}_{i}\cap v_{j}\right|\right]+\mathbb{E}\left[\left|\mathcal{L}_{i}\cap t_{j}\right|\right]\leq\mathbb{E}\left[\left|\mathcal{L}_{i}\cap v_{j}\right|\right]+\frac{\left|s_{a_{j}}\right|}{7}$$
+
+相减可得：
+
+$$\displaystyle\mathbb{E}\left[\left|\mathcal{L}_{i}\cap v_{j}\right|\right]\geq\frac{\left|s_{a_{j}}\right|}{4}-\frac{\left|s_{a_{j}}\right|}{7}\geq\frac{\left|s_{a_{j}}\right|}{16}$$  (11)
+
+证明的其余部分的高层次思路如下。我们想要论证 $v_{j}$ 是不相交的集合，每个集合都有相当大（即 $\Omega(1)$ ）的概率在给定探测序列的前 $2c$ 次探测 $\mathcal{H}_{2c}$ 中出现一个元素。由此，我们将能够推断出$c$在渐近意义上至少与 $v_{j}$ 的数量一样大，而 $v_{j}$ 的数量为 $\Omega(\log\delta^{-1})$ 。
 
 令：
 
 $$\begin{array}{lcl}p_{i,j}&=&\Pr[Y_{i}\leq 2c\text{ 且 }L_{i}\in v_{j}]\\q_{j}&=&\Pr[\mathcal{H}_{2c}\cap v_{j}\neq\emptyset]\end{array}$$
 
-我们必然有 $p_{i,j}\leq q_{j}$ ，因为对于 $Y_{i}\leq 2c$ 且 $L_{i}\in v_{j}$，我们必然有至少一个哈希函数在前 2c 次输出中产生了 vj 中的一个索引。因此我们有：
+我们必然有 $p_{i,j}\leq q_{j}$ ，因为对于 $Y_{i}\leq 2c$ 且 $L_{i}\in v_{j}$，我们必然有至少一个哈希函数在前 $2c$ 次输出中产生了 $vj$ 中的一个索引。因此我们有：
 
 $$\frac{|s_{a_{j}}|}{16}\leq\mathbb{E}[|\mathcal{L}_{j}\cap v_{j}|]=\sum_{i = a_{j}+1}^{m}p_{i,j}\leq\sum_{i = a_{j}+1}^{m}q_{j}=q_{j}(m - a_{j})\leq q_{j}(n - a_{j})=q_{j}|s_{a_{j}}|$$
 
-由此我们得出，对于所有 j∈[α - 1]，qj≥1/16 。因此，
+由此我们得出，对于所有 $j∈[α - 1]$，$qj≥1/16$ 。因此，
 
 $$\begin{align*}2c&=|\{H_{i}:i\in[2c]\}|\\&=|\{H_{i}:i\in[2c]\}\cap[n]|\\&=\mathbb{E}[|\{H_{i}:i\in[2c]\}\cap[n]|]\\&\geq\sum_{j = 1}^{\alpha - 1}\mathbb{E}[|\{H_{i}:i\in[2c]\}\cap v_{j}|]\\&\geq\sum_{j = 1}^{\alpha - 1}q_{j}\\&\geq\frac{1}{16}(\alpha - 1)=\Omega(\log\delta^{-1})\end{align*}$$
 
@@ -477,23 +489,23 @@ $$\begin{align*}2c&=|\{H_{i}:i\in[2c]\}|\\&=|\{H_{i}:i\in[2c]\}\cap[n]|\\&=\math
 
 为了证明高概率下边界，我们将使用与上一个证明类似的集合构造。唯一的区别是我们现在对最大探测复杂度有了一个上限。就定理 5 证明中使用的变量而言，这一额外的约束使我们能够得到关于 $\mathbb{E}[\mathcal{H}_{2c}\cap v_{j}]$ 的更强的界——具体来说，我们对这个量的界将从 $\Omega(1)$ 增加到 $\Omega(\log\delta^{-1})$ 。
 
-主要思想是，由于我们现在对一次插入可以使用的探测次数有了一个最坏情况的上限 c，我们可以更明确地分析一个特定槽位被探测到的实际概率。正如将展示的，为了使一个槽位以大于 (1 - δ) 的概率被看到（这是填充 (1 - δ) 比例的槽位所必需的），它必须以至少 $\Omega(\log\delta^{-1}/n)$ 的概率出现在 $\mathcal{H}_{c}$ 中。将这一点整合到我们的分析中，与定理  的证明相比，我们将能够获得一个额外的 $\Omega(\log\delta^{-1})$ 因子。
+主要思想是，由于我们现在对一次插入可以使用的探测次数有了一个最坏情况的上限 c，我们可以更明确地分析一个特定槽位被探测到的实际概率。正如将展示的，为了使一个槽位以大于 $(1 - δ)$ 的概率被看到（这是填充 $(1 - δ)$ 比例的槽位所必需的），它必须以至少 $\Omega(\log\delta^{-1}/n)$ 的概率出现在 $\mathcal{H}_{c}$ 中。将这一点整合到我们的分析中，与定理  的证明相比，我们将能够获得一个额外的 $\Omega(\log\delta^{-1})$ 因子。
 
 #### 定理 6
 
-在任何不执行重排的开放地址方案中，概率大于 1/2 时，必然存在某个键，其探测复杂度最终为 $\Omega(\log^{2}\delta^{-1})$ 。换句话说，对于所有 c∈o $(\log^{2}\delta^{-1})$ ，有：
+在任何不执行重排的开放地址方案中，概率大于 1/2 时，必然存在某个键，其探测复杂度最终为 $\Omega(\log^{2}\delta^{-1})$ 。换句话说，对于所有 $c∈o$ $(\log^{2}\delta^{-1})$ ，有：
 
 $$\Pr\left[Y_{i}\leq c\,\forall i\in[m]\right]\leq\frac{1}{2}$$
 
 ### 证明
 
-假设存在一种不执行重排的开放地址方案，对于某个 $c∈\mathbb{N}$，所有键的探测复杂度以大于 1/2 的概率至多为c。我们将证明 $c=\Omega(\log^{2}\delta^{-1})$ 。
+假设存在一种不执行重排的开放地址方案，对于某个 $c∈\mathbb{N}$，所有键的探测复杂度以大于 1/2 的概率至多为 $c$ 。我们将证明 $c=\Omega(\log^{2}\delta^{-1})$ 。
 
 根据定义，我们有：
 
 $$\displaystyle\Pr[Y_{i}\leq c\,\forall i\in[m]]>\frac{1}{2}$$  (12)
 
-因此，对于每个 $i∈{0, 1, …, m}$，必然存在某个 si⊆[n]，其大小为 n - i，使得：
+因此，对于每个 $i∈{0, 1, …, m}$，必然存在某个 $si⊆[n]$，其大小为 $(n - i)$，使得：
 
 $$\Pr\left[Y_{i}\leq c\,\forall i\in[m]\,\bigg{|}\,S_{i}=s_{i}\right]>\frac{1}{2}$$
 
@@ -501,31 +513,33 @@ $$\Pr\left[Y_{i}\leq c\,\forall i\in[m]\,\bigg{|}\,S_{i}=s_{i}\right]>\frac{1}{2
 
 #### 声明 11
 
-对于任何 $i < n(1 - 256δ)$，必然存在某个集合 ri⊆si⊆[n]，其大小 |ri| > (n - i)/2 = |si|/2 ，使得对于任何 x∈ri，有：
+对于任何 $i < n(1 - 256δ)$，必然存在某个集合 $ri⊆si⊆[n]$，其大小 $|ri| > (n - i)/2 = |si|/2$ ，使得对于任何 $x∈ri$，有：
 
 $$P[x\in\mathcal{H}_{c}]>\frac{1}{32}\frac{\log\left(\frac{|s_{i}|}{n\delta}\right)}{|s_{i}|}$$
 
 ### 证明
 
-一个负载因子为 (1 - δ) 的哈希表成功（即所有键的探测复杂度至多为 c）的必要条件是：
+一个负载因子为 $(1 - δ)$ 的哈希表成功（即所有键的探测复杂度至多为 $c$）的必要条件是：
 
 $$s_{i}\setminus\cup_{j>i}\mathcal{H}_{c}(k_{j})$$
 
-的大小至多为 δn 。实际上，这些是在插入 ki 之后为空且在剩余插入的（前 c 次探测）中从未被探测到的槽位集合。
+的大小至多为 $δn$ 。实际上，这些是在插入 $ki$ 之后为空且在剩余插入的（前 $c$ 次探测）中从未被探测到的槽位集合。
 
 因此，
 
 $$\displaystyle\Pr\left[\left|s_{i}\cap\left(\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right)\right|>|s_{i}|-\delta n:S_{i}=s_{i}\right]>\frac{1}{2}$$  (13)
 
-注意，对 Si = si 的条件设定是不必要的，因为随机变量 $\mathcal{H}_{c}(k_{j})$，j > i，与事件 Si = si 是独立的。
+注意，对 $Si = si$ 的条件设定是不必要的，因为随机变量 $\mathcal{H}_{c}(k_{j})$，$j > i$，与事件 $Si = si$ 是独立的。
 
-令 p=\frac{\log\left(\frac{|s_{i}|}{n\delta}\right)}{|s_{i}|}，令 ti 为所有 x∈si 的集合，使得：
+令 $p=\frac{\log\left(\frac{|s_{i}|}{n\delta}\right)}{|s_{i}|}$ ，令 $ti$ 为所有 $x∈si$ 的集合，使得：
 
 $$\Pr[x\in\mathcal{H}_{c}]\leq\frac{p}{32}$$
 
-我们将通过证明 |ti| < |si|/2 来完成声明的证明。为此，我们将计算ti中预期出现在某个$H_{c}(k_{j})$（j > i）中的元素数量：
+我们将通过证明 $|ti| < |si|/2$ 来完成声明的证明。为此，我们将计算 $ti$ 中预期出现在某个 $H_{c}(k_{j})$（j > i）中的元素数量：
+
 $$\begin{align*}\mathbb{E}\left[\left|t_{i}\cap\left(\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right)\right|\right]&=\sum_{x\in t_{i}}\Pr\left[x\in\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right]\\&=\sum_{x\in t_{i}}1-\left(1-\Pr\left[x\in\mathcal{H}_{c}\right]\right)^{m - i}\text{ (因为 }\mathcal{H}_{c}(k_{j})\text{ 对 }j\text{ 是独立同分布的)}\\&\leq\sum_{x\in t_{i}}1-\left(1-\frac{p}{32}\right)^{|s_{i}|-n\delta}\\&\leq\sum_{x\in t_{i}}1-\left(1-\frac{p}{32}\right)^{|s_{i}|/2}\text{ (因为根据假设 }i < n(1 - 2\delta)\text{)}\\&\leq|t_{i}|-|t_{i}|\left(1-\frac{1}{|s_{i}|}\right)^{\log\left(\frac{|s_{i}|}{n\delta}\right)|s_{i}|/64}\text{ (因为如果 }x,t\geq1\text{，则 }(1 - x/t)\leq(1 - 1/t)^{x}\text{)}\\&<|t_{i}|-|t_{i}|(1/2)^{\log\left(\frac{|s_{i}|}{n\delta}\right)/8}\\&<|t_{i}|-|t_{i}|\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}\end{align*}$$
-根据假设，i < n(1 - 256δ)，所以|si| > n - n(1 - 256δ) = 256nδ。由于|si| > 256nδ，我们有$\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}<\left(\frac{1}{256}\right)^{1/8}=\frac{1}{2}$。因此我们有：
+
+根据假设，$i < n(1 - 256δ)$，所以 $|si| > n - n(1 - 256δ) = 256nδ$。由于 $|si| > 256nδ$，我们有 $\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}<\left(\frac{1}{256}\right)^{1/8}=\frac{1}{2}$ 。因此我们有：
 
 $$|t_{i}|-|t_{i}|\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}<\frac{|t_{i}|}{2}$$
 
@@ -533,9 +547,9 @@ $$|t_{i}|-|t_{i}|\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}<\frac{|t_{i}|}{2}$$
 
 $$\mathbb{E}\left[\left|t_{i}\cap\left(\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right)\right|\right]\geq|t_{i}|-n\delta$$
 
-否则，超过 nδ 个槽位将永远不会成为任何哈希函数输出的一部分，因此在最后必然是未填充的。由此可知 |ti| < 2nδ < |si|/2，证毕。
+否则，超过 $nδ$ 个槽位将永远不会成为任何哈希函数输出的一部分，因此在最后必然是未填充的。由此可知 $|ti| < 2nδ < |si|/2$，证毕。
 
-令 ai = n(1 - 1/4i)，对于 i∈[\log\delta^{-1}/4] 。观察到，对于任何 i∈[\log\delta^{-1}/4] ，有：
+令 $ai = n(1 - 1/4i)$ ，对于 $i∈[\log\delta^{-1}/4]$ 。观察到，对于任何 $i∈[\log\delta^{-1}/4]$ ，有：
 
 $$\left|\bigcup_{j=i + 1}^{\log\delta^{-1}/4}s_{a_{j}}\right|\leq\sum_{j = 1}^{\log\delta^{-1}/4 - i}\frac{\left|s_{a_{i}}\right|}{4^{j}}\leq\frac{|s_{a_{i}}|}{3}\leq\frac{3|s_{a_{i}}|}{8}$$
 
@@ -551,7 +565,7 @@ $$\left|v_{i}\right|\geq\frac{\left|s_{a_{i}}\right|}{2}-\frac{3\left|s_{a_{i}}\
 
 $$|s_{a_{i}}|\geq n\left(\frac{1}{4}\right)^{\log\delta^{-1}/4}=n\left(\frac{1}{2}\right)^{\log\delta^{-1}/2}=n\sqrt{\delta}$$
 
-我们现在通过展开每个 vi 的定义来获得对 $|$\mathcal{H}_{c}$|≤c$ 的下界。特别地，在不失一般性地假设 $\log\delta^{-1}/4>256$ 的情况下，我们有：
+我们现在通过展开每个 $vi$ 的定义来获得对 $|$\mathcal{H}_{c}$|≤c$ 的下界。特别地，在不失一般性地假设 $\log\delta^{-1}/4>256$ 的情况下，我们有：
 
 $$\begin{align*}c&\geq\mathbb{E}[|\mathcal{H}_{c}|]\\&\geq\sum_{i = 1}^{\log\delta^{-1}/4}\mathbb{E}[|\mathcal{H}_{c}\cap v_{i}|]\\&=\sum_{i = 1}^{\log\delta^{-1}/4}\sum_{x\in v_{i}}\mathbb{E}[|\{x\}\cap\mathcal{H}_{c}|]\\&=\sum_{i = 1}^{\log\delta^{-1}/4}\sum_{x\in v_{i}}\Pr[x\in\mathcal{H}_{c}]\\&\geq\sum_{i = 1}^{\log\delta^{-1}/4}\sum_{x\in v_{i}}\frac{1}{32}\frac{\log\left(\frac{|s_{a_{i}}|}{n\delta}\right)}{|s_{a_{i}}|}\\&=\frac{1}{32}\sum_{i = 1}^{\log\delta^{-1}/4}|v_{i}|\frac{\log\left(\frac{|s_{a_{i}}|}{n\delta}\right)}{|s_{a_{i}}|}\\&\geq\frac{1}{32}\sum_{i = 1}^{\log\delta^{-1}/4}\frac{|s_{a_{i}}|}{8}\frac{\log\left(\frac{n\sqrt{\delta}}{n\delta}\right)}{|s_{a_{i}}|}\\&=\frac{1}{32}\sum_{i = 1}^{\log\delta^{-1}/4}\frac{\log\delta^{-1}}{16}\\&=\frac{1}{32}\cdot\frac{1}{16}\cdot\frac{1}{4}\log^{2}\delta^{-1}=\Omega(\log^{2}\delta^{-1})\end{align*}$$
 
@@ -573,7 +587,7 @@ $$\begin{align*}c&\geq\mathbb{E}[|\mathcal{H}_{c}|]\\&\geq\sum_{i = 1}^{\log\del
 
 现在，假设我们有某种任意的不执行重排的开放地址方案，其中概率大于 1/2 时，所有键的探测复杂度至多为 d。我们将我们的哈希表方案修改为一个球和箱子的过程，使得每次选择最多 d 个箱子，具体如下。
 
-假设键 $ki$ 被插入到位置 $li = hj(ki)$ 。如果 $j≤d$，则将球 i 放入箱子 $hj(ki) mod m$ 中。否则，将球 i 放入箱子 hd(ki) mod m 中，通过这种方式确保该方案每次选择最多 d 个箱子；可能的选择集合是：$\{H_{j}(k_{i})\text{ mod }m:j\leq d\}$，其大小（最多）为 d。这个过程还确保了最满的箱子中球的数量很可能很少：
+假设键 $ki$ 被插入到位置 $li = hj(ki)$ 。如果 $j≤d$，则将球 $i$ 放入箱子 $hj(ki) mod m$ 中。否则，将球 $i$ 放入箱子 $hd(ki) mod m$ 中，通过这种方式确保该方案每次选择最多 $d$ 个箱子；可能的选择集合是：$\{H_{j}(k_{i})\text{ mod }m:j\leq d\}$，其大小（最多）为 $d$ 。这个过程还确保了最满的箱子中球的数量很可能很少：
 
 #### 引理 12
 
@@ -581,11 +595,11 @@ $$\begin{align*}c&\geq\mathbb{E}[|\mathcal{H}_{c}|]\\&\geq\sum_{i = 1}^{\log\del
 
 ### 证明
 
-假设球 i 落入箱子 Bi 中。那么落入第 j 个箱子的球的索引集为 $\{i:B_{i}=j\}$。
+假设球 $i$ 落入箱子 $Bi$ 中。那么落入第 $j$ 个箱子的球的索引集为 $\{i:B_{i}=j\}$。
 
-现在，假设对于所有 i∈[m]，$Bi = Li mod m$，并且注意到这种情况发生的概率大于 1/2。由于每个槽位只能存储一个键，对于任何 $i≠j$，$Li≠Lj$ 。因此，$\{i:B_{i}=j\}\subseteq\{i\in[n]:i\text{ mod }m = j\}$ 。由于 (1 - δ)=\Omega(1)，我们有 m=\Omega(n)，即 n = O(m)。因此，对于所有 i∈[m]，$|\{i\in[n]:i\text{ mod }m = j\}| = O(1)$，并且最满的箱子中最多有 $O(1)$ 个球，证毕。
+现在，假设对于所有 $i∈[m]$，$Bi = Li mod m$，并且注意到这种情况发生的概率大于 1/2。由于每个槽位只能存储一个键，对于任何 $i≠j$，$Li≠Lj$ 。因此，$\{i:B_{i}=j\}\subseteq\{i\in[n]:i\text{ mod }m = j\}$ 。由于 (1 - δ)=\Omega(1)，我们有 m=\Omega(n)，即 n = O(m)。因此，对于所有 i∈[m]，$|\{i\in[n]:i\text{ mod }m = j\}| = O(1)$，并且最满的箱子中最多有 $O(1)$ 个球，证毕。
 
-根据定理8，在这个过程结束时，最满的箱子中以高概率有 $\Omega(\log\log n/d)$ 个球。如果 $d = o(\log\log n)$，那么最满的箱子中以高概率有 $\omega(1)$ 个球，这与引理 12 矛盾。因此，$d=\Omega(\log\log n)$，正如我们所期望的。
+根据定理 8，在这个过程结束时，最满的箱子中以高概率有 $\Omega(\log\log n/d)$ 个球。如果 $d = o(\log\log n)$，那么最满的箱子中以高概率有 $\omega(1)$ 个球，这与引理 12 矛盾。因此，$d=\Omega(\log\log n)$，正如我们所期望的。
 
 ## 6. 致谢和资金支持
 
