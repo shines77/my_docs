@@ -396,7 +396,7 @@ $$\sum_{j = 1}^{\log\delta^{-1}}cj=\Omega(\log^{2}\delta^{-1})$$
 
 ## 5. 无重排开放地址哈希表的下边界
 
-在本节中，我们给出两个下界，它们不仅适用于贪心开放地址哈希表，而且适用于任何不执行重排操作的开放地址哈希表。我们的第一个结果是对最坏情况期望探测复杂度给出$\Omega(\log\delta^{-1})$的下界（与定理1中的上界相匹配）。我们的第二个结果是对（高概率）最坏情况探测复杂度给出$\Omega(\log^{2}\delta^{-1}+\log\log n)$的下界（与定理2中的上界相匹配，定理2中的上界是由一种贪心方案实现的）。
+在本节中，我们给出两个下界，它们不仅适用于贪心开放地址哈希表，而且适用于任何不执行重排操作的开放地址哈希表。我们的第一个结果是对最坏情况期望探测复杂度给出 $\Omega(\log\delta^{-1})$ 的下界（与定理 1 中的上界相匹配）。我们的第二个结果是对（高概率）最坏情况探测复杂度给出 $\Omega(\log^{2}\delta^{-1}+\log\log n)$ 的下界（与定理 2 中的上界相匹配，定理 2 中的上界是由一种贪心方案实现的）。
 
 在以下证明中，我们假设键的探测序列是独立同分布的随机变量。这等同于假设全域大小是一个大的多项式，然后随机（有放回）采样键；在高概率下，这样的采样过程不会对任何键进行两次采样。
 
@@ -419,7 +419,7 @@ $$\sum_{j = 1}^{\log\delta^{-1}}cj=\Omega(\log^{2}\delta^{-1})$$
 
 #### 定理 5
 
-在任何不重排且达到负载因子 $1 - \delta$ 的开放地址方案中，最坏情况期望探测复杂度必须为 $\Omega(\log\delta^{-1})$ 。特别地，存在某个 $i\in[m]$ ，使得 $\mathbb{E}[Y_{i}]=\Omega(\log\delta^{-1})$ 。
+在任何不重排且达到负载因子 $(1 - \delta)$ 的开放地址方案中，最坏情况期望探测复杂度必须为 $\Omega(\log\delta^{-1})$ 。特别地，存在某个 $i\in[m]$ ，使得 $\mathbb{E}[Y_{i}]=\Omega(\log\delta^{-1})$ 。
 
 从高层次上讲，我们想要反转上界算法的思路。与将数组划分为大小呈指数递减的子数组不同，我们证明至少在某种程度上，这样的构造是自然出现的。给定最坏情况期望探测复杂度的上界 $c$，我们将证明必然存在不相交的槽位组 $v_{1},v_{2},\ldots,v_{\Theta(\log\delta^{-1})}$，其大小呈指数递减，并且对于每个 $i$，有 $\mathbb{E}[\mathcal{H}_{2c}\cap v_{i}]\geq\Omega(1)$ 。这反过来意味着 $2c\geq\mathbb{E}[|\mathcal{H}_{2c}|]\geq\Omega(\log\delta^{-1})$ 。正如我们将看到的，棘手的部分是以一种保证该性质的方式定义 $v_{i}$ 。
 
@@ -565,7 +565,7 @@ $$\left|v_{i}\right|\geq\frac{\left|s_{a_{i}}\right|}{2}-\frac{3\left|s_{a_{i}}\
 
 $$|s_{a_{i}}|\geq n\left(\frac{1}{4}\right)^{\log\delta^{-1}/4}=n\left(\frac{1}{2}\right)^{\log\delta^{-1}/2}=n\sqrt{\delta}$$
 
-我们现在通过展开每个 $vi$ 的定义来获得对 $|$\mathcal{H}_{c}$|≤c$ 的下界。特别地，在不失一般性地假设 $\log\delta^{-1}/4>256$ 的情况下，我们有：
+我们现在通过展开每个 $vi$ 的定义来获得对 $|\mathcal{H}_{c}|≤c$ 的下界。特别地，在不失一般性地假设 $\log\delta^{-1}/4>256$ 的情况下，我们有：
 
 $$\begin{align*}c&\geq\mathbb{E}[|\mathcal{H}_{c}|]\\&\geq\sum_{i = 1}^{\log\delta^{-1}/4}\mathbb{E}[|\mathcal{H}_{c}\cap v_{i}|]\\&=\sum_{i = 1}^{\log\delta^{-1}/4}\sum_{x\in v_{i}}\mathbb{E}[|\{x\}\cap\mathcal{H}_{c}|]\\&=\sum_{i = 1}^{\log\delta^{-1}/4}\sum_{x\in v_{i}}\Pr[x\in\mathcal{H}_{c}]\\&\geq\sum_{i = 1}^{\log\delta^{-1}/4}\sum_{x\in v_{i}}\frac{1}{32}\frac{\log\left(\frac{|s_{a_{i}}|}{n\delta}\right)}{|s_{a_{i}}|}\\&=\frac{1}{32}\sum_{i = 1}^{\log\delta^{-1}/4}|v_{i}|\frac{\log\left(\frac{|s_{a_{i}}|}{n\delta}\right)}{|s_{a_{i}}|}\\&\geq\frac{1}{32}\sum_{i = 1}^{\log\delta^{-1}/4}\frac{|s_{a_{i}}|}{8}\frac{\log\left(\frac{n\sqrt{\delta}}{n\delta}\right)}{|s_{a_{i}}|}\\&=\frac{1}{32}\sum_{i = 1}^{\log\delta^{-1}/4}\frac{\log\delta^{-1}}{16}\\&=\frac{1}{32}\cdot\frac{1}{16}\cdot\frac{1}{4}\log^{2}\delta^{-1}=\Omega(\log^{2}\delta^{-1})\end{align*}$$
 
@@ -579,7 +579,7 @@ $$\begin{align*}c&\geq\mathbb{E}[|\mathcal{H}_{c}|]\\&\geq\sum_{i = 1}^{\log\del
 
 ### 证明
 
-我们只需要证明存在某个键的探测复杂度为 $\Omega(\log\log n)$，因为我们已经在定理6中证明了存在某个键的探测复杂度为 $\Omega(\log^{2}\delta^{-1})$ 。我们的证明模仿了[3]中定理5.2的证明，而[3]中的证明主要基于[20]中的以下定理：
+我们只需要证明存在某个键的探测复杂度为 $\Omega(\log\log n)$，因为我们已经在定理 6 中证明了存在某个键的探测复杂度为 $\Omega(\log^{2}\delta^{-1})$ 。我们的证明模仿了 [3] 中定理 5.2 的证明，而 [3] 中的证明主要基于 [20] 中的以下定理：
 
 #### 定理 8（[20]中的定理2）
 
