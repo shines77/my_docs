@@ -2,7 +2,7 @@
 
 ## 原文
 
-原标题：[An Extensive Benchmark of C and C++ Hash Tables](https://jacksonallan.github.io/c_cpp_hash_tables_benchmark/)
+原标题：`[An Extensive Benchmark of C and C++ Hash Tables]`
 
 链接：[https://jacksonallan.github.io/c_cpp_hash_tables_benchmark/](https://jacksonallan.github.io/c_cpp_hash_tables_benchmark/)
 
