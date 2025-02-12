@@ -350,37 +350,37 @@ $$|A_{1}|\cdot c\log\delta^{-1}+|A_{2}|\cdot 2c\log\delta^{-1}+|A_{3}|\cdot 3c\l
 
 #### 引理 8
 
-存在一个通用的正常数 $\(c > 0\)$，使得以下结论成立：对于任意的 $\(\delta\)$ 和 $\(n\)$，存在某个整数 $\(1\leq i\leq\log\delta^{-1}\)$，使得第 $\((1 - 1/2^{i})n\)$ 次插入的期望成本至少为 $\(ci\log\delta^{-1}\)$。
+存在一个通用的正常数 $c > 0$，使得以下结论成立：对于任意的 $\delta$ 和 $n$，存在某个整数 $1\leq i\leq\log\delta^{-1}$，使得第 $(1 - 1/2^{i})n$ 次插入的期望成本至少为 $ci\log\delta^{-1}$。
 
 ### 证明
 
-设 $\(c\)$ 为一个足够小的正常数，假设引理不成立。令 $\(q_{j}\)$ 表示第 $\(j\)$ 次插入的期望成本。由于哈希表采用贪心开放地址法，我们知道 $\(q_{j}\)$ 是单调递增的。由此可得：
+设 $c$ 为一个足够小的正常数，假设引理不成立。令 $q_{j}$ 表示第 $j$ 次插入的期望成本。由于哈希表采用贪心开放地址法，我们知道 $q_{j}$ 是单调递增的。由此可得：
 
-$$\(\mathbb{E}[\sum q_{j}]\geq\sum_{i\in[1,\log\delta^{-1}]}\frac{n}{2^{i}}\cdot q_{(1 - 1/2^{i})n}\)$$
+$$\mathbb{E}[\sum q_{j}]\geq\sum_{i\in[1,\log\delta^{-1}]}\frac{n}{2^{i}}\cdot q_{(1 - 1/2^{i})n}$$
 
 根据假设，上式至多为：
 
-$$\(\sum_{i\in[1,\log\delta^{-1}]}\frac{n}{2^{i}}\cdot c\cdot i\log\delta^{-1}\leq cn\cdot O(\log\delta^{-1})\)$$
+$$\sum_{i\in[1,\log\delta^{-1}]}\frac{n}{2^{i}}\cdot c\cdot i\log\delta^{-1}\leq cn\cdot O(\log\delta^{-1})$$
 
-将 $\(c\)$ 设置为一个足够小的正常数，这与命题 7 矛盾。
+将 $c$ 设置为一个足够小的正常数，这与命题 7 矛盾。
 
 ### 引理 9
 
-设 $\(c\)$ 为引理 8 中的正常数。那么，最后一次插入的期望时间至少为：
+设 $c$ 为引理 8 中的正常数。那么，最后一次插入的期望时间至少为：
 
-$$\(\sum_{j = 1}^{\log\delta^{-1}}cj\)$$
+$$\sum_{j = 1}^{\log\delta^{-1}}cj$$
 
 ### 证明
 
-根据引理 8，存在一个整数\(1\leq i\leq\log\delta^{-1}\)，使得第\((1 - 1/2^{i})n\)次插入的期望成本至少为\(ci\log\delta^{-1}\) 。如果\(i = \log\delta^{-1}\)，那么我们就完成了证明。否则，我们可以通过对\(n\)进行强归纳来完成证明，如下所述。
+根据引理 8，存在一个整数$1\leq i\leq\log\delta^{-1}$，使得第$(1 - 1/2^{i})n$次插入的期望成本至少为$ci\log\delta^{-1}$ 。如果$i = \log\delta^{-1}$，那么我们就完成了证明。否则，我们可以通过对$n$进行强归纳来完成证明，如下所述。
 
-令\(S\)表示第\((1 - 1/2^{i})n\)次插入后已占用位置的集合。基于\(S\)的某个结果进行条件设定，并将未来插入的第二层成本定义为插入操作对\([n]\setminus S\)中的槽位进行探测的期望次数。为了分析第二层成本，我们可以想象\([n]\setminus S\)中的槽位是哈希表中仅有的槽位，并且\(S\)中的槽位从每个元素的探测序列中移除。这个新的 “压缩” 哈希表大小为\(n/2^{i}\)，并将接收\(n/2^{i}-\delta n=(n/2^{i})\cdot(1 - \delta 2^{i})\)次插入操作，每次插入都采用贪心开放地址法。通过归纳法可知，“压缩” 哈希表中的最后一次插入的期望成本至少为
-\(\sum_{j = 1}^{\log\delta^{-1}-i}cj\)  (9)
-这相当于说完整哈希表中的最后一次插入的期望第二层成本至少为(9)。此外，尽管(9)是基于\(S\)的某个特定结果建立的，但由于它对每个单独的结果都成立，所以在没有任何条件设定的情况下也成立。
+令$S$表示第$(1 - 1/2^{i})n$次插入后已占用位置的集合。基于$S$的某个结果进行条件设定，并将未来插入的第二层成本定义为插入操作对$[n]\setminus S$中的槽位进行探测的期望次数。为了分析第二层成本，我们可以想象$[n]\setminus S$中的槽位是哈希表中仅有的槽位，并且$S$中的槽位从每个元素的探测序列中移除。这个新的 “压缩” 哈希表大小为$n/2^{i}$，并将接收$n/2^{i}-\delta n=(n/2^{i})\cdot(1 - \delta 2^{i})$次插入操作，每次插入都采用贪心开放地址法。通过归纳法可知，“压缩” 哈希表中的最后一次插入的期望成本至少为
+$\sum_{j = 1}^{\log\delta^{-1}-i}cj$  (9)
+这相当于说完整哈希表中的最后一次插入的期望第二层成本至少为(9)。此外，尽管(9)是基于$S$的某个特定结果建立的，但由于它对每个单独的结果都成立，所以在没有任何条件设定的情况下也成立。
 
-最后，除了第二层成本，最后一次插入甚至在找到任何不在\(S\)中的槽位时，都必须至少进行\(ci\log n\)次期望探测（这是由于我们之前应用了引理8）。因此，最后一次插入所产生的总期望成本至少为：
+最后，除了第二层成本，最后一次插入甚至在找到任何不在$S$中的槽位时，都必须至少进行$ci\log n$次期望探测（这是由于我们之前应用了引理8）。因此，最后一次插入所产生的总期望成本至少为：
 
-$$\(ci\log\delta^{-1}+\sum_{j = 1}^{\log\delta^{-1}-i}cj\geq\sum_{j = 1}^{\log\delta^{-1}}cj\)$$
+$$ci\log\delta^{-1}+\sum_{j = 1}^{\log\delta^{-1}-i}cj\geq\sum_{j = 1}^{\log\delta^{-1}}cj$$
 
 正如我们所期望的。
 
@@ -388,13 +388,13 @@ $$\(ci\log\delta^{-1}+\sum_{j = 1}^{\log\delta^{-1}-i}cj\geq\sum_{j = 1}^{\log\d
 
 ### 定理 4 的证明
 
-根据引理 9，存在一个正常数 $\(c\)$，使得最后一次插入所产生的期望成本至少为：
+根据引理 9，存在一个正常数 $c$，使得最后一次插入所产生的期望成本至少为：
 
-$$\(\sum_{j = 1}^{\log\delta^{-1}}cj=\Omega(\log^{2}\delta^{-1})\)$$
+$$\sum_{j = 1}^{\log\delta^{-1}}cj=\Omega(\log^{2}\delta^{-1})$$
 
 ## 5. 无重排开放地址哈希表的下边界
 
-在本节中，我们给出两个下界，它们不仅适用于贪心开放地址哈希表，而且适用于任何不执行重排操作的开放地址哈希表。我们的第一个结果是对最坏情况期望探测复杂度给出\(\Omega(\log\delta^{-1})\)的下界（与定理1中的上界相匹配）。我们的第二个结果是对（高概率）最坏情况探测复杂度给出\(\Omega(\log^{2}\delta^{-1}+\log\log n)\)的下界（与定理2中的上界相匹配，定理2中的上界是由一种贪心方案实现的）。
+在本节中，我们给出两个下界，它们不仅适用于贪心开放地址哈希表，而且适用于任何不执行重排操作的开放地址哈希表。我们的第一个结果是对最坏情况期望探测复杂度给出$\Omega(\log\delta^{-1})$的下界（与定理1中的上界相匹配）。我们的第二个结果是对（高概率）最坏情况探测复杂度给出$\Omega(\log^{2}\delta^{-1}+\log\log n)$的下界（与定理2中的上界相匹配，定理2中的上界是由一种贪心方案实现的）。
 
 在以下证明中，我们假设键的探测序列是独立同分布的随机变量。这等同于假设全域大小是一个大的多项式，然后随机（有放回）采样键；在高概率下，这样的采样过程不会对任何键进行两次采样。
 
@@ -402,14 +402,14 @@ $$\(\sum_{j = 1}^{\log\delta^{-1}}cj=\Omega(\log^{2}\delta^{-1})\)$$
 
 这两个下界都将使用一组共享的定义：
 
-- 令\(m = n(1 - \delta)\)。
-- 令\(k_{1},k_{2},\ldots,k_{m}\)为要插入的键的集合。
-- 令\(H_{i}(k_{j})\)为键\(k_{j}\)的探测序列中的第\(i\)个元素。由于\(H_{i}(k_{j})\)的分布对于所有\(k_{j}\)都是相同的，我们有时会使用\(H_{i}\)作为简写。我们也会使用\(h_{i}\)来表示\(H_{i}\)的一个（非随机）特定结果。
-- 令\(\mathcal{H}_{c}(k_{j})=\{H_{i}(k_{j}):i\in[c]\}\)表示键\(k_{j}\)进行的前\(c\)次探测所组成的集合。同样，由于\(\mathcal{H}_{c}(k_{j})\)对于所有\(k_{j}\)具有相同的分布，我们有时会使用\(\mathcal{H}_{c}\)作为简写。
-- 对于\(i\in[m]\)，令\(S_{i}\subset[n]\)，\(|S_{i}| = n - i\)为一个随机变量，表示插入\(i\)个键后数组中未填充的槽位集合（其分布由哈希方案导出）。
-- 对于\(i\in[m]\)和\(j\in\mathbb{N}\)，令\(X_{i,j}\)为一个随机变量，用于指示在插入\(k_{i}\)时，由\(H_{j}(k_{i})\)索引的槽位是否为空。
-- 令\(Y_{i}\)为键\(k_{i}\)在探测序列中使用的位置。换句话说，键\(k_{i}\)被放置在槽位\(H_{Y_{i}}(k_{i})\)中。我们也会使用\(y_{i}\)来表示\(Y_{i}\)的一个（非随机）特定结果。注意，该槽位必须为空，所以\(Y_{i}\in\{r:X_{i,r}=1\}\)（在贪心算法中，会选择第一个可用的槽位 —— 在这种情况下，\(Y_{i}=\min\{r:X_{i,r}=1\}\) ，但我们对算法是否贪心不做任何假设）。
-- 令\(L_{i}\)为随机变量，表示第\(i\)个键插入到数组中的位置。
+- 令$m = n(1 - \delta)$。
+- 令$k_{1},k_{2},\ldots,k_{m}$为要插入的键的集合。
+- 令$H_{i}(k_{j})$为键$k_{j}$的探测序列中的第$i$个元素。由于$H_{i}(k_{j})$的分布对于所有$k_{j}$都是相同的，我们有时会使用$H_{i}$作为简写。我们也会使用$h_{i}$来表示$H_{i}$的一个（非随机）特定结果。
+- 令$\mathcal{H}_{c}(k_{j})=\{H_{i}(k_{j}):i\in[c]\}$表示键$k_{j}$进行的前$c$次探测所组成的集合。同样，由于$\mathcal{H}_{c}(k_{j})$对于所有$k_{j}$具有相同的分布，我们有时会使用$\mathcal{H}_{c}$作为简写。
+- 对于$i\in[m]$，令$S_{i}\subset[n]$，$|S_{i}| = n - i$为一个随机变量，表示插入$i$个键后数组中未填充的槽位集合（其分布由哈希方案导出）。
+- 对于$i\in[m]$和$j\in\mathbb{N}$，令$X_{i,j}$为一个随机变量，用于指示在插入$k_{i}$时，由$H_{j}(k_{i})$索引的槽位是否为空。
+- 令$Y_{i}$为键$k_{i}$在探测序列中使用的位置。换句话说，键$k_{i}$被放置在槽位$H_{Y_{i}}(k_{i})$中。我们也会使用$y_{i}$来表示$Y_{i}$的一个（非随机）特定结果。注意，该槽位必须为空，所以$Y_{i}\in\{r:X_{i,r}=1\}$（在贪心算法中，会选择第一个可用的槽位 —— 在这种情况下，$Y_{i}=\min\{r:X_{i,r}=1\}$ ，但我们对算法是否贪心不做任何假设）。
+- 令$L_{i}$为随机变量，表示第$i$个键插入到数组中的位置。
 
 ### 5.2 最坏情况期望探测复杂度
 
@@ -417,53 +417,53 @@ $$\(\sum_{j = 1}^{\log\delta^{-1}}cj=\Omega(\log^{2}\delta^{-1})\)$$
 
 #### 定理 5
 
-在任何不重排且达到负载因子 $\(1 - \delta\)$ 的开放地址方案中，最坏情况期望探测复杂度必须为 $\(\Omega(\log\delta^{-1})\)$ 。特别地，存在某个 $\(i\in[m]\)$ ，使得 $\(\mathbb{E}[Y_{i}]=\Omega(\log\delta^{-1})\)$ 。
+在任何不重排且达到负载因子 $1 - \delta$ 的开放地址方案中，最坏情况期望探测复杂度必须为 $\Omega(\log\delta^{-1})$ 。特别地，存在某个 $i\in[m]$ ，使得 $\mathbb{E}[Y_{i}]=\Omega(\log\delta^{-1})$ 。
 
-从高层次上讲，我们想要反转上界算法的思路。与将数组划分为大小呈指数递减的子数组不同，我们证明至少在某种程度上，这样的构造是自然出现的。给定最坏情况期望探测复杂度的上界 $\(c\)$，我们将证明必然存在不相交的槽位组 $\(v_{1},v_{2},\ldots,v_{\Theta(\log\delta^{-1})}\)$，其大小呈指数递减，并且对于每个 $\(i\)$，有 $\(\mathbb{E}[\mathcal{H}_{2c}\cap v_{i}]\geq\Omega(1)\)$ 。这反过来意味着 $\(2c\geq\mathbb{E}[|\mathcal{H}_{2c}|]\geq\Omega(\log\delta^{-1})\)$ 。正如我们将看到的，棘手的部分是以一种保证该性质的方式定义 $\(v_{i}\)$ 。
+从高层次上讲，我们想要反转上界算法的思路。与将数组划分为大小呈指数递减的子数组不同，我们证明至少在某种程度上，这样的构造是自然出现的。给定最坏情况期望探测复杂度的上界 $c$，我们将证明必然存在不相交的槽位组 $v_{1},v_{2},\ldots,v_{\Theta(\log\delta^{-1})}$，其大小呈指数递减，并且对于每个 $i$，有 $\mathbb{E}[\mathcal{H}_{2c}\cap v_{i}]\geq\Omega(1)$ 。这反过来意味着 $2c\geq\mathbb{E}[|\mathcal{H}_{2c}|]\geq\Omega(\log\delta^{-1})$ 。正如我们将看到的，棘手的部分是以一种保证该性质的方式定义 $v_{i}$ 。
 
 ### 证明
 
-令 $\(c\)$ 为对所有 $\(i\)$ 都成立的 $\(E[Y_{i}]\)$ 的任意上界。我们想要证明 $\(c=\Omega(\log\delta^{-1})\)$ 。注意，根据马尔可夫不等式，对于任何 $\(i\in[m]\)$，有 $\(\Pr[Y_{i}\leq 2c]\geq\frac{1}{2}\)$ 。
+令 $c$ 为对所有 $i$ 都成立的 $E[Y_{i}]$ 的任意上界。我们想要证明 $c=\Omega(\log\delta^{-1})$ 。注意，根据马尔可夫不等式，对于任何 $i\in[m]$，有 $\Pr[Y_{i}\leq 2c]\geq\frac{1}{2}$ 。
 
-令\(\alpha=\left\lfloor\frac{\log\delta^{-1}}{3}\right\rfloor\in\Omega(\log\delta^{-1})\)。对于\(i\in[\alpha]\) ，令\(a_{i}=n\left(1-\frac{1}{2^{3i}}\right)\) 。注意\(a_{i}\leq a_{\log\delta^{-1}/3}\leq n\left(1-\frac{1}{2^{3\log\delta^{-1}/3}}\right)=n(1 - \delta)=m\) 。进一步注意\(|S_{a_{i}}| = n - a_{i}=\frac{n}{2^{3i}}\)，因为\(S_{i}\)表示仍未填充的槽位；并且注意\(|S_{a_{i}}|\)的大小，对于\(i = 1,2,\ldots\) ，形成一个公比为\(1/2^{3}=1/8\)的几何序列。由此可知，对于任何\(s_{a_{i}}\leftarrow S_{a_{i}}\)，\(s_{a_{i + 1}}\leftarrow S_{a_{i + 1}},\ldots\) ，\(s_{a_{\alpha}}\leftarrow S_{a_{\alpha}}\) ，即使\(s_{a_{i}}\)之间不兼容（即\(s_{a_{i + 1}}\not\subseteq s_{a_{i}}\)），我们有
-\(\left|s_{a_{i + 1}}\cup s_{a_{i + 2}}\cup\cdots\cup s_{a_{\alpha}}\right|\leq\sum_{j\geq i + 1}|s_{a_{j}}|\leq|s_{a_{i}}|/7\)
-由于\(\Pr[Y_{i}\leq 2c]\geq\frac{1}{2}\) ，对于任何\(t < 2m - n = n(1 - 2\delta)\)，我们有
-\(\mathbb{E}[|\{i:Y_{i}\leq 2c\text{ 且 }t < i\leq m\}|]\geq\frac{m - t}{2}\geq\frac{n - t}{4}=\frac{|S_{t}|}{4}\)
-因此，对于每个\(j\in[\alpha - 1]\) ，存在某个\(s_{a_{j}}\subseteq[n]\)，使得
-\(\displaystyle\mathbb{E}\left[|\{i:Y_{i}\leq 2c\text{ 且 }a_{j}<i\leq m\}|\,\bigg{|}\,S_{a_{j}}=s_{a_{j}}\right]\geq\frac{|s_{a_{j}}|}{4}\)  (10)
-也就是说，我们找到了随机变量\(S_{a_{j}}\)的某个具体实例\(s_{a_{j}}\)，使得在\(S_{a_{j}} = s_{a_{j}}\)的条件下，\(i > a_{j}\)时\(Y_{i}\)的 “小” 值的期望数量至少为总体期望数量。需要注意的是，\(s_{a_{1}},s_{a_{2}},\ldots\) 之间可能存在任意关系；它们作为\(S_{a_{1}},S_{a_{2}},\ldots\) 的值不必相互兼容。也许令人惊讶的是，即便如此，我们仍然能够推断出\(s_{a_{i}}\)之间的关系。特别是，我们将在证明结束时表明，对于每个\(j\)和每次插入，在前\(2c\)次探测中探测到\(s_{a_{j}}\setminus\bigcup_{k > j}s_{a_{k}}\)中位置的期望次数为\(\Omega(1)\)。这将使我们推断出，在期望情况下，探测序列的前\(2c\)个元素至少包含\(\Omega(\log\delta^{-1})\)个不同的值，从而意味着\(c=\Omega(\log\delta^{-1})\) 。
+令$\alpha=\left\lfloor\frac{\log\delta^{-1}}{3}\right\rfloor\in\Omega(\log\delta^{-1})$。对于$i\in[\alpha]$ ，令$a_{i}=n\left(1-\frac{1}{2^{3i}}\right)$ 。注意$a_{i}\leq a_{\log\delta^{-1}/3}\leq n\left(1-\frac{1}{2^{3\log\delta^{-1}/3}}\right)=n(1 - \delta)=m$ 。进一步注意$|S_{a_{i}}| = n - a_{i}=\frac{n}{2^{3i}}$，因为$S_{i}$表示仍未填充的槽位；并且注意$|S_{a_{i}}|$的大小，对于$i = 1,2,\ldots$ ，形成一个公比为$1/2^{3}=1/8$的几何序列。由此可知，对于任何$s_{a_{i}}\leftarrow S_{a_{i}}$，$s_{a_{i + 1}}\leftarrow S_{a_{i + 1}},\ldots$ ，$s_{a_{\alpha}}\leftarrow S_{a_{\alpha}}$ ，即使$s_{a_{i}}$之间不兼容（即$s_{a_{i + 1}}\not\subseteq s_{a_{i}}$），我们有
+$\left|s_{a_{i + 1}}\cup s_{a_{i + 2}}\cup\cdots\cup s_{a_{\alpha}}\right|\leq\sum_{j\geq i + 1}|s_{a_{j}}|\leq|s_{a_{i}}|/7$
+由于$\Pr[Y_{i}\leq 2c]\geq\frac{1}{2}$ ，对于任何$t < 2m - n = n(1 - 2\delta)$，我们有
+$\mathbb{E}[|\{i:Y_{i}\leq 2c\text{ 且 }t < i\leq m\}|]\geq\frac{m - t}{2}\geq\frac{n - t}{4}=\frac{|S_{t}|}{4}$
+因此，对于每个$j\in[\alpha - 1]$ ，存在某个$s_{a_{j}}\subseteq[n]$，使得
+$\displaystyle\mathbb{E}\left[|\{i:Y_{i}\leq 2c\text{ 且 }a_{j}<i\leq m\}|\,\bigg{|}\,S_{a_{j}}=s_{a_{j}}\right]\geq\frac{|s_{a_{j}}|}{4}$  (10)
+也就是说，我们找到了随机变量$S_{a_{j}}$的某个具体实例$s_{a_{j}}$，使得在$S_{a_{j}} = s_{a_{j}}$的条件下，$i > a_{j}$时$Y_{i}$的 “小” 值的期望数量至少为总体期望数量。需要注意的是，$s_{a_{1}},s_{a_{2}},\ldots$ 之间可能存在任意关系；它们作为$S_{a_{1}},S_{a_{2}},\ldots$ 的值不必相互兼容。也许令人惊讶的是，即便如此，我们仍然能够推断出$s_{a_{i}}$之间的关系。特别是，我们将在证明结束时表明，对于每个$j$和每次插入，在前$2c$次探测中探测到$s_{a_{j}}\setminus\bigcup_{k > j}s_{a_{k}}$中位置的期望次数为$\Omega(1)$。这将使我们推断出，在期望情况下，探测序列的前$2c$个元素至少包含$\Omega(\log\delta^{-1})$个不同的值，从而意味着$c=\Omega(\log\delta^{-1})$ 。
 
 令：
 
-$$\(\displaystyle\mathcal{L}_{j}=\{L_{i}:m\geq i > a_{j}\text{ 且 }Y_{i}\leq 2c\}\,\bigg{|}\,S_{a_{j}}=s_{a_{j}}\)$$
+$$\displaystyle\mathcal{L}_{j}=\{L_{i}:m\geq i > a_{j}\text{ 且 }Y_{i}\leq 2c\}\,\bigg{|}\,S_{a_{j}}=s_{a_{j}}$$
 
-为（随机变量）在 $\(i > a_{j}\)$ 且 $\(S_{a_{j}} = s_{a_{j}}\)$ 的条件下，“快速” 插入（即满足 $\(Y_{i}\leq 2c\)$ 的插入）所使用的位置集合。注意，根据(10)，有 $\(\mathbb{E}[|\mathcal{L}_{j}|]\geq\frac{|s_{a_{j}}|}{4}\)$ 。观察到 $\(\mathcal{L}_{i}\subseteq s_{a_{j}}\)$，因为从 $\(s_{a_{j}}\)$ 作为空槽位集合开始填充的所有槽位都必须来自 $\(s_{a_{j}}\)$ 。我们现在将论证，由于 $\(\mathbb{E}[|\mathcal{L}_{j}|]\)$ 如此之大，我们可以保证 $\(\mathbb{E}[|\mathcal{L}_{j}\setminus\bigcup_{k > j}s_{a_{k}}|]\)$ 也很大，即 $\(\Omega(|s_{a_{j}}|)\)$ 。
+为（随机变量）在 $i > a_{j}$ 且 $S_{a_{j}} = s_{a_{j}}$ 的条件下，“快速” 插入（即满足 $Y_{i}\leq 2c$ 的插入）所使用的位置集合。注意，根据(10)，有 $\mathbb{E}[|\mathcal{L}_{j}|]\geq\frac{|s_{a_{j}}|}{4}$ 。观察到 $\mathcal{L}_{i}\subseteq s_{a_{j}}$，因为从 $s_{a_{j}}$ 作为空槽位集合开始填充的所有槽位都必须来自 $s_{a_{j}}$ 。我们现在将论证，由于 $\mathbb{E}[|\mathcal{L}_{j}|]$ 如此之大，我们可以保证 $\mathbb{E}[|\mathcal{L}_{j}\setminus\bigcup_{k > j}s_{a_{k}}|]$ 也很大，即 $\Omega(|s_{a_{j}}|)$ 。
 
 定义：
 
-$$\(\begin{array}{lcl}t_{j}&=&\bigcup_{k > j}s_{a_{k}}\\v_{j}&=&s_{a_{j}}\setminus t_{j}\end{array}\)$$
+$$\begin{array}{lcl}t_{j}&=&\bigcup_{k > j}s_{a_{k}}\\v_{j}&=&s_{a_{j}}\setminus t_{j}\end{array}$$
 
-并注意 $\(v_{j}\)$ 是不相交的：
+并注意 $v_{j}$ 是不相交的：
 
 #### 声明 10
 
-对于所有 $\(j\neq k\)$ ，有 $\(v_{j}\cap v_{k}=\emptyset\)$ 。也就是说，所有 $\(v_{j}\)$ 都是相互不相交的。
+对于所有 $j\neq k$ ，有 $v_{j}\cap v_{k}=\emptyset$ 。也就是说，所有 $v_{j}$ 都是相互不相交的。
 
 #### 证明
 
-不失一般性，假设\(j < k\)。根据\(t_{j}\)的定义，\(s_{a_{k}}\subseteq t_{j}\)。根据\(v_{k}\)的定义，\(v_{k}\subseteq s_{a_{k}}\)。最后，根据\(v_{j}\)的定义，\(v_{j}\cap t_{j}=\emptyset\)。因此，\(v_{j}\cap v_{k}=\emptyset\)。
+不失一般性，假设$j < k$。根据$t_{j}$的定义，$s_{a_{k}}\subseteq t_{j}$。根据$v_{k}$的定义，$v_{k}\subseteq s_{a_{k}}$。最后，根据$v_{j}$的定义，$v_{j}\cap t_{j}=\emptyset$。因此，$v_{j}\cap v_{k}=\emptyset$。
 
-正如我们前面看到的，\(|t_{j}| = |s_{a_{j + 1}}\cup\cdots\cup s_{a_{\alpha}}|\leq|s_{a_{j}}|/7\)。由于\(\mathcal{L}_{i}\subseteq s_{a_{j}}\subseteq v_{j}\cup t_{j}\)，我们有
-\(\displaystyle\frac{\left|s_{a_{j}}\right|}{4}\leq\mathbb{E}\left[\left|\mathcal{L}_{i}\right|\right]=\mathbb{E}\left[\left|\mathcal{L}_{i}\cap v_{j}\right|\right]+\mathbb{E}\left[\left|\mathcal{L}_{i}\cap t_{j}\right|\right]\leq\mathbb{E}\left[\left|\mathcal{L}_{i}\cap v_{j}\right|\right]+\frac{\left|s_{a_{j}}\right|}{7}\)
+正如我们前面看到的，$|t_{j}| = |s_{a_{j + 1}}\cup\cdots\cup s_{a_{\alpha}}|\leq|s_{a_{j}}|/7$。由于$\mathcal{L}_{i}\subseteq s_{a_{j}}\subseteq v_{j}\cup t_{j}$，我们有
+$\displaystyle\frac{\left|s_{a_{j}}\right|}{4}\leq\mathbb{E}\left[\left|\mathcal{L}_{i}\right|\right]=\mathbb{E}\left[\left|\mathcal{L}_{i}\cap v_{j}\right|\right]+\mathbb{E}\left[\left|\mathcal{L}_{i}\cap t_{j}\right|\right]\leq\mathbb{E}\left[\left|\mathcal{L}_{i}\cap v_{j}\right|\right]+\frac{\left|s_{a_{j}}\right|}{7}$
 相减可得
-\(\displaystyle\mathbb{E}\left[\left|\mathcal{L}_{i}\cap v_{j}\right|\right]\geq\frac{\left|s_{a_{j}}\right|}{4}-\frac{\left|s_{a_{j}}\right|}{7}\geq\frac{\left|s_{a_{j}}\right|}{16}\)  (11)
-证明的其余部分的高层次思路如下。我们想要论证\(v_{j}\)是不相交的集合，每个集合都有相当大（即\(\Omega(1)\)）的概率在给定探测序列的前\(2c\)次探测\(\mathcal{H}_{2c}\)中出现一个元素。由此，我们将能够推断出\(c\)在渐近意义上至少与\(v_{j}\)的数量一样大，而\(v_{j}\)的数量为\(\Omega(\log\delta^{-1})\)。
+$\displaystyle\mathbb{E}\left[\left|\mathcal{L}_{i}\cap v_{j}\right|\right]\geq\frac{\left|s_{a_{j}}\right|}{4}-\frac{\left|s_{a_{j}}\right|}{7}\geq\frac{\left|s_{a_{j}}\right|}{16}$  (11)
+证明的其余部分的高层次思路如下。我们想要论证$v_{j}$是不相交的集合，每个集合都有相当大（即$\Omega(1)$）的概率在给定探测序列的前$2c$次探测$\mathcal{H}_{2c}$中出现一个元素。由此，我们将能够推断出$c$在渐近意义上至少与$v_{j}$的数量一样大，而$v_{j}$的数量为$\Omega(\log\delta^{-1})$。
 
 令：
 
-$$\(\begin{array}{lcl}p_{i,j}&=&\Pr[Y_{i}\leq 2c\text{ 且 }L_{i}\in v_{j}]\\q_{j}&=&\Pr[\mathcal{H}_{2c}\cap v_{j}\neq\emptyset]\end{array}\)$$
+$$\begin{array}{lcl}p_{i,j}&=&\Pr[Y_{i}\leq 2c\text{ 且 }L_{i}\in v_{j}]\\q_{j}&=&\Pr[\mathcal{H}_{2c}\cap v_{j}\neq\emptyset]\end{array}$$
 
-我们必然有 $\(p_{i,j}\leq q_{j}\)$ ，因为对于 $\(Y_{i}\leq 2c\)$ 且 $\(L_{i}\in v_{j}\)$，我们必然有至少一个哈希函数在前 2c 次输出中产生了 vj 中的一个索引。因此我们有：
+我们必然有 $p_{i,j}\leq q_{j}$ ，因为对于 $Y_{i}\leq 2c$ 且 $L_{i}\in v_{j}$，我们必然有至少一个哈希函数在前 2c 次输出中产生了 vj 中的一个索引。因此我们有：
 
 $$\frac{|s_{a_{j}}|}{16}\leq\mathbb{E}[|\mathcal{L}_{j}\cap v_{j}|]=\sum_{i = a_{j}+1}^{m}p_{i,j}\leq\sum_{i = a_{j}+1}^{m}q_{j}=q_{j}(m - a_{j})\leq q_{j}(n - a_{j})=q_{j}|s_{a_{j}}|$$
 
@@ -475,13 +475,13 @@ $$\begin{align*}2c&=|\{H_{i}:i\in[2c]\}|\\&=|\{H_{i}:i\in[2c]\}\cap[n]|\\&=\math
 
 ### 5.3 高概率最坏情况探测复杂度
 
-为了证明高概率下边界，我们将使用与上一个证明类似的集合构造。唯一的区别是我们现在对最大探测复杂度有了一个上限。就定理 5 证明中使用的变量而言，这一额外的约束使我们能够得到关于 $\(\mathbb{E}[\mathcal{H}_{2c}\cap v_{j}]\)$ 的更强的界——具体来说，我们对这个量的界将从 $\(\Omega(1)\)$ 增加到 $\(\Omega(\log\delta^{-1})\)$ 。
+为了证明高概率下边界，我们将使用与上一个证明类似的集合构造。唯一的区别是我们现在对最大探测复杂度有了一个上限。就定理 5 证明中使用的变量而言，这一额外的约束使我们能够得到关于 $\mathbb{E}[\mathcal{H}_{2c}\cap v_{j}]$ 的更强的界——具体来说，我们对这个量的界将从 $\Omega(1)$ 增加到 $\Omega(\log\delta^{-1})$ 。
 
-主要思想是，由于我们现在对一次插入可以使用的探测次数有了一个最坏情况的上限 c，我们可以更明确地分析一个特定槽位被探测到的实际概率。正如将展示的，为了使一个槽位以大于 (1 - δ) 的概率被看到（这是填充 (1 - δ) 比例的槽位所必需的），它必须以至少 $\(\Omega(\log\delta^{-1}/n)\)$ 的概率出现在 $\(\mathcal{H}_{c}\)$ 中。将这一点整合到我们的分析中，与定理  的证明相比，我们将能够获得一个额外的 $\(\Omega(\log\delta^{-1})\)$ 因子。
+主要思想是，由于我们现在对一次插入可以使用的探测次数有了一个最坏情况的上限 c，我们可以更明确地分析一个特定槽位被探测到的实际概率。正如将展示的，为了使一个槽位以大于 (1 - δ) 的概率被看到（这是填充 (1 - δ) 比例的槽位所必需的），它必须以至少 $\Omega(\log\delta^{-1}/n)$ 的概率出现在 $\mathcal{H}_{c}$ 中。将这一点整合到我们的分析中，与定理  的证明相比，我们将能够获得一个额外的 $\Omega(\log\delta^{-1})$ 因子。
 
 #### 定理 6
 
-在任何不执行重排的开放地址方案中，概率大于 1/2 时，必然存在某个键，其探测复杂度最终为 $\(\Omega(\log^{2}\delta^{-1})\)$ 。换句话说，对于所有 c∈o $(\log^{2}\delta^{-1})$ ，有：
+在任何不执行重排的开放地址方案中，概率大于 1/2 时，必然存在某个键，其探测复杂度最终为 $\Omega(\log^{2}\delta^{-1})$ 。换句话说，对于所有 c∈o $(\log^{2}\delta^{-1})$ ，有：
 
 $$\Pr\left[Y_{i}\leq c\,\forall i\in[m]\right]\leq\frac{1}{2}$$
 
@@ -511,21 +511,21 @@ $$P[x\in\mathcal{H}_{c}]>\frac{1}{32}\frac{\log\left(\frac{|s_{i}|}{n\delta}\rig
 
 $$s_{i}\setminus\cup_{j>i}\mathcal{H}_{c}(k_{j})$$
 
-的大小至多为 δn。实际上，这些是在插入 ki 之后为空且在剩余插入的（前 c 次探测）中从未被探测到的槽位集合。
+的大小至多为 δn 。实际上，这些是在插入 ki 之后为空且在剩余插入的（前 c 次探测）中从未被探测到的槽位集合。
 
 因此，
 
 $$\displaystyle\Pr\left[\left|s_{i}\cap\left(\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right)\right|>|s_{i}|-\delta n:S_{i}=s_{i}\right]>\frac{1}{2}$$  (13)
 
-注意，对 Si = si 的条件设定是不必要的，因为随机变量\(\mathcal{H}_{c}(k_{j})\)，j > i，与事件 Si = si 是独立的。
+注意，对 Si = si 的条件设定是不必要的，因为随机变量 $\mathcal{H}_{c}(k_{j})$，j > i，与事件 Si = si 是独立的。
 
 令 p=\frac{\log\left(\frac{|s_{i}|}{n\delta}\right)}{|s_{i}|}，令 ti 为所有 x∈si 的集合，使得：
 
 $$\Pr[x\in\mathcal{H}_{c}]\leq\frac{p}{32}$$
 
-我们将通过证明 |ti| < |si|/2 来完成声明的证明。为此，我们将计算ti中预期出现在某个\(H_{c}(k_{j})\)（j > i）中的元素数量：
+我们将通过证明 |ti| < |si|/2 来完成声明的证明。为此，我们将计算ti中预期出现在某个$H_{c}(k_{j})$（j > i）中的元素数量：
 $$\begin{align*}\mathbb{E}\left[\left|t_{i}\cap\left(\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right)\right|\right]&=\sum_{x\in t_{i}}\Pr\left[x\in\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right]\\&=\sum_{x\in t_{i}}1-\left(1-\Pr\left[x\in\mathcal{H}_{c}\right]\right)^{m - i}\text{ (因为 }\mathcal{H}_{c}(k_{j})\text{ 对 }j\text{ 是独立同分布的)}\\&\leq\sum_{x\in t_{i}}1-\left(1-\frac{p}{32}\right)^{|s_{i}|-n\delta}\\&\leq\sum_{x\in t_{i}}1-\left(1-\frac{p}{32}\right)^{|s_{i}|/2}\text{ (因为根据假设 }i < n(1 - 2\delta)\text{)}\\&\leq|t_{i}|-|t_{i}|\left(1-\frac{1}{|s_{i}|}\right)^{\log\left(\frac{|s_{i}|}{n\delta}\right)|s_{i}|/64}\text{ (因为如果 }x,t\geq1\text{，则 }(1 - x/t)\leq(1 - 1/t)^{x}\text{)}\\&<|t_{i}|-|t_{i}|(1/2)^{\log\left(\frac{|s_{i}|}{n\delta}\right)/8}\\&<|t_{i}|-|t_{i}|\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}\end{align*}$$
-根据假设，i < n(1 - 256δ)，所以|si| > n - n(1 - 256δ) = 256nδ。由于|si| > 256nδ，我们有\(\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}<\left(\frac{1}{256}\right)^{1/8}=\frac{1}{2}\)。因此我们有：
+根据假设，i < n(1 - 256δ)，所以|si| > n - n(1 - 256δ) = 256nδ。由于|si| > 256nδ，我们有$\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}<\left(\frac{1}{256}\right)^{1/8}=\frac{1}{2}$。因此我们有：
 
 $$|t_{i}|-|t_{i}|\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}<\frac{|t_{i}|}{2}$$
 
@@ -551,7 +551,7 @@ $$\left|v_{i}\right|\geq\frac{\left|s_{a_{i}}\right|}{2}-\frac{3\left|s_{a_{i}}\
 
 $$|s_{a_{i}}|\geq n\left(\frac{1}{4}\right)^{\log\delta^{-1}/4}=n\left(\frac{1}{2}\right)^{\log\delta^{-1}/2}=n\sqrt{\delta}$$
 
-我们现在通过展开每个 vi 的定义来获得对 $|\(\mathcal{H}_{c}\)|≤c$ 的下界。特别地，在不失一般性地假设 $\(\log\delta^{-1}/4>256\)$ 的情况下，我们有：
+我们现在通过展开每个 vi 的定义来获得对 $|$\mathcal{H}_{c}$|≤c$ 的下界。特别地，在不失一般性地假设 $\log\delta^{-1}/4>256$ 的情况下，我们有：
 
 $$\begin{align*}c&\geq\mathbb{E}[|\mathcal{H}_{c}|]\\&\geq\sum_{i = 1}^{\log\delta^{-1}/4}\mathbb{E}[|\mathcal{H}_{c}\cap v_{i}|]\\&=\sum_{i = 1}^{\log\delta^{-1}/4}\sum_{x\in v_{i}}\mathbb{E}[|\{x\}\cap\mathcal{H}_{c}|]\\&=\sum_{i = 1}^{\log\delta^{-1}/4}\sum_{x\in v_{i}}\Pr[x\in\mathcal{H}_{c}]\\&\geq\sum_{i = 1}^{\log\delta^{-1}/4}\sum_{x\in v_{i}}\frac{1}{32}\frac{\log\left(\frac{|s_{a_{i}}|}{n\delta}\right)}{|s_{a_{i}}|}\\&=\frac{1}{32}\sum_{i = 1}^{\log\delta^{-1}/4}|v_{i}|\frac{\log\left(\frac{|s_{a_{i}}|}{n\delta}\right)}{|s_{a_{i}}|}\\&\geq\frac{1}{32}\sum_{i = 1}^{\log\delta^{-1}/4}\frac{|s_{a_{i}}|}{8}\frac{\log\left(\frac{n\sqrt{\delta}}{n\delta}\right)}{|s_{a_{i}}|}\\&=\frac{1}{32}\sum_{i = 1}^{\log\delta^{-1}/4}\frac{\log\delta^{-1}}{16}\\&=\frac{1}{32}\cdot\frac{1}{16}\cdot\frac{1}{4}\log^{2}\delta^{-1}=\Omega(\log^{2}\delta^{-1})\end{align*}$$
 
@@ -561,19 +561,19 @@ $$\begin{align*}c&\geq\mathbb{E}[|\mathcal{H}_{c}|]\\&\geq\sum_{i = 1}^{\log\del
 
 #### 定理 7
 
-在任何不支持重排的开放地址方案中，在假设 $(1 - δ)=\Omega(1)$ 的情况下，概率大于 1/2 时，必然存在某个键，其探测复杂度最终为 $\(\Omega(\log\log n+\log^{2}\delta^{-1})\)$ 。
+在任何不支持重排的开放地址方案中，在假设 $(1 - δ)=\Omega(1)$ 的情况下，概率大于 1/2 时，必然存在某个键，其探测复杂度最终为 $\Omega(\log\log n+\log^{2}\delta^{-1})$ 。
 
 ### 证明
 
-我们只需要证明存在某个键的探测复杂度为 $\(\Omega(\log\log n)\)$，因为我们已经在定理6中证明了存在某个键的探测复杂度为 \(\Omega(\log^{2}\delta^{-1})\) 。我们的证明模仿了[3]中定理5.2的证明，而[3]中的证明主要基于[20]中的以下定理：
+我们只需要证明存在某个键的探测复杂度为 $\Omega(\log\log n)$，因为我们已经在定理6中证明了存在某个键的探测复杂度为 $\Omega(\log^{2}\delta^{-1})$ 。我们的证明模仿了[3]中定理5.2的证明，而[3]中的证明主要基于[20]中的以下定理：
 
 #### 定理 8（[20]中的定理2）
 
-假设 $m$ 个球通过任意机制依次放入 $m$ 个箱子中，唯一的限制是每个球根据 $[m]d$ 上的某个任意分布在 $d$ 个箱子中进行选择。那么在这个过程结束时，最满的箱子中以高概率有 $\(\Omega(\log\log n/d)\)$ 个球。
+假设 $m$ 个球通过任意机制依次放入 $m$ 个箱子中，唯一的限制是每个球根据 $[m]d$ 上的某个任意分布在 $d$ 个箱子中进行选择。那么在这个过程结束时，最满的箱子中以高概率有 $\Omega(\log\log n/d)$ 个球。
 
 现在，假设我们有某种任意的不执行重排的开放地址方案，其中概率大于 1/2 时，所有键的探测复杂度至多为 d。我们将我们的哈希表方案修改为一个球和箱子的过程，使得每次选择最多 d 个箱子，具体如下。
 
-假设键 $ki$ 被插入到位置 $li = hj(ki)$ 。如果 $j≤d$，则将球 i 放入箱子 $hj(ki) mod m$ 中。否则，将球 i 放入箱子 hd(ki) mod m 中，通过这种方式确保该方案每次选择最多 d 个箱子；可能的选择集合是：$\(\{H_{j}(k_{i})\text{ mod }m:j\leq d\}\)$，其大小（最多）为 d。这个过程还确保了最满的箱子中球的数量很可能很少：
+假设键 $ki$ 被插入到位置 $li = hj(ki)$ 。如果 $j≤d$，则将球 i 放入箱子 $hj(ki) mod m$ 中。否则，将球 i 放入箱子 hd(ki) mod m 中，通过这种方式确保该方案每次选择最多 d 个箱子；可能的选择集合是：$\{H_{j}(k_{i})\text{ mod }m:j\leq d\}$，其大小（最多）为 d。这个过程还确保了最满的箱子中球的数量很可能很少：
 
 #### 引理 12
 
@@ -581,11 +581,11 @@ $$\begin{align*}c&\geq\mathbb{E}[|\mathcal{H}_{c}|]\\&\geq\sum_{i = 1}^{\log\del
 
 ### 证明
 
-假设球 i 落入箱子 Bi 中。那么落入第 j 个箱子的球的索引集为 \(\{i:B_{i}=j\}\)。
+假设球 i 落入箱子 Bi 中。那么落入第 j 个箱子的球的索引集为 $\{i:B_{i}=j\}$。
 
-现在，假设对于所有 i∈[m]，$Bi = Li mod m$，并且注意到这种情况发生的概率大于 1/2。由于每个槽位只能存储一个键，对于任何 $i≠j$，$Li≠Lj$ 。因此，$\(\{i:B_{i}=j\}\subseteq\{i\in[n]:i\text{ mod }m = j\}\)$ 。由于 (1 - δ)=\Omega(1)，我们有 m=\Omega(n)，即 n = O(m)。因此，对于所有 i∈[m]，$|\{i\in[n]:i\text{ mod }m = j\}| = O(1)$，并且最满的箱子中最多有 $O(1)$ 个球，证毕。
+现在，假设对于所有 i∈[m]，$Bi = Li mod m$，并且注意到这种情况发生的概率大于 1/2。由于每个槽位只能存储一个键，对于任何 $i≠j$，$Li≠Lj$ 。因此，$\{i:B_{i}=j\}\subseteq\{i\in[n]:i\text{ mod }m = j\}$ 。由于 (1 - δ)=\Omega(1)，我们有 m=\Omega(n)，即 n = O(m)。因此，对于所有 i∈[m]，$|\{i\in[n]:i\text{ mod }m = j\}| = O(1)$，并且最满的箱子中最多有 $O(1)$ 个球，证毕。
 
-根据定理8，在这个过程结束时，最满的箱子中以高概率有 $\(\Omega(\log\log n/d)\)$ 个球。如果 $d = o(\log\log n)$，那么最满的箱子中以高概率有 $\(\omega(1)\)$ 个球，这与引理 12 矛盾。因此，$d=\Omega(\log\log n)$，正如我们所期望的。
+根据定理8，在这个过程结束时，最满的箱子中以高概率有 $\Omega(\log\log n/d)$ 个球。如果 $d = o(\log\log n)$，那么最满的箱子中以高概率有 $\omega(1)$ 个球，这与引理 12 矛盾。因此，$d=\Omega(\log\log n)$，正如我们所期望的。
 
 ## 6. 致谢和资金支持
 
@@ -596,47 +596,86 @@ $$\begin{align*}c&\geq\mathbb{E}[|\mathcal{H}_{c}|]\\&\geq\sum_{i = 1}^{\log\del
 ## 参考文献
 
 [1] Miklós Ajtai, János Komlós, and Endre Szemerédi. There is no fast single hashing algorithm. Information Processing Letters, 7(6):270–273, 1978.
+
 [2] Michael A Bender, Alex Conway, Martín Farach - Colton, William Kuszmaul, and Guido Tagliavini. Iceberg hashing: Optimizing many hash - table criteria at once. Journal of the ACM, 70(6):1–51, 2023.
+
 [3] Michael A. Bender, Alex Conway, Martín Farach - Colton, William Kuszmaul, and Guido Tagliavini. Tiny Pointers, pages 477–508. 2023. doi:10.1137/1.9781611977554.ch21.
+
 [4] Michael A. Bender, Martin Farach - Colton, Simai He, Bradley C. Kuszmaul, and Charles E. Leiserson. Adversarial contention resolution for simple channels. In SPAA, pages 325–332. ACM, 2005.
+
 [5] Petra Berenbrink, Artur Czumaj, Angelika Steger, and Berthold Vöcking. Balanced allocations: the heavily loaded case. In Proceedings of the Thirty - Second Annual ACM Symposium on Theory of Computing, STOC ’00, page 745–754. Association for Computing Machinery, 2000. doi:10.1145/335305.335411.
+
 [6] Richard P Brent. Reducing the retrieval time of scatter storage techniques. Communications of the ACM, 16(2):105–109, 1973.
+
 [7] Andrei Z Broder and Anna R Karlin. Multilevel adaptive hashing. In Proceedings of the first annual ACM - SIAM symposium on Discrete algorithms, pages 43–53, 1990.
+
 [8] Walter A Burkhard. External double hashing with choice. In 8th International Symposium on Parallel Architectures, Algorithms and Networks (ISPAN’05), pages 8–pp. IEEE, 2005.
+
 [9] Dimitris Fotakis, Rasmus Pagh, Peter Sanders, and Paul Spirakis. Space efficient hash tables with worst case constant access time. Theory of Computing Systems, 38(2):229–248, 2005.
+
 [10] Gaston H Gonnet and J Ian Munro. Efficient ordering of hash tables. SIAM Journal on Computing, 8(3):463–478, 1979.
+
 [11] Donald E Knuth. Notes on “open” addressing. Unpublished memorandum, pages 11–97, 1963.
+
 [12] Donald E Knuth. Computer science and its relation to mathematics. The American Mathematical Monthly, 81(4):323–343, 1974.
+
 [13] Donald Ervin Knuth. The Art of Computer Programming, Volume III: Sorting and Searching. Addison - Wesley, 2nd edition, 1998. URL: https://www.worldcat.org/oclc/312994415.
+
 [14] George Lueker and Mariko Molodowitch. More analysis of double hashing. In Proceedings of the twentieth annual ACM symposium on Theory of computing, pages 354–359, 1988.
+
 [15] Paul M Martini and Walter A Burkhard. Double hashing with multiple passbits. International Journal of Foundations of Computer Science, 14(06):1165–1182, 2003.
+
 [16] Mariko Molodowitch. Analysis and design of algorithms: double hashing and parallel graph searching. University of California, Irvine, 1990.
+
 [17] J Ian Munro and Pedro Celis. Techniques for collision resolution in hash tables with open addressing. In Proceedings of 1986 ACM Fall joint computer conference, pages 601–610, 1986.
+
 [18] Peter Sanders. Hashing with linear probing and referential integrity. arXiv preprint arXiv:1808.04602, 2018.
+
 [19] Jeffrey D Ullman. A note on the efficiency of hashing functions. Journal of the ACM (JACM), 19(3):569–575, 1972.
+
 [20] Berthold Vöcking. How asymmetry helps load balancing. Journal of the ACM (JACM), 50(4):568–589, 2003.
+
 [21] Andrew C Yao. Uniform hashing is optimal. Journal of the ACM (JACM), 32(3):687–693, 1985.
 
 **中文**
 
 [1] Miklós Ajtai、János Komlós和Endre Szemerédi。没有快速的单一哈希算法。信息处理快报，7（6）：270–2731978。
+
 [2] 迈克尔·A·本德、亚历克斯·康威、马丁·法拉赫·科尔顿、威廉·库兹马尔和吉多·塔利阿维尼。冰山哈希：同时优化多个哈希表标准。ACM杂志，70（6）：1-512023。
+
 [3] 迈克尔·A·本德、亚历克斯·康威、马丁·法拉赫·科尔顿、威廉·库兹马尔和吉多·达格利阿维尼。《小指针》，第477-508页。2023年。电话：10.1137/1.9781611977554.ch21。
+
 [4] 迈克尔·A·本德、马丁·法拉赫·科尔顿、何思迈、布拉德利·C·库兹马尔和查尔斯·E·莱瑟森。简单信道的对抗性争用解决方案。SPAA，第325-332页。ACM，2005年。
+
 [5] 佩特拉·贝伦布林克（Petra Berenbrink）、阿图尔·楚马伊（Artur Czumaj）、安杰利卡·斯特格（Angelika Steger）和贝特霍尔德·弗金（Berthold Vöcking）。《平衡分配：高负载情况》。收录于《第三十二届ACM计算理论年会论文集》（Proceedings of the Thirty - Second Annual ACM Symposium on Theory of Computing），2000年，第745 - 754页。美国计算机协会（Association for Computing Machinery）。doi:10.1145/335305.335411。
+
 [6] 理查德·P·布伦特（Richard P Brent）。《降低散列存储技术的检索时间》。《ACM通讯》（Communications of the ACM），1973年，第16卷，第2期，第105 - 109页。
+
 [7] 安德烈·Z·布罗德（Andrei Z Broder）和安娜·R·卡林（Anna R Karlin）。《多级自适应哈希》。收录于《第一届ACM - SIAM离散算法年会论文集》（Proceedings of the first annual ACM - SIAM symposium on Discrete algorithms），1990年，第43 - 53页。
+
 [8] 沃尔特·A·伯克哈德（Walter A Burkhard）。《带选择的外部双重哈希》。收录于《第八届并行架构、算法和网络国际研讨会论文集》（8th International Symposium on Parallel Architectures, Algorithms and Networks (ISPAN’05)），2005年，第8页起。IEEE。
+
 [9] 迪米特里斯·福塔基斯（Dimitris Fotakis）、拉斯穆斯·帕格（Rasmus Pagh）、彼得·桑德斯（Peter Sanders）和保罗·斯皮拉基斯（Paul Spirakis）。《具有最坏情况常数访问时间的高效空间哈希表》。《计算系统理论》（Theory of Computing Systems），2005年，第38卷，第2期，第229 - 248页。
 [10] 加斯顿·H·贡内（Gaston H Gonnet）和J·伊恩·蒙罗（J Ian Munro）。《哈希表的高效排序》。《SIAM计算杂志》（SIAM Journal on Computing），1979年，第8卷，第3期，第463 - 478页。
+
 [11] 唐纳德·E·克努特（Donald E Knuth）。《关于“开放”寻址的笔记》。未发表的备忘录，1963年，第11 - 97页。
+
 [12] 唐纳德·E·克努特（Donald E Knuth）。《计算机科学及其与数学的关系》。《美国数学月刊》（The American Mathematical Monthly），1974年，第81卷，第4期，第323 - 343页。
+
 [13] 唐纳德·欧文·克努特（Donald Ervin Knuth）。《计算机程序设计艺术 第三卷：排序与搜索》（The Art of Computer Programming, Volume III: Sorting and Searching）。艾迪生 - 韦斯利（Addison - Wesley），第二版，1998年。网址：https://www.worldcat.org/oclc/312994415。
+
 [14] 乔治·勒克（George Lueker）和真理子·莫洛多维奇（Mariko Molodowitch）。《双重哈希的更多分析》。收录于《第二十届ACM计算理论年会论文集》（Proceedings of the twentieth annual ACM symposium on Theory of computing），1988年，第354 - 359页。
+
 [15] 保罗·M·马蒂尼（Paul M Martini）和沃尔特·A·伯克哈德（Walter A Burkhard）。《带多个传递位的双重哈希》。《国际计算机科学基础杂志》（International Journal of Foundations of Computer Science），2003年，第14卷，第06期，第1165 - 1182页。
+
 [16] 真理子·莫洛多维奇（Mariko Molodowitch）。《算法分析与设计：双重哈希和并行图搜索》。加利福尼亚大学欧文分校，1990年。
+
 [17] J·伊恩·蒙罗（J Ian Munro）和佩德罗·塞利斯（Pedro Celis）。《开放寻址哈希表中的冲突解决技术》。收录于《1986年ACM秋季联合计算机会议论文集》（Proceedings of 1986 ACM Fall joint computer conference），1986年，第601 - 610页。
+
 [18] 彼得·桑德斯（Peter Sanders）。《带线性探测和引用完整性的哈希》。arXiv预印本arXiv:1808.04602，2018年。
+
 [19] 杰弗里·D·厄尔曼（Jeffrey D Ullman）。《关于哈希函数效率的一则笔记》。《ACM杂志》（Journal of the ACM (JACM)），1972年，第19卷，第3期，第569 - 575页。
+
 [20] 贝特霍尔德·弗金（Berthold Vöcking）。《不对称性如何有助于负载均衡》。《ACM杂志》（Journal of the ACM (JACM)），2003年，第50卷，第4期，第568 - 589页。
+
 [21] 安德鲁·C·姚（Andrew C Yao）。《均匀哈希是最优的》。《ACM杂志》（Journal of the ACM (JACM)），1985年，第32卷，第3期，第687 - 693页。
