@@ -505,7 +505,7 @@ $$\Pr\left[Y_{i}\leq c\,\forall i\in[m]\right]\leq\frac{1}{2}$$
 
 $$\displaystyle\Pr[Y_{i}\leq c\,\forall i\in[m]]>\frac{1}{2}\quad\quad(12)$$
 
-因此，对于每个 $i∈{0, 1, …, m}$，必然存在某个 $si⊆[n]$，其大小为 $(n - i)$，使得：
+因此，对于每个 $i∈{0, 1, …, m}$，必然存在某个 $s_{i}⊆[n]$，其大小为 $(n - i)$，使得：
 
 $$\Pr\left[Y_{i}\leq c\,\forall i\in[m]\,\bigg{|}\,S_{i}=s_{i}\right]>\frac{1}{2}$$
 
@@ -513,7 +513,7 @@ $$\Pr\left[Y_{i}\leq c\,\forall i\in[m]\,\bigg{|}\,S_{i}=s_{i}\right]>\frac{1}{2
 
 #### 声明 11
 
-对于任何 $i < n(1 - 256δ)$，必然存在某个集合 $ri⊆si⊆[n]$，其大小 $|ri| > (n - i)/2 = |si|/2$ ，使得对于任何 $x∈r_{i}$，有：
+对于任何 $i < n(1 - 256δ)$，必然存在某个集合 $r_{i}⊆s_{i}⊆[n]$，其大小 $|r_{i}| > (n - i)/2 = |s_{i}|/2$ ，使得对于任何 $x∈r_{i}$，有：
 
 $$P[x\in\mathcal{H}_{c}]>\frac{1}{32}\frac{\log\left(\frac{|s_{i}|}{n\delta}\right)}{|s_{i}|}$$
 
@@ -527,9 +527,9 @@ $$s_{i}\setminus\cup_{j>i}\mathcal{H}_{c}(k_{j})$$
 
 因此，
 
-$$\displaystyle\Pr\left[\left|s_{i}\cap\left(\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right)\right|>|s_{i}|-\delta n:S_{i}=s_{i}\right]>\frac{1}{2}$$  (13)
+$$\displaystyle\Pr\left[\left|s_{i}\cap\left(\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right)\right|>|s_{i}|-\delta n:S_{i}=s_{i}\right]>\frac{1}{2}\quad\quad(13)$$
 
-注意，对 $S_{i} = s_{i}$ 的条件设定是不必要的，因为随机变量 $\mathcal{H}_{c}(k_{j})$，$j > i$，与事件 $Si = si$ 是独立的。
+注意，对 $S_{i} = s_{i}$ 的条件设定是不必要的，因为随机变量 $\mathcal{H}_{c}(k_{j})$，$j > i$，与事件 $S_{i} = s_{i}$ 是独立的。
 
 令 $p=\frac{\log\left(\frac{|s_{i}|}{n\delta}\right)}{|s_{i}|}$ ，令 $t_{i}$ 为所有 $x∈s_{i}$ 的集合，使得：
 
@@ -539,7 +539,7 @@ $$\Pr[x\in\mathcal{H}_{c}]\leq\frac{p}{32}$$
 
 $$\begin{align*}\mathbb{E}\left[\left|t_{i}\cap\left(\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right)\right|\right]&=\sum_{x\in t_{i}}\Pr\left[x\in\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right]\\&=\sum_{x\in t_{i}}1-\left(1-\Pr\left[x\in\mathcal{H}_{c}\right]\right)^{m - i}\text{ (因为 }\mathcal{H}_{c}(k_{j})\text{ 对 }j\text{ 是独立同分布的)}\\&\leq\sum_{x\in t_{i}}1-\left(1-\frac{p}{32}\right)^{|s_{i}|-n\delta}\\&\leq\sum_{x\in t_{i}}1-\left(1-\frac{p}{32}\right)^{|s_{i}|/2}\text{ (因为根据假设 }i < n(1 - 2\delta)\text{)}\\&\leq|t_{i}|-|t_{i}|\left(1-\frac{1}{|s_{i}|}\right)^{\log\left(\frac{|s_{i}|}{n\delta}\right)|s_{i}|/64}\text{ (因为如果 }x, t\geq1\text{，则 }(1 - x/t)\leq(1 - 1/t)^{x}\text{)}\\&<|t_{i}|-|t_{i}|(1/2)^{\log\left(\frac{|s_{i}|}{n\delta}\right)/8}\\&<|t_{i}|-|t_{i}|\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}\end{align*}$$
 
-根据假设，$i < n(1 - 256δ)$，所以 $|si| > n - n(1 - 256δ) = 256nδ$。由于 $|si| > 256nδ$，我们有 $\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}<\left(\frac{1}{256}\right)^{1/8}=\frac{1}{2}$ 。因此我们有：
+根据假设，$i < n(1 - 256δ)$，所以 $|s_{i}| > n - n(1 - 256δ) = 256nδ$。由于 $|s_{i}| > 256nδ$，我们有 $\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}<\left(\frac{1}{256}\right)^{1/8}=\frac{1}{2}$ 。因此我们有：
 
 $$|t_{i}|-|t_{i}|\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}<\frac{|t_{i}|}{2}$$
 
@@ -547,9 +547,9 @@ $$|t_{i}|-|t_{i}|\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}<\frac{|t_{i}|}{2}$$
 
 $$\mathbb{E}\left[\left|t_{i}\cap\left(\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right)\right|\right]\geq|t_{i}|-n\delta$$
 
-否则，超过 $nδ$ 个槽位将永远不会成为任何哈希函数输出的一部分，因此在最后必然是未填充的。由此可知 $|ti| < 2nδ < |si|/2$，证毕。
+否则，超过 $nδ$ 个槽位将永远不会成为任何哈希函数输出的一部分，因此在最后必然是未填充的。由此可知 $|t_{i}| < 2nδ < |s_{i}|/2$，证毕。
 
-令 $ai = n(1 - 1/4i)$ ，对于 $i∈[\log\delta^{-1}/4]$ 。观察到，对于任何 $i∈[\log\delta^{-1}/4]$ ，有：
+令 $a_{i} = n(1 - 1/4i)$ ，对于 $i∈[\log\delta^{-1}/4]$ 。观察到，对于任何 $i∈[\log\delta^{-1}/4]$ ，有：
 
 $$\left|\bigcup_{j=i + 1}^{\log\delta^{-1}/4}s_{a_{j}}\right|\leq\sum_{j = 1}^{\log\delta^{-1}/4 - i}\frac{\left|s_{a_{i}}\right|}{4^{j}}\leq\frac{|s_{a_{i}}|}{3}\leq\frac{3|s_{a_{i}}|}{8}$$
 
@@ -561,11 +561,11 @@ $$v_{i}=r_{a_{i}}\setminus\left(\bigcup_{j=i + 1}^{\log\delta^{-1}/4}s_{a_{j}}\r
 
 $$\left|v_{i}\right|\geq\frac{\left|s_{a_{i}}\right|}{2}-\frac{3\left|s_{a_{i}}\right|}{8}=\frac{\left|s_{a_{i}}\right|}{8}$$
 
-注意，对于所有 $i≠j$，$vi∩vj = ∅$，其证明与上一小节的声明 10 类似。此外，注意到：
+注意，对于所有 $i≠j$，$v_{i}∩v_{j} = ∅$，其证明与上一小节的声明 10 类似。此外，注意到：
 
 $$|s_{a_{i}}|\geq n\left(\frac{1}{4}\right)^{\log\delta^{-1}/4}=n\left(\frac{1}{2}\right)^{\log\delta^{-1}/2}=n\sqrt{\delta}$$
 
-我们现在通过展开每个 $vi$ 的定义来获得对 $|\mathcal{H}_{c}|≤c$ 的下边界。特别地，在不失一般性地假设 $\log\delta^{-1}/4>256$ 的情况下，我们有：
+我们现在通过展开每个 $v_{i}$ 的定义来获得对 $|\mathcal{H}_{c}|≤c$ 的下边界。特别地，在不失一般性地假设 $\log\delta^{-1}/4>256$ 的情况下，我们有：
 
 $$\begin{align*}c&\geq\mathbb{E}[|\mathcal{H}_{c}|]\\&\geq\sum_{i = 1}^{\log\delta^{-1}/4}\mathbb{E}[|\mathcal{H}_{c}\cap v_{i}|]\\&=\sum_{i = 1}^{\log\delta^{-1}/4}\sum_{x\in v_{i}}\mathbb{E}[|\{x\}\cap\mathcal{H}_{c}|]\\&=\sum_{i = 1}^{\log\delta^{-1}/4}\sum_{x\in v_{i}}\Pr[x\in\mathcal{H}_{c}]\\&\geq\sum_{i = 1}^{\log\delta^{-1}/4}\sum_{x\in v_{i}}\frac{1}{32}\frac{\log\left(\frac{|s_{a_{i}}|}{n\delta}\right)}{|s_{a_{i}}|}\\&=\frac{1}{32}\sum_{i = 1}^{\log\delta^{-1}/4}|v_{i}|\frac{\log\left(\frac{|s_{a_{i}}|}{n\delta}\right)}{|s_{a_{i}}|}\\&\geq\frac{1}{32}\sum_{i = 1}^{\log\delta^{-1}/4}\frac{|s_{a_{i}}|}{8}\frac{\log\left(\frac{n\sqrt{\delta}}{n\delta}\right)}{|s_{a_{i}}|}\\&=\frac{1}{32}\sum_{i = 1}^{\log\delta^{-1}/4}\frac{\log\delta^{-1}}{16}\\&=\frac{1}{32}\cdot\frac{1}{16}\cdot\frac{1}{4}\log^{2}\delta^{-1}=\Omega(\log^{2}\delta^{-1})\end{align*}$$
 
