@@ -475,11 +475,11 @@ $$\displaystyle\mathbb{E}\left[\left|\mathcal{L}_{i}\cap v_{j}\right|\right]\geq
 
 $$\begin{array}{lcl}p_{i,j}&=&\Pr[Y_{i}\leq 2c\text{ 且 }L_{i}\in v_{j}]\\q_{j}&=&\Pr[\mathcal{H}_{2c}\cap v_{j}\neq\emptyset]\end{array}$$
 
-我们必然有 $p_{i,j}\leq q_{j}$ ，因为对于 $Y_{i}\leq 2c$ 且 $L_{i}\in v_{j}$，我们必然有至少一个哈希函数在前 $2c$ 次输出中产生了 $vj$ 中的一个索引。因此我们有：
+我们必然有 $p_{i,j}\leq q_{j}$ ，因为对于 $Y_{i}\leq 2c$ 且 $L_{i}\in v_{j}$，我们必然有至少一个哈希函数在前 $2c$ 次输出中产生了 $v_{j}$ 中的一个索引。因此我们有：
 
 $$\frac{|s_{a_{j}}|}{16}\leq\mathbb{E}[|\mathcal{L}_{j}\cap v_{j}|]=\sum_{i = a_{j}+1}^{m}p_{i,j}\leq\sum_{i = a_{j}+1}^{m}q_{j}=q_{j}(m - a_{j})\leq q_{j}(n - a_{j})=q_{j}|s_{a_{j}}|$$
 
-由此我们得出，对于所有 $j∈[α - 1]$，$qj≥1/16$ 。因此，
+由此我们得出，对于所有 $j∈[α - 1]$，$q_{j}≥1/16$ 。因此，
 
 $$\begin{align*}2c&=|\{H_{i}:i\in[2c]\}|\\&=|\{H_{i}:i\in[2c]\}\cap[n]|\\&=\mathbb{E}[|\{H_{i}:i\in[2c]\}\cap[n]|]\\&\geq\sum_{j = 1}^{\alpha - 1}\mathbb{E}[|\{H_{i}:i\in[2c]\}\cap v_{j}|]\\&\geq\sum_{j = 1}^{\alpha - 1}q_{j}\\&\geq\frac{1}{16}(\alpha - 1)=\Omega(\log\delta^{-1})\end{align*}$$
 
@@ -513,7 +513,7 @@ $$\Pr\left[Y_{i}\leq c\,\forall i\in[m]\,\bigg{|}\,S_{i}=s_{i}\right]>\frac{1}{2
 
 #### 声明 11
 
-对于任何 $i < n(1 - 256δ)$，必然存在某个集合 $ri⊆si⊆[n]$，其大小 $|ri| > (n - i)/2 = |si|/2$ ，使得对于任何 $x∈ri$，有：
+对于任何 $i < n(1 - 256δ)$，必然存在某个集合 $ri⊆si⊆[n]$，其大小 $|ri| > (n - i)/2 = |si|/2$ ，使得对于任何 $x∈r_{i}$，有：
 
 $$P[x\in\mathcal{H}_{c}]>\frac{1}{32}\frac{\log\left(\frac{|s_{i}|}{n\delta}\right)}{|s_{i}|}$$
 
@@ -523,21 +523,21 @@ $$P[x\in\mathcal{H}_{c}]>\frac{1}{32}\frac{\log\left(\frac{|s_{i}|}{n\delta}\rig
 
 $$s_{i}\setminus\cup_{j>i}\mathcal{H}_{c}(k_{j})$$
 
-的大小至多为 $δn$ 。实际上，这些是在插入 $ki$ 之后为空且在剩余插入的（前 $c$ 次探测）中从未被探测到的槽位集合。
+的大小至多为 $δn$ 。实际上，这些是在插入 $k_{i}$ 之后为空且在剩余插入的（前 $c$ 次探测）中从未被探测到的槽位集合。
 
 因此，
 
 $$\displaystyle\Pr\left[\left|s_{i}\cap\left(\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right)\right|>|s_{i}|-\delta n:S_{i}=s_{i}\right]>\frac{1}{2}$$  (13)
 
-注意，对 $Si = si$ 的条件设定是不必要的，因为随机变量 $\mathcal{H}_{c}(k_{j})$，$j > i$，与事件 $Si = si$ 是独立的。
+注意，对 $S_{i} = s_{i}$ 的条件设定是不必要的，因为随机变量 $\mathcal{H}_{c}(k_{j})$，$j > i$，与事件 $Si = si$ 是独立的。
 
-令 $p=\frac{\log\left(\frac{|s_{i}|}{n\delta}\right)}{|s_{i}|}$ ，令 $ti$ 为所有 $x∈si$ 的集合，使得：
+令 $p=\frac{\log\left(\frac{|s_{i}|}{n\delta}\right)}{|s_{i}|}$ ，令 $t_{i}$ 为所有 $x∈s_{i}$ 的集合，使得：
 
 $$\Pr[x\in\mathcal{H}_{c}]\leq\frac{p}{32}$$
 
-我们将通过证明 $|ti| < |si|/2$ 来完成声明的证明。为此，我们将计算 $ti$ 中预期出现在某个 $H_{c}(k_{j})$（$j > i$）中的元素数量：
+我们将通过证明 $|t_{i}| < |s_{i}|/2$ 来完成声明的证明。为此，我们将计算 $t_{i}$ 中预期出现在某个 $H_{c}(k_{j})$（$j > i$）中的元素数量：
 
-$$\begin{align*}\mathbb{E}\left[\left|t_{i}\cap\left(\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right)\right|\right]&=\sum_{x\in t_{i}}\Pr\left[x\in\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right]\\&=\sum_{x\in t_{i}}1-\left(1-\Pr\left[x\in\mathcal{H}_{c}\right]\right)^{m - i}\text{ (因为 }\mathcal{H}_{c}(k_{j})\text{ 对 }j\text{ 是独立同分布的)}\\&\leq\sum_{x\in t_{i}}1-\left(1-\frac{p}{32}\right)^{|s_{i}|-n\delta}\\&\leq\sum_{x\in t_{i}}1-\left(1-\frac{p}{32}\right)^{|s_{i}|/2}\text{ (因为根据假设 }i < n(1 - 2\delta)\text{)}\\&\leq|t_{i}|-|t_{i}|\left(1-\frac{1}{|s_{i}|}\right)^{\log\left(\frac{|s_{i}|}{n\delta}\right)|s_{i}|/64}\text{ (因为如果 }x,t\geq1\text{，则 }(1 - x/t)\leq(1 - 1/t)^{x}\text{)}\\&<|t_{i}|-|t_{i}|(1/2)^{\log\left(\frac{|s_{i}|}{n\delta}\right)/8}\\&<|t_{i}|-|t_{i}|\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}\end{align*}$$
+$$\begin{align*}\mathbb{E}\left[\left|t_{i}\cap\left(\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right)\right|\right]&=\sum_{x\in t_{i}}\Pr\left[x\in\bigcup_{j=i + 1}^{m}\mathcal{H}_{c}(k_{j})\right]\\&=\sum_{x\in t_{i}}1-\left(1-\Pr\left[x\in\mathcal{H}_{c}\right]\right)^{m - i}\text{ (因为 }\mathcal{H}_{c}(k_{j})\text{ 对 }j\text{ 是独立同分布的)}\\&\leq\sum_{x\in t_{i}}1-\left(1-\frac{p}{32}\right)^{|s_{i}|-n\delta}\\&\leq\sum_{x\in t_{i}}1-\left(1-\frac{p}{32}\right)^{|s_{i}|/2}\text{ (因为根据假设 }i < n(1 - 2\delta)\text{)}\\&\leq|t_{i}|-|t_{i}|\left(1-\frac{1}{|s_{i}|}\right)^{\log\left(\frac{|s_{i}|}{n\delta}\right)|s_{i}|/64}\text{ (因为如果 }x, t\geq1\text{，则 }(1 - x/t)\leq(1 - 1/t)^{x}\text{)}\\&<|t_{i}|-|t_{i}|(1/2)^{\log\left(\frac{|s_{i}|}{n\delta}\right)/8}\\&<|t_{i}|-|t_{i}|\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}\end{align*}$$
 
 根据假设，$i < n(1 - 256δ)$，所以 $|si| > n - n(1 - 256δ) = 256nδ$。由于 $|si| > 256nδ$，我们有 $\left(\frac{n\delta}{|s_{i}|}\right)^{1/8}<\left(\frac{1}{256}\right)^{1/8}=\frac{1}{2}$ 。因此我们有：
 
@@ -585,7 +585,7 @@ $$\begin{align*}c&\geq\mathbb{E}[|\mathcal{H}_{c}|]\\&\geq\sum_{i = 1}^{\log\del
 
 假设 $m$ 个球通过任意机制依次放入 $m$ 个箱子中，唯一的限制是每个球根据 $[m]d$ 上的某个任意分布在 $d$ 个箱子中进行选择。那么在这个过程结束时，最满的箱子中以高概率有 $\Omega(\log\log n/d)$ 个球。
 
-现在，假设我们有某种任意的不执行重排的开放地址方案，其中概率大于 1/2 时，所有键的探测复杂度至多为 d。我们将我们的哈希表方案修改为一个球和箱子的过程，使得每次选择最多 d 个箱子，具体如下。
+现在，假设我们有某种任意的不执行重排的开放地址方案，其中概率大于 1/2 时，所有键的探测复杂度至多为 $d$ 。我们将我们的哈希表方案修改为一个球和箱子的过程，使得每次选择最多 $d$ 个箱子，具体如下。
 
 假设键 $k_{i}$ 被插入到位置 $l_{i} = h_{j}(k_{i})$ 。如果 $j≤d$，则将球 $i$ 放入箱子 $h_{j}(k_{i})\text{ mod }m$ 中。否则，将球 $i$ 放入箱子 $h_{d}(k_{i})\text{ mod }m$ 中，通过这种方式确保该方案每次选择最多 $d$ 个箱子；可能的选择集合是：$\{H_{j}(k_{i})\text{ mod }m:j\leq d\}$，其大小（最多）为 $d$ 。这个过程还确保了最满的箱子中球的数量很可能很少。
 
@@ -597,7 +597,7 @@ $$\begin{align*}c&\geq\mathbb{E}[|\mathcal{H}_{c}|]\\&\geq\sum_{i = 1}^{\log\del
 
 假设球 $i$ 落入箱子 $B_{i}$ 中。那么落入第 $j$ 个箱子的球的索引集为 $\{i:B_{i}=j\}$。
 
-现在，假设对于所有 $i∈[m]$，$B_{i} = L_{i}\text{ mod }m$，并且注意到这种情况发生的概率大于 1/2。由于每个槽位只能存储一个键，对于任何 $i≠j$，$L_{i}≠L_{j}$ 。因此，$\{i:B_{i}=j\}\subseteq\{i\in[n]:i\text{ mod }m = j\}$ 。由于 (1 - δ)=\Omega(1)，我们有 m=\Omega(n)，即 n = O(m)。因此，对于所有 i∈[m]，$|\{i\in[n]:i\text{ mod }m = j\}| = O(1)$，并且最满的箱子中最多有 $O(1)$ 个球，证毕。
+现在，假设对于所有 $i∈[m]$，$B_{i} = L_{i}\text{ mod }m$，并且注意到这种情况发生的概率大于 1/2。由于每个槽位只能存储一个键，对于任何 $i≠j$，$L_{i}≠L_{j}$ 。因此，$\{i:B_{i}=j\}\subseteq\{i\in[n]:i\text{ mod }m = j\}$ 。由于 $(1 - δ)=\Omega(1)$ ，我们有 $m=\Omega(n)$，即 $n = O(m)$。因此，对于所有 $i∈[m]$，$|\{i\in[n]:i\text{ mod }m = j\}| = O(1)$，并且最满的箱子中最多有 $O(1)$ 个球，证毕。
 
 根据定理 8，在这个过程结束时，最满的箱子中以高概率有 $\Omega(\log\log n/d)$ 个球。如果 $d = o(\log\log n)$，那么最满的箱子中以高概率有 $\omega(1)$ 个球，这与引理 12 矛盾。因此，$d=\Omega(\log\log n)$，正如我们所期望的。
 
