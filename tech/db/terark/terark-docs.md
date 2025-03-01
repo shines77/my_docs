@@ -6,7 +6,7 @@
 
     `Terark 奇简软件` 是提供高压缩存储和高性能检索技术的公司。
 
-    成立于2015年11月，获得Launch Hill与道合资本的投资。
+    成立于 2015 年 11 月，获得 Launch Hill 与道合资本的投资。
 
     Terark 已拥有自主发明的可检索压缩 SeComp 技术、索引技术、手机检索技术等六项国内、国际专利。陆续发布了应用于云、数据库、手机等领域的 Terark 存储引擎、数据库、多正则匹配引擎、移动端检索引擎产品。其中，TerarkDB 产品性能已经超越 Facebook、Google、Berkeley 等同类产品，能够为大数据应用降低至少 50% 成本的同时提高 10 倍性能。Terark 为移动端提供超高性能检索框架，提高移动端本地检索效率 20 倍以上。Terark移动端使用人工智能技术对图像进行深度的理解，可以搜素图像中的文字(OCR)和人物等，开启下一个搜索时代。
 
@@ -27,7 +27,7 @@
 
 1. [全局压缩--革命性的数据库技术](http://nark.cc/p/?p=1720) From `nark.cc`
 
-    作者: rockeet，发表日期: 2017年03月08日
+    作者：rockeet，发表日期: 2017年03月08日
 
 2. [TerarkDB - 我们发布了一款划时代的存储引擎](https://zhuanlan.zhihu.com/p/21493877) From `zhihu.com`
 
@@ -49,7 +49,7 @@
 
     作者：whinah (雷鹏)，2016-05-31
 
-    TerarkDB 是一个拥有极高性能和数据压缩率的存储引擎。使用方法类似Facebook的RocksDB，不过比 RocksDB 具有更多功能，下面是 TerarkDB 的功能特性：
+    TerarkDB 是一个拥有极高性能和数据压缩率的存储引擎。使用方法类似 Facebook 的 RocksDB，不过比 RocksDB 具有更多功能，下面是 TerarkDB 的功能特性：
 
     高压缩率，通常是 snappy 的 2～5 倍 实时免解压直接检索数据 Query 延迟很低并且很稳定，同一 Table 可包含多个索引，支持联合索引，支持范围搜索 原生支持正则表达式检索 支持嵌入进程，或者 Server-Client 模式 数据持久化 支持 Schema，包含丰富的数据类型 列存储以及行存储，支持 Column Group。
 
@@ -72,3 +72,9 @@
     - Terark 的可检索压缩（Searchable Compression）
 
         Terark 公司提出了“可检索压缩（Searchable Compression）”的概念，其核心也是直接在压缩的数据上执行搜索（search）和访问（extract），但数据模型本身就是 Key-Value 模型。
+
+6. [数据库压缩技术探索](https://www.51cto.com/article/542294.html)
+
+    作者：雷鹏，2017-06-12
+
+    内容基本跟上文一样，但更详细。
