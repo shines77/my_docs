@@ -66,29 +66,30 @@
 │   │   ├── [PyTorch](./tech/AI/PyTorch)<br/>
 │   │   ├── [QNN: 高通 AI Engine SDK](./tech/AI/QNN)<br/>
 │   │   └── [TensorFlow](./tech/AI/TensorFlow)<br/>
-│   ├── android<br/>
+│   ├── [android: 安卓模拟器](./tech/android)<br/>
 │   ├── [asm: 汇编](./tech/asm)<br/>
 │   │   ├── [SIMD](./tech/asm/SIMD)<br/>
 │   │   └── [yasm](./tech/asm/yasm)<br/>
 │   ├── audio<br/>
 │   ├── [bigdata: 大数据](./tech/bigdata)<br/>
 │   ├── [compiler: 编译器](./tech/compiler)<br/>
-│   ├── cpp<br/>
-│   ├── cpu<br/>
+│   ├── [compress: 压缩算法](./tech/compress)<br/>
+│   ├── [cpp: C++](./tech/cpp)<br/>
+│   ├── [cpu: 关于 CPU](./tech/cpu)<br/>
 │   ├── db<br/>
 │   │   └── [terark: 索引压缩db](./tech/db/terark)<br/>
 │   ├── [distributed: 分布式](./tech/distributed)<br/>
-│   ├── eda<br/>
+│   ├── [eda: EDA（电子设计自动化）](./tech/eda)<br/>
 │   ├── [hash: 哈希表](./tech/hash)<br/>
-│   ├── http<br/>
-│   ├── kv<br/>
+│   ├── [http: HTTP相关](./tech/http)<br/>
+│   ├── [kv: 关于KV的DB](./tech/kv)<br/>
 │   ├── misc<br/>
-│   ├── nosql<br/>
+│   ├── [nosql](./tech/nosql)<br/>
 │   ├── [Quant: 量化交易](./tech/Quant)<br/>
 │   ├── rust<br/>
 │   ├── [string-match: 字符串匹配](./tech/string-match])<br/>
-│   ├── sudoku<br/>
-│   ├── thread<br/>
+│   ├── [sudoku: 数独](./tech/sudoku)<br/>
+│   ├── [thread: 多线程](./tech/thread)<br/>
 │   ├── url<br/>
 │   ├── [video](./tech/video)<br/>
 │   │   └── [ffmpeg: 音视频处理](./tech/video/ffmpeg)<br/>

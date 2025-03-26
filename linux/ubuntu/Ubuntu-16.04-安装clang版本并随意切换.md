@@ -80,10 +80,10 @@ sudo apt-get install clang-18
 # 安装默认版本的 libc++
 sudo apt-get install clang llvm libc++-dev libc++abi-dev
 
-# 安装 clang 12.0 版本的 libc++
+# 安装 clang 12.0 及对应的 libc++
 sudo apt-get install clang-12 llvm-12 libc++-12-dev libc++abi-12-dev
 
-# 安装 clang 18.0 版本的 libc++
+# 安装 clang 18.0 及对应的 libc++
 sudo apt-get install clang-18 llvm-18 libc++-18-dev libc++abi-18-dev
 ```
 
