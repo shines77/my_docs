@@ -23,12 +23,13 @@
 
 ---
 
-## lzma 文件格式
+## LZMA 文件格式
 
-lzma 文件包含原始的 LZMA 数据流以及相关的属性头。
+LZMA 文件包含原始的 LZMA 数据流以及相关的属性头。
+
 此类文件使用 ".lzma" 扩展名。
 
-### lzma 文件格式布局：
+### LZMA 文件格式布局
 
 | 偏移量 | 大小 | 描述 |
 |--------|------|------|
@@ -37,7 +38,7 @@ lzma 文件包含原始的 LZMA 数据流以及相关的属性头。
 | 5      | 8    | 未压缩数据大小（64 位无符号整数，小端序） |
 | 13     |      | 压缩数据（LZMA 流） |
 
-### LZMA 属性：
+### LZMA 属性
 
 | 名称      | 范围           | 描述 |
 |-----------|----------------|------|
@@ -82,6 +83,7 @@ void DecodeProperties(const Byte *properties) {
 ```
 
 如果 "未压缩大小" 字段的所有 64 位均为 1，则表示未压缩大小未知，并且数据流中存在 "结束标记"，用于指示解码结束点。
+
 反之，如果 "未压缩大小" 字段的值不等于 `(2^64 - 1)`，则必须在解码指定数量的字节（未压缩大小）后完成 LZMA 流的解码。如果存在 "结束标记"，LZMA 解码器也必须读取该标记。
 
 ---
@@ -92,8 +94,13 @@ void DecodeProperties(const Byte *properties) {
 
 LZMA2 中的字典大小仅用一个字节编码，并且 LZMA2 仅支持一组简化的字典大小：
 
-`(2 << 11)`、`(3 << 11)`、`(2 << 12)`、`(3 << 12)`、...、
-`(2 << 30)`、`(3 << 30)`、`(2 << 31) - 1`
+```
+`(2 << 11)`、`(3 << 11)`、
+`(2 << 12)`、`(3 << 12)`、
+...、
+`(2 << 30)`、`(3 << 30)`、
+`(2 << 31) - 1`
+```
 
 可以通过以下代码从编码值中提取字典大小：
 
@@ -180,47 +187,244 @@ LZMA 压缩算法使用基于 LZ 的滑动窗口压缩和范围编码作为熵�
 
 ### 滑动窗口
 
-LZMA 使用类似于 LZ77 算法的滑动窗口压缩。
+LZMA 采用与 LZ77 算法类似的滑动窗口技术。
 
-LZMA 流必须解码为以下序列：
+LZMA 数据流需要被解码为由以下两种元素组成的序列：
 
-- **字面量（LITERAL）**：8 位字符（1 字节），解码器将其放入未压缩流中。
-- **匹配（MATCH）**：一对数字（距离-长度对），解码器从滑动窗口中复制指定距离和长度的字节序列。
+- **字面量（LITERAL）**：8 bit 字符（1 个字节）。解码器只需将该字面量放入解压后的数据流中。
 
-### 范围解码器
+- **匹配（MATCH）**：由两个数字组成的对（距离-长度对）。解码器从滑动窗口中复制指定距离和长度的字节序列。
 
-LZMA 算法使用范围编码作为熵编码方法。
+**距离值限制**：
 
-LZMA 流包含一个大端编码的大数字，范围解码器用于从该数字中提取二进制符号序列。
+- 距离值不能超过字典大小
+- 距离值不能超过该匹配之前已解码的字节数
 
-范围解码器的状态包括：
+在本规范中，我们使用循环缓冲区来实现 LZMA 解码器的滑动窗口：
+
+```cpp
+class COutWindow
+{
+  Byte *Buf;          // 缓冲区指针
+  UInt32 Pos;         // 当前位置
+  UInt32 Size;        // 缓冲区大小
+  bool IsFull;        // 缓冲区是否已满
+
+public:
+  unsigned TotalPos;    // 总位置计数
+  COutStream OutStream; // 输出流
+
+  COutWindow(): Buf(NULL) {}
+  ~COutWindow() { delete []Buf; }
+
+  // 创建指定大小的滑动窗口
+  void Create(UInt32 dictSize)
+  {
+    Buf = new Byte[dictSize];
+    Pos = 0;
+    Size = dictSize;
+    IsFull = false;
+    TotalPos = 0;
+  }
+
+  // 向窗口放入一个字节
+  void PutByte(Byte b)
+  {
+    TotalPos++;
+    Buf[Pos++] = b;
+    if (Pos == Size)  // 到达缓冲区末尾时循环
+    {
+      Pos = 0;
+      IsFull = true;
+    }
+    OutStream.WriteByte(b); // 同时写入输出流
+  }
+
+  // 获取相对当前位置dist距离处的字节
+  Byte GetByte(UInt32 dist) const
+  {
+    return Buf[dist <= Pos ? Pos - dist : Size - dist + Pos];
+  }
+
+  // 复制匹配内容
+  void CopyMatch(UInt32 dist, unsigned len)
+  {
+    for (; len > 0; len--)
+      PutByte(GetByte(dist));
+  }
+
+  // 检查距离是否有效
+  bool CheckDistance(UInt32 dist) const
+  {
+    return dist <= Pos || IsFull;
+  }
+
+  // 检查窗口是否为空
+  bool IsEmpty() const
+  {
+    return Pos == 0 && !IsFull;
+  }
+};
+```
+
+其他实现方式也可以使用单个缓冲区来同时包含滑动窗口和整个解压后的数据流。
+
+### Range Decoder
+
+LZMA 算法使用范围编码（Range Encode）作为其熵编码方法，范围编码有点类似于算术编码。
+
+LZMA 数据流本质上是一个采用大端编码的极大整数。LZMA 解码器通过范围解码器从这个大整数中提取二进制符号序列。
+
+#### Range Decoder 状态结构
 
 - `Range` 和 `Code` 变量（32 位无符号整数）。
 - `Corrupted` 标志，用于检测数据流中的损坏。
 
-范围解码器首先从输入流中读取 5 个字节以初始化状态：
-
 ```cpp
-bool CRangeDecoder::Init() {
-  Corrupted = false;
-  Range = 0xFFFFFFFF;
-  Code = 0;
-  Byte b = InStream->ReadByte();
-  for (int i = 0; i < 4; i++)
-    Code = (Code << 8) | InStream->ReadByte();
-  if (b != 0 || Code == Range)
-    Corrupted = true;
-  return b == 0;
+struct CRangeDecoder
+{
+  UInt32 Range;          // 当前范围值
+  UInt32 Code;           // 当前编码值
+  InputStream *InStream; // 输入流指针
+  bool Corrupted;        // 数据损坏标志
 }
 ```
 
-LZMA 编码器始终在压缩流的初始字节中写入零。如果初始字节不为零，LZMA 解码器必须停止解码并报告错误。
+#### 关于 Range 和 Code 变量的说明
+
+1. 可以使用 64 位（有符号或无符号）整数类型替代 32 位无符号整数来存储 Range 和 Code 变量，但需要在某些操作后截取低 32 位值。
+
+2. 若编程语言不支持 32 位无符号整数（如 Java），可改用 32 位有符号整数，但需要修改相关比较操作的代码实现。
+
+#### 数据损坏检测
+
+范围解码器通过 Corrupted 标志位标识数据流异常：
+
+- `Corrupted == false`：未检测到数据损坏
+- `Corrupted == true`：检测到数据损坏
+
+注：标准 LZMA 解码器会忽略 Corrupted 标志，即使检测到损坏仍会继续解码。为保证与标准解码器的输出兼容，其他实现也应遵循此行为。LZMA 编码器必须确保生成的压缩流不会导致解码器设置 Corrupted 标志。
+
+#### 初始化过程
+
+范围解码器通过读取输入流的前 5 个字节进行初始化：
+
+```cpp
+bool CRangeDecoder::Init()
+{
+  Corrupted = false;
+  Range = 0xFFFFFFFF;  // 初始范围设为最大值
+  Code = 0;            // 初始编码值清零
+
+  Byte b = InStream->ReadByte();  // 读取首字节
+
+  // 读取后续 4 个字节构建 Code 值
+  for (int i = 0; i < 4; i++)
+    Code = (Code << 8) | InStream->ReadByte();
+
+  // 校验首字节必须为 0 且 Code 不等于 Range
+  if (b != 0 || Code == Range)
+    Corrupted = true;
+
+  return b == 0;  // 返回首字节是否为0的校验结果
+}
+```
+
+特别说明：
+
+1. LZMA 编码器始终将压缩流的首字节中写入零，这种设计简化了编码器的范围编码实现。
+2. 若解码器检测到首字节不为零，必须立即终止解码并报错。
+
+#### 终止检测与规范化处理
+
+当范围解码器完成最后一位数据的解码后，"Code" 变量的值必须等于 0。LZMA 解码器需要通过调用 IsFinishedOK() 函数进行验证：
+
+```cpp
+bool IsFinishedOK() const { return Code == 0; }
+```
+
+#### 数据完整性校验
+
+若数据流存在损坏，在 Finish() 函数中 "Code" 值极可能不为 0。因此 IsFinishedOK() 函数的这项检查为数据损坏检测提供了重要保障。
+
+#### 范围值规范化
+
+每次位解码前，"Range" 变量的值不得小于 ((UInt32)1 << 24)。Normalize() 函数确保 "Range" 值维持在该范围内：
+
+```cpp
+#define kTopValue ((UInt32)1 << 24)
+
+void CRangeDecoder::Normalize()
+{
+  if (Range < kTopValue)  // 当范围值低于阈值时
+  {
+    Range <<= 8;          // 范围值左移 8 位
+    Code = (Code << 8) | InStream->ReadByte();  // 同步更新编码值
+  }
+}
+```
+
+重要说明：
+
+1. 若 "Code" 变量位宽超过 32 位，在 Normalize() 函数操作后需仅保留低 32 位值。
+
+2. 对于完好的 LZMA 流，"Code" 值始终小于 "Range" 值。
+
+3. 由于范围解码器会忽略某些类型的数据损坏，在部分损坏的压缩包中可能出现 "Code" 值大于或等于 "Range" 值的情况。
+
+该机制通过动态调整解码范围来保证解码精度，同时利用终态校验为数据完整性提供了有效验证手段。规范化操作通过字节级再填充确保了解码过程的数值稳定性。
+
+#### 二进制符号处理
+
+LZMA 算法仅使用两种类型的二进制符号进行范围编码：
+
+1. **固定概率**（direct bits）：具有固定和相等概率的二进制符号。
+2. **动态预测概率**：动态预测二进制符号的概率。
+
+#### Direct bits 解码函数
+
+DecodeDirectBits() 函数用于解码 direct bits 序列：
+
+```cpp
+UInt32 CRangeDecoder::DecodeDirectBits(unsigned numBits)
+{
+  UInt32 res = 0; // 初始化结果变量
+  do {
+    Range >>= 1;   // 范围值减半
+    Code -= Range; // 调整编码值
+
+    // 计算符号位（Code 的符号位取反）
+    UInt32 t = 0 - ((UInt32)Code >> 31);
+    Code += Range & t; // 条件恢复 Code 值
+
+    // 异常检测：当 Code 等于 Range 时标记数据损坏
+    if (Code == Range)
+      Corrupted = true;
+
+    Normalize();  // 执行范围规范化
+    res <<= 1;    // 结果左移腾出新位
+    res += t + 1; // 存储解码得到的位值
+  } while (--numBits); // 循环处理指定位数
+
+  return res;
+}
+```
+
+该函数通过迭代方式解码指定位数的 direct bits：
+
+1. 每次迭代处理 1 个二进制位；
+2. 采用算术运算动态调整 Range 和 Code 值；
+3. 自动检测 Code == Range 的异常情况；
+4. 通过 Normalize() 维持解码精度；
+5. 最终返回拼接好的位序列。
+
+注：t 变量的巧妙运用实现了符号位的快速判断与条件补偿，这是范围解码器的核心操作之一。
 
 ### 位解码与概率模型
 
 LZMA 使用两种类型的二进制符号进行范围编码：
 
-1) 具有固定和相等概率的直接位。
+1) 具有固定和相等概率的 direct bits 。
 2) 具有预测概率的二进制符号。
 
 概率模型的任务是估计二进制符号的概率，并将该信息提供给范围解码器。概率值以 11 位无符号整数的形式表示符号 "0" 的概率。
