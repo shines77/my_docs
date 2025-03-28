@@ -12,7 +12,10 @@ Notation
 --------
 
 We use the syntax of C++ programming language.
+
 We use the following types in C++ code:
+
+```
   unsigned - unsigned integer, at least 16 bits in size
   int      - signed integer, at least 16 bits in size
   UInt64   - 64-bit unsigned integer
@@ -20,7 +23,7 @@ We use the following types in C++ code:
   UInt16   - 16-bit unsigned integer
   Byte     - 8-bit unsigned integer
   bool     - boolean type with two possible values: false, true
-
+```
 
 lzma file format
 ================
@@ -33,32 +36,40 @@ The lzma file format layout:
 
 Offset Size Description
 
+```
   0     1   LZMA model properties (lc, lp, pb) in encoded form
   1     4   Dictionary size (32-bit unsigned integer, little-endian)
   5     8   Uncompressed size (64-bit unsigned integer, little-endian)
  13         Compressed data (LZMA stream)
+```
 
 LZMA properties:
 
+```
     name  Range          Description
 
       lc  [0, 8]         the number of "literal context" bits
       lp  [0, 4]         the number of "literal pos" bits
       pb  [0, 4]         the number of "pos" bits
 dictSize  [0, 2^32 - 1]  the dictionary size
+```
 
 The following code encodes LZMA properties:
 
+```cpp
 void EncodeProperties(Byte *properties)
 {
   properties[0] = (Byte)((pb * 5 + lp) * 9 + lc);
   Set_UInt32_LittleEndian(properties + 1, dictSize);
 }
+```
 
 If the value of dictionary size in properties is smaller than (1 << 12),
+
 the LZMA decoder must set the dictionary size variable to (1 << 12).
 
-#define LZMA_DIC_MIN (1 << 12)
+```cpp
+  #define LZMA_DIC_MIN (1 << 12)
 
   unsigned lc, pb, lp;
   UInt32 dictSize;
@@ -80,15 +91,16 @@ the LZMA decoder must set the dictionary size variable to (1 << 12).
     if (dictSize < LZMA_DIC_MIN)
       dictSize = LZMA_DIC_MIN;
   }
+```
 
 If "Uncompressed size" field contains ones in all 64 bits, it means that
 uncompressed size is unknown and there is the "end marker" in stream,
 that indicates the end of decoding point.
+
 In opposite case, if the value from "Uncompressed size" field is not
 equal to ((2^64) - 1), the LZMA stream decoding must be finished after
 specified number of bytes (Uncompressed size) is decoded. And if there
 is the "end marker", the LZMA decoder must read that marker also.
-
 
 The new scheme to encode LZMA properties
 ----------------------------------------
@@ -96,6 +108,7 @@ The new scheme to encode LZMA properties
 If LZMA compression is used for some another format, it's recommended to
 use a new improved scheme to encode LZMA properties. That new scheme was
 used in xz format that uses the LZMA2 compression algorithm.
+
 The LZMA2 is a new compression algorithm that is based on the LZMA algorithm.
 
 The dictionary size in LZMA2 is encoded with just one byte and LZMA2 supports
@@ -111,17 +124,17 @@ only reduced set of dictionary sizes:
 
 The dictionary size can be extracted from encoded value with the following code:
 
-  ```c
+```c
   dictSize = (p == 40) ? 0xFFFFFFFF : (((UInt32)2 | ((p) & 1)) << ((p) / 2 + 11));
-  ```
+```
 
 Also there is additional limitation (lc + lp <= 4) in LZMA2 for values of
 "lc" and "lp" properties:
 
-  ```c
+```c
   if (lc + lp > 4)
     throw "Unsupported properties: (lc + lp) > 4";
-  ```
+```
 
 There are some advantages for LZMA decoder with such (lc + lp) value
 limitation. It reduces the maximum size of tables allocated by decoder.
@@ -135,10 +148,12 @@ compression ratio only in some rare cases.
 
 The LZMA properties can be encoded into two bytes in new scheme:
 
+```
 Offset Size Description
 
   0     1   The dictionary size encoded with LZMA2 scheme
   1     1   LZMA model properties (lc, lp, pb) in encoded form
+```
 
 The RAM usage
 =============
@@ -185,29 +200,29 @@ If we use 16-bit integer variables (2-byte integers) for these probability
 model counters, the RAM usage required by probability model counter arrays
 can be estimated with the following formula:
 
-  ```c
+```c
   RAM = 4 KiB + 1.5 KiB * (1 << (lp + lc))
-  ```
+```
 
 For example, for default LZMA parameters (lp = 0 and lc = 3), the RAM usage is
 
-  ```c
+```c
   RAM_lc3_lp0 = 4 KiB + 1.5 KiB * 8 = 16 KiB
-  ```
+```
 
 The maximum RAM state usage is required for decoding the stream with lp = 4
 and lc = 8:
 
-  ```c
+```c
   RAM_lc8_lp4 = 4 KiB + 1.5 KiB * 4096 = 6148 KiB
-  ```
+```
 
 If the decoder uses LZMA2's limited property condition
 (lc + lp <= 4), the RAM usage will be not larger than
 
-  ```c
+```c
   RAM_lc_lp_4 = 4 KiB + 1.5 KiB * 16 = 28 KiB
-  ```
+```
 
 The RAM usage for encoder
 -------------------------
@@ -220,9 +235,9 @@ smaller than memory consumption of LZMA Decoder for same stream.
 The RAM usage required by modern effective implementation of
 LZMA Encoder can be estimated with the following formula:
 
-  ```c
+```c
   Encoder_RAM_Usage = 4 MiB + 11 * dictionarySize.
-  ```
+```
 
 But there are some modes of the encoder that require less memory.
 
@@ -317,13 +332,13 @@ public:
 In another implementation it's possible to use one buffer that contains
 Sliding Window and the whole data stream after uncompressing.
 
-
 Range Decoder
 -------------
 
 LZMA algorithm uses Range Encoding (1) as entropy coding method.
 
 LZMA stream contains just one very big number in big-endian encoding.
+
 LZMA decoder uses the Range Decoder to extract a sequence of binary
 symbols from that big number.
 
@@ -355,8 +370,9 @@ The notes about UInt32 type for the "Range" and "Code" variables:
 The Range Decoder can be in some states that can be treated as
 "Corruption" in LZMA stream. The Range Decoder uses the variable "Corrupted":
 
-  (Corrupted == false), if the Range Decoder has not detected any corruption.
-  (Corrupted == true), if the Range Decoder has detected some corruption.
+  - (Corrupted == false), if the Range Decoder has not detected any corruption.
+
+  - (Corrupted == true), if the Range Decoder has detected some corruption.
 
 The reference LZMA Decoder ignores the value of the "Corrupted" variable.
 So it continues to decode the stream, even if the corruption can be detected
@@ -367,8 +383,7 @@ ignore the value of the "Corrupted" variable.
 The LZMA Encoder is required to create only such LZMA streams, that will not
 lead the Range Decoder to states, where the "Corrupted" variable is set to true.
 
-The Range Decoder reads first 5 bytes from input stream to initialize
-the state:
+The Range Decoder reads first 5 bytes from input stream to initialize the state:
 
 ```cpp
 bool CRangeDecoder::Init()
@@ -397,9 +412,9 @@ After the last bit of data was decoded by Range Decoder, the value of the
 "Code" variable must be equal to 0. The LZMA Decoder must check it by
 calling the IsFinishedOK() function:
 
-  ```cpp
+```cpp
   bool IsFinishedOK() const { return Code == 0; }
-  ```
+```
 
 If there is corruption in data stream, there is big probability that
 the "Code" value will be not equal to 0 in the Finish() function. So that
@@ -469,6 +484,7 @@ The Bit Decoding with Probability Model
 The task of Bit Probability Model is to estimate probabilities of binary
 symbols. And then it provides the Range Decoder with that information.
 The better prediction provides better compression ratio.
+
 The Bit Probability Model uses statistical data of previous decoded
 symbols.
 
@@ -506,10 +522,12 @@ The INIT_PROBS macro is used to initialize the array of CProb variables:
 ```
 
 The DecodeBit() function decodes one bit.
+
 The LZMA decoder provides the pointer to CProb variable that contains
 information about estimated probability for symbol 0 and the Range Decoder
-updates that CProb variable after decoding. The Range Decoder increases
-estimated probability of the symbol that was decoded:
+updates that CProb variable after decoding.
+
+The Range Decoder increases estimated probability of the symbol that was decoded:
 
 ```cpp
 #define kNumMoveBits 5
@@ -541,16 +559,19 @@ unsigned CRangeDecoder::DecodeBit(CProb *prob)
 The Binary Tree of bit model counters
 -------------------------------------
 
-LZMA uses a tree of Bit model variables to decode symbol that needs
-several bits for storing. There are two versions of such trees in LZMA:
+LZMA uses a tree of Bit model variables to decode symbol that needs several bits for storing.
+
+There are two versions of such trees in LZMA:
 
   1) the tree that decodes bits from high bit to low bit (the normal scheme).
   2) the tree that decodes bits from low bit to high bit (the reverse scheme).
 
 Each binary tree structure supports different size of decoded symbol
 (the size of binary sequence that contains value of symbol).
+
 If that size of decoded symbol is "NumBits" bits, the tree structure
 uses the array of (2 << NumBits) counters of CProb type.
+
 But only ((2 << NumBits) - 1) items are used by encoder and decoder.
 The first item (the item with index equal to 0) in array is unused.
 That scheme with unused array's item allows to simplify the code.
@@ -608,7 +629,7 @@ The Literal Decoding
 The LZMA Decoder uses (1 << (lc + lp)) tables with CProb values, where
 each table contains 0x300 CProb values:
 
-  ```cpp
+```cpp
   CProb *LitProbs;
 
   void CreateLiterals()
@@ -622,7 +643,7 @@ each table contains 0x300 CProb values:
     for (UInt32 i = 0; i < num; i++)
       LitProbs[i] = PROB_INIT_VAL;
   }
-  ```
+```
 
 To select the table for decoding it uses the context that consists of
 (lc) high bits from previous literal and (lp) low bits from value that
@@ -635,7 +656,7 @@ of latest decoded match.
 
 The following code decodes one literal and puts it to Sliding Window buffer:
 
-  ```cpp
+```cpp
   void DecodeLiteral(unsigned state, UInt32 rep0)
   {
     unsigned prevByte = 0;
@@ -664,7 +685,7 @@ The following code decodes one literal and puts it to Sliding Window buffer:
       symbol = (symbol << 1) | RangeDec.DecodeBit(&probs[symbol]);
     OutWindow.PutByte((Byte)(symbol - 0x100));
   }
-  ```
+```
 
 The match length decoding
 -------------------------
@@ -685,15 +706,18 @@ from 2 to 273.
 
 The following scheme is used for the match length encoding:
 
+```
   Binary encoding    Binary Tree structure    Zero-based match length
   sequence                                    (binary + decimal):
 
   0 xxx              LowCoder[posState]       xxx
   1 0 yyy            MidCoder[posState]       yyy + 8
   1 1 zzzzzzzz       HighCoder                zzzzzzzz + 16
+```
 
 LZMA uses bit model variable "Choice" to decode the first selection bit.
 
+```
 If the first selection bit is equal to 0, the decoder uses binary tree
   LowCoder[posState] to decode 3-bit zero-based match length (xxx).
 
@@ -707,13 +731,14 @@ If the first selection bit is equal to 1, the decoder uses bit model
   If the second selection bit is equal to 1, the decoder uses binary tree
     HighCoder to decode 8-bit "zzzzzzzz" value, and zero-based
     match length is equal to (zzzzzzzz + 16).
+```
 
 LZMA uses "posState" value as context to select the binary tree
 from LowCoder and MidCoder binary tree arrays:
 
-    ```cpp
+```cpp
     unsigned posState = OutWindow.TotalPos & ((1 << pb) - 1);
-    ```
+```
 
 The full code of the length decoder:
 
@@ -752,18 +777,20 @@ public:
 ```
 
 The LZMA decoder uses two instances of CLenDecoder class.
+
 The first instance is for the matches of "Simple Match" type,
 and the second instance is for the matches of "Rep Match" type:
 
-  ```cpp
+```cpp
   CLenDecoder LenDecoder;
   CLenDecoder RepLenDecoder;
-  ```
+```
 
 The match distance decoding
 ---------------------------
 
 LZMA supports dictionary sizes up to 4 GiB minus 1.
+
 The value of match distance (decoded by distance decoder) can be
 from 1 to 2^32. But the distance value that is equal to 2^32 is used to
 indicate the "End of stream" marker. So real largest match distance
@@ -781,16 +808,17 @@ to calculate the context state "lenState" do decode the distance value:
 ```
 
 The distance decoder returns the "dist" value that is zero-based value
-of match distance. The real match distance can be calculated with the
-following code:
+of match distance.
 
-  ```cpp
+The real match distance can be calculated with the following code:
+
+```cpp
   matchDistance = dist + 1;
-  ```
+```
 
 The state of the distance decoder and the initialization code:
 
-  ```cpp
+```cpp
   #define kEndPosModelIndex 14
   #define kNumFullDistances (1 << (kEndPosModelIndex >> 1))
   #define kNumAlignBits 4
@@ -806,18 +834,19 @@ The state of the distance decoder and the initialization code:
     AlignDecoder.Init();
     INIT_PROBS(PosDecoders);
   }
-  ```
+```
 
 At first stage the distance decoder decodes 6-bit "posSlot" value with bit
 tree decoder from PosSlotDecoder array. It's possible to get 2^6=64 different
 "posSlot" values.
 
-    ```cpp
+```cpp
     unsigned posSlot = PosSlotDecoder[lenState].Decode(&RangeDec);
-    ```
+```
 
 The encoding scheme for distance value is shown in the following table:
 
+```cpp
 posSlot (decimal) /
       zero-based distance (binary)
  0    0
@@ -866,10 +895,11 @@ If (posSlot >= 4), the decoder uses "posSlot" value to calculate the value of
   if (posSlot >= kEndPosModelIndex), the middle bits are decoded as direct
     bits from RangeDecoder and the low 4 bits are decoded with a bit tree
     decoder "AlignDecoder" with "Reverse" scheme.
+```
 
 The code to decode zero-based match distance:
 
-  ```cpp
+```cpp
   unsigned DecodeDistance(unsigned len)
   {
     unsigned lenState = len;
@@ -891,7 +921,7 @@ The code to decode zero-based match distance:
     }
     return dist;
   }
-  ```
+```
 
 LZMA Decoding modes
 -------------------
@@ -905,35 +935,45 @@ And the LZMA Decoder supports 3 modes of decoding:
 
 1) The unpack size is undefined. The LZMA decoder stops decoding after
    getting "End of stream" marker.
+
    The input variables for that case:
 
+```cpp
       markerIsMandatory = true
       unpackSizeDefined = false
       unpackSize contains any value
+```
 
 2) The unpack size is defined and LZMA decoder supports both variants,
    where the stream can contain "End of stream" marker or the stream is
    finished without "End of stream" marker. The LZMA decoder must detect
    any of these situations.
+
    The input variables for that case:
 
+```cpp
       markerIsMandatory = false
       unpackSizeDefined = true
       unpackSize contains unpack size
+```
 
 3) The unpack size is defined and the LZMA stream must contain
    "End of stream" marker
+
    The input variables for that case:
 
+```cpp
       markerIsMandatory = true
       unpackSizeDefined = true
       unpackSize contains unpack size
+```
 
 The main loop of decoder
 ------------------------
 
 The main loop of LZMA decoder:
 
+```
 Initialize the LZMA state.
 loop
 {
@@ -947,6 +987,7 @@ loop
         in window.
   Go to begin of loop
 }
+```
 
 The reference implementation of LZMA decoder uses "unpackSize" variable
 to keep the number of remaining bytes in output stream. So it reduces
@@ -955,11 +996,11 @@ to keep the number of remaining bytes in output stream. So it reduces
 The following code contains the "end of stream" condition check at the start
 of the loop:
 
-    ```cpp
+```cpp
     if (unpackSizeDefined && unpackSize == 0 && !markerIsMandatory)
       if (RangeDec.IsFinishedOK())
         return LZMA_RES_FINISHED_WITHOUT_MARKER;
-    ```
+```
 
 LZMA uses three types of matches:
 
@@ -975,9 +1016,9 @@ The LZMA decoder keeps the history of latest 4 match distances that were used
 by decoder. That set of 4 variables contains zero-based match distances and
 these variables are initialized with zero values:
 
-  ```cpp
+```cpp
   UInt32 rep0 = 0, rep1 = 0, rep2 = 0, rep3 = 0;
-  ```
+```
 
 The LZMA decoder uses binary model variables to select type of MATCH or LITERAL:
 
@@ -998,9 +1039,9 @@ from "IsRep", "IsRepG0", "IsRepG1" and "IsRepG2" arrays.
 The "state" variable can get the value from 0 to 11.
 Initial value for "state" variable is zero:
 
-  ```cpp
+```cpp
   unsigned state = 0;
-  ```
+```
 
 The "state" variable is updated after each LITERAL or MATCH with one of the
 following functions:
@@ -1051,28 +1092,29 @@ IsMatch[state2] decode
 
 LITERAL symbol
 --------------
+
 If the value "0" was decoded with IsMatch[state2] decoding, we have "LITERAL" type.
 
 At first the LZMA decoder must check that it doesn't exceed
 specified uncompressed size:
 
-  ```cpp
+```cpp
       if (unpackSizeDefined && unpackSize == 0)
         return LZMA_RES_ERROR;
-  ```
+```
 
 Then it decodes literal value and puts it to sliding window:
 
-  ```cpp
+```cpp
       DecodeLiteral(state, rep0);
-  ```
+```
 
 Then the decoder must update the "state" value and "unpackSize" value;
 
-  ```cpp
+```cpp
       state = UpdateState_Literal(state);
       unpackSize--;
-  ```
+```
 
 Then the decoder must go to the begin of main loop to decode next Match or Literal.
 
@@ -1084,29 +1126,29 @@ we have the "Simple Match" type.
 
 The distance history table is updated with the following scheme:
 
-  ```cpp
+```cpp
       rep3 = rep2;
       rep2 = rep1;
       rep1 = rep0;
-  ```
+```
 
 The zero-based length is decoded with "LenDecoder":
 
-  ```cpp
+```cpp
       len = LenDecoder.Decode(&RangeDec, posState);
-  ```
+```
 
 The state is update with UpdateState_Match function:
 
-  ```cpp
+```cpp
       state = UpdateState_Match(state);
-  ```
+```
 
 and the new "rep0" value is decoded with DecodeDistance:
 
-  ```cpp
+```cpp
       rep0 = DecodeDistance(len);
-  ```
+```
 
 That "rep0" will be used as zero-based distance for current match.
 
@@ -1114,31 +1156,30 @@ If the value of "rep0" is equal to 0xFFFFFFFF, it means that we have
 "End of stream" marker, so we can stop decoding and check finishing
 condition in Range Decoder:
 
-  ```cpp
+```cpp
       if (rep0 == 0xFFFFFFFF)
         return RangeDec.IsFinishedOK() ?
             LZMA_RES_FINISHED_WITH_MARKER :
             LZMA_RES_ERROR;
-  ```
+```
 
 If uncompressed size is defined, LZMA decoder must check that it doesn't
 exceed that specified uncompressed size:
 
-  ```cpp
+```cpp
       if (unpackSizeDefined && unpackSize == 0)
         return LZMA_RES_ERROR;
-  ```
+```
 
 Also the decoder must check that "rep0" value is not larger than dictionary size
 and is not larger than the number of already decoded bytes:
 
-  ```cpp
+```cpp
       if (rep0 >= dictSize || !OutWindow.CheckDistance(rep0))
         return LZMA_RES_ERROR;
-  ```
+```
 
-Then the decoder must copy match bytes as described in
-"The match symbols copying" section.
+Then the decoder must copy match bytes as described in "The match symbols copying" section.
 
 Rep Match
 ---------
@@ -1149,17 +1190,17 @@ we have "Rep Match" type.
 At first the LZMA decoder must check that it doesn't exceed
 specified uncompressed size:
 
-  ```cpp
+```cpp
       if (unpackSizeDefined && unpackSize == 0)
         return LZMA_RES_ERROR;
-  ```
+```
 
 Also the decoder must return error, if the LZ window is empty:
 
-  ```cpp
+```cpp
       if (OutWindow.IsEmpty())
         return LZMA_RES_ERROR;
-  ```
+```
 
 If the match type is "Rep Match", the decoder uses one of the 4 variables of
 distance history table to get the value of distance for current match.
@@ -1198,25 +1239,25 @@ If the subtype is "Short Rep Match", the decoder updates the state, puts
 the one byte from window to current position in window and goes to next
 MATCH/LITERAL symbol (the begin of main loop):
 
-  ```cpp
+```cpp
           state = UpdateState_ShortRep(state);
           OutWindow.PutByte(OutWindow.GetByte(rep0 + 1));
           unpackSize--;
           continue;
-  ```
+```
 
 In other cases (Rep Match 0/1/2/3), it decodes the zero-based
 length of match with "RepLenDecoder" decoder:
 
-  ```cpp
+```cpp
       len = RepLenDecoder.Decode(&RangeDec, posState);
-  ```
+```
 
 Then it updates the state:
 
-  ```cpp
+```cpp
       state = UpdateState_Rep(state);
-  ```
+```
 
 Then the decoder must copy match bytes as described in
 "The Match symbols copying" section.
@@ -1229,7 +1270,7 @@ copy the sequence of bytes with calculated match distance and match length.
 If uncompressed size is defined, LZMA decoder must check that it doesn't
 exceed that specified uncompressed size:
 
-  ```cpp
+```cpp
     len += kMatchMinLen;
     bool isError = false;
     if (unpackSizeDefined && unpackSize < len)
@@ -1241,7 +1282,7 @@ exceed that specified uncompressed size:
     unpackSize -= len;
     if (isError)
       return LZMA_RES_ERROR;
-  ```
+```
 
 Then the decoder must go to the begin of main loop to decode next MATCH or LITERAL.
 
@@ -1256,10 +1297,12 @@ can use additional status codes, returned by decoder.
 This specification uses C++ code with templates to simplify describing.
 The optimized version of LZMA decoder doesn't need templates.
 Such optimized version can use just two arrays of CProb variables:
+
   1) The dynamic array of CProb variables allocated for the Literal Decoder.
   2) The one common array that contains all other CProb variables.
 
-References:
+References
+----------
 
 1. G. N. N. Martin, Range encoding: an algorithm for removing redundancy
    from a digitized message, Video & Data Recording Conference,
