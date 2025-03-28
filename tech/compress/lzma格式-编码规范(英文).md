@@ -1,7 +1,8 @@
 LZMA specification (DRAFT version)
 ----------------------------------
 
-## Intro
+Overview
+--------
 
 - Author: Igor Pavlov
 - Date: 2015-06-14
@@ -695,7 +696,7 @@ length of match. That value can be converted to real length of the match
 with the following code:
 
 ```cpp
-#define kMatchMinLen 2
+    #define kMatchMinLen 2
 
     matchLen = len + kMatchMinLen;
 ```
