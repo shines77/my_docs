@@ -58,7 +58,7 @@ dictSize  [0, 2^32 - 1]  the dictionary size
 The following code encodes LZMA properties:
 
 ```cpp
-void EncodeProperties(Byte *properties)
+void EncodeProperties(Byte * properties)
 {
   properties[0] = (Byte)((pb * 5 + lp) * 9 + lc);
   Set_UInt32_LittleEndian(properties + 1, dictSize);
@@ -197,6 +197,7 @@ size_of_prob_arrays = 1846 + 768 * (1 << (lp + lc))
 ```
 
 Each probability model counter is 11-bit unsigned integer.
+
 If we use 16-bit integer variables (2-byte integers) for these probability
 model counters, the RAM usage required by probability model counter arrays
 can be estimated with the following formula:
@@ -205,21 +206,19 @@ can be estimated with the following formula:
   RAM = 4 KiB + 1.5 KiB * (1 << (lp + lc))
 ```
 
-For example, for default LZMA parameters (lp = 0 and lc = 3), the RAM usage is
+For example, for default LZMA parameters (lp = 0 and lc = 3), the RAM usage is:
 
 ```c
   RAM_lc3_lp0 = 4 KiB + 1.5 KiB * 8 = 16 KiB
 ```
 
-The maximum RAM state usage is required for decoding the stream with lp = 4
-and lc = 8:
+The maximum RAM state usage is required for decoding the stream with lp = 4 and lc = 8:
 
 ```c
   RAM_lc8_lp4 = 4 KiB + 1.5 KiB * 4096 = 6148 KiB
 ```
 
-If the decoder uses LZMA2's limited property condition
-(lc + lp <= 4), the RAM usage will be not larger than
+If the decoder uses LZMA2's limited property condition (lc + lp <= 4), the RAM usage will be not larger than:
 
 ```c
   RAM_lc_lp_4 = 4 KiB + 1.5 KiB * 16 = 28 KiB
@@ -237,7 +236,7 @@ The RAM usage required by modern effective implementation of
 LZMA Encoder can be estimated with the following formula:
 
 ```c
-  Encoder_RAM_Usage = 4 MiB + 11 * dictionarySize.
+  Encoder_RAM_Usage = 4 MiB + 11 * dictionarySize
 ```
 
 But there are some modes of the encoder that require less memory.
@@ -274,7 +273,7 @@ for LZMA decoder:
 ```cpp
 class COutWindow
 {
-  Byte *Buf;
+  Byte * Buf;
   UInt32 Pos;
   UInt32 Size;
   bool IsFull;
@@ -284,7 +283,7 @@ public:
   COutStream OutStream;
 
   COutWindow(): Buf(NULL) {}
-  ~COutWindow() { delete []Buf; }
+  ~COutWindow() { delete[] Buf; }
 
   void Create(UInt32 dictSize)
   {
@@ -320,12 +319,12 @@ public:
 
   bool CheckDistance(UInt32 dist) const
   {
-    return dist <= Pos || IsFull;
+    return (dist <= Pos) || IsFull;
   }
 
   bool IsEmpty() const
   {
-    return Pos == 0 && !IsFull;
+    return (Pos == 0) && !IsFull;
   }
 };
 ```
@@ -507,17 +506,20 @@ where the "prob" variable contains 11-bit integer probability counter.
 It's recommended to use 16-bit unsigned integer type, to store these 11-bit
 probability values:
 
+```cpp
 typedef UInt16 CProb;
+```
 
 Each probability value must be initialized with value ((1 << 11) / 2),
-that represents the state, where probabilities of symbols 0 and 1
-are equal to 0.5:
+that represents the state, where probabilities of symbols 0 and 1 are equal to 0.5:
 
 ```cpp
 #define PROB_INIT_VAL ((1 << kNumBitModelTotalBits) / 2)
+```
 
 The INIT_PROBS macro is used to initialize the array of CProb variables:
 
+```cpp
 #define INIT_PROBS(p) \
  { for (unsigned i = 0; i < sizeof(p) / sizeof(p[0]); i++) p[i] = PROB_INIT_VAL; }
 ```
@@ -531,6 +533,7 @@ updates that CProb variable after decoding.
 The Range Decoder increases estimated probability of the symbol that was decoded:
 
 ```cpp
+#define kNumBitModelTotalBits 11
 #define kNumMoveBits 5
 
 unsigned CRangeDecoder::DecodeBit(CProb *prob)
@@ -578,7 +581,7 @@ The first item (the item with index equal to 0) in array is unused.
 That scheme with unused array's item allows to simplify the code.
 
 ```cpp
-unsigned BitTreeReverseDecode(CProb *probs, unsigned numBits, CRangeDecoder *rc)
+unsigned BitTreeReverseDecode(CProb * probs, unsigned numBits, CRangeDecoder * rc)
 {
   unsigned m = 1;
   unsigned symbol = 0;
