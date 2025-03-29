@@ -621,14 +621,14 @@ LZMA 解码器使用了 (1 << (lc + lp)) 个包含 CProb 值的概率表，其�
 
 ---
 
-为了选择要解码的概率表，它使用由上下文前一个字面量的高 lc 位和当前位置的低 lp 位共同组成，用于确定使用哪个概率表来解码当前的字面量。表示 outputStream 中的当前位置。
+它使用由上下文前一个字面量的高 lc 位和 outputStream 当前位置值的低 lp 位组合而成的复合键值 State，用于确定使用哪个概率表来解码当前的字面量。
 
 ##### 核心参数
 
 | 参数 | 作用域 | 说明 |
 |-----|-------|-----|
-| `lc` | [0,8] | 字面量上下文位数（高位继承）|
-| `lp` | [0,4] | 位置相关位数（低位掩码） |
+| `lc` | [0,8] | 字面量上下文位数|
+| `lp` | [0,4] | 位置相关位数 |
 
 ---
 
@@ -639,26 +639,26 @@ LZMA 解码器使用了 (1 << (lc + lp)) 个包含 CProb 值的概率表，其�
 1. **上下文继承**：取前一字面量的高 `lc` 位
 
 ```cpp
-   ctxBits = prevByte >> (8 - lc)
+   UInt32 ctxBits = prevByte >> (8 - lc)
 ```
 
 2. **位置掩码**：取当前输出位置的低 `lp` 位
 
 ```cpp
-   posBits = TotalPos & ((1 << lp) - 1)
+   UInt32 posBits = TotalPos & ((1 << lp) - 1)
 ```
 
 3. **复合键值**：
 
 ```cpp
-   litState = (posBits << lc) | ctxBits
+   UInt32 litState = (posBits << lc) | ctxBits
 ```
 
 ---
 
 #### 解码器状态
 
-如果 (State > 7) 时，字面量解码器也会使用 "matchByte" 来表示 OutputStream 当前位置之前 DISTANCE 个字节，这里的 DISTANCE 来自于最近解码的匹配对（DISTANCE-LENGTH pair）。
+如果 (State > 7) ，字面量解码器也会使用 "matchByte" 来表示 OutputStream 当前位置之前 DISTANCE 个字节，这里的 DISTANCE 来自于最近解码的匹配对（DISTANCE-LENGTH pair）。
 
 ##### 状态机特性
 
