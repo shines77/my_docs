@@ -13,12 +13,12 @@
 
 在 C++ 代码中使用以下类型：
 
-- `unsigned` - 无符号整数，至少 16 位
-- `int` - 有符号整数，至少 16 位
-- `UInt64` - 64 位无符号整数
-- `UInt32` - 32 位无符号整数
-- `UInt16` - 16 位无符号整数
-- `Byte` - 8 位无符号整数
+- `unsigned` - 无符号整型，至少 16 位
+- `int` - 有符号整型，至少 16 位
+- `UInt64` - 64 位无符号整型
+- `UInt32` - 32 位无符号整型
+- `UInt16` - 16 位无符号整型
+- `Byte` - 8 位无符号整型
 - `bool` - 布尔类型，取值为 `false` 或 `true`
 
 ---
@@ -35,17 +35,17 @@ LZMA 文件包含原始的 LZMA 数据流以及相关的属性头。
 |--------|------|------|
 | 0      | 1    | LZMA 模型属性（lc、lp、pb）的编码形式 |
 | 1      | 4    | 字典大小（32 位无符号整数，小端序） |
-| 5      | 8    | 未压缩数据大小（64 位无符号整数，小端序） |
+| 5      | 8    | 未压缩数据大小（64 位无符号整型，小端序） |
 | 13     |      | 压缩数据（LZMA 流） |
 
 ### LZMA 属性
 
-| 名称      | 范围           | 描述 |
-|-----------|----------------|------|
-| lc        | [0, 8]         | "literal context" (字面量上下文) 的 bit 位数 |
-| lp        | [0, 4]         | "literal pos" (字面量位置) 的 bit 位数 |
-| pb        | [0, 4]         | "pos" (位置) 的 bit 位数 |
-| dictSize  | [0, 2^32 - 1]  | "dictionary size"，字典大小 |
+| 名称      | 范围           | 描述       | 中文       |
+|-----------|----------------|------------|------------|
+| lc        | [0, 8]         | "literal context" 的 bit 位数 | 字面量上下文 |
+| lp        | [0, 4]         | "literal pos" 的 bit 位数 | 字面量位置 |
+| pb        | [0, 4]         | "pos" 的 bit 位数 | 位置 |
+| dictSize  | [0, 2^32 - 1]  | "dictionary size" | 字典大小 |
 
 以下代码用于编码 LZMA 属性：
 
@@ -144,11 +144,11 @@ LZMA 解码器的内存使用情况由以下部分组成：
 
 1) 将完整流解码到一个内存缓冲区。
 
-  如果我们将完整的 LZMA 流解码到内存中的一个输出缓冲区，解码器可以将该输出缓冲区用作滑动窗口。所以解码器不需要为滑动窗口分配额外的缓冲区。
+    如果我们将完整的 LZMA 流解码到内存中的一个输出缓冲区，解码器可以将该输出缓冲区用作滑动窗口。所以解码器不需要为滑动窗口分配额外的缓冲区。
 
 2) 解码到外部存储。
 
-  如果我们将 LZMA 流解码到外部存储，解码器必须为滑动窗口分配缓冲区，其大小必须大于或等于 LZMA 流属性中的字典大小值。
+    如果我们将 LZMA 流解码到外部存储，解码器必须为滑动窗口分配缓冲区，其大小必须大于或等于 LZMA 流属性中的字典大小值。
 
 在本规范中，我们描述了用于解码到某些外部存储的代码。用于将完整的 LZMA 流解码到内存中的一个输出缓冲区的优化版本，可能需要对代码进行一些微小的更改。
 
@@ -202,7 +202,7 @@ Encoder_RAM_Usage = 4 MiB + 11 * dictionarySize
 
 ## LZMA 解码
 
-LZMA 压缩算法使用基于 LZ (LZ77) 的滑动窗口压缩和范围编码作为熵编码方法。
+LZMA 压缩算法使用基于 LZ77 的滑动窗口压缩和范围编码作为熵编码方法。
 
 ### 滑动窗口
 
@@ -210,9 +210,9 @@ LZMA 采用与 LZ77 算法类似的滑动窗口技术。
 
 LZMA 数据流必须解码为由以下两种元素组成的序列：
 
-- **字面量（LITERAL）**：一个 8-bit 字符（1 个字节）。解码器只需将该字面量（LITERAL）放入解压后的数据流中。
+- **字面量（LITERAL）**：8-bit 字符（1 个字节），解码器只需将该字面量（LITERAL）放入解压后的数据流中。
 
-- **匹配（MATCH）**：由两个数字组成的匹配对（距离-长度）。解码器从滑动窗口中复制指定距离和长度的字节序列。
+- **匹配（MATCH）**：由两个数字组成的匹配对（距离-长度），解码器从滑动窗口中复制指定距离和长度的字节序列。
 
 **距离值限制**：
 
@@ -290,7 +290,7 @@ public:
 
 ## 范围解码器（Range Decoder）
 
-LZMA 算法使用范围编码（Range Encoding）作为其熵编码方法，范围编码有点类似于算术编码。
+LZMA 算法使用范围编码（Range Encoding）作为其熵编码方法，范围编码类似于算术编码。跟算术编码不同的是，使用整数表示范围，概率值也使用的是整数。
 
 LZMA 数据流本质上是一个采用大端编码的极大整数。LZMA 解码器通过范围解码器从这个大整数中提取二进制符号序列。
 
@@ -354,15 +354,13 @@ bool CRangeDecoder::Init()
 1. LZMA 编码器始终将压缩流的首字节中写入零，这种设计简化了编码器的范围编码实现。
 2. 若解码器检测到首字节不为零，必须立即终止解码并报错。
 
-### 终止检测与规范化处理
+### 数据完整性校验
 
 当范围解码器完成最后一位数据的解码后，"Code" 变量的值必须等于 0。LZMA 解码器需要通过调用 IsFinishedOK() 函数进行验证：
 
 ```cpp
 bool IsFinishedOK() const { return Code == 0; }
 ```
-
-### 数据完整性校验
 
 若数据流存在损坏，在 Finish() 函数中 "Code" 值极可能不为 0。因此 IsFinishedOK() 函数的这项检查为数据损坏检测提供了重要保障。
 
@@ -519,6 +517,12 @@ LZMA 采用二叉树结构的位模型（bit model）变量来解码需要多个
 1. **常规方案**：从高位到低位解码 bits 序列
 2. **反向方案**：从低位到高位解码 bits 序列
 
+每个二叉树结构支持不同大小的解码符号（包含符号值的二进制序列的大小）。
+
+如果解码符号的大小为 “NumBits” 位，则树结构使用包含 (2 << NumBits) 个 CProb 类型的计数器数组。
+
+但编码器和解码器只使用了 ((2 << NumBits) - 1) 项，数组中的第一项（索引为 0 的项）保留未使用，使用未使用数组项的方案可以简化代码。
+
 ### 树结构特性
 
 | 参数         | 说明                                                                 |
@@ -527,23 +531,6 @@ LZMA 采用二叉树结构的位模型（bit model）变量来解码需要多个
 | 概率计数器数 | 使用 `(2 << NumBits)` 个 CProb 类型计数器组成的数组                  |
 | 实际使用项   | 仅使用 `((2 << NumBits) - 1)` 个元素                                 |
 | 特殊设计     | 数组索引 0 的位置保留未使用，此设计简化了编解码实现                  |
-
-### 反向解码函数示例
-
-```cpp
-unsigned BitTreeReverseDecode(CProb * probs, unsigned numBits, CRangeDecoder * rc)
-{
-  unsigned m = 1;         // 初始节点指针
-  unsigned symbol = 0;    // 符号值容器
-  for (unsigned i = 0; i < numBits; i++) {
-    unsigned bit = rc->DecodeBit(&probs[m]);  // 解码单个比特
-    m <<= 1;              // 节点指针左移
-    m += bit;             // 根据比特值选择子树
-    symbol |= (bit << i); // 构建最终符号值
-  }
-  return symbol;
-}
-```
 
 ### 实现细节说明
 
@@ -556,17 +543,19 @@ unsigned BitTreeReverseDecode(CProb * probs, unsigned numBits, CRangeDecoder * r
 
 反向解码方案特别适用于需要低位优先处理的特定数据模式。
 
+### 反向解码函数示例
+
 ```cpp
 unsigned BitTreeReverseDecode(CProb * probs, unsigned numBits, CRangeDecoder * rc)
 {
-  unsigned m = 1;
-  unsigned symbol = 0;
+  unsigned m = 1;         // 初始节点指针
+  unsigned symbol = 0;    // 符号值容器
   for (unsigned i = 0; i < numBits; i++)
   {
-    unsigned bit = rc->DecodeBit(&probs[m]);
-    m <<= 1;
-    m += bit;
-    symbol |= (bit << i);
+    unsigned bit = rc->DecodeBit(&probs[m]);  // 解码单个比特
+    m <<= 1;              // 节点指针左移
+    m += bit;             // 根据比特值选择子树
+    symbol |= (bit << i); // 构建最终符号值
   }
   return symbol;
 }
@@ -600,101 +589,41 @@ public:
 
 ## LZMA 的 LZ 部分
 
-LZMA 的 LZ 部分详细描述了 MATCHES 和 LITERALS 的解码过程。
+LZMA 的 LZ 部分详细描述了 **LITERALS(字面量)**  和 **MATCHES(匹配)** 的解码过程，本节重点解析字面量解码机制。
 
 ### 字面量解码（LITERALS）
 
-LZMA 解码器使用了 (1 << (lc + lp)) 个包含 CProb 值的表，其中每个表包含 768 (0x300) 个 CProb 值：
+#### 字面量概率表
+
+LZMA 解码器使用了 (1 << (lc + lp)) 个包含 CProb 值的概率表，其中每个概率表包含 768 (0x300) 个 CProb 值。
+
+其内存布局如下：
 
 ```cpp
-  CProb *LitProbs;
+  CProb * LitProbs; // 字面量概率表指针
 
-  void CreateLiterals()
-  {
+  // 创建概率表（内存分配）
+  void CreateLiterals() {
+    // 概率表总数量 = 2 ^ (lc + lp)
+    // 概率表单表大小 = 0x300（768个概率值）
     LitProbs = new CProb[(UInt32)0x300 << (lc + lp)];
   }
 
-  void InitLiterals()
-  {
-    UInt32 num = (UInt32)0x300 << (lc + lp);
-    for (UInt32 i = 0; i < num; i++)
+  // 初始化概率表（设为中间值）
+  void InitLiterals() {
+    UInt32 total = (UInt32)0x300 << (lc + lp);
+    for (UInt32 i = 0; i < total; i++) {
+      // 初始概率值 = 0x400，表示概率为 0.5
       LitProbs[i] = PROB_INIT_VAL;
-  }
-```
-
-To select the table for decoding it uses the context that consists of
-(lc) high bits from previous literal and (lp) low bits from value that
-represents current position in outputStream.
-
-If (State > 7), the Literal Decoder also uses "matchByte" that represents
-the byte in OutputStream at position the is the DISTANCE bytes before
-current position, where the DISTANCE is the distance in DISTANCE-LENGTH pair
-of latest decoded match.
-
-The following code decodes one literal and puts it to Sliding Window buffer:
-
-```cpp
-  void DecodeLiteral(unsigned state, UInt32 rep0)
-  {
-    unsigned prevByte = 0;
-    if (!OutWindow.IsEmpty())
-      prevByte = OutWindow.GetByte(1);
-
-    unsigned symbol = 1;
-    unsigned litState = ((OutWindow.TotalPos & ((1 << lp) - 1)) << lc) + (prevByte >> (8 - lc));
-    CProb *probs = &LitProbs[(UInt32)0x300 * litState];
-
-    if (state >= 7)
-    {
-      unsigned matchByte = OutWindow.GetByte(rep0 + 1);
-      do
-      {
-        unsigned matchBit = (matchByte >> 7) & 1;
-        matchByte <<= 1;
-        unsigned bit = RangeDec.DecodeBit(&probs[((1 + matchBit) << 8) + symbol]);
-        symbol = (symbol << 1) | bit;
-        if (matchBit != bit)
-          break;
-      }
-      while (symbol < 0x100);
     }
-    while (symbol < 0x100)
-      symbol = (symbol << 1) | RangeDec.DecodeBit(&probs[symbol]);
-    OutWindow.PutByte((Byte)(symbol - 0x100));
   }
 ```
-
-## LZMA 的 LZ 解码模块
-
-### LZ 模块概述
-
-LZMA 的 LZ 解码模块负责处理 **字面量(LITERAL)** 与 **匹配(MATCH)** 的解码流程，本节重点解析字面量解码机制。
 
 ---
 
-### 字面量概率表结构
+为了选择要解码的概率表，它使用由上下文前一个字面量的高 lc 位和当前位置的低 lp 位共同组成，用于确定使用哪个概率表来解码当前的字面量。表示 outputStream 中的当前位置。
 
-解码器使用动态生成的概率表进行字面量预测，其内存布局如下：
-
-```cpp
-CProb * LitProbs; // 字面量概率表指针
-
-// 创建概率表（内存分配）
-void CreateLiterals() {
-    // 总表数量 = 2 ^ (lc + lp)
-    // 单表大小 = 0x300（768个概率值）
-    LitProbs = new CProb[(UInt32)0x300 << (lc + lp)];
-}
-
-// 初始化概率表（设为中间值）
-void InitLiterals() {
-    UInt32 total = (UInt32)0x300 << (lc + lp);
-    for (UInt32 i = 0; i < total; i++)
-        LitProbs[i] = PROB_INIT_VAL; // 初始概率值 = 0x400
-}
-```
-
-#### 核心参数
+##### 核心参数
 
 | 参数 | 作用域 | 说明 |
 |-----|-------|-----|
@@ -703,20 +632,20 @@ void InitLiterals() {
 
 ---
 
-### 上下文选择机制
+##### 上下文选择机制
 
 解码器通过以下方式确定当前使用的概率表：
 
-1. **位置掩码**：取当前输出位置的低 `lp` 位
-
-```cpp
-   posBits = TotalPos & ((1 << lp) - 1)
-```
-
-2. **上下文继承**：取前一字面量的高 `lc` 位
+1. **上下文继承**：取前一字面量的高 `lc` 位
 
 ```cpp
    ctxBits = prevByte >> (8 - lc)
+```
+
+2. **位置掩码**：取当前输出位置的低 `lp` 位
+
+```cpp
+   posBits = TotalPos & ((1 << lp) - 1)
 ```
 
 3. **复合键值**：
@@ -727,7 +656,28 @@ void InitLiterals() {
 
 ---
 
-### 字面量解码流程
+#### 解码器状态
+
+如果 (State > 7) 时，字面量解码器也会使用 "matchByte" 来表示 OutputStream 当前位置之前 DISTANCE 个字节，这里的 DISTANCE 来自于最近解码的匹配对（DISTANCE-LENGTH pair）。
+
+##### 状态机特性
+
+| 状态值 | 解码模式 |
+|-------|---------|
+| state <7 | 纯概率解码 |
+| state ≥7 | 混合参考字节预测 |
+
+##### 预测优化机制
+
+- **matchByte**：基于最近匹配距离（rep0）获取参考字节
+- **位级预测**：将参考字节的对应位与当前解码位进行对比，动态调整解码路径
+- **提前终止**：当实际解码位与参考位不一致时立即切换为常规解码模式
+
+该设计通过结合历史匹配信息显著提升了重复模式数据的解码效率，同时保持对随机数据的高兼容性。
+
+#### 字面量解码流程
+
+下面的代码解码一个字面量，并且把它放入滑动窗口缓冲区中：
 
 ```cpp
 void DecodeLiteral(unsigned state, UInt32 rep0) {
@@ -745,11 +695,11 @@ void DecodeLiteral(unsigned state, UInt32 rep0) {
     if (state >= 7) {
         unsigned matchByte = OutWindow.GetByte(rep0 + 1); // 获取参考字节
         do {
-            unsigned matchBit = (matchByte >> 7) & 1;    // 提取参考位
-            matchByte <<= 1;                             // 左移准备下一位
-            unsigned probIndex = ((1 + matchBit) << 8) + symbol; // 计算概率索引
+            unsigned matchBit = (matchByte >> 7) & 1;             // 提取参考位
+            matchByte <<= 1;                                      // 左移准备下一位
+            unsigned probIndex = ((1 + matchBit) << 8) + symbol;  // 计算概率索引
             unsigned bit = RangeDec.DecodeBit(&probs[probIndex]); // 解码预测位
-            symbol = (symbol << 1) | bit;                // 构建当前符号
+            symbol = (symbol << 1) | bit;                         // 构建当前符号
 
             if (matchBit != bit) break; // 预测失败时退出循环
         } while (symbol < 0x100);       // 循环直到完成字节解码
@@ -765,18 +715,7 @@ void DecodeLiteral(unsigned state, UInt32 rep0) {
 }
 ```
 
-#### 状态机特性
-| 状态值 | 解码模式 |
-|-------|---------|
-| state <7 | 纯概率解码 |
-| state ≥7 | 混合参考字节预测 |
-
-#### 预测优化机制
-- **matchByte**：基于最近匹配距离（rep0）获取参考字节
-- **位级预测**：将参考字节的对应位与当前解码位进行对比，动态调整解码路径
-- **提前终止**：当实际解码位与参考位不一致时立即切换为常规解码模式
-
-该设计通过结合历史匹配信息显著提升了重复模式数据的解码效率，同时保持对随机数据的高兼容性。
+---
 
 ## LZMA 解码模式
 
