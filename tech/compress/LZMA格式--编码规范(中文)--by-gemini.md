@@ -252,8 +252,7 @@ public:
   {
     TotalPos++;
     Buf[Pos++] = b;
-    if (Pos == Size)
-    {
+    if (Pos == Size) {
       Pos = 0;
       IsFull = true;
     }
@@ -262,14 +261,14 @@ public:
 
   Byte GetByte(UInt32 dist) const
   {
-    return Buf[dist <= Pos ?
-    Pos - dist : Size - dist + Pos];
+    return Buf[dist <= Pos ? Pos - dist : Size - dist + Pos];
   }
 
   void CopyMatch(UInt32 dist, unsigned len)
   {
-    for (; len > 0; len--)
+    for (; len > 0; len--) {
       PutByte(GetByte(dist));
+    }
   }
 
   bool CheckDistance(UInt32 dist) const
@@ -299,7 +298,7 @@ struct CRangeDecoder
 {
   UInt32 Range;
   UInt32 Code;
-  InputStream *InStream;
+  InputStream * InStream;
 
   bool Corrupted;
 };
@@ -332,11 +331,13 @@ bool CRangeDecoder::Init()
   Code = 0;
 
   Byte b = InStream->ReadByte();
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++) {
     Code = (Code << 8) | InStream->ReadByte();
-  if (b != 0 || Code == Range)
+  }
+  if (b != 0 || Code == Range) {
     Corrupted = true;
-  return b == 0;
+  }
+  return (b == 0);
 }
 ```
 
@@ -359,8 +360,7 @@ bool IsFinishedOK() const { return Code == 0; }
 
 void CRangeDecoder::Normalize()
 {
-  if (Range < kTopValue)
-  {
+  if (Range < kTopValue) {
     Range <<= 8;
     Code = (Code << 8) | InStream->ReadByte();
   }
@@ -380,8 +380,7 @@ LZMA 仅将范围编码用于两种类型的二进制符号：
 UInt32 CRangeDecoder::DecodeDirectBits(unsigned numBits)
 {
   UInt32 res = 0;
-  do
-  {
+  do {
     Range >>= 1;
     Code -= Range;
     UInt32 t = 0 - ((UInt32)Code >> 31);
@@ -393,8 +392,7 @@ UInt32 CRangeDecoder::DecodeDirectBits(unsigned numBits)
     Normalize();
     res <<= 1;
     res += t + 1;
-  }
-  while (--numBits);
+  } while (--numBits);
   return res;
 }
 ```
@@ -450,14 +448,11 @@ unsigned CRangeDecoder::DecodeBit(CProb *prob)
   unsigned v = *prob;
   UInt32 bound = (Range >> kNumBitModelTotalBits) * v;
   unsigned symbol;
-  if (Code < bound)
-  {
+  if (Code < bound) {
     v += ((1 << kNumBitModelTotalBits) - v) >> kNumMoveBits;
     Range = bound;
     symbol = 0;
-  }
-  else
-  {
+  } else {
     v -= v >> kNumMoveBits;
     Code -= bound;
     Range -= bound;
@@ -487,8 +482,7 @@ unsigned BitTreeReverseDecode(CProb *probs, unsigned numBits, CRangeDecoder *rc)
 {
   unsigned m = 1;
   unsigned symbol = 0;
-  for (unsigned i = 0; i < numBits; i++)
-  {
+  for (unsigned i = 0; i < numBits; i++) {
     unsigned bit = rc->DecodeBit(&probs[m]);
     m <<= 1;
     m += bit;
@@ -512,8 +506,9 @@ public:
   unsigned Decode(CRangeDecoder *rc)
   {
     unsigned m = 1;
-    for (unsigned i = 0; i < NumBits; i++)
+    for (unsigned i = 0; i < NumBits; i++) {
       m = (m << 1) + rc->DecodeBit(&Probs[m]);
+    }
     return m - ((unsigned)1 << NumBits);
   }
 
@@ -542,8 +537,9 @@ void CreateLiterals()
 void InitLiterals()
 {
   UInt32 num = (UInt32)0x300 << (lc + lp);
-  for (UInt32 i = 0; i < num; i++)
+  for (UInt32 i = 0; i < num; i++) {
     LitProbs[i] = PROB_INIT_VAL;
+  }
 }
 ```
 
@@ -635,8 +631,7 @@ public:
     Choice = PROB_INIT_VAL;
     Choice2 = PROB_INIT_VAL;
     HighCoder.Init();
-    for (unsigned i = 0; i < (1 << kNumPosBitsMax); i++)
-    {
+    for (unsigned i = 0; i < (1 << kNumPosBitsMax); i++) {
       LowCoder[i].Init();
       MidCoder[i].Init();
     }
@@ -685,9 +680,9 @@ matchDistance = dist + 1;
 距离解码器的状态和初始化代码：
 
 ```cpp
-#define kEndPosModelIndex 14
-#define kNumFullDistances (1 << (kEndPosModelIndex >> 1))
-#define kNumAlignBits 4
+#define kEndPosModelIndex  14
+#define kNumFullDistances  (1 << (kEndPosModelIndex >> 1))
+#define kNumAlignBits      4
 
 CBitTreeDecoder<6> PosSlotDecoder[kNumLenToPosStates];
 CProb PosDecoders[1 + kNumFullDistances - kEndPosModelIndex];
@@ -754,12 +749,14 @@ unsigned posSlot = PosSlotDecoder[lenState].Decode(&RangeDec);
 unsigned DecodeDistance(unsigned len)
 {
   unsigned lenState = len;
-  if (lenState > kNumLenToPosStates - 1)
+  if (lenState > kNumLenToPosStates - 1) {
     lenState = kNumLenToPosStates - 1;
+  }
 
   unsigned posSlot = PosSlotDecoder[lenState].Decode(&RangeDec);
-  if (posSlot < 4)
+  if (posSlot < 4) {
     return posSlot;
+  }
 
   unsigned numDirectBits = (unsigned)((posSlot >> 1) - 1);
   UInt32 dist = ((2 | (posSlot & 1)) << numDirectBits);
@@ -807,8 +804,6 @@ LZMA 解码器支持 3 种解码模式：
     * `unpackSize` 包含解包大小
 
 ## 解码器的主循环
-
-------------------------
 
 LZMA 解码器的主循环：
 
