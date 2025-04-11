@@ -13,19 +13,17 @@ LZMA 算法的主要特点和优势包括：极高的压缩率，通常优于 gz
 
 研究表明，LZMA 之所以能够实现如此高的压缩率和相对较快的解压缩速度，得益于其复杂而精妙的设计。可变的字典大小为算法提供了根据不同数据特征进行调整的灵活性，从而在压缩效率和资源消耗之间取得平衡。其在解压缩方面的优势确保了用户能够快速地访问压缩数据，这对于提升用户体验至关重要。LZMA 在嵌入式领域的适用性表明其在资源受限的环境中也能够发挥重要作用。多线程技术的支持则使其能够充分利用现代多核处理器的计算能力，进一步提升性能。
 
-Test Ref: [[1]](#articel1), [[2]](#articel2)
-
 ## **2. LZMA的基本原理**
 
 LZMA 算法是基于著名的 LZ77 算法改进而来的一种压缩方法 [[3]](#articel3)。LZ77 算法的核心思想是利用滑动窗口来寻找数据中的重复模式。LZMA 在此基础上进行了优化和扩展，主要体现在以下几个方面：
 
 ### **2.1 滑动窗口**
 
-LZMA 使用一个称为滑动窗口（或字典、历史缓冲区）的概念来记录最近出现的数据 [[9]](#articel9)。这个窗口的大小是可变的 3，最大可以达到 4 GB（在 7-Zip 中）[[6]](#articel6)，更早的版本和 SDK 中则为 1GB [[3]](#articel3)。Snippet [[4]](#articel4) 指出，在 21.03 beta 版本之后，字典大小可以达到 4 GB。Snippet [[13]](https://7-zip.opensource.jp/chm/cmdline/switches/method.htm)表明，字典大小可以通过 `-d` 参数进行设置。Snippet [25] 讨论了 `.lzma` 文件头中字典大小的存储方式，而 [[18]](https://github.com/jljusten/LZMA-SDK/blob/master/DOC/lzma-specification.txt) 则说明最小字典大小为 4 KB。滑动窗口在概念上被划分为两个部分：搜索缓冲区（当前的字典）和前瞻缓冲区（待编码的数据）[[1]](#articel1)。
+LZMA 使用一个称为滑动窗口（或字典、历史缓冲区）的概念来记录最近出现的数据 [[9]](#articel9)。这个窗口的大小是可变的 3，最大可以达到 4 GB（在 7-Zip 中）[[6]](#articel6)，更早的版本和 SDK 中则为 1GB [[3]](#articel3)。Snippet [[4]](#articel4) 指出，在 21.03 beta 版本之后，字典大小可以达到 4 GB。Snippet [[13]](#articel13)表明，字典大小可以通过 `-d` 参数进行设置。Snippet [[25]](#articel25)  讨论了 `.lzma` 文件头中字典大小的存储方式，而 [[18]](#articel18) 则说明最小字典大小为 4 KB。滑动窗口在概念上被划分为两个部分：搜索缓冲区（当前的字典）和前瞻缓冲区（待编码的数据）[[1]](#articel1)。
 
 ### **2.2 匹配查找**
 
-编码过程中，LZMA算法会在搜索缓冲区中查找与前瞻缓冲区起始部分的最长字节序列相匹配的子串 [[1]](#articel1)。为了高效地完成匹配查找，LZMA通常会使用哈希表 1 或二叉树 15 等数据结构。Snippet [[15]](https://stackoverflow.com/questions/3057171/lzma-compression-settings-details) 提到，可以通过mf参数选择匹配查找算法，包括 btMode（二叉树）和 hc\*（哈希链）。Snippet [[13]](https://7-zip.opensource.jp/chm/cmdline/switches/method.htm) 中的 fb（快速字节数）和 mc（匹配查找周期数）参数也会影响匹配过程，它们控制着压缩速度和压缩率之间的权衡。
+编码过程中，LZMA算法会在搜索缓冲区中查找与前瞻缓冲区起始部分的最长字节序列相匹配的子串 [[1]](#articel1)。为了高效地完成匹配查找，LZMA通常会使用哈希表 [[1]](#articel1) 或二叉树 [[15]](#articel15) 等数据结构。Snippet [[15]](#articel15) 提到，可以通过mf参数选择匹配查找算法，包括 btMode（二叉树）和 hc\*（哈希链）。Snippet [[13]](#articel13) 中的 fb（快速字节数）和 mc（匹配查找周期数）参数也会影响匹配过程，它们控制着压缩速度和压缩率之间的权衡。
 
 ### **2.3 编码匹配信息**
 
@@ -33,33 +31,33 @@ LZMA 使用一个称为滑动窗口（或字典、历史缓冲区）的概念来
 
 ### **2.4 处理非匹配字节**
 
-如果在搜索缓冲区中没有找到匹配的子串，或者找到的匹配长度小于某个阈值（通常为 2 个字节 [[12]](https://doc.segger.com/UM17002\_emCompress\_LZMA.html)），那么前瞻缓冲区中的第一个字节将被视为一个字面值（Literal），并直接进行编码 [[1]](#articel1)。
+如果在搜索缓冲区中没有找到匹配的子串，或者找到的匹配长度小于某个阈值（通常为 2 个字节 [[12]](#articel12)），那么前瞻缓冲区中的第一个字节将被视为一个字面值（Literal），并直接进行编码 [[1]](#articel1)。
 
 LZMA 算法的核心在于其能够有效地利用滑动窗口机制来发现并编码数据中的重复序列。通过可变的窗口大小，算法可以适应不同冗余程度的数据。高效的匹配查找机制对于保证压缩速度至关重要。对匹配信息（距离和长度）以及非匹配字节（字面值）的区分和编码是 LZ77 阶段的主要输出。
 
 ## **3. LZMA 编码规范和字节流格式**
 
-LZMA 的编码规范定义了压缩数据的组织方式，包括文件头和压缩数据的具体结构。对于 `.lzma` 文件格式，其结构如下 [[17]](https://7zip.bugaco.com/7zip/lzma.txt)：
+LZMA 的编码规范定义了压缩数据的组织方式，包括文件头和压缩数据的具体结构。对于 `.lzma` 文件格式，其结构如下 [[17]](#articel17)：
 
 ### **3.1 属性字节 (1 字节)**
 
-该字节包含编码模型所需的参数：字面值上下文位数（lc，3位，取值范围 \[0-8\]）、字面值位置位数（lp，2位，取值范围 \[0-4\]）和位置位数（pb，3位，取值范围 \[0-4\]）[[17]](https://7zip.bugaco.com/7zip/lzma.txt)。这些参数通过公式 Properties \= (pb \* 5 \+ lp) \* 9 \+ lc 进行编码 [[18]](https://github.com/jljusten/LZMA-SDK/blob/master/DOC/lzma-specification.txt)。例如，Snippet [26] 中提到，值 0x5D 对应于 lc=3, lp=0, pb=2。Snippet [[18]](https://github.com/jljusten/LZMA-SDK/blob/master/DOC/lzma-specification.txt) 还指出，对于使用 LZMA 的新格式，建议满足约束条件 lc \+ lp \<= 4。
+该字节包含编码模型所需的参数：字面值上下文位数（lc，3位，取值范围 \[0-8\]）、字面值位置位数（lp，2位，取值范围 \[0-4\]）和位置位数（pb，3位，取值范围 \[0-4\]）[[17]](#articel17)。这些参数通过公式 Properties \= (pb \* 5 \+ lp) \* 9 \+ lc 进行编码 [[18]](#articel18)。例如，Snippet [[26]](#articel26) 中提到，值 0x5D 对应于 lc=3, lp=0, pb=2。Snippet [[18]](#articel18) 还指出，对于使用 LZMA 的新格式，建议满足约束条件 lc \+ lp \<= 4。
 
 ### **3.2 字典大小 (4 字节)**
 
-字典大小以 32 位无符号整数的形式存储，采用小端字节序 [[17]](https://7zip.bugaco.com/7zip/lzma.txt)。Snippet [26] 给出了一个例子：0x0080\_0000（8MB）。为了获得最佳的兼容性，推荐使用 2 的幂或者 2 ^ n \+ 2 ^ (n-1) 的大小 25。最小字典大小为 4 KB（212字节）[[18]](https://github.com/jljusten/LZMA-SDK/blob/master/DOC/lzma-specification.txt)。如果属性字节中隐含的字典大小小于 4 KB，解码器应使用 4 KB [[18]](https://github.com/jljusten/LZMA-SDK/blob/master/DOC/lzma-specification.txt)。
+字典大小以 32 位无符号整数的形式存储，采用小端字节序 [[17]](#articel17)。Snippet [[26]](#articel26) 给出了一个例子：0x0080\_0000（8MB）。为了获得最佳的兼容性，推荐使用 2 的幂或者 2 ^ n \+ 2 ^ (n-1) 的大小 25。最小字典大小为 4 KB（212字节）[[18]](#articel18)。如果属性字节中隐含的字典大小小于 4 KB，解码器应使用 4 KB [[18]](#articel18)。
 
 ### **3.3 未压缩大小 (8 字节)**
 
-原始数据的未压缩大小以 64 位无符号整数的形式存储，同样采用小端字节序 [[17]](https://7zip.bugaco.com/7zip/lzma.txt)。一个特殊的值 0xFFFF\_FFFF\_FFFF\_FFFF 表示未压缩大小未知，此时压缩数据流中会包含一个流结束（EOS）标记来指示解码的结束 [[17]](https://7zip.bugaco.com/7zip/lzma.txt)。Snippet [[10]](http://man.he.net/man1/lzma) 阐明了基于是否已知未压缩大小，流式 LZMA 文件和非流式 LZMA 文件之间的区别。
+原始数据的未压缩大小以 64 位无符号整数的形式存储，同样采用小端字节序 [[17]](#articel17)。一个特殊的值 0xFFFF\_FFFF\_FFFF\_FFFF 表示未压缩大小未知，此时压缩数据流中会包含一个流结束（EOS）标记来指示解码的结束 [[17]](#articel17)。Snippet [[10]](#articel10) 阐明了基于是否已知未压缩大小，流式 LZMA 文件和非流式 LZMA 文件之间的区别。
 
 ### **3.4 压缩数据 (剩余部分)**
 
 这是经过 LZMA 算法压缩后的原始比特流，它是一系列使用范围编码技术编码的比特。
 
-相比之下，`.xz` 文件格式是一种更新的容器格式，旨在取代传统的 `.lzma` 格式 [25]。它以 6 字节的魔数 "FD 37 7A 58 5A 00" 开头 [26]，支持链式使用多种压缩算法（过滤器），其中LZMA2是主要的压缩算法 [[2]](#articel2)。`.xz` 格式还包含完整性校验（如CRC32、CRC64、SHA256）[[2]](#articel2) 和对多个独立压缩块（block）的支持，这些块通过一个尾部索引进行管理 [26]。Snippet [26] 强调了 `.xz` 相比 `.lzma` 更复杂的结构，这使得诸如多块文件中的随机访问解压缩等功能成为可能。
+相比之下，`.xz` 文件格式是一种更新的容器格式，旨在取代传统的 `.lzma` 格式 [[25]](#articel25)。它以 6 字节的魔数 "FD 37 7A 58 5A 00" 开头 [[26]](#articel26)，支持链式使用多种压缩算法（过滤器），其中LZMA2是主要的压缩算法 [[2]](#articel2)。`.xz` 格式还包含完整性校验（如CRC32、CRC64、SHA256）[[2]](#articel2) 和对多个独立压缩块（block）的支持，这些块通过一个尾部索引进行管理 [[26]](#articel26)。Snippet [[26]](#articel26) 强调了 `.xz` 相比 `.lzma` 更复杂的结构，这使得诸如多块文件中的随机访问解压缩等功能成为可能。
 
-LZMA2 格式是一种基于 LZMA 的简单容器格式，它提供了更好的多线程支持，并且能够高效地压缩部分不可压缩的数据，因为它允许存储未压缩的数据块 [[6]](#articel6)。LZMA2 的头部包含一个字节，用于指示字典大小（使用特定的 LZMA2 方案编码，支持有限的尺寸集合），以及一个字节用于存储 LZMA 模型属性（lc、lp、pb）[[14]](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm)。LZMA2 还规定了字面值上下文位数（lc）和字面值位置位数（lp）之和不得超过 4 [[15]](https://stackoverflow.com/questions/3057171/lzma-compression-settings-details)。
+LZMA2 格式是一种基于 LZMA 的简单容器格式，它提供了更好的多线程支持，并且能够高效地压缩部分不可压缩的数据，因为它允许存储未压缩的数据块 [[6]](#articel6)。LZMA2 的头部包含一个字节，用于指示字典大小（使用特定的 LZMA2 方案编码，支持有限的尺寸集合），以及一个字节用于存储 LZMA 模型属性（lc、lp、pb）[[14]](#articel14)。LZMA2 还规定了字面值上下文位数（lc）和字面值位置位数（lp）之和不得超过 4 [[15]](#articel15)。
 
 **.lzma 文件格式总结表：**
 
@@ -76,11 +74,11 @@ LZMA算法在预测下一个比特或符号的概率时，采用了基于马尔�
 
 ### **4.1 马尔科夫链简介**
 
-马尔科夫链是一种随机模型，其未来状态的概率仅取决于当前状态，而与之前的状态无关（即具有无记忆性） [31]。在 LZMA 中，马尔科夫链被用来构建一个上下文模型，从而根据先前数据的上下文信息来预测下一个比特或符号（字面值或匹配的一部分）的概率 [[14]](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm)。Snippet [46] 提到，马尔科夫链被应用于现代压缩器中，例如 7-Zip（它使用 LZMA）。
+马尔科夫链是一种随机模型，其未来状态的概率仅取决于当前状态，而与之前的状态无关（即具有无记忆性）[[31]](#articel31)。在 LZMA 中，马尔科夫链被用来构建一个上下文模型，从而根据先前数据的上下文信息来预测下一个比特或符号（字面值或匹配的一部分）的概率 [[14]](#articel14)。Snippet [46] 提到，马尔科夫链被应用于现代压缩器中，例如 7-Zip（它使用 LZMA）。
 
 ### **4.2 上下文建模**
 
-LZMA 采用了一种针对字面值和匹配的比特字段的特定上下文建模方法，这与通用的基于字节的模型不同 [[14]](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm)。这种特定的建模方式避免了在同一上下文中混合不相关的比特，从而提高了压缩率 [[14]](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm)。预测下一个比特的上下文是由先前的比特或字节的值决定的 [[14]](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm)。
+LZMA 采用了一种针对字面值和匹配的比特字段的特定上下文建模方法，这与通用的基于字节的模型不同 [[14]](#articel14)。这种特定的建模方式避免了在同一上下文中混合不相关的比特，从而提高了压缩率 [[14]](#articel14)。预测下一个比特的上下文是由先前的比特或字节的值决定的 [[14]](#articel14)。
 
 ### **4.3 上下文参数**
 
@@ -94,11 +92,11 @@ LZMA 采用了一种针对字面值和匹配的比特字段的特定上下文建
 
 ### **4.4 状态转移和概率模型**
 
-LZMA 算法采用一个包含12个状态的状态机来跟踪最近编码的数据包（字面值、匹配、长重复、短重复）的历史 [[14]](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm)。初始状态为 0，假设之前的包都是字面值 [[14]](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm)。这些状态会影响用于编码下一个数据包的概率模型。状态之间的转移是确定性的，取决于刚刚编码的数据包的类型 [[14]](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm)。对于要编码的每个比特，LZMA 使用一个上下文（由状态和 lc、lp、pb 决定）来选择一个特定的概率估计器。这个估计器预测该比特为0的概率。Snippet [[14]](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm) 提到，这个概率通常存储为一个 11 位的无符号整数。
+LZMA 算法采用一个包含12个状态的状态机来跟踪最近编码的数据包（字面值、匹配、长重复、短重复）的历史 [[14]](#articel14)。初始状态为 0，假设之前的包都是字面值 [[14]](#articel14)。这些状态会影响用于编码下一个数据包的概率模型。状态之间的转移是确定性的，取决于刚刚编码的数据包的类型 [[14]](#articel14)。对于要编码的每个比特，LZMA 使用一个上下文（由状态和 lc、lp、pb 决定）来选择一个特定的概率估计器。这个估计器预测该比特为0的概率。Snippet [[14]](#articel14) 提到，这个概率通常存储为一个 11 位的无符号整数。
 
 ### **4.5 自适应概率更新**
 
-LZMA 使用的概率估计器是自适应的。在每个比特被编码或解码之后，相应的概率估计会被更新，以更好地反映在该特定上下文中观察到的0和1的频率 14。LZMA对这些概率模型使用了一种分数更新方法 [36]。Snippet [[18]](https://github.com/jljusten/LZMA-SDK/blob/master/DOC/lzma-specification.txt) 提供了具体的更新规则：如果解码的符号是 0，则增加 0 的概率；如果是 1，则增加 1 的概率。增加/减少的幅度由一个移位因子（kNumMoveBits，通常为 5）控制。这种持续的适应性使得编码器和解码器能够为每个上下文维护同步的概率估计，这对于高效的范围编码至关重要，并最终带来更高的压缩率 [[22]](https://gautiersblog.blogspot.com/2016/08/lzma-compression.html)。
+LZMA 使用的概率估计器是自适应的。在每个比特被编码或解码之后，相应的概率估计会被更新，以更好地反映在该特定上下文中观察到的0和1的频率 14。LZMA对这些概率模型使用了一种分数更新方法 [[36]](#articel36)。Snippet [[18]](#articel18) 提供了具体的更新规则：如果解码的符号是 0，则增加 0 的概率；如果是 1，则增加 1 的概率。增加/减少的幅度由一个移位因子（kNumMoveBits，通常为 5）控制。这种持续的适应性使得编码器和解码器能够为每个上下文维护同步的概率估计，这对于高效的范围编码至关重要，并最终带来更高的压缩率 [[22]](#articel22)。
 
 LZMA 中基于马尔科夫链的概率预测是一项关键技术，它通过使用由 lc、lp 和 pb 等参数以及状态机跟踪的近期编码事件历史精心构建的上下文，实现了卓越的压缩性能。概率模型的自适应特性确保了模型能够学习并适应被压缩数据的特定特征。
 
@@ -108,7 +106,7 @@ LZMA 中基于马尔科夫链的概率预测是一项关键技术，它通过使
 
 ### **5.1 范围编码简介**
 
-LZMA 使用范围编码取代了更常见的霍夫曼编码 [[1]](#articel1)。范围编码通过将一系列符号表示为 0 到 1 范围内的单个分数来实现压缩。符号出现的概率越高，其在范围中所占的区间就越小，从而实现高效编码 [[22]](https://gautiersblog.blogspot.com/2016/08/lzma-compression.html)。范围编码相比霍夫曼编码提供了更高的压缩效率，因为它能够更接近数据的理论熵极限，尤其是在处理概率不是 1/2 的幂的符号时 [[1]](#articel1)。在 LZMA 中，范围编码器操作的是一个二进制字母表（0和1），因此范围的划分是一个二元过程 [[22]](https://gautiersblog.blogspot.com/2016/08/lzma-compression.html)。
+LZMA 使用范围编码取代了更常见的霍夫曼编码 [[1]](#articel1)。范围编码通过将一系列符号表示为 0 到 1 范围内的单个分数来实现压缩。符号出现的概率越高，其在范围中所占的区间就越小，从而实现高效编码 [[22]](#articel22)。范围编码相比霍夫曼编码提供了更高的压缩效率，因为它能够更接近数据的理论熵极限，尤其是在处理概率不是 1/2 的幂的符号时 [[1]](#articel1)。在 LZMA 中，范围编码器操作的是一个二进制字母表（0和1），因此范围的划分是一个二元过程 [[22]](#articel22)。
 
 ### **5.2 范围编码原理**
 
@@ -116,15 +114,15 @@ LZMA 使用范围编码取代了更常见的霍夫曼编码 [[1]](#articel1)。�
 
 ### **5.3 LZMA 范围编码器和解码器的实现**
 
-LZMA 解码器维护两个关键的 32 位无符号整数变量：Range（当前范围）和Code（来自编码比特流的位于当前范围内的值） [[14]](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm)。解码器通过将 Range 设置为 0xFFFFFFFF 并读取压缩流的前 5 个字节来初始化（第一个字节被忽略，接下来的四个字节构成初始代码）[[14]](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm)。要使用给定的概率（prob）解码一个比特，解码器计算一个 bound \= (Range \>\> kNumBitModelTotalBits) \* prob。如果 Code \< bound，则解码的比特为 0，新的 Range 变为 bound。否则，解码的比特为 1，Code 减去 bound，新的 Range 变为 (Range \- bound) [[14]](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm)。编码器使用 low 和 width 来定义当前范围。对于每个比特，它会根据概率计算一个阈值。然后根据要编码的比特更新范围 [37]。
+LZMA 解码器维护两个关键的 32 位无符号整数变量：Range（当前范围）和Code（来自编码比特流的位于当前范围内的值） [[14]](#articel14)。解码器通过将 Range 设置为 0xFFFFFFFF 并读取压缩流的前 5 个字节来初始化（第一个字节被忽略，接下来的四个字节构成初始代码）[[14]](#articel14)。要使用给定的概率（prob）解码一个比特，解码器计算一个 bound \= (Range \>\> kNumBitModelTotalBits) \* prob。如果 Code \< bound，则解码的比特为 0，新的 Range 变为 bound。否则，解码的比特为 1，Code 减去 bound，新的 Range 变为 (Range \- bound) [[14]](#articel14)。编码器使用 low 和 width 来定义当前范围。对于每个比特，它会根据概率计算一个阈值。然后根据要编码的比特更新范围 [[37]](#articel37)。
 
 ### **5.4 归一化过程**
 
-在编码和解码过程中，随着范围的缩小，可能会丢失精度。为了防止这种情况，需要执行归一化步骤：如果在解码器中 Range 或在编码器中 width 降到某个阈值以下（例如，解码器中为 224 [[18]](https://github.com/jljusten/LZMA-SDK/blob/master/DOC/lzma-specification.txt)），则范围和代码（或 low 和 width）会左移 8 位，并且从输入流中读取下一个字节到 Code 的低 8 位（对于解码器），或者输出一个字节（对于编码器）[[14]](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm)。Snippet [47] 讨论了在此过程中如何处理进位。
+在编码和解码过程中，随着范围的缩小，可能会丢失精度。为了防止这种情况，需要执行归一化步骤：如果在解码器中 Range 或在编码器中 width 降到某个阈值以下（例如，解码器中为 224 [[18]](#articel18)），则范围和代码（或 low 和 width）会左移 8 位，并且从输入流中读取下一个字节到 Code 的低 8 位（对于解码器），或者输出一个字节（对于编码器）[[14]](#articel14)。Snippet [[47]](#articel47) 讨论了在此过程中如何处理进位。
 
 ### **5.5 概率处理**
 
-LZMA 中的范围编码过程严重依赖于马尔科夫链上下文模型提供的概率。比特为 0 的概率（由 11 位的 prob 值表示）决定了在编码和解码过程中如何划分当前范围 [[14]](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm)。
+LZMA 中的范围编码过程严重依赖于马尔科夫链上下文模型提供的概率。比特为 0 的概率（由 11 位的 prob 值表示）决定了在编码和解码过程中如何划分当前范围 [[14]](#articel14)。
 
 ### **5.6 与霍夫曼编码的比较**
 
@@ -220,9 +218,9 @@ function decodeBit(probability):
 
 ## **7. LZMA 实现中的代码优化核心原理（基于xz  utils）**
 
-XZ Utils 作为一个生产级的实现，非常注重性能。通过分析其 `src/liblzma/` 目录 [28] 及其子目录（如 `lzma/` [38]），可以发现许多针对特定架构的优化。
+XZ Utils 作为一个生产级的实现，非常注重性能。通过分析其 `src/liblzma/` 目录 [[28]](#articel28) 及其子目录（如 `lzma/` [38]），可以发现许多针对特定架构的优化。
 
-XZ Utils 在 x86 平台上的解码器中使用了 SIMD（单指令多数据流）指令，如 SSE2 [39]，用于并行处理数据，这显著加快了 LZMA 解码器中内存复制和比较等操作的速度。它还针对循环冗余校验（CRC）实现了高度优化的版本，利用硬件指令（例如，x86-64上的 CLMUL [39] 和 LoongArch 等架构上的专用 CRC32 指令 [39]）来快速进行数据完整性验证。此外，XZ Utils 还包含了针对特定处理器架构的代码路径，以利用其独特的特性，例如，在支持快速非对齐访问的 64 位 PowerPC 和 RISC-V 处理器上提高了 LZMA/LZMA2 编码器的速度 [39]。
+XZ Utils 在 x86 平台上的解码器中使用了 SIMD（单指令多数据流）指令，如 SSE2 [[39]](#articel39)，用于并行处理数据，这显著加快了 LZMA 解码器中内存复制和比较等操作的速度。它还针对循环冗余校验（CRC）实现了高度优化的版本，利用硬件指令（例如，x86-64上的 CLMUL [[39]](#articel39) 和 LoongArch 等架构上的专用 CRC32 指令 [[39]](#articel39)）来快速进行数据完整性验证。此外，XZ Utils 还包含了针对特定处理器架构的代码路径，以利用其独特的特性，例如，在支持快速非对齐访问的 64 位 PowerPC 和 RISC-V 处理器上提高了 LZMA/LZMA2 编码器的速度 [[39]](#articel39)。
 
 XZ Utils 很可能在 LZMA 实现的各个部分使用了查找表，例如，在匹配查找算法（如哈希链）中进行快速哈希，以及在范围编码器中进行更快的概率到范围计算。（需要进一步分析源代码以获取具体示例）。由于LZMA在比特级别上运行，XZ Utils 代码库会大量使用位运算符（AND、OR、XOR、移位）来快速操作标志、概率和编码数据。仔细组织数据结构以方便高效的比特访问也是一种常见的优化方法。（需要分析源代码）。诸如 XZ Utils 之类的实现旨在最小化内存访问，特别是对于像滑动窗口和概率数组这样的常用数据结构，以提高缓存命中率。使用适当的小数据类型和在内存中连续组织数据是常见的技术。（需要分析源代码）。
 
@@ -236,53 +234,96 @@ LZMA 算法的核心原理包括：基于滑动窗口的字典压缩（源于 LZ
 
 ## **引用的著作**
 
-（访问时间为 2025年4月10日）
+（访问时间为 2025年4月10日） <a id="articel1"></a>
 
-0. <a id="articel1"></a>
 1. LZMA File Format \- Lempel Ziv Markov Chain Algorithm \- Aspose, [https://products.aspose.com/zip/most-common-archives/what-is-lzma/](https://products.aspose.com/zip/most-common-archives/what-is-lzma/) <a id="articel2"></a>
+
 2. XZ Utils \- Wikipedia, [https://en.wikipedia.org/wiki/XZ\_Utils](https://en.wikipedia.org/wiki/XZ_Utils) <a id="articel3"></a>
+
 3. 7zip/DOC/lzma.txt at master · yumeyao/7zip · GitHub, [https://github.com/yumeyao/7zip/blob/master/DOC/lzma.txt](https://github.com/yumeyao/7zip/blob/master/DOC/lzma.txt) <a id="articel4"></a>
+
 4. LZMA SDK (Software Development Kit) \- 7-Zip, [https://www.7-zip.org/sdk.html](https://www.7-zip.org/sdk.html) <a id="articel5"></a>
+
 5. upx-lzma-sdk/lzma.txt at master \- GitHub, [https://github.com/upx/upx-lzma-sdk/blob/master/lzma.txt](https://github.com/upx/upx-lzma-sdk/blob/master/lzma.txt) <a id="articel6"></a>
+
 6. 7z Format \- 7-Zip 18 Documentation, [https://documentation.help/7-Zip-18.0/7z.htm](https://documentation.help/7-Zip-18.0/7z.htm) <a id="articel7"></a>
+
 7. 7z Format \- 7-Zip Documentation, [https://documentation.help/7-Zip/7z.htm](https://documentation.help/7-Zip/7z.htm) <a id="articel8"></a>
+
 8. 7z Format \- 7-Zip, [https://www.7-zip.org/7z.html](https://www.7-zip.org/7z.html) <a id="articel9"></a>
+
 9. How to Install and Use LZMA Compression on Linux, [https://pendrivelinux.com/lzma-compression/](https://pendrivelinux.com/lzma-compression/) <a id="articel10"></a>
+
 10. lzma, [http://man.he.net/man1/lzma](http://man.he.net/man1/lzma) <a id="articel11"></a>
+
 11. lzma.txt \- MIT, [http://web.mit.edu/outland/arch/i386\_rhel4/build/p7zip-current/DOCS/lzma.txt](http://web.mit.edu/outland/arch/i386_rhel4/build/p7zip-current/DOCS/lzma.txt) <a id="articel11"></a> <a id="articel12"></a>
+
 12. emCompress-LZMA User Guide & Reference Manual \- SEGGER Online Documentation, [https://doc.segger.com/UM17002\_emCompress\_LZMA.html](https://doc.segger.com/UM17002_emCompress_LZMA.html) <a id="articel13"></a>
+
 13. \-m (Set compression Method) switch \- 7-Zip, [https://7-zip.opensource.jp/chm/cmdline/switches/method.htm](https://7-zip.opensource.jp/chm/cmdline/switches/method.htm) <a id="articel13"></a> <a id="articel14"></a>
+
 14. Lempel–Ziv–Markov chain algorithm \- Wikipedia, [https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov\_chain\_algorithm](https://en.wikipedia.org/wiki/Lempel%E2%80%93Ziv%E2%80%93Markov_chain_algorithm) <a id="articel15"></a>
+
 15. LZMA compression settings details \- Stack Overflow, [https://stackoverflow.com/questions/3057171/lzma-compression-settings-details](https://stackoverflow.com/questions/3057171/lzma-compression-settings-details) <a id="articel16"></a>
+
 16. xz-utils/NEWS at master\_jammy \- GitHub, [https://github.com/pop-os/xz-utils/blob/master\_jammy/NEWS](https://github.com/pop-os/xz-utils/blob/master_jammy/NEWS) <a id="articel17"></a>
+
 17. 7-Zip Manual lzma.txt, [https://7zip.bugaco.com/7zip/lzma.txt](https://7zip.bugaco.com/7zip/lzma.txt) <a id="articel18"></a>
+
 18. LZMA-SDK/DOC/lzma-specification.txt at master · jljusten/LZMA ..., [https://github.com/jljusten/LZMA-SDK/blob/master/DOC/lzma-specification.txt](https://github.com/jljusten/LZMA-SDK/blob/master/DOC/lzma-specification.txt) <a id="articel19"></a>
+
 19. Hardware Implementation of LZMA Data Compression Algorithm \- International Journal of Applied Information Systems, [https://research.ijais.org/volume5/number4/ijais12-450900.pdf](https://research.ijais.org/volume5/number4/ijais12-450900.pdf) <a id="articel20"></a>
+
 20. Discovering Dataset Nature through Algorithmic Clustering based on String CompressionThis is the postprint version of an article published in IEEE TKDE. The final published version is available at https://doi.org/10.1109/TKDE.2014.2345396. ©2015 IEEE. \- arXiv, [https://arxiv.org/html/2502.00208v1](https://arxiv.org/html/2502.00208v1) <a id="articel21"></a>
+
 21. Hardware Implementation of LZMA Data Compression Algorithm \- ResearchGate, [https://www.researchgate.net/publication/275038202\_Hardware\_Implementation\_of\_LZMA\_Data\_Compression\_Algorithm](https://www.researchgate.net/publication/275038202_Hardware_Implementation_of_LZMA_Data_Compression_Algorithm) <a id="articel22"></a>
+
 22. LZMA compression explained \- Gautier's blog, [https://gautiersblog.blogspot.com/2016/08/lzma-compression.html](https://gautiersblog.blogspot.com/2016/08/lzma-compression.html) <a id="articel23"></a>
+
 23. Lempel-Ziv-Markov Chain Algorithm Modeling using Models of Computation and ForSyDe, [https://www.researchgate.net/publication/336795137\_Lempel-Ziv-Markov\_Chain\_Algorithm\_Modeling\_using\_Models\_of\_Computation\_and\_ForSyDe](https://www.researchgate.net/publication/336795137_Lempel-Ziv-Markov_Chain_Algorithm_Modeling_using_Models_of_Computation_and_ForSyDe) <a id="articel24"></a>
+
 24. A very brief BitKnit retrospective \- The ryg blog \- WordPress.com, [https://fgiesen.wordpress.com/2023/05/06/a-very-brief-bitknit-retrospective/](https://fgiesen.wordpress.com/2023/05/06/a-very-brief-bitknit-retrospective/) <a id="articel25"></a>
+
 25. xz/doc/lzma-file-format.txt at master · tukaani-project/xz · GitHub, [https://github.com/tukaani-project/xz/blob/master/doc/lzma-file-format.txt](https://github.com/tukaani-project/xz/blob/master/doc/lzma-file-format.txt) <a id="articel26"></a>
+
 26. XZ/LZMA Worked Example Part 5: XZ \- Nigel Tao, [https://nigeltao.github.io/blog/2024/xz-lzma-part-5-xz.html](https://nigeltao.github.io/blog/2024/xz-lzma-part-5-xz.html) <a id="articel27"></a>
+
 27. lzma-sys 0.1.8 \- Docs.rs, [https://docs.rs/crate/lzma-sys/0.1.8/source/xz-5.2.3/doc/xz-file-format.txt](https://docs.rs/crate/lzma-sys/0.1.8/source/xz-5.2.3/doc/xz-file-format.txt) <a id="articel28"></a>
+
 28. tukaani-project/xz: XZ Utils \- GitHub, [https://github.com/tukaani-project/xz](https://github.com/tukaani-project/xz) <a id="articel29"></a>
 29. Debian \-- Details of package xz-utils in sid, [https://packages.debian.org/sid/xz-utils](https://packages.debian.org/sid/xz-utils) <a id="articel30"></a>
+
 30. lzma — Compression using the LZMA algorithm — Python 3.13.3 documentation, [https://docs.python.org/3/library/lzma.html](https://docs.python.org/3/library/lzma.html) <a id="articel31"></a>
+
 31. Markov Chain Explained | Built In, [https://builtin.com/machine-learning/markov-chain](https://builtin.com/machine-learning/markov-chain) <a id="articel32"></a>
+
 32. Markov chain \- Wikipedia, [https://en.wikipedia.org/wiki/Markov\_chain](https://en.wikipedia.org/wiki/Markov_chain) <a id="articel33"></a>
 33. Chapter 8: Markov Chains, [https://www.stat.auckland.ac.nz/\~fewster/325/notes/ch8.pdf](https://www.stat.auckland.ac.nz/~fewster/325/notes/ch8.pdf) <a id="articel34"></a>
+
 34. How to Predict Sales Using Markov Chain, [https://blog.arkieva.com/markov-chain-sales-prediction/](https://blog.arkieva.com/markov-chain-sales-prediction/) <a id="articel35"></a>
+
 35. LZMA parametrization \- Gautier's blog, [https://gautiersblog.blogspot.com/2016/09/lzma-parametrization.html](https://gautiersblog.blogspot.com/2016/09/lzma-parametrization.html) <a id="articel36"></a>
+
 36. 06-12-14 \- Some LZMA Notes \- cbloom rants, [http://cbloomrants.blogspot.com/2014/06/06-12-14-some-lzma-notes.html](http://cbloomrants.blogspot.com/2014/06/06-12-14-some-lzma-notes.html) <a id="articel37"></a>
+
 37. XZ/LZMA Worked Example Part 1: Range Coding \- Nigel Tao, [https://nigeltao.github.io/blog/2024/xz-lzma-part-1-range-coding.html](https://nigeltao.github.io/blog/2024/xz-lzma-part-1-range-coding.html) <a id="articel38"></a>
+
 38. liblzma (XZ Utils): lzma Directory Reference, [https://tukaani.org/xz/liblzma-api/dir\_b17a1d403082bd69a703ed987cf158fb.html](https://tukaani.org/xz/liblzma-api/dir_b17a1d403082bd69a703ed987cf158fb.html) <a id="articel39"></a>
+
 39. Releases · tukaani-project/xz \- GitHub, [https://github.com/tukaani-project/xz/releases](https://github.com/tukaani-project/xz/releases) <a id="articel40"></a>
+
 40. XZ Utils 5.8 Introduces Performance Improvements in the LZMA/LZMA2 Decoder \- 9to5Linux, [https://9to5linux.com/xz-utils-5-8-introduces-performance-improvements-in-the-lzma-lzma2-decoder](https://9to5linux.com/xz-utils-5-8-introduces-performance-improvements-in-the-lzma-lzma2-decoder) <a id="articel41"></a>
+
 41. xz/NEWS at master · tukaani-project/xz \- GitHub, [https://github.com/tukaani-project/xz/blob/master/NEWS](https://github.com/tukaani-project/xz/blob/master/NEWS) <a id="articel42"></a>
+
 42. XZ Utils Backdoor: Supply Chain Vulnerability (CVE-2024-3094) \- Logpoint, [https://www.logpoint.com/en/blog/emerging-threats/xz-utils-backdoor/](https://www.logpoint.com/en/blog/emerging-threats/xz-utils-backdoor/) <a id="articel43"></a>
+
 43. Thoughts on the xz backdoor: an lzma-rs perspective | Blog \- Guillaume Endignoux, [https://gendignoux.com/blog/2024/04/08/xz-backdoor.html](https://gendignoux.com/blog/2024/04/08/xz-backdoor.html) <a id="articel44"></a>
+
 44. xz/TODO at master · tukaani-project/xz \- GitHub, [https://github.com/tukaani-project/xz/blob/master/TODO](https://github.com/tukaani-project/xz/blob/master/TODO) <a id="articel45"></a>
+
 45. Increase robustness of 7z LZMA archiving? \- backup \- Super User, [https://superuser.com/questions/1756414/increase-robustness-of-7z-lzma-archiving](https://superuser.com/questions/1756414/increase-robustness-of-7z-lzma-archiving) <a id="articel46"></a>
+
 46. Markov Chain Compression (Ep 3, Compressor Head) \- YouTube, [https://www.youtube.com/watch?v=05RFEGWNxts](https://www.youtube.com/watch?v=05RFEGWNxts) <a id="articel47"></a>
+
 47. Somewhere Range Coding went off the rails \- Richard Geldreich's Blog, [http://richg42.blogspot.com/2023/04/somewhere-range-coding-went-off-rails.html](http://richg42.blogspot.com/2023/04/somewhere-range-coding-went-off-rails.html)
