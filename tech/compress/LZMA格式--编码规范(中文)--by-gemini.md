@@ -74,18 +74,21 @@ void EncodeProperties(Byte *properties)
   void DecodeProperties(const Byte *properties)
   {
     unsigned d = properties[0];
-    if (d >= (9 * 5 * 5))
+    if (d >= (9 * 5 * 5)) {
       throw "Incorrect LZMA properties"; // 抛出“不正确的 LZMA 属性”异常
+    }
     lc = d % 9;
     d /= 9;
     pb = d / 5;
     lp = d % 5;
     dictSizeInProperties = 0;
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++) {
       dictSizeInProperties |= (UInt32)properties[i + 1] << (8 * i);
+    }
     dictSize = dictSizeInProperties;
-    if (dictSize < LZMA_DIC_MIN)
+    if (dictSize < LZMA_DIC_MIN) {
       dictSize = LZMA_DIC_MIN;
+    }
   }
 ```
 
@@ -112,16 +115,17 @@ void EncodeProperties(Byte *properties)
 可以使用以下代码从编码值中提取字典大小：
 
 ```cpp
-  dictSize = (p == 40) ? 0xFFFFFFFF
-            : (((UInt32)2 | ((p) & 1)) << ((p) / 2 + 11));
+dictSize = (p == 40) ? 0xFFFFFFFF
+        : (((UInt32)2 | ((p) & 1)) << ((p) / 2 + 11));
 ```
 
 此外，在 `LZMA2` 中对 `"lc"` 和 `"lp"` 属性的值还有额外的限制 `(lc + lp <= 4)`：
 
 ```cpp
-  // 抛出 "不支持的属性：(lc + lp) > 4" 的异常
-  if (lc + lp > 4)
-    throw "Unsupported properties: (lc + lp) > 4";
+// 抛出 "不支持的属性：(lc + lp) > 4" 的异常
+if (lc + lp > 4) {
+  throw "Unsupported properties: (lc + lp) > 4";
+}
 ```
 
 对于 LZMA 解码器来说，这样的 `(lc + lp)` 值限制有一些优点，它减少了解码器分配的表的最大大小。并且它降低了初始化过程的复杂性，这对于保持解码大量小型 LZMA 流的高速度可能很重要。
@@ -143,9 +147,9 @@ void EncodeProperties(Byte *properties)
 
 LZMA 解码器的 RAM 使用由以下部分决定：
 
-1.  滑动窗口（从 4 KiB 到 4 GiB）。
-2.  概率模型计数器数组（16 位变量的数组）。
-3.  一些额外的状态变量（大约 10 个 32 位整数变量）。
+1. 滑动窗口（从 4 KiB 到 4 GiB）。
+2. 概率模型计数器数组（16 位变量的数组）。
+3. 一些额外的状态变量（大约 10 个 32 位整数变量）。
 
 ### 滑动窗口的 RAM 使用
 
@@ -449,7 +453,7 @@ typedef UInt16 CProb;
 
 ```cpp
 #define INIT_PROBS(p) \
- { for (unsigned i = 0; i < sizeof(p) / sizeof(p[0]); i++) p[i] = PROB_INIT_VAL; }
+  { for (unsigned i = 0; i < sizeof(p) / sizeof(p[0]); i++) p[i] = PROB_INIT_VAL; }
 ```
 
 `DecodeBit()` 函数解码一位。
@@ -609,8 +613,8 @@ LZMA 解码器使用 `(1 << (lc + lp))` 个包含 `CProb` 值的表，其中每�
 可以使用以下代码将该值转换为匹配的实际长度：
 
 ```cpp
-  #define kMatchMinLen 2
-  matchLen = len + kMatchMinLen;
+#define kMatchMinLen 2
+matchLen = len + kMatchMinLen;
 ```
 
 匹配长度解码器可以返回从 0 到 271 的值。相应的实际匹配长度值可以在 2 到 273 的范围内。
@@ -675,8 +679,8 @@ public:
 LZMA 解码器使用 `CLenDecoder` 类的两个实例。第一个实例用于 "简单匹配 (Simple Match)" 类型的匹配，第二个实例用于 "重复匹配 (Rep Match)" 类型的匹配：
 
 ```cpp
-  CLenDecoder LenDecoder;
-  CLenDecoder RepLenDecoder;
+CLenDecoder LenDecoder;
+CLenDecoder RepLenDecoder;
 ```
 
 ### 匹配距离解码
@@ -688,18 +692,19 @@ LZMA 支持最大 4 GiB 减 1 的字典大小，距离解码器解码的匹配�
 LZMA 使用规范化的匹配长度（从零开始的长度）来计算上下文状态 `lenState` 以解码距离值：
 
 ```cpp
-  #define kNumLenToPosStates 4
+#define kNumLenToPosStates 4
 
-  unsigned lenState = len;
-  if (lenState > kNumLenToPosStates - 1)
-    lenState = kNumLenToPosStates - 1;
+unsigned lenState = len;
+if (lenState > kNumLenToPosStates - 1) {
+  lenState = kNumLenToPosStates - 1;
+}
 ```
 
 距离解码器返回 `dist` 值，该值是匹配距离的从零开始的值。
 可以使用以下代码计算实际的匹配距离：
 
 ```cpp
-  matchDistance = dist + 1;
+matchDistance = dist + 1;
 ```
 
 距离解码器的状态和初始化代码：
@@ -804,7 +809,7 @@ LZMA 流有 2 种类型：
 
 LZMA 解码器支持 3 种解码模式：
 
-1.  **解包大小未定义。** LZMA 解码器在获取到 "流结束 (End of stream)" 标记后停止解码。
+1. **解包大小未定义。** LZMA 解码器在获取到 "流结束 (End of stream)" 标记后停止解码。
 
     该情况的输入变量：
 
@@ -812,7 +817,7 @@ LZMA 解码器支持 3 种解码模式：
     * `unpackSizeDefined = false`
     * `unpackSize` 包含任意值
 
-2.  **解包大小已定义，并且 LZMA 解码器支持两种变体**，即流可以包含 "流结束 (End of stream)" 标记，或者流在没有 "流结束 (End of stream)" 标记的情况下结束。LZMA 解码器必须检测这些情况中的任何一种。
+2. **解包大小已定义，并且 LZMA 解码器支持两种变体**，即流可以包含 "流结束 (End of stream)" 标记，或者流在没有 "流结束 (End of stream)" 标记的情况下结束。LZMA 解码器必须检测这些情况中的任何一种。
 
     该情况的输入变量：
 
@@ -820,7 +825,7 @@ LZMA 解码器支持 3 种解码模式：
     * `unpackSizeDefined = true`
     * `unpackSize` 包含解包大小
 
-3.  **解包大小已定义，并且 LZMA 流必须包含 "流结束 (End of stream)" 标记**
+3. **解包大小已定义，并且 LZMA 流必须包含 "流结束 (End of stream)" 标记**
 
     该情况的输入变量：
 
@@ -876,15 +881,15 @@ LZMA 解码器保存解码器使用的最近 4 个匹配距离的历史记录。
 LZMA 解码器使用二进制模型变量来选择匹配 (MATCH) 或字面值 (LITERAL) 的类型：
 
 ```cpp
-  #define kNumStates 12
-  #define kNumPosBitsMax 4
+#define kNumStates 12
+#define kNumPosBitsMax 4
 
-  CProb IsMatch[kNumStates << kNumPosBitsMax];
-  CProb IsRep[kNumStates];
-  CProb IsRepG0[kNumStates];
-  CProb IsRepG1[kNumStates];
-  CProb IsRepG2[kNumStates];
-  CProb IsRep0Long[kNumStates << kNumPosBitsMax];
+CProb IsMatch[kNumStates << kNumPosBitsMax];
+CProb IsRep[kNumStates];
+CProb IsRepG0[kNumStates];
+CProb IsRepG1[kNumStates];
+CProb IsRepG2[kNumStates];
+CProb IsRep0Long[kNumStates << kNumPosBitsMax];
 ```
 
 解码器使用 `state` 变量值来从 `IsRep`、`IsRepG0`、`IsRepG1` 和 `IsRepG2` 数组中选择确切的变量。
@@ -892,7 +897,7 @@ LZMA 解码器使用二进制模型变量来选择匹配 (MATCH) 或字面值 (L
 `state` 变量可以取 0 到 11 的值。`state` 变量的初始值为零：
 
 ```cpp
-  unsigned state = 0;
+unsigned state = 0;
 ```
 
 `state` 变量在每次字面值 (LITERAL) 或匹配 (MATCH) 后使用以下函数之一进行更新：
@@ -946,22 +951,22 @@ unsigned state2 = (state << kNumPosBitsMax) + posState;
 首先，LZMA 解码器必须检查它是否超过了指定的未压缩大小：
 
 ```cpp
-  if (unpackSizeDefined && unpackSize == 0) {
-    return LZMA_RES_ERROR; // 返回：错误
-  }
+if (unpackSizeDefined && unpackSize == 0) {
+  return LZMA_RES_ERROR; // 返回：错误
+}
 ```
 
 然后它解码字面值并将其放入滑动窗口：
 
 ```cpp
-  DecodeLiteral(state, rep0);
+DecodeLiteral(state, rep0);
 ```
 
 然后解码器必须更新 `state` 值和 `unpackSize` 值；
 
 ```cpp
-  state = UpdateState_Literal(state);
-  unpackSize--;
+state = UpdateState_Literal(state);
+unpackSize--;
 ```
 
 然后解码器必须转到主循环的开始处以解码下一个匹配 (Match) 或字面值 (Literal)。
@@ -974,27 +979,27 @@ unsigned state2 = (state << kNumPosBitsMax) + posState;
 距离历史表使用以下方案更新：
 
 ```cpp
-  rep3 = rep2;
-  rep2 = rep1;
-  rep1 = rep0;
+rep3 = rep2;
+rep2 = rep1;
+rep1 = rep0;
 ```
 
 使用 `LenDecoder` 解码从零开始的长度：
 
 ```cpp
-  len = LenDecoder.Decode(&RangeDec, posState);
+len = LenDecoder.Decode(&RangeDec, posState);
 ```
 
 使用 `UpdateState_Match` 函数更新状态：
 
 ```cpp
-  state = UpdateState_Match(state);
+state = UpdateState_Match(state);
 ```
 
 并使用 `DecodeDistance` 解码新的 `rep0` 值：
 
 ```cpp
-  rep0 = DecodeDistance(len);
+rep0 = DecodeDistance(len);
 ```
 
 这个 `rep0` 将用作当前匹配的从零开始的距离。
@@ -1002,25 +1007,25 @@ unsigned state2 = (state << kNumPosBitsMax) + posState;
 如果 `rep0` 的值等于 `0xFFFFFFFF`，则表示我们遇到了 "流结束 (End of stream)" 标记，因此我们可以停止解码并在范围解码器中检查结束条件：
 
 ```cpp
-  if (rep0 == 0xFFFFFFFF) {
-    return RangeDec.IsFinishedOK() ?
-        LZMA_RES_FINISHED_WITH_MARKER : // 返回：带标记完成
-        LZMA_RES_ERROR;                 // 返回：错误
-  }
+if (rep0 == 0xFFFFFFFF) {
+  return RangeDec.IsFinishedOK() ?
+      LZMA_RES_FINISHED_WITH_MARKER : // 返回：带标记完成
+      LZMA_RES_ERROR;                 // 返回：错误
+}
 ```
 
 如果未压缩大小已定义，LZMA 解码器必须检查它是否超过了该指定的未压缩大小：
 
 ```cpp
-  if (unpackSizeDefined && unpackSize == 0)
-    return LZMA_RES_ERROR; // 返回：错误
+if (unpackSizeDefined && unpackSize == 0)
+  return LZMA_RES_ERROR; // 返回：错误
 ```
 
 此外，解码器必须检查 `rep0` 值不大于字典大小，并且不大于已解码的字节数：
 
 ```cpp
-  if (rep0 >= dictSize || !OutWindow.CheckDistance(rep0))
-    return LZMA_RES_ERROR; // 返回：错误
+if (rep0 >= dictSize || !OutWindow.CheckDistance(rep0))
+  return LZMA_RES_ERROR; // 返回：错误
 ```
 
 然后解码器必须按照 "匹配符号复制" 部分所述复制匹配字节。
@@ -1034,15 +1039,15 @@ unsigned state2 = (state << kNumPosBitsMax) + posState;
 首先，LZMA 解码器必须检查它是否超过了指定的未压缩大小：
 
 ```cpp
-  if (unpackSizeDefined && unpackSize == 0)
-    return LZMA_RES_ERROR; // 返回：错误
+if (unpackSizeDefined && unpackSize == 0)
+  return LZMA_RES_ERROR; // 返回：错误
 ```
 
 此外，如果 LZ 窗口为空，解码器必须返回错误：
 
 ```cpp
-  if (OutWindow.IsEmpty())
-    return LZMA_RES_ERROR; // 返回：错误
+if (OutWindow.IsEmpty())
+  return LZMA_RES_ERROR; // 返回：错误
 ```
 
 如果匹配类型是 "重复匹配 (Rep Match)"，解码器使用距离历史表中的 4 个变量之一来获取当前匹配的距离值，并且有 4 种相应的解码流程。
@@ -1056,28 +1061,28 @@ unsigned state2 = (state << kNumPosBitsMax) + posState;
 * **"重复匹配 1 (Rep Match 1)"**:
 
     ```cpp
-      UInt32 dist = rep1;
-      rep1 = rep0;
-      rep0 = dist;
+    UInt32 dist = rep1;
+    rep1 = rep0;
+    rep0 = dist;
     ```
 
 * **"重复匹配 2 (Rep Match 2)"**:
 
     ```cpp
-      UInt32 dist = rep2;
-      rep2 = rep1;
-      rep1 = rep0;
-      rep0 = dist;
+    UInt32 dist = rep2;
+    rep2 = rep1;
+    rep1 = rep0;
+    rep0 = dist;
     ```
 
 * **"重复匹配 3 (Rep Match 3)"**:
 
     ```cpp
-      UInt32 dist = rep3;
-      rep3 = rep2;
-      rep2 = rep1;
-      rep1 = rep0;
-      rep0 = dist;
+    UInt32 dist = rep3;
+    rep3 = rep2;
+    rep2 = rep1;
+    rep1 = rep0;
+    rep0 = dist;
     ```
 
 然后解码器使用 `IsRepG0`、`IsRep0Long`、`IsRepG1`、`IsRepG2` 解码 "重复匹配 (Rep Match)" 的确切子类型。
@@ -1085,22 +1090,22 @@ unsigned state2 = (state << kNumPosBitsMax) + posState;
 如果子类型是 "短重复匹配 (Short Rep Match)"，解码器更新状态，将窗口中的一个字节放到窗口中的当前位置，然后转到下一个 匹配 (MATCH) / 字面值 (LITERAL) 符号（主循环的开始）：
 
 ```cpp
-  state = UpdateState_ShortRep(state);
-  OutWindow.PutByte(OutWindow.GetByte(rep0 + 1));
-  unpackSize--;
-  continue;
+state = UpdateState_ShortRep(state);
+OutWindow.PutByte(OutWindow.GetByte(rep0 + 1));
+unpackSize--;
+continue;
 ```
 
 在其他情况下（重复匹配 0/1/2/3），它使用 `RepLenDecoder` 解码器解码匹配的从零开始的长度：
 
 ```cpp
-  len = RepLenDecoder.Decode(&RangeDec, posState);
+len = RepLenDecoder.Decode(&RangeDec, posState);
 ```
 
 然后它更新状态：
 
 ```cpp
-  state = UpdateState_Rep(state);
+state = UpdateState_Rep(state);
 ```
 
 然后解码器必须按照 "匹配符号复制" 部分所述复制匹配字节。
@@ -1114,17 +1119,18 @@ unsigned state2 = (state << kNumPosBitsMax) + posState;
 如果未压缩大小已定义，LZMA 解码器必须检查它是否超过了该指定的未压缩大小：
 
 ```cpp
-  len += kMatchMinLen;
-  bool isError = false;
-  if (unpackSizeDefined && unpackSize < len) {
-    len = (unsigned)unpackSize;
-    isError = true;
-  }
-  OutWindow.CopyMatch(rep0 + 1, len);
-  unpackSize -= len;
-  if (isError) {
-    return LZMA_RES_ERROR; // 返回：错误
-  }
+len += kMatchMinLen;
+bool isError = false;
+if (unpackSizeDefined && unpackSize < len) {
+  len = (unsigned)unpackSize;
+  isError = true;
+}
+
+OutWindow.CopyMatch(rep0 + 1, len);
+unpackSize -= len;
+if (isError) {
+  return LZMA_RES_ERROR; // 返回：错误
+}
 ```
 
 然后解码器必须转到主循环的开始处以解码下一个 匹配 (MATCH) 或 字面值 (LITERAL)。
@@ -1134,6 +1140,7 @@ unsigned state2 = (state << kNumPosBitsMax) + posState;
 -----
 
 本规范未描述支持部分解码的解码器实现变体。
+
 这种部分解码情况可能需要在 "流结束" 条件检查代码中进行一些更改。此类代码也可以使用解码器返回的附加状态码。
 
 本规范使用带有模板的 C++ 代码来简化描述。
