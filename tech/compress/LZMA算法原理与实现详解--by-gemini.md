@@ -238,7 +238,7 @@ LZMA 算法的核心原理包括：基于滑动窗口的字典压缩（源于 LZ
 
 （访问时间为 2025年4月10日）
 
-1. <span id="articel1"></span><span id="articel2">LZMA File Format</span> \- Lempel Ziv Markov Chain Algorithm \- Aspose, [https://products.aspose.com/zip/most-common-archives/what-is-lzma/](https://products.aspose.com/zip/most-common-archives/what-is-lzma/)
+1. <a id="articel1"></a><a id="articel2">LZMA File Format \- Lempel Ziv Markov Chain Algorithm \- Aspose</a>, [https://products.aspose.com/zip/most-common-archives/what-is-lzma/](https://products.aspose.com/zip/most-common-archives/what-is-lzma/)
 2. XZ Utils \- Wikipedia, [https://en.wikipedia.org/wiki/XZ\_Utils](https://en.wikipedia.org/wiki/XZ_Utils)
 3. 7zip/DOC/lzma.txt at master · yumeyao/7zip · GitHub, [https://github.com/yumeyao/7zip/blob/master/DOC/lzma.txt](https://github.com/yumeyao/7zip/blob/master/DOC/lzma.txt)
 4. LZMA SDK (Software Development Kit) \- 7-Zip, [https://www.7-zip.org/sdk.html](https://www.7-zip.org/sdk.html)
