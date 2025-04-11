@@ -13,6 +13,8 @@ LZMA 算法的主要特点和优势包括：极高的压缩率，通常优于 gz
 
 研究表明，LZMA 之所以能够实现如此高的压缩率和相对较快的解压缩速度，得益于其复杂而精妙的设计。可变的字典大小为算法提供了根据不同数据特征进行调整的灵活性，从而在压缩效率和资源消耗之间取得平衡。其在解压缩方面的优势确保了用户能够快速地访问压缩数据，这对于提升用户体验至关重要。LZMA 在嵌入式领域的适用性表明其在资源受限的环境中也能够发挥重要作用。多线程技术的支持则使其能够充分利用现代多核处理器的计算能力，进一步提升性能。
 
+Test Ref: [[1]](#articel1), [[2]](#articel2)
+
 ## **2. LZMA的基本原理**
 
 LZMA 算法是基于著名的 LZ77 算法改进而来的一种压缩方法 [[3]](https://github.com/yumeyao/7zip/blob/master/DOC/lzma.txt)。LZ77 算法的核心思想是利用滑动窗口来寻找数据中的重复模式。LZMA 在此基础上进行了优化和扩展，主要体现在以下几个方面：
@@ -236,7 +238,8 @@ LZMA 算法的核心原理包括：基于滑动窗口的字典压缩（源于 LZ
 
 （访问时间为 2025年4月10日）
 
-1. LZMA File Format \- Lempel Ziv Markov Chain Algorithm \- Aspose, [https://products.aspose.com/zip/most-common-archives/what-is-lzma/](https://products.aspose.com/zip/most-common-archives/what-is-lzma/)
+<a id="articel1"></a>
+1. <a id="articel2">LZMA File Format</a> \- Lempel Ziv Markov Chain Algorithm \- Aspose, [https://products.aspose.com/zip/most-common-archives/what-is-lzma/](https://products.aspose.com/zip/most-common-archives/what-is-lzma/)
 2. XZ Utils \- Wikipedia, [https://en.wikipedia.org/wiki/XZ\_Utils](https://en.wikipedia.org/wiki/XZ_Utils)
 3. 7zip/DOC/lzma.txt at master · yumeyao/7zip · GitHub, [https://github.com/yumeyao/7zip/blob/master/DOC/lzma.txt](https://github.com/yumeyao/7zip/blob/master/DOC/lzma.txt)
 4. LZMA SDK (Software Development Kit) \- 7-Zip, [https://www.7-zip.org/sdk.html](https://www.7-zip.org/sdk.html)
