@@ -1,4 +1,4 @@
-# LZMA 规范（草案版本）
+# LZMA 编码规范（草案版本）
 
 ## 概述
 
@@ -34,7 +34,7 @@ LZMA 文件包含原始的 LZMA 数据流以及相关的属性头。
 | 偏移量 | 大小 | 描述 |
 |--------|------|------|
 | 0      | 1    | LZMA 模型属性（lc、lp、pb）的编码形式 |
-| 1      | 4    | 字典大小（32 位无符号整数，小端序） |
+| 1      | 4    | 字典大小（32 位无符号整型，小端序） |
 | 5      | 8    | 未压缩数据大小（64 位无符号整型，小端序） |
 | 13     |      | 压缩数据（LZMA 流） |
 
@@ -50,7 +50,8 @@ LZMA 文件包含原始的 LZMA 数据流以及相关的属性头。
 以下代码用于编码 LZMA 属性：
 
 ```cpp
-void EncodeProperties(Byte * properties) {
+void EncodeProperties(Byte * properties)
+{
   properties[0] = (Byte)((pb * 5 + lp) * 9 + lc);
   Set_UInt32_LittleEndian(properties + 1, dictSize);
 }
@@ -65,17 +66,20 @@ unsigned lc, pb, lp;
 UInt32 dictSize;
 UInt32 dictSizeInProperties;
 
-void DecodeProperties(const Byte *properties) {
+void DecodeProperties(const Byte *properties)
+{
   unsigned d = properties[0];
-  if (d >= (9 * 5 * 5))
+  if (d >= (9 * 5 * 5)) {
     throw "Incorrect LZMA properties";
+  }
   lc = d % 9;
   d /= 9;
   pb = d / 5;
   lp = d % 5;
   dictSizeInProperties = 0;
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++) {
     dictSizeInProperties |= (UInt32)properties[i + 1] << (8 * i);
+  }
   dictSize = dictSizeInProperties;
   if (dictSize < LZMA_DIC_MIN)
     dictSize = LZMA_DIC_MIN;
@@ -111,8 +115,9 @@ dictSize = (p == 40) ? 0xFFFFFFFF : (((UInt32)2 | ((p) & 1)) << ((p) / 2 + 11));
 此外，LZMA2 对 "lc" 和 "lp" 属性有额外限制（`lc + lp <= 4`）：
 
 ```cpp
-if (lc + lp > 4)
+if (lc + lp > 4) {
   throw "Unsupported properties: (lc + lp) > 4";
+}
 ```
 
 这种限制对 LZMA 解码器有一些优势：
@@ -237,8 +242,7 @@ public:
   ~COutWindow() { delete[] Buf; }
 
   // 创建指定大小的滑动窗口
-  void Create(UInt32 dictSize)
-  {
+  void Create(UInt32 dictSize) {
     Buf = new Byte[dictSize];
     Pos = 0;
     Size = dictSize;
@@ -251,8 +255,7 @@ public:
   {
     TotalPos++;
     Buf[Pos++] = b;
-    if (Pos == Size)  // 到达缓冲区末尾时循环
-    {
+    if (Pos == Size) { // 到达缓冲区末尾时循环
       Pos = 0;
       IsFull = true;
     }
@@ -268,20 +271,21 @@ public:
   // 复制匹配内容
   void CopyMatch(UInt32 dist, unsigned len)
   {
-    for (; len > 0; len--)
+    for (; len > 0; len--) {
       PutByte(GetByte(dist));
+    }
   }
 
   // 检查距离是否有效
   bool CheckDistance(UInt32 dist) const
   {
-    return (dist <= Pos) || IsFull;
+    return ((dist <= Pos) || IsFull);
   }
 
   // 检查窗口是否为空
   bool IsEmpty() const
   {
-    return (Pos == 0) && !IsFull;
+    return ((Pos == 0) && !IsFull);
   }
 };
 ```
@@ -305,8 +309,9 @@ struct CRangeDecoder
   UInt32 Range;          // 当前范围值
   UInt32 Code;           // 当前编码值
   InputStream *InStream; // 输入流指针
+
   bool Corrupted;        // 数据损坏标志
-}
+};
 ```
 
 ### 关于 Range 和 Code 变量的说明
@@ -338,14 +343,16 @@ bool CRangeDecoder::Init()
   Byte b = InStream->ReadByte();  // 读取首字节
 
   // 读取后续 4 个字节构建 Code 值
-  for (int i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++) {
     Code = (Code << 8) | InStream->ReadByte();
+  }
 
   // 校验首字节必须为 0 且 Code 不等于 Range
-  if (b != 0 || Code == Range)
+  if (b != 0 || Code == Range) {
     Corrupted = true;
+  }
 
-  return b == 0;  // 返回首字节是否为0的校验结果
+  return (b == 0);  // 返回首字节是否为0的校验结果
 }
 ```
 
@@ -373,9 +380,8 @@ bool IsFinishedOK() const { return Code == 0; }
 
 void CRangeDecoder::Normalize()
 {
-  if (Range < kTopValue)  // 当范围值低于阈值时
-  {
-    Range <<= 8;          // 范围值左移 8 位
+  if (Range < kTopValue) { // 当范围值低于阈值时
+    Range <<= 8;           // 范围值左移 8 位
     Code = (Code << 8) | InStream->ReadByte();  // 同步更新编码值
   }
 }
@@ -448,8 +454,8 @@ UInt32 CRangeDecoder::DecodeDirectBits(unsigned numBits)
 
 Mathematical probabilities can be presented with the following formulas:
      probability(symbol_0) = prob / 2048.
-     probability(symbol_1) =  1 - Probability(symbol_0) =
-                           =  1 - prob / 2048 =
+     probability(symbol_1) =  1 - Probability(symbol_0)
+                           =  1 - prob / 2048
                            =  (2048 - prob) / 2048
 ```
 
@@ -471,7 +477,7 @@ typedef UInt16 CProb;
 
 ```cpp
 #define INIT_PROBS(p) \
- { for (unsigned i = 0; i < sizeof(p) / sizeof(p[0]); i++) p[i] = PROB_INIT_VAL; }
+  { for (unsigned i = 0; i < sizeof(p) / sizeof(p[0]); i++) p[i] = PROB_INIT_VAL; }
 ```
 
 DecodeBit() 函数解码一个 bit 。
@@ -489,14 +495,11 @@ unsigned CRangeDecoder::DecodeBit(CProb *prob)
   unsigned v = *prob;
   UInt32 bound = (Range >> kNumBitModelTotalBits) * v;
   unsigned symbol;
-  if (Code < bound)
-  {
+  if (Code < bound) {
     v += ((1 << kNumBitModelTotalBits) - v) >> kNumMoveBits;
     Range = bound;
     symbol = 0;
-  }
-  else
-  {
+  } else {
     v -= v >> kNumMoveBits;
     Code -= bound;
     Range -= bound;
@@ -550,8 +553,7 @@ unsigned BitTreeReverseDecode(CProb * probs, unsigned numBits, CRangeDecoder * r
 {
   unsigned m = 1;         // 初始节点指针
   unsigned symbol = 0;    // 符号值容器
-  for (unsigned i = 0; i < numBits; i++)
-  {
+  for (unsigned i = 0; i < numBits; i++) {
     unsigned bit = rc->DecodeBit(&probs[m]);  // 解码单个比特
     m <<= 1;              // 节点指针左移
     m += bit;             // 根据比特值选择子树
@@ -566,7 +568,6 @@ class CBitTreeDecoder
   CProb Probs[(unsigned)1 << NumBits];
 
 public:
-
   void Init()
   {
     INIT_PROBS(Probs);
@@ -575,8 +576,9 @@ public:
   unsigned Decode(CRangeDecoder *rc)
   {
     unsigned m = 1;
-    for (unsigned i = 0; i < NumBits; i++)
+    for (unsigned i = 0; i < NumBits; i++) {
       m = (m << 1) + rc->DecodeBit(&Probs[m]);
+    }
     return m - ((unsigned)1 << NumBits);
   }
 
@@ -619,8 +621,6 @@ LZMA 解码器使用了 (1 << (lc + lp)) 个包含 CProb 值的概率表，其�
   }
 ```
 
----
-
 它使用由上下文前一个字面量的高 lc 位和 outputStream 当前位置值的低 lp 位组合而成的复合键值 State，用于确定使用哪个概率表来解码当前的字面量。
 
 ##### 核心参数
@@ -630,8 +630,6 @@ LZMA 解码器使用了 (1 << (lc + lp)) 个包含 CProb 值的概率表，其�
 | `lc` | [0,8] | 字面量上下文位数|
 | `lp` | [0,4] | 位置相关位数 |
 
----
-
 ##### 上下文选择机制
 
 解码器通过以下方式确定当前使用的概率表：
@@ -639,22 +637,20 @@ LZMA 解码器使用了 (1 << (lc + lp)) 个包含 CProb 值的概率表，其�
 1. **上下文继承**：取前一字面量的高 `lc` 位
 
 ```cpp
-   UInt32 ctxBits = prevByte >> (8 - lc)
+UInt32 ctxBits = prevByte >> (8 - lc)
 ```
 
 2. **位置掩码**：取当前输出位置的低 `lp` 位
 
 ```cpp
-   UInt32 posBits = TotalPos & ((1 << lp) - 1)
+UInt32 posBits = TotalPos & ((1 << lp) - 1)
 ```
 
 3. **复合键值**：
 
 ```cpp
-   UInt32 litState = (posBits << lc) | ctxBits
+UInt32 litState = (posBits << lc) | ctxBits
 ```
-
----
 
 #### 解码器状态
 
@@ -715,8 +711,6 @@ void DecodeLiteral(unsigned state, UInt32 rep0) {
 }
 ```
 
----
-
 ## LZMA 解码模式
 
 LZMA 流有两种类型：
@@ -747,8 +741,6 @@ LZMA 使用三种匹配类型：
 
 解码器维护最近使用的 4 个匹配距离的历史记录，并通过状态变量和概率模型选择匹配或字面量类型。
 
----
-
 ## 注意事项
 
 本规范未描述支持部分解码的解码器实现变体。此类实现可能需要对 "流结束" 条件检查代码进行修改，并可能使用额外的状态码。
@@ -758,8 +750,8 @@ LZMA 使用三种匹配类型：
 1) 动态分配的字面量解码器数组。
 2) 包含所有其他 CProb 变量的公共数组。
 
----
-
 ## 参考文献
+
+<a id="referen1"></a>
 
 1. G. N. N. Martin, Range encoding: an algorithm for removing redundancy from a digitized message, Video & Data Recording Conference, Southampton, UK, July 24-27, 1979.

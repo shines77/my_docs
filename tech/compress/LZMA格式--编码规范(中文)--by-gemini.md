@@ -1,8 +1,4 @@
-好的，这是整理成 Markdown 格式并移除 `[source: ##]` 标记的 LZMA 规范中文翻译：
-
 # LZMA 编码规范 (草稿版本)
-
-----------------------------------
 
 ## 概述
 
@@ -13,21 +9,21 @@
 
 ## 标记法
 
-使用 C++ 编程语言的语法。
+我们使用 C++ 编程语言的语法。
 
 在 C++ 代码中使用以下类型：
 
-* `unsigned` - 无符号整数，至少 16 位
-* `int`      - 有符号整数，至少 16 位
-* `UInt64`   - 64 位无符号整数
-* `UInt32`   - 32 位无符号整数
-* `UInt16`   - 16 位无符号整数
-* `Byte`     - 8 位无符号整数
+* `unsigned` - 无符号整型，至少 16 位
+* `int`      - 有符号整型，至少 16 位
+* `UInt64`   - 64 位无符号整型
+* `UInt32`   - 32 位无符号整型
+* `UInt16`   - 16 位无符号整型
+* `Byte`     - 8 位无符号整型
 * `bool`     - 布尔类型，有两个可能的值：`false`、`true`
 
 ## lzma 文件格式
 
-lzma 文件包含原始 LZMA 流和带有相关属性的头部。
+lzma 文件包含原始 LZMA 流以及带有相关属性的头部。
 
 该格式的文件使用 ".lzma" 扩展名。
 
@@ -35,19 +31,19 @@ lzma 文件格式布局：
 
 | 偏移量 | 大小 | 描述                                                     |
 | :----- | :--- | :------------------------------------------------------- |
-| 0      | 1    | LZMA 模型属性 (`lc`, `lp`, `pb`) 的编码形式                  |
-| 1      | 4    | 字典大小 (32 位无符号整数，小端序)                           |
-| 5      | 8    | 未压缩大小 (64 位无符号整数，小端序)                         |
-| 13     |      | 压缩数据 (LZMA 流)                                         |
+| 0      | 1    | LZMA 模型属性 (`lc`, `lp`, `pb`) 的编码形式              |
+| 1      | 4    | 字典大小 (32 位无符号整型，小端序)                       |
+| 5      | 8    | 未压缩数据大小 (64 位无符号整型，小端序)                 |
+| 13     |      | 压缩数据 (LZMA 流)                                       |
 
 LZMA 属性：
 
-| 名称     | 范围          | 描述                                           |
-| :------- | :------------ | :--------------------------------------------- |
-| `lc`     | [0, 8]        | "字面上下文 (literal context)" 比特的数量        |
-| `lp`     | [0, 4]        | "字面位置 (literal pos)" 比特的数量            |
-| `pb`     | [0, 4]        | "位置 (pos)" 比特的数量                        |
-| `dictSize` | [0, 2^32 - 1] | 字典大小                                       |
+| 名称     | 范围          | 描述                             | 中文        |
+| :------- | :------------ | :------------------------------- |-------------|
+| `lc`     | [0, 8]        | "Literal Context" 的 bit 位数   | 字面量上下文 |
+| `lp`     | [0, 4]        | "Literal Pos" 的 bit 位数         | 字面量位置 |
+| `pb`     | [0, 4]        | "Pos" 的 bit 位数                       | 位置 |
+| `dictSize` | [0, 2^32 - 1] | "dictionary size"                 | 字典大小 |
 
 以下代码对 LZMA 属性进行编码：
 
@@ -135,15 +131,15 @@ if (lc + lp > 4) {
 | 0      | 1    | 使用 LZMA2 方案编码的字典大小           |
 | 1      | 1    | LZMA 模型属性 (`lc`, `lp`, `pb`) 的编码形式 |
 
-## 内存使用
+## 内存使用情况
 
 LZMA 解码器的内存使用由以下部分决定：
 
 1. 滑动窗口（从 4 KiB 到 4 GiB）。
 2. 概率模型计数器数组（16 位变量的数组）。
-3. 一些额外的状态变量（大约 10 个 32 位整数变量）。
+3. 一些额外的状态变量（大约 10 个 32 位整型变量）。
 
-### 滑动窗口的内存使用
+### 滑动窗口的内存使用情况
 
 解码有两种主要场景：
 
@@ -158,7 +154,7 @@ LZMA 解码器的内存使用由以下部分决定：
 * 在本规范中，我们描述了用于解码到某个外部存储的代码。
 * 用于将完整流解码到一个输出内存缓冲区的优化版本代码可能需要在代码中进行一些细微更改。
 
-### 概率模型计数器的内存使用
+### 概率模型计数器的内存使用情况
 
 ------------------------------------------------
 
@@ -168,9 +164,9 @@ LZMA 解码器的内存使用由以下部分决定：
 size_of_prob_arrays = 1846 + 768 * (1 << (lp + lc))
 ```
 
-每个概率模型计数器是 11 位无符号整数。
+每个概率模型计数器是 11-bit 无符号整型。
 
-如果我们对这些概率模型计数器使用 16 位整数变量（2 字节整数），则概率模型计数器数组所需的内存使用量可以通过以下公式估算：
+如果我们对这些概率模型计数器使用 16-bit 整型变量（2 字节整型），则概率模型计数器数组所需的内存使用量可以通过以下公式估算：
 
 ```cpp
 RAM = 4 KiB + 1.5 KiB * (1 << (lp + lc))
@@ -194,7 +190,7 @@ RAM_lc8_lp4 = 4 KiB + 1.5 KiB * 4096 = 6148 KiB
 RAM_lc_lp_4 = 4 KiB + 1.5 KiB * 16 = 28 KiB
 ```
 
-### 编码器的内存使用
+### 编码器的内存使用情况
 
 LZMA 编码代码有许多变体。这些变体具有不同的内存消耗值。请注意，对于同一流，LZMA 编码器的内存消耗不能小于 LZMA 解码器的内存消耗。
 
@@ -214,9 +210,9 @@ LZMA 压缩算法使用基于 LZ 的滑动窗口压缩，并使用范围编码 (
 
 LZMA 使用类似于 LZ77 算法的滑动窗口压缩。
 
-LZMA 流必须解码为由匹配 (MATCHES) 和字面值 (LITERALS) 组成的序列：
+LZMA 流必须解码为由匹配 (MATCHES) 和字面量 (LITERALS) 组成的序列：
 
-* **字面值 (LITERAL)** 是一个 8 位字符（一个字节）。解码器只需将该字面值放入未压缩流中。
+* **字面量 (LITERAL)** 是一个 8 位字符（一个字节）。解码器只需将该字面量放入未压缩流中。
 
 * **匹配 (MATCH)** 是一对数字（距离-长度对 (`DISTANCE`-`LENGTH` pair)）。解码器从解压缩流中当前位置向前 `DISTANCE` 个字符处精确地取一个字节，并将其放入解压缩流中，解码器必须重复此操作 `LENGTH` 次。
 
@@ -273,12 +269,12 @@ public:
 
   bool CheckDistance(UInt32 dist) const
   {
-    return dist <= Pos || IsFull;
+    return ((dist <= Pos) || IsFull);
   }
 
   bool IsEmpty() const
   {
-    return Pos == 0 && !IsFull;
+    return ((Pos == 0) && !IsFull);
   }
 };
 ```
@@ -296,18 +292,18 @@ LZMA 流仅包含一个大端序编码的非常大的数字。LZMA 解码器使�
 ```cpp
 struct CRangeDecoder
 {
-  UInt32 Range;
-  UInt32 Code;
-  InputStream * InStream;
+  UInt32 Range;           // 当前范围值
+  UInt32 Code;            // 当前编码值
+  InputStream * InStream; // 输入流指针
 
-  bool Corrupted;
+  bool Corrupted;         // 数据损坏标志
 };
 ```
 
 关于 `Range` 和 `Code` 变量的 `UInt32` 类型的说明：
 
-* 可以使用 64 位（无符号或有符号）整数类型代替 32 位无符号整数来表示 `Range` 和 `Code` 变量，但必须使用一些额外的代码在某些操作后将值截断为低 32 位。
-* 如果编程语言不支持 32 位无符号整数类型（如 JAVA 语言），可以使用 32 位有符号整数，但必须更改一些代码。
+* 可以使用 64 位（无符号或有符号）整型代替 32 位无符号整型来表示 `Range` 和 `Code` 变量，但必须使用一些额外的代码在某些操作后将值截断为低 32 位。
+* 如果编程语言不支持 32 位无符号整型（如 JAVA 语言），可以使用 32 位有符号整型，但必须更改一些代码。
 * 例如，需要更改本规范中使用 `UInt32` 变量比较操作的代码。
 
 范围解码器可能处于某些状态，这些状态可被视为 LZMA 流中的 "损坏 (Corruption)"。
@@ -334,9 +330,11 @@ bool CRangeDecoder::Init()
   for (int i = 0; i < 4; i++) {
     Code = (Code << 8) | InStream->ReadByte();
   }
+
   if (b != 0 || Code == Range) {
     Corrupted = true;
   }
+
   return (b == 0);
 }
 ```
@@ -371,10 +369,10 @@ void CRangeDecoder::Normalize()
 
 LZMA 仅将范围编码用于两种类型的二进制符号：
 
-1) 具有固定且相等概率的二进制符号（Direct Bits）
+1) 具有固定且相等概率的二进制符号（direct bits）
 2) 具有预测概率的二进制符号
 
-`DecodeDirectBits()` 函数解码 Direct Bits 序列：
+`DecodeDirectBits()` 函数解码 direct bits 序列：
 
 ```cpp
 UInt32 CRangeDecoder::DecodeDirectBits(unsigned numBits)
@@ -393,6 +391,7 @@ UInt32 CRangeDecoder::DecodeDirectBits(unsigned numBits)
     res <<= 1;
     res += t + 1;
   } while (--numBits);
+
   return res;
 }
 ```
@@ -437,11 +436,12 @@ typedef UInt16 CProb;
   { for (unsigned i = 0; i < sizeof(p) / sizeof(p[0]); i++) p[i] = PROB_INIT_VAL; }
 ```
 
-`DecodeBit()` 函数解码一位。
+`DecodeBit()` 函数解码一个 bit。
 
 LZMA 解码器提供指向 `CProb` 变量的指针，该变量包含有关符号 0 的估计概率的信息，范围解码器在解码后更新该 `CProb` 变量。范围解码器增加已解码符号的估计概率：
 
 ```cpp
+#define kNumBitModelTotalBits 11
 #define kNumMoveBits 5
 
 unsigned CRangeDecoder::DecodeBit(CProb *prob)
@@ -521,9 +521,9 @@ public:
 
 ## LZMA 的 LZ 部分
 
-LZMA 的 LZ 部分描述了有关解码匹配 (MATCHES) 和字面值 (LITERALS) 的详细信息。
+LZMA 的 LZ 部分描述了有关解码匹配 (MATCHES) 和字面量 (LITERALS) 的详细信息。
 
-### 字面值解码
+### 字面量解码（LITERALS）
 
 LZMA 解码器使用 `(1 << (lc + lp))` 个包含 `CProb` 值的表，其中每个表包含 0x300 个 `CProb` 值：
 
@@ -543,11 +543,11 @@ void InitLiterals()
 }
 ```
 
-为了选择用于解码的表，它使用由前一个字面值的 (`lc`) 个高位和表示输出流中当前位置的值的 (`lp`) 个低位组成的上下文。
+为了选择用于解码的表，它使用由前一个字面量的 (`lc`) 个高位和表示输出流中当前位置的值的 (`lp`) 个低位组成的上下文。
 
-如果 `(State > 7)`，字面值解码器还使用 `matchByte`，它表示输出流中距离当前位置 `DISTANCE` 个字节的位置处的字节，其中 `DISTANCE` 是最近解码的匹配的距离-长度对中的距离。
+如果 `(State > 7)`，字面量解码器还使用 `matchByte`，它表示输出流中距离当前位置 `DISTANCE` 个字节的位置处的字节，其中 `DISTANCE` 是最近解码的匹配的距离-长度对中的距离。
 
-以下代码解码一个字面值并将其放入滑动窗口缓冲区：
+以下代码解码一个字面量并将其放入滑动窗口缓冲区：
 
 ```cpp
 void DecodeLiteral(unsigned state, UInt32 rep0)
@@ -811,15 +811,15 @@ LZMA 解码器的主循环：
 2. **循环开始**
 
     * 检查 "流结束" 条件。
-    * 解码 匹配 (MATCH) / 字面值 (LITERAL) 的类型。
-    * 如果是字面值 (LITERAL)，解码字面值并将其放入窗口。
+    * 解码 匹配 (MATCH) / 字面量 (LITERAL) 的类型。
+    * 如果是字面量 (LITERAL)，解码字面量并将其放入窗口。
     * 如果是匹配 (MATCH)，解码匹配的长度和匹配距离。
     * 检查错误条件，检查流结束条件，并将匹配字节序列从滑动窗口复制到窗口中的当前位置。
     * 转到循环开始
 
 3. **循环结束**
 
-LZMA 解码器的参考实现使用 `unpackSize` 变量来保存输出流中剩余的字节数。因此，它在每次解码字面值 (LITERAL) 或匹配 (MATCH) 后减少 `unpackSize` 值。
+LZMA 解码器的参考实现使用 `unpackSize` 变量来保存输出流中剩余的字节数。因此，它在每次解码字面量 (LITERAL) 或匹配 (MATCH) 后减少 `unpackSize` 值。
 
 以下代码包含循环开始时的 "流结束" 条件检查：
 
@@ -845,7 +845,7 @@ LZMA 解码器保存解码器使用的最近 4 个匹配距离的历史记录。
 UInt32 rep0 = 0, rep1 = 0, rep2 = 0, rep3 = 0;
 ```
 
-LZMA 解码器使用二进制模型变量来选择匹配 (MATCH) 或字面值 (LITERAL) 的类型：
+LZMA 解码器使用二进制模型变量来选择匹配 (MATCH) 或字面量 (LITERAL) 的类型：
 
 ```cpp
 #define kNumStates 12
@@ -867,7 +867,7 @@ CProb IsRep0Long[kNumStates << kNumPosBitsMax];
 unsigned state = 0;
 ```
 
-`state` 变量在每次字面值 (LITERAL) 或匹配 (MATCH) 后使用以下函数之一进行更新：
+`state` 变量在每次字面量 (LITERAL) 或匹配 (MATCH) 后使用以下函数之一进行更新：
 
 ```cpp
 unsigned UpdateState_Literal(unsigned state)
@@ -888,10 +888,10 @@ unsigned posState = OutWindow.TotalPos & ((1 << pb) - 1);
 unsigned state2 = (state << kNumPosBitsMax) + posState;
 ```
 
-解码器使用以下代码流方案来选择确切的字面值 (LITERAL) 或匹配 (MATCH) 类型：
+解码器使用以下代码流方案来选择确切的字面量 (LITERAL) 或匹配 (MATCH) 类型：
 
 1. `IsMatch[state2]` 解码
-    * **0 -> 字面值 (Literal)**
+    * **0 -> 字面量 (Literal)**
     * **1 -> 匹配 (Match)**
         1. `IsRep[state]` 解码
             * **0 -> 简单匹配 (Simple Match)**
@@ -909,9 +909,9 @@ unsigned state2 = (state << kNumPosBitsMax) + posState;
                                     * **0 -> 重复匹配 2 (Rep Match 2)**
                                     * **1 -> 重复匹配 3 (Rep Match 3)**
 
-### 字面值 (LITERAL) 符号
+### 字面量 (LITERAL) 符号
 
-如果使用 `IsMatch[state2]` 解码得到的值为 "0"，则我们有 "字面值 (LITERAL)" 类型。
+如果使用 `IsMatch[state2]` 解码得到的值为 "0"，则我们有 "字面量 (LITERAL)" 类型。
 
 首先，LZMA 解码器必须检查它是否超过了指定的未压缩大小：
 
@@ -921,7 +921,7 @@ if (unpackSizeDefined && unpackSize == 0) {
 }
 ```
 
-然后它解码字面值并将其放入滑动窗口：
+然后它解码字面量并将其放入滑动窗口：
 
 ```cpp
 DecodeLiteral(state, rep0);
@@ -934,7 +934,7 @@ state = UpdateState_Literal(state);
 unpackSize--;
 ```
 
-然后解码器必须转到主循环的开始处以解码下一个匹配 (Match) 或字面值 (Literal)。
+然后解码器必须转到主循环的开始处以解码下一个匹配 (Match) 或字面量 (Literal)。
 
 ### 简单匹配 (Simple Match)
 
@@ -1048,7 +1048,7 @@ if (OutWindow.IsEmpty())
 
 然后解码器使用 `IsRepG0`、`IsRep0Long`、`IsRepG1`、`IsRepG2` 解码 "重复匹配 (Rep Match)" 的确切子类型。
 
-如果子类型是 "短重复匹配 (Short Rep Match)"，解码器更新状态，将窗口中的一个字节放到窗口中的当前位置，然后转到下一个 匹配 (MATCH) / 字面值 (LITERAL) 符号（主循环的开始）：
+如果子类型是 "短重复匹配 (Short Rep Match)"，解码器更新状态，将窗口中的一个字节放到窗口中的当前位置，然后转到下一个 匹配 (MATCH) / 字面量 (LITERAL) 符号（主循环的开始）：
 
 ```cpp
 state = UpdateState_ShortRep(state);
@@ -1092,7 +1092,7 @@ if (isError) {
 }
 ```
 
-然后解码器必须转到主循环的开始处以解码下一个 匹配 (MATCH) 或 字面值 (LITERAL)。
+然后解码器必须转到主循环的开始处以解码下一个 匹配 (MATCH) 或 字面量 (LITERAL)。
 
 ## 注意
 
@@ -1104,7 +1104,7 @@ if (isError) {
 
 LZMA 解码器的优化版本不需要模板。这种优化版本可以只使用两个 `CProb` 变量数组：
 
-1) 为字面值解码器分配的 `CProb` 变量的动态数组。
+1) 为字面量解码器分配的 `CProb` 变量的动态数组。
 2) 一个包含所有其他 `CProb` 变量的公共数组。
 
 ## 参考文献
