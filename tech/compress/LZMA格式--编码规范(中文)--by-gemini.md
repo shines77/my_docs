@@ -371,10 +371,10 @@ void CRangeDecoder::Normalize()
 
 LZMA 仅将范围编码用于两种类型的二进制符号：
 
-1) 具有固定且相等概率的二进制符号（直接位）
+1) 具有固定且相等概率的二进制符号（Direct Bits）
 2) 具有预测概率的二进制符号
 
-`DecodeDirectBits()` 函数解码直接位序列：
+`DecodeDirectBits()` 函数解码 Direct Bits 序列：
 
 ```cpp
 UInt32 CRangeDecoder::DecodeDirectBits(unsigned numBits)
@@ -401,7 +401,7 @@ UInt32 CRangeDecoder::DecodeDirectBits(unsigned numBits)
 
 位概率模型的任务是估计二进制符号的概率，然后它向范围解码器提供该信息，更好的预测可提供更好的压缩率。
 
-位概率模型使用先前解码符号的统计数据。该估计概率表示为一个 11 位无符号整数值，代表符号 "0" 的概率。
+位概率模型使用先前解码符号的统计数据，该估计概率表示为一个 11-bit 无符号整型值，代表符号 "0" 的概率。
 
 ```cpp
 #define kNumBitModelTotalBits 11
@@ -416,9 +416,9 @@ probability(symbol_1) = 1 - Probability(symbol_0)
                       = (2048 - prob) / 2048
 ```
 
-其中 `prob` 变量包含 11 位整数概率计数器。
+其中 `prob` 变量包含 11-bit 整型概率计数器。
 
-建议使用 16 位无符号整数类型 (`UInt16`) 来存储这些 11 位概率值：
+建议使用 16 位无符号整数类型 (`UInt16`) 来存储这些 11-bit 概率值：
 
 ```cpp
 typedef UInt16 CProb;
@@ -438,6 +438,7 @@ typedef UInt16 CProb;
 ```
 
 `DecodeBit()` 函数解码一位。
+
 LZMA 解码器提供指向 `CProb` 变量的指针，该变量包含有关符号 0 的估计概率的信息，范围解码器在解码后更新该 `CProb` 变量。范围解码器增加已解码符号的估计概率：
 
 ```cpp
@@ -497,7 +498,6 @@ class CBitTreeDecoder
   CProb Probs[(unsigned)1 << NumBits];
 
 public:
-
   void Init()
   {
     INIT_PROBS(Probs);
@@ -625,7 +625,6 @@ class CLenDecoder
   CBitTreeDecoder<8> HighCoder;
 
 public:
-
   void Init()
   {
     Choice = PROB_INIT_VAL;
