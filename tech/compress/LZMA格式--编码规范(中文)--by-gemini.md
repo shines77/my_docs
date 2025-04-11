@@ -210,11 +210,11 @@ LZMA 压缩算法使用基于 LZ 的滑动窗口压缩，并使用范围编码 (
 
 LZMA 使用类似于 LZ77 算法的滑动窗口压缩。
 
-LZMA 流必须解码为由匹配 (MATCHES) 和字面量 (LITERALS) 组成的序列：
+LZMA 流必须解码为由匹配 (MatchES) 和字面量 (LiteralS) 组成的序列：
 
-* **字面量 (LITERAL)** 是一个 8 位字符（一个字节）。解码器只需将该字面量放入未压缩流中。
+* **字面量 (Literal)** 是一个 8 位字符（一个字节）。解码器只需将该字面量放入未压缩流中。
 
-* **匹配 (MATCH)** 是一对数字（距离-长度对 (`DISTANCE`-`LENGTH` pair)）。解码器从解压缩流中当前位置向前 `DISTANCE` 个字符处精确地取一个字节，并将其放入解压缩流中，解码器必须重复此操作 `LENGTH` 次。
+* **匹配 (Match)** 是一对数字（距离-长度对 (`DISTANCE`-`LENGTH` pair)）。解码器从解压缩流中当前位置向前 `DISTANCE` 个字符处精确地取一个字节，并将其放入解压缩流中，解码器必须重复此操作 `LENGTH` 次。
 
 `DISTANCE` 不能大于字典大小，并且 `DISTANCE` 不能大于在该匹配之前已解码的未压缩流中的字节数。
 
@@ -521,9 +521,9 @@ public:
 
 ## LZMA 的 LZ 部分
 
-LZMA 的 LZ 部分描述了有关解码匹配 (MATCHES) 和字面量 (LITERALS) 的详细信息。
+LZMA 的 LZ 部分描述了有关解码 **Literals(字面量)**  和 **Matches(匹配)** 的详细信息。
 
-### 字面量解码（LITERALS）
+### 字面量解码（LiteralS）
 
 LZMA 解码器使用 `(1 << (lc + lp))` 个包含 `CProb` 值的表，其中每个表包含 0x300 个 `CProb` 值：
 
@@ -811,15 +811,15 @@ LZMA 解码器的主循环：
 2. **循环开始**
 
     * 检查 "流结束" 条件。
-    * 解码 匹配 (MATCH) / 字面量 (LITERAL) 的类型。
-    * 如果是字面量 (LITERAL)，解码字面量并将其放入窗口。
-    * 如果是匹配 (MATCH)，解码匹配的长度和匹配距离。
+    * 解码 匹配 (Match) / 字面量 (Literal) 的类型。
+    * 如果是字面量 (Literal)，解码字面量并将其放入窗口。
+    * 如果是匹配 (Match)，解码匹配的长度和匹配距离。
     * 检查错误条件，检查流结束条件，并将匹配字节序列从滑动窗口复制到窗口中的当前位置。
     * 转到循环开始
 
 3. **循环结束**
 
-LZMA 解码器的参考实现使用 `unpackSize` 变量来保存输出流中剩余的字节数。因此，它在每次解码字面量 (LITERAL) 或匹配 (MATCH) 后减少 `unpackSize` 值。
+LZMA 解码器的参考实现使用 `unpackSize` 变量来保存输出流中剩余的字节数。因此，它在每次解码字面量 (Literal) 或匹配 (Match) 后减少 `unpackSize` 值。
 
 以下代码包含循环开始时的 "流结束" 条件检查：
 
@@ -845,7 +845,7 @@ LZMA 解码器保存解码器使用的最近 4 个匹配距离的历史记录。
 UInt32 rep0 = 0, rep1 = 0, rep2 = 0, rep3 = 0;
 ```
 
-LZMA 解码器使用二进制模型变量来选择匹配 (MATCH) 或字面量 (LITERAL) 的类型：
+LZMA 解码器使用二进制模型变量来选择匹配 (Match) 或字面量 (Literal) 的类型：
 
 ```cpp
 #define kNumStates 12
@@ -867,7 +867,7 @@ CProb IsRep0Long[kNumStates << kNumPosBitsMax];
 unsigned state = 0;
 ```
 
-`state` 变量在每次字面量 (LITERAL) 或匹配 (MATCH) 后使用以下函数之一进行更新：
+`state` 变量在每次字面量 (Literal) 或匹配 (Match) 后使用以下函数之一进行更新：
 
 ```cpp
 unsigned UpdateState_Literal(unsigned state)
@@ -888,7 +888,7 @@ unsigned posState = OutWindow.TotalPos & ((1 << pb) - 1);
 unsigned state2 = (state << kNumPosBitsMax) + posState;
 ```
 
-解码器使用以下代码流方案来选择确切的字面量 (LITERAL) 或匹配 (MATCH) 类型：
+解码器使用以下代码流方案来选择确切的字面量 (Literal) 或匹配 (Match) 类型：
 
 1. `IsMatch[state2]` 解码
     * **0 -> 字面量 (Literal)**
@@ -909,9 +909,9 @@ unsigned state2 = (state << kNumPosBitsMax) + posState;
                                     * **0 -> 重复匹配 2 (Rep Match 2)**
                                     * **1 -> 重复匹配 3 (Rep Match 3)**
 
-### 字面量 (LITERAL) 符号
+### 字面量 (Literal) 符号
 
-如果使用 `IsMatch[state2]` 解码得到的值为 "0"，则我们有 "字面量 (LITERAL)" 类型。
+如果使用 `IsMatch[state2]` 解码得到的值为 "0"，则我们有 "字面量 (Literal)" 类型。
 
 首先，LZMA 解码器必须检查它是否超过了指定的未压缩大小：
 
@@ -1048,7 +1048,7 @@ if (OutWindow.IsEmpty())
 
 然后解码器使用 `IsRepG0`、`IsRep0Long`、`IsRepG1`、`IsRepG2` 解码 "重复匹配 (Rep Match)" 的确切子类型。
 
-如果子类型是 "短重复匹配 (Short Rep Match)"，解码器更新状态，将窗口中的一个字节放到窗口中的当前位置，然后转到下一个 匹配 (MATCH) / 字面量 (LITERAL) 符号（主循环的开始）：
+如果子类型是 "短重复匹配 (Short Rep Match)"，解码器更新状态，将窗口中的一个字节放到窗口中的当前位置，然后转到下一个 匹配 (Match) / 字面量 (Literal) 符号（主循环的开始）：
 
 ```cpp
 state = UpdateState_ShortRep(state);
@@ -1092,7 +1092,7 @@ if (isError) {
 }
 ```
 
-然后解码器必须转到主循环的开始处以解码下一个 匹配 (MATCH) 或 字面量 (LITERAL)。
+然后解码器必须转到主循环的开始处以解码下一个 匹配 (Match) 或 字面量 (Literal)。
 
 ## 注意
 
