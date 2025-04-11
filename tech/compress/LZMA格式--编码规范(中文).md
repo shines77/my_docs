@@ -587,9 +587,9 @@ public:
 
 ## LZMA 的 LZ 部分
 
-LZMA 的 LZ 部分详细描述了 **LITERALS(字面量)**  和 **MATCHES(匹配)** 的解码过程，本节重点解析字面量解码机制。
+LZMA 的 LZ 部分详细描述了 **Literals(字面量)**  和 **Matches(匹配)** 的解码过程，本节重点解析字面量解码机制。
 
-### 字面量解码（LITERALS）
+### 字面量解码（Literals）
 
 #### 字面量概率表
 
