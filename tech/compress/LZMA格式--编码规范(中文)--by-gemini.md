@@ -1,6 +1,6 @@
 好的，这是整理成 Markdown 格式并移除 `[source: ##]` 标记的 LZMA 规范中文翻译：
 
-# LZMA 规范 (草稿版本)
+# LZMA 编码规范 (草稿版本)
 
 ----------------------------------
 
@@ -9,11 +9,9 @@
 * 作者：Igor Pavlov
 * 日期：2015-06-14
 
-本规范定义了 LZMA 压缩数据的格式和 lzma 文件格式。
+本编码规范定义了 LZMA 压缩数据的格式和 lzma 文件格式。
 
 ## 标记法
-
---------
 
 使用 C++ 编程语言的语法。
 
@@ -28,8 +26,6 @@
 * `bool`     - 布尔类型，有两个可能的值：`false`、`true`
 
 ## lzma 文件格式
-
-================
 
 lzma 文件包含原始 LZMA 流和带有相关属性的头部。
 
@@ -66,30 +62,30 @@ void EncodeProperties(Byte *properties)
 如果属性中的字典大小值小于 `(1 << 12)`，LZMA 解码器必须将字典大小变量设置为 `(1 << 12)`。
 
 ```cpp
-  #define LZMA_DIC_MIN (1 << 12)
+#define LZMA_DIC_MIN (1 << 12)
 
-  unsigned lc, pb, lp;
-  UInt32 dictSize;
-  UInt32 dictSizeInProperties;
-  void DecodeProperties(const Byte *properties)
-  {
-    unsigned d = properties[0];
-    if (d >= (9 * 5 * 5)) {
-      throw "Incorrect LZMA properties"; // 抛出“不正确的 LZMA 属性”异常
-    }
-    lc = d % 9;
-    d /= 9;
-    pb = d / 5;
-    lp = d % 5;
-    dictSizeInProperties = 0;
-    for (int i = 0; i < 4; i++) {
-      dictSizeInProperties |= (UInt32)properties[i + 1] << (8 * i);
-    }
-    dictSize = dictSizeInProperties;
-    if (dictSize < LZMA_DIC_MIN) {
-      dictSize = LZMA_DIC_MIN;
-    }
+unsigned lc, pb, lp;
+UInt32 dictSize;
+UInt32 dictSizeInProperties;
+void DecodeProperties(const Byte *properties)
+{
+  unsigned d = properties[0];
+  if (d >= (9 * 5 * 5)) {
+    throw "Incorrect LZMA properties"; // 抛出“不正确的 LZMA 属性”异常
   }
+  lc = d % 9;
+  d /= 9;
+  pb = d / 5;
+  lp = d % 5;
+  dictSizeInProperties = 0;
+  for (int i = 0; i < 4; i++) {
+    dictSizeInProperties |= (UInt32)properties[i + 1] << (8 * i);
+  }
+  dictSize = dictSizeInProperties;
+  if (dictSize < LZMA_DIC_MIN) {
+    dictSize = LZMA_DIC_MIN;
+  }
+}
 ```
 
 如果 "未压缩大小" 字段包含全为 1 的 64 位，则表示未压缩大小未知，并且流中存在指示解码结束点的 "结束标记"。相反，如果 "未压缩大小" 字段的值不等于 `((2^64) - 1)`，则 LZMA 流解码必须在解码了指定数量的字节（未压缩大小）后完成。
@@ -97,8 +93,6 @@ void EncodeProperties(Byte *properties)
 并且如果存在 "结束标记"，LZMA 解码器也必须读取该标记。
 
 ## 编码 LZMA 属性的新方案
-
-----------------------------------------
 
 如果 LZMA 压缩用于其他某种格式，建议使用一种新的改进方案来编码 LZMA 属性。这个新方案已在 `xz` 格式中使用，该格式使用了 `LZMA2` 压缩算法。
 
@@ -143,8 +137,6 @@ if (lc + lp > 4) {
 
 ## RAM 使用
 
-=============
-
 LZMA 解码器的 RAM 使用由以下部分决定：
 
 1. 滑动窗口（从 4 KiB 到 4 GiB）。
@@ -152,8 +144,6 @@ LZMA 解码器的 RAM 使用由以下部分决定：
 3. 一些额外的状态变量（大约 10 个 32 位整数变量）。
 
 ### 滑动窗口的 RAM 使用
-
---------------------------------
 
 解码有两种主要场景：
 
@@ -204,26 +194,23 @@ RAM_lc8_lp4 = 4 KiB + 1.5 KiB * 4096 = 6148 KiB
 RAM_lc_lp_4 = 4 KiB + 1.5 KiB * 16 = 28 KiB
 ```
 
-### 编码器的 RAM 使用
-
--------------------------
+### 编码器的内存使用
 
 LZMA 编码代码有许多变体。这些变体具有不同的内存消耗值。请注意，对于同一流，LZMA 编码器的内存消耗不能小于 LZMA 解码器的内存消耗。
 
-现代高效 LZMA 编码器实现所需的 RAM 使用量可以通过以下公式估算：
+现代高效 LZMA 编码器实现所需的内存使用量可以通过以下公式估算：
 
-`Encoder_RAM_Usage = 4 MiB + 11 * dictionarySize`.
+```cpp
+Encoder_RAM_Usage = 4 MiB + 11 * dictionarySize
+```
+
 但也有一些编码器模式需要更少的内存。
 
 ## LZMA 解码
 
-=============
-
 LZMA 压缩算法使用基于 LZ 的滑动窗口压缩，并使用范围编码 (Range Encoding) 作为熵编码方法。
 
 ### 滑动窗口
-
---------------
 
 LZMA 使用类似于 LZ77 算法的滑动窗口压缩。
 
@@ -301,8 +288,6 @@ public:
 
 ### 范围解码器 (Range Decoder)
 
--------------
-
 LZMA 算法使用范围编码 (Range Encoding) (1) 作为熵编码方法。
 
 LZMA 流仅包含一个大端序编码的非常大的数字。LZMA 解码器使用范围解码器从该大数中提取二进制符号序列。
@@ -360,7 +345,7 @@ LZMA 编码器总是在压缩流的初始字节中写入零。该方案允许简
 在范围解码器解码完数据的最后一位后，`Code` 变量的值必须等于 0。LZMA 解码器必须通过调用 `IsFinishedOK()` 函数来检查它：
 
 ```cpp
-  bool IsFinishedOK() const { return Code == 0; }
+bool IsFinishedOK() const { return Code == 0; }
 ```
 
 如果数据流中存在损坏，则在 `Finish()` 函数中 `Code` 值不等于 0 的概率很大。因此，`IsFinishedOK()` 函数中的检查为损坏检测提供了非常好的功能。
@@ -386,8 +371,8 @@ void CRangeDecoder::Normalize()
 
 LZMA 仅将范围编码用于两种类型的二进制符号：
 
-1)  具有固定且相等概率的二进制符号（直接位）
-2)  具有预测概率的二进制符号
+1) 具有固定且相等概率的二进制符号（直接位）
+2) 具有预测概率的二进制符号
 
 `DecodeDirectBits()` 函数解码直接位序列：
 
@@ -415,8 +400,6 @@ UInt32 CRangeDecoder::DecodeDirectBits(unsigned numBits)
 ```
 
 ### 使用概率模型进行位解码
-
----------------------------------------
 
 位概率模型的任务是估计二进制符号的概率，然后它向范围解码器提供该信息，更好的预测可提供更好的压缩率。
 
@@ -543,29 +526,25 @@ public:
 
 ## LZMA 的 LZ 部分
 
----------------
-
 LZMA 的 LZ 部分描述了有关解码匹配 (MATCHES) 和字面值 (LITERALS) 的详细信息。
 
 ### 字面值解码
 
---------------------
-
 LZMA 解码器使用 `(1 << (lc + lp))` 个包含 `CProb` 值的表，其中每个表包含 0x300 个 `CProb` 值：
 
 ```cpp
-  CProb *LitProbs;
-  void CreateLiterals()
-  {
-    LitProbs = new CProb[(UInt32)0x300 << (lc + lp)];
-  }
+CProb * LitProbs;
+void CreateLiterals()
+{
+  LitProbs = new CProb[(UInt32)0x300 << (lc + lp)];
+}
 
-  void InitLiterals()
-  {
-    UInt32 num = (UInt32)0x300 << (lc + lp);
-    for (UInt32 i = 0; i < num; i++)
-      LitProbs[i] = PROB_INIT_VAL;
-  }
+void InitLiterals()
+{
+  UInt32 num = (UInt32)0x300 << (lc + lp);
+  for (UInt32 i = 0; i < num; i++)
+    LitProbs[i] = PROB_INIT_VAL;
+}
 ```
 
 为了选择用于解码的表，它使用由前一个字面值的 (`lc`) 个高位和表示输出流中当前位置的值的 (`lp`) 个低位组成的上下文。
@@ -575,38 +554,36 @@ LZMA 解码器使用 `(1 << (lc + lp))` 个包含 `CProb` 值的表，其中每�
 以下代码解码一个字面值并将其放入滑动窗口缓冲区：
 
 ```cpp
-  void DecodeLiteral(unsigned state, UInt32 rep0)
-  {
-    unsigned prevByte = 0;
-    if (!OutWindow.IsEmpty()) {
-      prevByte = OutWindow.GetByte(1);
-    }
-
-    unsigned symbol = 1;
-    unsigned litState = ((OutWindow.TotalPos & ((1 << lp) - 1)) << lc) + (prevByte >> (8 - lc));
-    CProb *probs = &LitProbs[(UInt32)0x300 * litState];
-
-    if (state >= 7) {
-      unsigned matchByte = OutWindow.GetByte(rep0 + 1);
-      do {
-        unsigned matchBit = (matchByte >> 7) & 1;
-        matchByte <<= 1;
-        unsigned bit = RangeDec.DecodeBit(&probs[((1 + matchBit) << 8) + symbol]);
-        symbol = (symbol << 1) | bit;
-        if (matchBit != bit)
-          break;
-      } while (symbol < 0x100);
-    }
-    while (symbol < 0x100) {
-      symbol = (symbol << 1) | RangeDec.DecodeBit(&probs[symbol]);
-    }
-    OutWindow.PutByte((Byte)(symbol - 0x100));
+void DecodeLiteral(unsigned state, UInt32 rep0)
+{
+  unsigned prevByte = 0;
+  if (!OutWindow.IsEmpty()) {
+    prevByte = OutWindow.GetByte(1);
   }
+
+  unsigned symbol = 1;
+  unsigned litState = ((OutWindow.TotalPos & ((1 << lp) - 1)) << lc) + (prevByte >> (8 - lc));
+  CProb *probs = &LitProbs[(UInt32)0x300 * litState];
+
+  if (state >= 7) {
+    unsigned matchByte = OutWindow.GetByte(rep0 + 1);
+    do {
+      unsigned matchBit = (matchByte >> 7) & 1;
+      matchByte <<= 1;
+      unsigned bit = RangeDec.DecodeBit(&probs[((1 + matchBit) << 8) + symbol]);
+      symbol = (symbol << 1) | bit;
+      if (matchBit != bit)
+        break;
+    } while (symbol < 0x100);
+  }
+  while (symbol < 0x100) {
+    symbol = (symbol << 1) | RangeDec.DecodeBit(&probs[symbol]);
+  }
+  OutWindow.PutByte((Byte)(symbol - 0x100));
+}
 ```
 
 ### 匹配长度解码
-
--------------------------
 
 匹配长度解码器返回匹配的规范化（从零开始的值）长度。
 
@@ -637,7 +614,7 @@ LZMA 使用位模型变量 `Choice` 来解码第一个选择位。
 LZMA 使用 `posState` 值作为上下文来从 `LowCoder` 和 `MidCoder` 二叉树数组中选择二叉树：
 
 ```cpp
-  unsigned posState = OutWindow.TotalPos & ((1 << pb) - 1);
+unsigned posState = OutWindow.TotalPos & ((1 << pb) - 1);
 ```
 
 长度解码器的完整代码：
@@ -685,8 +662,6 @@ CLenDecoder RepLenDecoder;
 
 ### 匹配距离解码
 
----------------------------
-
 LZMA 支持最大 4 GiB 减 1 的字典大小，距离解码器解码的匹配距离值可以从 1 到 2^32。但是等于 2^32 的距离值用于指示 "流结束 (End of stream)" 标记。因此，用于 LZ 窗口匹配的实际最大匹配距离是 (2^32 - 1)。
 
 LZMA 使用规范化的匹配长度（从零开始的长度）来计算上下文状态 `lenState` 以解码距离值：
@@ -710,27 +685,28 @@ matchDistance = dist + 1;
 距离解码器的状态和初始化代码：
 
 ```cpp
-  #define kEndPosModelIndex 14
-  #define kNumFullDistances (1 << (kEndPosModelIndex >> 1))
-  #define kNumAlignBits 4
+#define kEndPosModelIndex 14
+#define kNumFullDistances (1 << (kEndPosModelIndex >> 1))
+#define kNumAlignBits 4
 
-  CBitTreeDecoder<6> PosSlotDecoder[kNumLenToPosStates];
-  CProb PosDecoders[1 + kNumFullDistances - kEndPosModelIndex];
-  CBitTreeDecoder<kNumAlignBits> AlignDecoder;
+CBitTreeDecoder<6> PosSlotDecoder[kNumLenToPosStates];
+CProb PosDecoders[1 + kNumFullDistances - kEndPosModelIndex];
+CBitTreeDecoder<kNumAlignBits> AlignDecoder;
 
-  void InitDist()
-  {
-    for (unsigned i = 0; i < kNumLenToPosStates; i++)
-      PosSlotDecoder[i].Init();
-    AlignDecoder.Init();
-    INIT_PROBS(PosDecoders);
+void InitDist()
+{
+  for (unsigned i = 0; i < kNumLenToPosStates; i++) {
+    PosSlotDecoder[i].Init();
   }
+  AlignDecoder.Init();
+  INIT_PROBS(PosDecoders);
+}
 ```
 
 在第一阶段，距离解码器使用来自 `PosSlotDecoder` 数组的位树解码器解码 6 位 `posSlot` 值。可以得到 2^6=64 个不同的 `posSlot` 值。
 
 ```cpp
-  unsigned posSlot = PosSlotDecoder[lenState].Decode(&RangeDec);
+unsigned posSlot = PosSlotDecoder[lenState].Decode(&RangeDec);
 ```
 
 距离值的编码方案如下表所示：
@@ -767,40 +743,37 @@ matchDistance = dist + 1;
 
 策略：
 
-- 如果 `(posSlot < 4)`，`dist` 值等于 `posSlot` 值。
-- 如果 `(posSlot >= 4)`，解码器使用 `posSlot` 值来计算 `dist` 值的高位和低位的数量。
-- 如果 `(4 <= posSlot < kEndPosModelIndex)`，解码器使用位树解码器（每个 `posSlot` 值一个单独的位树解码器）和 "反向 (Reverse)" 方案。在此实现中，我们使用一个 `CProb` 数组 `PosDecoders`，它包含所有这些位解码器的所有 `CProb` 变量。
-- 如果 `(posSlot >= kEndPosModelIndex)`，则中间位被解码为来自 `RangeDecoder` 的直接位，低 4 位使用具有 "反向 (Reverse)" 方案的位树解码器 `AlignDecoder` 进行解码。
+* 如果 `(posSlot < 4)`，`dist` 值等于 `posSlot` 值。
+* 如果 `(posSlot >= 4)`，解码器使用 `posSlot` 值来计算 `dist` 值的高位和低位的数量。
+* 如果 `(4 <= posSlot < kEndPosModelIndex)`，解码器使用位树解码器（每个 `posSlot` 值一个单独的位树解码器）和 "反向 (Reverse)" 方案。在此实现中，我们使用一个 `CProb` 数组 `PosDecoders`，它包含所有这些位解码器的所有 `CProb` 变量。
+* 如果 `(posSlot >= kEndPosModelIndex)`，则中间位被解码为来自 `RangeDecoder` 的直接位，低 4 位使用具有 "反向 (Reverse)" 方案的位树解码器 `AlignDecoder` 进行解码。
 
 解码从零开始的匹配距离的代码：
 
 ```cpp
-  unsigned DecodeDistance(unsigned len)
-  {
-    unsigned lenState = len;
-    if (lenState > kNumLenToPosStates - 1)
-      lenState = kNumLenToPosStates - 1;
+unsigned DecodeDistance(unsigned len)
+{
+  unsigned lenState = len;
+  if (lenState > kNumLenToPosStates - 1)
+    lenState = kNumLenToPosStates - 1;
 
-    unsigned posSlot = PosSlotDecoder[lenState].Decode(&RangeDec);
-    if (posSlot < 4)
-      return posSlot;
+  unsigned posSlot = PosSlotDecoder[lenState].Decode(&RangeDec);
+  if (posSlot < 4)
+    return posSlot;
 
-    unsigned numDirectBits = (unsigned)((posSlot >> 1) - 1);
-    UInt32 dist = ((2 | (posSlot & 1)) << numDirectBits);
-    if (posSlot < kEndPosModelIndex)
-      dist += BitTreeReverseDecode(PosDecoders + dist - posSlot, numDirectBits, &RangeDec);
-    else
-    {
-      dist += RangeDec.DecodeDirectBits(numDirectBits - kNumAlignBits) << kNumAlignBits;
-      dist += AlignDecoder.ReverseDecode(&RangeDec);
-    }
-    return dist;
+  unsigned numDirectBits = (unsigned)((posSlot >> 1) - 1);
+  UInt32 dist = ((2 | (posSlot & 1)) << numDirectBits);
+  if (posSlot < kEndPosModelIndex) {
+    dist += BitTreeReverseDecode(PosDecoders + dist - posSlot, numDirectBits, &RangeDec);
+  } else {
+    dist += RangeDec.DecodeDirectBits(numDirectBits - kNumAlignBits) << kNumAlignBits;
+    dist += AlignDecoder.ReverseDecode(&RangeDec);
   }
+  return dist;
+}
 ```
 
 ## LZMA 解码模式
-
--------------------
 
 LZMA 流有 2 种类型：
 
@@ -857,11 +830,11 @@ LZMA 解码器的参考实现使用 `unpackSize` 变量来保存输出流中剩�
 以下代码包含循环开始时的 "流结束" 条件检查：
 
 ```cpp
-  if (unpackSizeDefined && unpackSize == 0 && !markerIsMandatory) {
-    if (RangeDec.IsFinishedOK()) {
-      return LZMA_RES_FINISHED_WITHOUT_MARKER; // 返回：无标记完成
-    }
+if (unpackSizeDefined && unpackSize == 0 && !markerIsMandatory) {
+  if (RangeDec.IsFinishedOK()) {
+    return LZMA_RES_FINISHED_WITHOUT_MARKER; // 返回：无标记完成
   }
+}
 ```
 
 LZMA 使用三种类型的匹配：
@@ -875,7 +848,7 @@ LZMA 解码器保存解码器使用的最近 4 个匹配距离的历史记录。
 这组 4 个变量包含从零开始的匹配距离，这些变量用零值初始化：
 
 ```cpp
-  UInt32 rep0 = 0, rep1 = 0, rep2 = 0, rep3 = 0;
+UInt32 rep0 = 0, rep1 = 0, rep2 = 0, rep3 = 0;
 ```
 
 LZMA 解码器使用二进制模型变量来选择匹配 (MATCH) 或字面值 (LITERAL) 的类型：
@@ -944,8 +917,6 @@ unsigned state2 = (state << kNumPosBitsMax) + posState;
 
 ### 字面值 (LITERAL) 符号
 
---------------
-
 如果使用 `IsMatch[state2]` 解码得到的值为 "0"，则我们有 "字面值 (LITERAL)" 类型。
 
 首先，LZMA 解码器必须检查它是否超过了指定的未压缩大小：
@@ -972,8 +943,6 @@ unpackSize--;
 然后解码器必须转到主循环的开始处以解码下一个匹配 (Match) 或字面值 (Literal)。
 
 ### 简单匹配 (Simple Match)
-
-------------
 
 如果使用 `IsMatch[state2]` 解码得到的值为 "1"，并且使用 `IsRep[state]` 解码得到的值为 "0"，我们有 "简单匹配 (Simple Match)" 类型。
 距离历史表使用以下方案更新：
@@ -1032,8 +1001,6 @@ if (rep0 >= dictSize || !OutWindow.CheckDistance(rep0))
 
 ### 重复匹配 (Rep Match)
 
----------
-
 如果 LZMA 解码器使用 `IsRep[state]` 变量解码得到的值为 "1"，我们有 "重复匹配 (Rep Match)" 类型。
 
 首先，LZMA 解码器必须检查它是否超过了指定的未压缩大小：
@@ -1056,7 +1023,7 @@ if (OutWindow.IsEmpty())
 
 * **"重复匹配 0 (Rep Match 0)" 或 "短重复匹配 (Short Rep Match)"**:
 
-    * `;` (LZMA 不更新距离历史)
+  * `;` (LZMA 不更新距离历史)
 
 * **"重复匹配 1 (Rep Match 1)"**:
 
@@ -1112,8 +1079,6 @@ state = UpdateState_Rep(state);
 
 ### 匹配符号复制
 
--------------------------
-
 如果我们有一个匹配（简单匹配或重复匹配 0/1/2/3），解码器必须使用计算出的匹配距离和匹配长度复制字节序列。
 
 如果未压缩大小已定义，LZMA 解码器必须检查它是否超过了该指定的未压缩大小：
@@ -1137,8 +1102,6 @@ if (isError) {
 
 ## 注意
 
------
-
 本规范未描述支持部分解码的解码器实现变体。
 
 这种部分解码情况可能需要在 "流结束" 条件检查代码中进行一些更改。此类代码也可以使用解码器返回的附加状态码。
@@ -1150,6 +1113,6 @@ LZMA 解码器的优化版本不需要模板。这种优化版本可以只使用
 1) 为字面值解码器分配的 `CProb` 变量的动态数组。
 2) 一个包含所有其他 `CProb` 变量的公共数组。
 
-## 参考文献：
+## 参考文献
 
-1.  G. N. N. Martin, Range encoding: an algorithm for removing redundancy from a digitized message, Video & Data Recording Conference, Southampton, UK, July 24-27, 1979.
+1. G. N. N. Martin, Range encoding: an algorithm for removing redundancy from a digitized message, Video & Data Recording Conference, Southampton, UK, July 24-27, 1979.
