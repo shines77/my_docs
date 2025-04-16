@@ -523,7 +523,7 @@ public:
 
 LZMA 的 LZ 部分描述了有关解码 **Literals(字面量)**  和 **Matches(匹配)** 的详细信息。
 
-### 字面量解码（LiteralS）
+### 字面量解码（Literals）
 
 LZMA 解码器使用 `(1 << (lc + lp))` 个包含 `CProb` 值的表，其中每个表包含 0x300 个 `CProb` 值：
 
