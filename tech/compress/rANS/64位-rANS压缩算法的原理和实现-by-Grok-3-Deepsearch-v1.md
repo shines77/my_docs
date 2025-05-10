@@ -615,9 +615,8 @@ Browsing...
 > public:
 >     void encode(uint64_t& state, uint32_t symbol, const std::vector<uint32_t>& cum_freq, uint32_t total_freq) {
 >         uint32_t freq = cum_freq[symbol + 1] - cum_freq[symbol];
->         state = (
-> ***- GitHub 上有多个 rANS 的 C++ 实现，比如 Fabian Giesen 的 ryg_rans 和 James K. Bonfield 的 rans_static。***
-state / freq) * total_freq + (state % freq) + cum_freq[symbol];
+>         state = (state / freq) * total_freq + (state % freq) + cum_freq[symbol];
+>         // ***- GitHub 上有多个 rANS 的 C++ 实现，比如 Fabian Giesen 的 ryg_rans 和 James K. Bonfield 的 rans_static。***
 >         // Renormalization, etc.
 >     }
 > };
@@ -666,7 +665,6 @@ state / freq) * total_freq + (state % freq) + cum_freq[symbol];
 
 > **评估 64 位实现**
 > ***- ryg_rans 的 rans64.h 使用 64 位整数，符合用户需求。***
-
 
 ---
 
@@ -784,13 +782,11 @@ state / freq) * total_freq + (state % freq) + cum_freq[symbol];
 >
 > class RansEncoder {
 > public:
->     RansEncoder(std::ostream& out) : out_(out), state_(1 << 31) {} // Initial state, e.g.,
-> ***- 正在考虑提供 rANS 原理的中文解释，可能从论文中提取伪代码。***
-
-> ***- 目前无法直接提供带中文注释的 C++ 代码，可能会建议用户参考现有仓库。***
-
-> ***- 或许我能写一个简单的 rANS 示例代码，用英文注释，然后用户自己加中文。***
- 2^31
+>     RansEncoder(std::ostream& out) : out_(out), state_(1 << 31) {} // Initial state, e.g., 2^31
+>
+>     // ***- 正在考虑提供 rANS 原理的中文解释，可能从论文中提取伪代码。***
+>     // ***- 目前无法直接提供带中文注释的 C++ 代码，可能会建议用户参考现有仓库。***
+>     // ***- 或许我能写一个简单的 rANS 示例代码，用英文注释，然后用户自己加中文。***
 >
 >     void encode(uint32_t symbol, const std::vector<uint32_t>& cum_freq, uint32_t total_freq) {
 >         uint32_t freq = cum_freq[symbol + 1] - cum_freq[symbol];
@@ -837,14 +833,7 @@ state / freq) * total_freq + (state % freq) + cum_freq[symbol];
 >             symbol++;
 >         }
 >         uint32_t freq = cum_freq[symbol + 1] - cum_freq[symbol];
->         uint64_t quotient =
-> **理解 rANS 工作原理**
-> ***- rANS 的状态通常是 64 位整数，编码时按符号频率更新。***
-
----
-
-> `Step25`
-> state_ / total_freq;
+>         uint64_t quotient = state_ / total_freq;
 >         uint64_t remainder = state_ % total_freq;
 >         state_ = freq * quotient + (remainder - cum_freq[symbol]);
 >         renormalize();
@@ -865,6 +854,14 @@ state / freq) * total_freq + (state % freq) + cum_freq[symbol];
 > };
 > ```
 >
+> **理解 rANS 工作原理**
+> ***- rANS 的状态通常是 64 位整数，编码时按符号频率更新。***
+>
+
+---
+
+> `Step25`
+
 > This is a very rough sketch and might have errors, as I'm not an expert in rANS implementation.
 >
 > In real implementations, there are more details, like handling the end of the stream, managing the frequency tables, etc.
@@ -875,14 +872,15 @@ state / freq) * total_freq + (state % freq) + cum_freq[symbol];
 >
 > For example:
 >
+> ***- 比如，编码时状态 x 按频率 f 除以商，余数加累计频率更新。***
+>
+> ***- 解码时，找到状态落在哪个符号的累计频率区间，然后更新状态。***
+>
+
 > ```cpp
 > #include <cstdint>
 > #include <vector>
 > #include <iostream>
-> ***- 比如，编码时状态 x 按频率 f 除以商，余数加累计频率更新。***
-
-> ***- 解码时，找到状态落在哪个符号的累计频率区间，然后更新状态。***
-
 > #include <fstream>
 >
 > class RansEncoder {
@@ -931,9 +929,9 @@ state / freq) * total_freq + (state % freq) + cum_freq[symbol];
 >         }
 >     }
 >
->     //
-> ***- 刚刚发现一个草稿：提供一个简单的 rANS 编码器/解码器 C++ 示例，可能帮助用户理解。***
- 解码一个符号
+>     // ***- 刚刚发现一个草稿：提供一个简单的 rANS 编码器/解码器 C++ 示例，可能帮助用户理解。***
+>
+>     // 解码一个符号
 >     uint32_t decode(const std::vector<uint32_t>& cum_freq, uint32_t total_freq) {
 >         uint32_t scaled_state = state_ % total_freq;
 >         uint32_t symbol = 0;
@@ -980,18 +978,20 @@ state / freq) * total_freq + (state % freq) + cum_freq[symbol];
 > ## rANS 的压缩和解压原理
 >
 > ### 1. 基本原理
-> rANS 基于 ANS 的概念，通过一个状态变量（通常是一个大整数，如 64 位）来表示已编码的数据。与传统的算术编码相比，rANS 具有更
+>
+> rANS 基于 ANS 的概念，通过一个状态变量（通常是一个大整数，如 64 位）来表示已编码的数据。与传统的算术编码相比，rANS 具有更高的并行性和实现效率。
+>
 > **提供代码示例**
+>
 > ***- 正在尝试提供一个简单的 rANS 编码器/解码器 C++ 示例，带英文注释。***
-
 > ***- 用户可以根据需要添加中文注释，这可能满足他们的需求。***
 
 ---
 
 > `Step26`
->高的并行性和实现效率。
 >
 > #### 压缩原理
+>
 > - **步骤**：
 >   1. 计算输入数据的频率分布（即每个符号的出现概率）。
 >   2. 为每个符号分配对应的累积频率范围（cumulative frequency）。
