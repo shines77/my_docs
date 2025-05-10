@@ -1063,9 +1063,8 @@ state / freq) * total_freq + (state % freq) + cum_freq[symbol];
 >
 >     // 编码一个符号
 >     void encode(uint32_t symbol, const std::vector<uint32_t>& cum_freq, uint32_t total_freq) {
->         uint32_t freq = cum_freq[symbol + 1] - cum
-> ***- 刚刚发现，状态更新公式是编码时 \( x = (x / f) \times \text{total} + (x \% f) + c \)，解码时反向计算。***
-_freq[symbol]; // 获取符号的频率
+>         uint32_t freq = cum_freq[symbol + 1] - cum_freq[symbol]; // 获取符号的频率
+>         // ***- 刚刚发现，状态更新公式是编码时 \( x = (x / f) \times \text{total} + (x \% f) + c \)，解码时反向计算。***
 >         uint64_t quotient = state_ / freq; // 计算商
 >         uint64_t remainder = state_ % freq; // 计算余数
 >         state_ = quotient * total_freq + remainder + cum_freq[symbol]; // 更新状态
@@ -1084,8 +1083,8 @@ _freq[symbol]; // 获取符号的频率
 >     void flush() {
 >         for (int i = 7; i >= 0; --i) {
 >             out_.put(static_cast<char>(state_ >> (i * 8))); // 输出
-> ***- 刚刚发现一个新的事实：Turbo-Range-Coder 项目包含 rANS 的 C++ 实现，支持多种架构。 ([TurboRC](https://github.com/powturbo/Turbo-Range-Coder))***
-状态的每个字节
+>             // ***- 刚刚发现一个新的事实：Turbo-Range-Coder 项目包含 rANS 的 C++ 实现，支持多种架构。
+>             // ([TurboRC](https://github.com/powturbo/Turbo-Range-Coder))*** 状态的每个字节
 >         }
 >     }
 >
@@ -1128,8 +1127,10 @@ _freq[symbol]; // 获取符号的频率
 >             char c;
 >             in_.get(c);
 >
-> ***- 刚刚发现一个新的事实：Turbo-Range-Coder 是包含 rANS 实现的 C++ 项目，自称是最快的。 ([TurboRC](https://github.com/powturbo/Turbo-Range-Coder))***
- state_ = (state_ << 8) | static_cast<uint8_t>(c); // 读取字节并右移状态
+>             // ***- 刚刚发现一个新的事实：Turbo-Range-Coder 是包含 rANS 实现的 C++ 项目，自称是最快的。
+>             // ([TurboRC](https://github.com/powturbo/Turbo-Range-Coder))***
+
+>             state_ = (state_ << 8) | static_cast<uint8_t>(c); // 读取字节并右移状态
 >         }
 >     }
 >
@@ -1191,6 +1192,7 @@ _freq[symbol]; // 获取符号的频率
 > ---
 >
 > ## 注意事项
+>
 > - 上述代码是一个简化的示例，实际应用中需要处理更多细节，如频率表的构建、输入/输出流的管理等。
 > - 对于生产环境，建议使用成熟的 rANS 库，如 [ryg_rans](https://github.com/rygorous/ryg_rans) 或 [Turbo-Range-Coder](https://github.com/powturbo/Turbo-Range-Coder)，这些库提供了高度优化的实现。
 > - rANS 的性能优势在于其高效的编码和解码速度，同时保持接近熵限的压缩率。
@@ -1198,6 +1200,7 @@ _freq[symbol]; // 获取符号的频率
 > ---
 >
 > ## 参考文献
+>
 > - [rANS in practice](http://fgiesen.wordpress.com/2015/12/21/rans-in-practice/) - Fabian Giesen 的博客，详细介绍 rANS 的实际应用。
 > - [ryg_rans](https://github.com/rygorous/ryg_rans) - Fabian Giesen 的 rANS 实现库，包含 64 位版本。
 > - [A tutorial on range asymmetric numeral systems (rANS)](https://arxiv.org/abs/2001.09186) - James Townsend 的教程，包含伪代码。
@@ -1214,12 +1217,12 @@ _freq[symbol]; // 获取符号的频率
 ### rANS 的压缩和解压原理
 
 rANS（Range Asymmetric Numeral Systems）是一种无损压缩算法，通过一个 64 位整数状态来表示已编码的数据。
-- **压缩过程**：首先计算每个符号的频率，构建累积频率表。然后对每个符号，更新状态公式为 \( x = (x / f) \times \text{total} + (x \% f) + c \)，其中 \( f \) 是符号频率，\( c \) 是累积频率，\( \text{total} \) 是总频率。当状态过大时，输出高位字节并左移。
-- **解压过程**：从压缩流读取初始状态，找到状态落在哪个累积频率范围内确定符号，然后更新状态公式为 \( x = f \times (x / \text{total}) + (x \% \text{total}) - c \)。当状态过小时，读取更多字节并右移，直到恢复所有数据。
+- **压缩过程**：首先计算每个符号的频率，构建累积频率表。然后对每个符号，更新状态公式为 \( $x = (x / f) \times \text{total} + (x \% f) + c$ \)，其中 \( $f$ \) 是符号频率，\( $c$ \) 是累积频率，\( $\text{total}$ \) 是总频率。当状态过大时，输出高位字节并左移。
+- **解压过程**：从压缩流读取初始状态，找到状态落在哪个累积频率范围内确定符号，然后更新状态公式为 \( $x = f \times (x / \text{total}) + (x \% \text{total}) - c$ \)。当状态过小时，读取更多字节并右移，直到恢复所有数据。
 
 ### 64 位整型版本的特点
 
-64 位版本使用 64 位整数作为状态，编码时当状态超过 \( 2^{64} - 1 \) 时输出高 32 位，解码时当状态小于 \( 2^{31} \) 时输入 32 位，确保高效处理大范围数据。
+64 位版本使用 64 位整数作为状态，编码时当状态超过 \( $2^{64} - 1$ \) 时输出高 32 位，解码时当状态小于 \( $2^{31}$ \) 时输入 32 位，确保高效处理大范围数据。
 
 ### C++ 代码示例
 
@@ -1374,26 +1377,28 @@ rANS 是一种熵编码方法，通过一个状态变量（通常为大整数）
 
 1. **频率统计**：计算输入数据的符号频率分布，确保每个符号至少有一个最小频率（如 1），并归一化总和（如 65536）。
 2. **累积频率计算**：为每个符号计算累积频率，方便查找符号范围。
-3. **状态更新**：对于每个符号 \( s \)，使用公式 \( x = (x / f) \times \text{total} + (x \% f) + c \) 更新状态，其中：
-   - \( x \)：当前 64 位状态。
-   - \( f \)：符号 \( s \) 的频率。
-   - \( c \)：符号 \( s \) 的累积频率。
-   - \( \text{total} \)：所有符号的总频率。
-4. **归一化**：当状态 \( x \) 超过 \( 2^{64} - 1 \) 时，输出高位字节（如 32 位）并左移状态，确保状态始终在 64 位范围内。
+3. **状态更新**：对于每个符号 \( $s$ \)，使用公式 \( $x = (x / f) \times \text{total} + (x \% f) + c$ \) 更新状态，其中：
+
+   - \( $x$ \)：当前 64 位状态。
+   - \( $f$ \)：符号 \( s \) 的频率。
+   - \( $c$ \)：符号 \( s \) 的累积频率。
+   - \( $\text{total}$ \)：所有符号的总频率。
+
+4. **归一化**：当状态 \( $x$ \) 超过 \( $2^{64} - 1$ \) 时，输出高位字节（如 32 位）并左移状态，确保状态始终在 64 位范围内。
 
 #### 解压过程
 
 解压过程为压缩的逆操作：
 
 1. **初始状态读取**：从压缩流中读取初始 64 位状态。
-2. **符号查找**：计算 \( x \% \text{total} \)，找到其落在哪个累积频率范围内，从而确定符号 \( s \)。
-3. **状态更新**：使用公式 \( x = f \times (x / \text{total}) + (x \% \text{total}) - c \) 更新状态。
-4. **归一化**：当状态 \( x \) 小于阈值（如 \( 2^{31} \)）时，从输入流中读取更多字节（如 32 位）并右移状态。
+2. **符号查找**：计算 \( $x \% \text{total}$ \)，找到其落在哪个累积频率范围内，从而确定符号 \( $s$ \)。
+3. **状态更新**：使用公式 \( $x = f \times (x / \text{total}) + (x \% \text{total}) - c$ \) 更新状态。
+4. **归一化**：当状态 \( $x$ \) 小于阈值（如 \( $2^{31}$ \)）时，从输入流中读取更多字节（如 32 位）并右移状态。
 5. **重复**：继续解码直到恢复所有数据。
 
 ### 64 位整型版本的实现细节
 
-在 64 位版本中，状态使用 `uint64_t` 表示，允许更大的范围和更高的压缩效率。编码时，当状态超过 \( 2^{64} - 1 \) 时，通常输出高 32 位字节并左移 32 位；解码时，当状态小于 \( 2^{31} \) 时，读取 32 位字节并右移 32 位。这种设计确保了状态的动态范围管理，同时保持高效的位操作。
+在 64 位版本中，状态使用 `uint64_t` 表示，允许更大的范围和更高的压缩效率。编码时，当状态超过 \( $2^{64} - 1$ \) 时，通常输出高 32 位字节并左移 32 位；解码时，当状态小于 \( $2^{31}$ \) 时，读取 32 位字节并右移 32 位。这种设计确保了状态的动态范围管理，同时保持高效的位操作。
 
 ### C++ 实现示例
 
@@ -1533,11 +1538,13 @@ int main() {
 ### 算法优势与局限
 
 rANS 的优势包括：
+
 - 高压缩率：接近理论熵极限。
 - 高效速度：编码和解码速度快，适合实时场景。
 - 可并行化：支持 SIMD 和 GPU 实现，如 [hypersonic-rANS](https://github.com/rainerzufalldererste/hypersonic-rANS)。
 
 局限包括：
+
 - 实现复杂：需要精确管理状态和频率表。
 - 对随机数据压缩率较低：需结合预测模型提升效果。
 
