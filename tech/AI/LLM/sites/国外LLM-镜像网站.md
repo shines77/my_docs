@@ -48,7 +48,27 @@
 
     收费的，使用微信扫描注册。
 
-    包含的模型有：ChatGPT-4.5，ChatGPT-4o，ChatGPT-4o-mini，ChatGPT-4，ChatGPT-o3-mini，Claude-3.7，Gemini-2.5，Claude-3.5，Grok-3.0,DeepSeek-V3，DeepSeek-R1，Kimi，豆包等。
+    包含的模型有：ChatGPT-4.5，ChatGPT-4o，ChatGPT-4o-mini，ChatGPT-4，ChatGPT-o3-mini，Claude-3.7，Gemini-2.5，Grok-3.0，DeepSeek-V3，DeepSeek-R1，Kimi，豆包等。
+
+- [蓝鲸AI：ChatGPT 中文版](https://gptchinese.github.io/GPT/)
+
+    实际的地址是：[https://chat.lanjing.pro/](https://chat.lanjing.pro/)
+
+    包含的模型有：ChatGPT-4o，ChatGPT-4o-画图，ChatGPT-4o-mini，ChatGPT-4，ChatGPT-o3-mini，Claude-3.7-Sonnet，Claude-3.7-Sonnet-Thinking，Gemini-2.5，Grok-3.0，Grok-3.0-思考模型，DeepSeek-V3，DeepSeek-R1，Kimi，豆包等。
+
+## 4. 其他
+
+以下是精选的国内优质 ChatGPT 中文版镜像网站，提供高效的中文访问体验：
+
+- [https://chat.lanjing.pro/](https://chat.lanjing.pro/) - ChatGPT中文版，运营近2年，支持 GPT-4、4o 以及 o1，支持 AI 绘画，扫码即可使用。
+
+- [https://chat.xsimple.top/](https://chat.xsimple.top/) - ChatGPT镜像网站，运营近2年，支持 GPT-4、4o 以及 o1，提供 AI 文件、AI PPT、AI 助手、AI 插件功能、思维导图。
+
+- [https://chat.yixiaai.com/](https://chat.yixiaai.com/) - ChatGPT镜像网站，运营1年多，支持 GPT-4、4o，支持 AI 绘画（Midjourney 和 Dall·E）。
+
+- [https://ai.lansejingyu.com/](https://ai.lansejingyu.com/) - ChatGPT-4 镜像，支持 GPT-4、4o，简单便捷。
+
+- [https://lanjing.ai/](https://lanjing.ai/) - 免费ChatGPT，支持 GPT-4、4o 支持 MJ 绘画。
 
 ## 引用网站
 
@@ -57,3 +77,5 @@
 - [Claude AI 中文官网_Claude中文版](https://www.bilibili.com/opus/975198665622683652)
 
 - [国内 ChatGPT 4o 现在就能用了](https://www.bilibili.com/opus/965084266983587848)
+
+- [2025年 最新的 ChatGPT 中文版](https://gptchinese.github.io/GPT/)
