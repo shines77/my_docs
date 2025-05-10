@@ -54,6 +54,8 @@
 
     实际的地址是：[https://chat.lanjing.pro/](https://chat.lanjing.pro/)
 
+    收费的，新用户注册赠送 5 次基础对话体验，1 个高级积
+
     包含的模型有：ChatGPT-4o，ChatGPT-4o-画图，ChatGPT-4o-mini，ChatGPT-4，ChatGPT-o3-mini，Claude-3.7-Sonnet，Claude-3.7-Sonnet-Thinking，Gemini-2.5，Grok-3.0，Grok-3.0-思考模型，DeepSeek-V3，DeepSeek-R1，Kimi，豆包等。
 
 ## 4. 其他
@@ -71,6 +73,8 @@
 - [https://lanjing.ai/](https://lanjing.ai/) - 免费ChatGPT，支持 GPT-4、4o 支持 MJ 绘画。
 
 ## 引用网站
+
+- [哔哩哔哩：大会员来了123](https://space.bilibili.com/3546697410021621)
 
 - [谷歌AI Gemini镜像网站](https://www.bilibili.com/opus/959823851167940615)
 

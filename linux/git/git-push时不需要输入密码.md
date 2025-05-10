@@ -19,6 +19,10 @@
 
     $ git config --global credential.helper store
 
+清除存储的凭证缓存：
+
+    $ git credential-cache exit
+
 push 的时候自动选择分支：（Since Git 1.7.11）
 
     $ git config --global push.default matching
@@ -47,6 +51,14 @@ push 的时候自动选择分支：（Since Git 1.7.11）
 
 显示 config 信息，该信息可以通过 `vim .git/config` 命令编辑：
 
+    $ git config --global --list
+
+    credential.helper=store
+    user.name=shines77
+    user.email=gz_shines@msn.com
+
+本地仓库配置：
+
     $ git config --local --list
 
     credential.helper=store
@@ -61,9 +73,3 @@ push 的时候自动选择分支：（Since Git 1.7.11）
     remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
     branch.master.remote=origin
     branch.master.merge=refs/heads/master
-
-    $ git config --global --list
-
-    credential.helper=store
-    user.name=shines77
-    user.email=gz_shines@msn.com

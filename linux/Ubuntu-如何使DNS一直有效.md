@@ -21,6 +21,7 @@ sudo chattr -i /etc/resolv.conf
 某些系统（如使用 `systemd-resolved` 或 `NetworkManager`）会自动生成 `/etc/resolv.conf`，可以通过以下方式禁用：
 
 #### 对于 `systemd-resolved`：
+
 编辑 `/etc/systemd/resolved.conf`，设置：
 
 ```ini
@@ -61,8 +62,8 @@ sudo systemctl restart NetworkManager
 直接编辑 `/etc/resolv.conf`，添加 DNS 服务器：
 
 ```bash
+nameserver 114.114.114.114
 nameserver 8.8.8.8
-nameserver 8.8.4.4
 ```
 
 ### 4. 使用 `resolvconf` 工具
@@ -72,8 +73,8 @@ nameserver 8.8.4.4
 1. 编辑 `/etc/resolvconf/resolv.conf.d/head`，添加 DNS 服务器：
 
     ```bash
+    nameserver 114.114.114.114
     nameserver 8.8.8.8
-    nameserver 8.8.4.4
     ```
 
 2. 更新配置：
