@@ -58,6 +58,16 @@
 
     包含的模型有：ChatGPT-4o，ChatGPT-4o-画图，ChatGPT-4o-mini，ChatGPT-4，ChatGPT-o3-mini，Claude-3.7-Sonnet，Claude-3.7-Sonnet-Thinking，Gemini-2.5，Grok-3.0，Grok-3.0-思考模型，DeepSeek-V3，DeepSeek-R1，Kimi，豆包等。
 
+- [https://chatshare.biz/](https://chatshare.biz/)
+
+    收费的，免费用户没有任何额度，购买需添加微信。
+
+    专门的Claude系统：[https://kelaodeshare.com/ai/index](https://kelaodeshare.com/ai/index)
+
+- [https://home.chatplus.cc/](https://home.chatplus.cc/)
+
+    注册登陆账号后，初始大概会有一小时限时试用5次对话，如需继续使用，请联系下方微信获取激活码
+
 ## 4. 其他
 
 以下是精选的国内优质 ChatGPT 中文版镜像网站，提供高效的中文访问体验：
@@ -83,3 +93,5 @@
 - [国内 ChatGPT 4o 现在就能用了](https://www.bilibili.com/opus/965084266983587848)
 
 - [2025年 最新的 ChatGPT 中文版](https://gptchinese.github.io/GPT/)
+
+- [ChatGPT展览馆 - ChatGPT镜像站](https://chatgptshow.com/blog/mirror_site/chatgpt4_mirror_site1.html)
