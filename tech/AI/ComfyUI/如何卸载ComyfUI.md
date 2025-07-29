@@ -36,3 +36,11 @@ C:\Users\<你的用户名>\Documents\ComfyUI
 * models：模型文件
 * custom nodes：自定义节点
 * input/output directories：图片输入/输出目录
+
+## 4. Python 环境的缓存
+
+下面才是重头戏，就是 Python 虚拟环境的缓存目录，很多文章都没有提及，但这个文件夹的文件可能是非常大的。
+
+几 GB，或十几 GB 的大小不等，目录是：
+
+`C:\Users\<你的用户名>\AppData\Local\uv\cache` 。
