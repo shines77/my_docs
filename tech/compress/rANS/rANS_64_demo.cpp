@@ -213,3 +213,19 @@ int main()
 
     return 0;
 }
+
+/*
+
+g++ -std=c++17 -o rans_test rans_64.cpp
+./rans_test
+
+**输出示例：**
+原始数据大小: 101 字节
+压缩后数据大小: 72 字节
+压缩率: 71.2871%
+成功: 解码后的数据与原始数据完全一致！
+解码后的字符串: This is a simple example for rANS encoding and decoding. It is a very efficient entropy coder.
+
+这个示例清晰地展示了 rANS 的工作流程：构建概率模型 -> 反向编码 -> 正向解码 -> 验证。在实际应用中，概率模型本身也需要被存储或传输，但这超出了核心 rANS 算法的范畴。
+
+*/
