@@ -34,7 +34,7 @@ rANS 不直接使用概率 $p_s = f_s / F$，而是使用整数频率 $f_s$，�
 
 1. 计算新状态：
 
-   $$x' = \left\lfloor \frac{x}{f_s} \right\rfloor \cdot F + C_s + x \bmod f_s$$
+   $$x_{next} = \left\lfloor \frac{x}{f_s} \right\rfloor \cdot F + C_s + (x \bmod f_s)$$
 
    其中：
 
@@ -51,11 +51,11 @@ rANS 不直接使用概率 $p_s = f_s / F$，而是使用整数频率 $f_s$，�
 
 4. 解码过程（rANS Decode）
 
-解码是编码的逆过程，我们从状态 $x$ 中还原出原始符号 $s$，并恢复上一状态 $x_prev$。
+解码是编码的逆过程，我们从状态 $x$ 中还原出原始符号 $s$，并恢复上一状态 $x_{prev}$。
 
 解码步骤如下：
 
-1. 计算符号 s：
+1. 计算符号 $s$：
 
    - 首先计算累积频率索引：
 
@@ -63,16 +63,17 @@ rANS 不直接使用概率 $p_s = f_s / F$，而是使用整数频率 $f_s$，�
 
      即通过 $x \bmod F$ 找到当前落在哪个符号的频率范围内，从而得到符号 $s$。
 
-   - 或者更常用的方式是预计算一个 $C[]$（累积频率表）以及 $C_inverse[]$ 映射，使得给定 $x \bmod F$ 能快速找到对应的符号 $s$。
+   - 或者更常用的方式是预计算一个 $C[]$（累积频率表）以及 $C_{inverse}[]$ 映射，使得给定 $x \bmod F$ 能快速找到对应的符号 $s$。
 
-2. 计算前一个状态 $x_prev：
+2. 计算前一个状态 $x_{prev}$：
 
-   $$x_{\text{prev}} = f_s \cdot \left( \frac{x}{F} \right) + (x \bmod F) - C_s$$
+   $$x_{prev} = f_s \cdot \left( \frac{x}{F} \right) + (x \bmod F) - C_s$$
 
-   然后你可以通过这个 x_prev 继续解码下一个符号。
+   然后你可以通过这个 $x_{prev}$ 继续解码下一个符号。
 
 3. 恢复输出字节：
-   在解码时，我们需要从输入流中重新构建完整的 x 值（比如通过读取之前输出的低位字节，左移并拼接）。
+
+   在解码时，我们需要从输入流中重新构建完整的 $x$ 值（比如通过读取之前输出的低位字节，左移并拼接）。
 
 ## 二、rANS 的优势
 
@@ -184,7 +185,8 @@ public:
 };
 
 // 示例使用
-int main() {
+int main()
+{
     // 假设我们有 3 个符号 A,B,C，频率分别是 1, 2, 3
     std::vector<uint> freqs = {1, 2, 3};
     SimpleRansEncoder encoder(freqs);
@@ -243,9 +245,9 @@ int main() {
 
 3. 实际项目推荐使用成熟的库，如：
 
-   - https://github.com/facebook/zstd（内部使用了类似 ANS 的技术）
-   - https://github.com/rygorous/ryg_rans（Ryg 的 rANS 实现，参考实现）
-   - Google 的 https://github.com/google/draco（3D 几何压缩中也用了 ANS 思想）
+   - [https://github.com/facebook/zstd]()（内部使用了类似 ANS 的技术）
+   - [https://github.com/rygorous/ryg_rans]()（Ryg 的 rANS 实现，参考实现）
+   - Google 的 [https://github.com/google/draco]()（3D 几何压缩中也用了 ANS 思想）
 
 ## 四、总结
 
@@ -262,8 +264,8 @@ int main() {
 
 - 推荐阅读：
 
-  - https://arxiv.org/abs/1402.3392
-  - Ryg 的 RANS 实现（https://github.com/rygorous/ryg_rans）
+  - [https://arxiv.org/abs/1402.3392]()
+  - Ryg 的 RANS 实现（[https://github.com/rygorous/ryg_rans]()）
   - Zstandard 源码中的 ANS 相关部分
 
 - 进阶方向：
