@@ -37,7 +37,42 @@ Card Holder Address (English) 持卡人地址，可以搜索日本大学所在�
 
 注册完成后，要等待审核，原则上需要1-2个工作日，但实际上几分钟或十几分钟就OK了，另外还要绑定一张国内的银行卡，作为收款的账户，虽然也可以用支付宝收款，但是还是需要验证一张银行卡。
 
-## 4. 注册 Google 学生优惠
+## 4. 印度地址
+
+印度的地址格式通常包括收件人姓名、门牌号/建筑物名称、街道名称、地区名称、城市、州/邦名称、邮政编码和国家名称‌，例如：Mr. Rajesh Kumar, 12/34 Green Park Apartments, MG Road, New Delhi, Delhi 110016, India。
+
+印度地址的常见格式‌
+
+印度地址的书写顺序通常遵循从具体到广泛的原则，主要包含以下要素（以英文为例）：
+
+‌- 收件人姓名‌：如: Mr. Amit Sharma。
+
+‌- 门牌号/建筑物名称‌：如: Flat No. 5B 或 Taj Mahal Hotel。
+
+‌- 街道名称及区域‌：如: Connaught Place, Near Metro Station。
+
+‌- 城市名称‌：如: Mumbai 或 Chennai。
+
+‌- 州/邦名称及邮政编码‌：如: Maharashtra 400001（邮政编码为6位数字）。
+
+‌- 国家名称‌：India。
+
+‌住宅地址‌：
+
+Ms. Priya Patel
+203, Sunshine Towers
+Linking Road, Bandra West
+Mumbai, Maharashtra 400050
+India
+
+‌商业地址‌：
+
+Tech Solutions Pvt. Ltd.
+Office No. 10, Cyber City
+Gurugram, Haryana 122002
+India
+
+## 5. 注册 Google 学生优惠
 
 步骤：
 

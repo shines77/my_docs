@@ -32,9 +32,9 @@ rANS 不直接使用概率 $p_s = f_s / F$，而是使用整数频率 $f_s$，�
 
 编码步骤如下：
 
-1. 计算新状态 $x_{next}$：
+1. 计算新状态 $x_{new}$：
 
-   $$x_{next} = \left\lfloor \frac{x}{f_s} \right\rfloor \cdot F + C_s + (x \bmod f_s)$$
+   $$x_{new} = \left\lfloor \frac{x}{f_s} \right\rfloor \cdot F + C_s + (x \bmod f_s)$$
 
    其中：
 
