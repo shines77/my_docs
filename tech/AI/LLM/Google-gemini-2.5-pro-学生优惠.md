@@ -78,7 +78,7 @@ India
 
 1. 打开上面的魔法节点。
 
-2. 打开 Google 的学生优惠网站：[https://grow.google.com/students](https://grow.google.com/students)，点击“sign up for free”。
+2. 打开 Google 的学生优惠网站：[https://grow.google.com/students](https://grow.google.com/students) | [https://gemini.google/students/](https://gemini.google/students/) 或者 [https://one.google.com/ai-student](https://one.google.com/ai-student)，点击“sign up for free”。
 
 3. 点击 “验证资格条件”。
 
@@ -103,3 +103,47 @@ India
 美国地址生成器：[https://www.meiguodizhi.com/usa-address/hot-city-Los-Angeles](https://www.meiguodizhi.com/usa-address/hot-city-Los-Angeles)
 
 2284 Euclid Avenue, Long Beach, Los Angeles, California, USA
+
+6. 新加坡地址
+
+```text
+Nanyang Technological University 南洋理工大学
+NanYang Polytechnic 南洋理工学院
+
+通讯地址：Nanyang Polytechnic 180 Ang Mo Kio Avenue 8 Singapore
+邮编：569830
+电话：065-64515115
+```
+
+```text
+BLK 165 Yishun Ring Road #3-101, Singapore
+760165
+```
+
+```text
+150 Tanglin Road, Singapore
+247969
+```
+
+7. 新的学生证生成网站
+
+[https://student-id.pages.dev/](https://student-id.pages.dev/)
+
+```text
+University: Nanyang Technological University (Singapore) / Nanyang Polytechnic
+Site: https://www.ntu.edu.sg/
+Logo: https://www.ntu.edu.sg/ResourcePackages/NTU/assets/images/NTU_Logo.png
+Logo: https://img.dingxinwen.cn/fw/20241214/3517341370201040010_3FEAD9363D4F6889A05E1BBD4F92FC93.jpg (北大logo)
+Name: Bill Smith
+Student ID: INT695397
+Faculty: Faculty of Meddicine
+
+2023/09/11
+2027/09/11
+```
+
+8. 最新的注册方法
+
+手把手教你免费领取 Gemini 3 Pro 会员1 年（亲测可用！！）
+
+[https://www.cnblogs.com/javastack/p/19340015](https://www.cnblogs.com/javastack/p/19340015)
