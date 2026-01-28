@@ -96,33 +96,39 @@
   - 基本类型到 LLVM 类型的映射
 
   - 复杂类型表示：
+
     - 结构体/联合体 → LLVM 结构体类型
     - 数组（包括 VLA） → LLVM 数组类型或指针
     - 函数指针 → LLVM 函数指针类型
 
   - 控制流转换：
+
     - `if`/`else` → `br` 指令
     - `switch` → `switch` 指令
     - 循环 → `br` 和 `phi` 指令
 
   - 表达式转换：
+
     - 算术运算 → LLVM 算术指令
     - 逻辑运算 → LLVM 整数运算和比较指令
     - 位运算 → LLVM 位运算指令
 
   - 内存操作：
+
     - 变量声明 → `alloca` 指令
     - 赋值 → `store` 指令
     - 取值 → `load` 指令
     - 地址获取 → `getelementptr` 指令
 
   - 函数调用：
+
     - 处理可变参数函数（`va_list`, `va_start`, `va_arg`, `va_end`, `va_copy`）
     - `inline` 函数处理
 
 - 特殊 C99 特性支持：
 
   - 变长数组（VLA）处理：
+  
     - 使用 `alloca` 或动态分配
     - 处理 VLA 参数
 
