@@ -26,24 +26,34 @@ cd build
 对于日常开发使用，推荐构建 **Release** 版本（速度快，体积小）：
 
 ```powershell
-cmake -G "Visual Studio 15 2017" -A x64 `
+cmake -G "Visual Studio 15 2017 Win64" -A x64 -Thost=x64 `
   -DCMAKE_BUILD_TYPE=Release `
+  -DCMAKE_INSTALL_PREFIX="C:/Program Files(x86)/LLVM/" `
   -DLLVM_ENABLE_PROJECTS="clang" `
   -DLLVM_TARGETS_TO_BUILD="X86" `
   -DLLVM_INCLUDE_TESTS=OFF `
   -DLLVM_INCLUDE_EXAMPLES=OFF `
   -DLLVM_ENABLE_ASSERTIONS=OFF `
+  -DLLVM_OPTIMIZED_TABLEGEN=ON `
+  -DBUILD_SHARED_LIBS=OFF `
+  -DLLVM_USE_CRT_RELEASE=MT `
   ..
 ```
 
 **参数说明：**
+
 - `-G "Visual Studio 15 2017" -A x64`: 使用 VS2017 生成 64 位项目
+- `-Thost=x64`: **极其重要！** 这告诉 VS 使用 64 位的编译器和链接器来编译 LLVM。如果不加这个，链接时极大概率会报 Out of Heap Space 内存溢出错误。
 - `-DCMAKE_BUILD_TYPE=Release`: Release 模式（优化编译）
+- `-DCMAKE_INSTALL_PREFIX="C:/llvm/install"`：指定安装路径，默认路径为 "C:\Program Files(x86)\LLVM" 。
 - `-DLLVM_ENABLE_PROJECTS="clang"`: 只构建 LLVM 和 Clang（可选，减少构建时间）
 - `-DLLVM_TARGETS_TO_BUILD="X86"`: 只构建 X86 目标（减少构建时间）
 - `-DLLVM_INCLUDE_TESTS=OFF`: 不构建测试（节省时间）
 - `-DLLVM_INCLUDE_EXAMPLES=OFF`: 不构建示例
 - `-DLLVM_ENABLE_ASSERTIONS=OFF`: Release 模式下关闭断言
+- `-DLLVM_OPTIMIZED_TABLEGEN=ON`: 优化TableGen
+- `-DBUILD_SHARED_LIBS=OFF`: 构建静态库（可选）
+- `-DLLVM_USE_CRT_RELEASE=MT`: 使用静态运行时
 
 ### 3. 开始构建
 
@@ -58,6 +68,15 @@ cmake --build . --config Release -j 8
 - 如果内存不足，可以减少并行任务数：`-j 4` 或 `-j 2`
 - 构建过程会占用大量磁盘空间（约 30-40GB）
 
+只构建 clang ：
+
+```bash
+cmake --build . --config Release --target clang -j 8
+```
+
+- 注意: 这里我们指定 --target clang，这样只会编译 Clang 及其依赖，而不会编译 LLVM 文档和其他杂项，能节省时间。
+- 这个过程根据 CPU 核心数，可能需要 1 到 3 小时。
+
 ### 4. 验证构建结果
 
 构建完成后，检查关键文件是否存在：
@@ -68,6 +87,12 @@ Test-Path C:\llvm\build\lib\cmake\llvm\LLVMConfig.cmake
 
 # 检查 LLVM 库
 dir C:\llvm\build\Release\lib\LLVM*.lib
+```
+
+### 5. 安装 LLVM 和 Clang
+
+```bash
+cmake --build . --config Release --target install -j 8
 ```
 
 ## 可选：Debug 构建
@@ -140,5 +165,5 @@ set(LLVM_DIR "C:/llvm/build/lib/cmake/llvm" CACHE PATH "LLVM CMake directory")
 ```powershell
 cd C:\Project\VibeCoding\antigravity\jlang-c\build
 cmake ..
-cmake --build .
+cmake --build . --config Release
 ```
