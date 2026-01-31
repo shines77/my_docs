@@ -32,8 +32,8 @@
     ## Syntax and Formatting
 
     - Follow a consistent coding style, such as Google C++ Style Guide or your team’s standards.
-    - Place braces on the same line for control structures and methods. Except for the methods in main.cpp, the curly braces for the methods in main.cpp can be placed on a separate line.
-    - Use clear and consistent commenting practices.
+    - Place braces on the same line for control structures, methods, namespaces, array definitions, after function declarations and parameter lists. Except for the methods in main.cpp, the curly braces for the methods in main.cpp can be placed on a separate line.
+    - Use clear and consistent commenting practices, comments can only be written in English.
 
     ## Error Handling and Validation
 
