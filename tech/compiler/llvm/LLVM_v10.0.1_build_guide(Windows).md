@@ -6,7 +6,7 @@
 
 - ✅ Visual Studio 2017 (已安装)
 - ✅ CMake 3.18.1 (已安装)
-- ✅ LLVM 源代码位于 `C:\llvm`
+- ✅ LLVM 源代码位于 `C:\llvm-build\llvm-project\llvm`
 - 需要：至少 50GB 可用磁盘空间
 - 需要：至少 16GB RAM (推荐 32GB)
 
@@ -16,7 +16,7 @@
 
 ```powershell
 # 在 C:\llvm 目录下创建 build 目录
-cd C:\llvm
+cd C:\llvm-build
 mkdir build
 cd build
 ```
@@ -26,10 +26,11 @@ cd build
 对于日常开发使用，推荐构建 **Release** 版本（速度快，体积小）：
 
 ```powershell
-cmake -G "Visual Studio 15 2017 Win64" -A x64 -Thost=x64 `
+cmake ../llvm-project/llvm `
+  -G "Visual Studio 15 2017" -A x64 -Thost=x64 `
   -DCMAKE_BUILD_TYPE=Release `
-  -DCMAKE_INSTALL_PREFIX="C:/Program Files(x86)/LLVM/" `
-  -DLLVM_ENABLE_PROJECTS="clang" `
+  -DCMAKE_INSTALL_PREFIX="C:/llvm-build/install" `
+  -DLLVM_ENABLE_PROJECTS="llvm;clang" `
   -DLLVM_TARGETS_TO_BUILD="X86" `
   -DLLVM_INCLUDE_TESTS=OFF `
   -DLLVM_INCLUDE_EXAMPLES=OFF `
@@ -37,7 +38,10 @@ cmake -G "Visual Studio 15 2017 Win64" -A x64 -Thost=x64 `
   -DLLVM_OPTIMIZED_TABLEGEN=ON `
   -DBUILD_SHARED_LIBS=OFF `
   -DLLVM_USE_CRT_RELEASE=MT `
-  ..
+  -DCMAKE_POLICY_VERSION_MINIMUM="3.5" `
+  -DCMAKE_POLICY_DEFAULT_CMP0000=OLD `
+  -DCMAKE_POLICY_DEFAULT_CMP0053=NEW `
+  -Wno-dev
 ```
 
 **参数说明：**
@@ -45,7 +49,7 @@ cmake -G "Visual Studio 15 2017 Win64" -A x64 -Thost=x64 `
 - `-G "Visual Studio 15 2017" -A x64`: 使用 VS2017 生成 64 位项目
 - `-Thost=x64`: **极其重要！** 这告诉 VS 使用 64 位的编译器和链接器来编译 LLVM。如果不加这个，链接时极大概率会报 Out of Heap Space 内存溢出错误。
 - `-DCMAKE_BUILD_TYPE=Release`: Release 模式（优化编译）
-- `-DCMAKE_INSTALL_PREFIX="C:/llvm/install"`：指定安装路径，默认路径为 "C:\Program Files(x86)\LLVM" 。
+- `-DCMAKE_INSTALL_PREFIX="C:/llvm/install"`：指定安装路径，默认安装路径为 "C:\Program Files(x86)\LLVM"，不推荐用默认路径。
 - `-DLLVM_ENABLE_PROJECTS="clang"`: 只构建 LLVM 和 Clang（可选，减少构建时间）
 - `-DLLVM_TARGETS_TO_BUILD="X86"`: 只构建 X86 目标（减少构建时间）
 - `-DLLVM_INCLUDE_TESTS=OFF`: 不构建测试（节省时间）
@@ -62,13 +66,19 @@ cmake -G "Visual Studio 15 2017 Win64" -A x64 -Thost=x64 `
 cmake --build . --config Release -j 8
 ```
 
+在 x86 上需要特别构建：
+
+```powershell
+cmake --build . --config Release --target LLVMX86CodeGen -j 8
+```
+
 **注意：**
 
 - 首次构建可能需要 **2-4 小时**（取决于硬件配置）
 - 如果内存不足，可以减少并行任务数：`-j 4` 或 `-j 2`
 - 构建过程会占用大量磁盘空间（约 30-40GB）
 
-只构建 clang ：
+只构建 Clang，不构建 LLVM 除了基础库的其他东西：
 
 ```bash
 cmake --build . --config Release --target clang -j 8
@@ -83,10 +93,10 @@ cmake --build . --config Release --target clang -j 8
 
 ```powershell
 # 检查 LLVMConfig.cmake
-Test-Path C:\llvm\build\lib\cmake\llvm\LLVMConfig.cmake
+Test-Path C:\llvm-build\build\lib\cmake\llvm\LLVMConfig.cmake
 
 # 检查 LLVM 库
-dir C:\llvm\build\Release\lib\LLVM*.lib
+dir C:\llvm-build\build\Release\lib\LLVM*.lib
 ```
 
 ### 5. 安装 LLVM 和 Clang
@@ -100,15 +110,23 @@ cmake --build . --config Release --target install -j 8
 如果您需要调试 LLVM 本身，可以构建 Debug 版本（**不推荐用于日常开发**）：
 
 ```powershell
-cmake -G "Visual Studio 15 2017" -A x64 `
+cmake ../llvm-project/llvm `
+  -G "Visual Studio 15 2017" -A x64 -Thost=x64 `
   -DCMAKE_BUILD_TYPE=Debug `
-  -DLLVM_ENABLE_PROJECTS="clang" `
+  -DLLVM_ENABLE_PROJECTS="llvm,clang" `
   -DLLVM_TARGETS_TO_BUILD="X86" `
   -DLLVM_INCLUDE_TESTS=OFF `
   -DLLVM_INCLUDE_EXAMPLES=OFF `
-  ..
+  -DLLVM_ENABLE_ASSERTIONS=ON `
+  -DLLVM_OPTIMIZED_TABLEGEN=ON `
+  -DBUILD_SHARED_LIBS=OFF `
+  -DLLVM_USE_CRT_RELEASE=MT `
+  -DCMAKE_POLICY_VERSION_MINIMUM="3.5" `
+  -DCMAKE_POLICY_DEFAULT_CMP0000=NEW `
+  -DCMAKE_POLICY_DEFAULT_CMP0053=NEW `
+  -Wno-dev
 
-cmake --build . --config Debug -j 4
+cmake --build . --config Debug -j 8
 ```
 
 **警告：** Debug 构建会非常慢，且占用更多空间（60GB+）。
@@ -119,7 +137,7 @@ cmake --build . --config Debug -j 4
 
 ```cmake
 # 设置 LLVM_DIR 指向构建目录
-set(LLVM_DIR "C:/llvm/build/lib/cmake/llvm" CACHE PATH "LLVM CMake directory")
+set(LLVM_DIR "C:/llvm-build/build/lib/cmake/llvm" CACHE PATH "LLVM CMake directory")
 ```
 
 ## 故障排除

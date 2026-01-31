@@ -73,9 +73,9 @@ mkdir install
 # 目录结构：
 
 # C:\llvm-build\
-#   ├── llvm-project\    # 源代码
-#   ├── build\           # 构建目录
-#   └── install\         # 安装目录
+#   ├── llvm-project\llvm # 源代码
+#   ├── build\            # 构建目录
+#   └── install\          # 安装目录
 ```
 
 ## 第4步：配置CMake
@@ -83,8 +83,8 @@ mkdir install
 ### 4.1 使用 CMake GUI 配置（推荐新手）
 
 1. 打开 CMake GUI
-2. 设置源代码路径：`C:/llvm-build/llvm-project/llvm`
-3. 设置构建路径：`C:/llvm-build/build`
+2. 设置源代码路径：`C:\llvm-build\llvm-project\llvm`
+3. 设置构建路径：`C:\llvm-build\build`
 4. 点击 "Configure"
 5. 选择 Visual Studio 2017 作为生成器
    - 选择 "Visual Studio 15 2017"
@@ -106,19 +106,31 @@ mkdir install
 
 ### 4.2 或者使用命令行配置
 
+如果使用 CMake 4.0 以上的版本，需要先手动把 CMakeLists.txt 中的 cmake_minimum_required(VERSION 3.4.3) 改为：
+
+```bash
+cmake_minimum_required(VERSION 3.5)
+```
+
+因为 4.0 以后，最低支持的版本是 3.5，低于这个版本会报错。
+
 ```bash
 cd C:\llvm-build\build
 
 # 基本配置
-cmake ../llvm-project/llvm ^
-  -G "Visual Studio 15 2017 Win64" -A x64 -Thost=x64 ^
-  -DCMAKE_INSTALL_PREFIX="C:/llvm-build/install" ^
-  -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra" ^
-  -DLLVM_TARGETS_TO_BUILD="X86" ^
-  -DCMAKE_BUILD_TYPE=Release ^
-  -DLLVM_OPTIMIZED_TABLEGEN=ON ^
-  -DBUILD_SHARED_LIBS=OFF ^
-  -DLLVM_USE_CRT_RELEASE=MT
+cmake ../llvm-project/llvm `
+  -G "Visual Studio 15 2017" -A x64 -Thost=x64 `
+  -DCMAKE_INSTALL_PREFIX="C:/llvm-build/install" `
+  -DLLVM_ENABLE_PROJECTS="llvm;clang;clang-tools-extra" `
+  -DLLVM_TARGETS_TO_BUILD="X86" `
+  -DCMAKE_BUILD_TYPE=Release `
+  -DLLVM_OPTIMIZED_TABLEGEN=ON `
+  -DBUILD_SHARED_LIBS=OFF `
+  -DLLVM_USE_CRT_RELEASE=MT `
+  -DCMAKE_POLICY_VERSION_MINIMUM="3.5" `
+  -DCMAKE_POLICY_DEFAULT_CMP0000=NEW `
+  -DCMAKE_POLICY_DEFAULT_CMP0053=NEW `
+  -Wno-dev
 ```
 
 ## 第5步：构建 LLVM/Clang
@@ -223,12 +235,12 @@ set BUILD_DIR=C:\llvm-build\build
 set INSTALL_DIR=C:\llvm-build\install
 
 echo Configuring LLVM/Clang...
-cmake -G "Visual Studio 15 2017 Win64" ^
-  -B "%BUILD_DIR%" ^
-  -S "%SOURCE_DIR%" ^
-  -DCMAKE_INSTALL_PREFIX="%INSTALL_DIR%" ^
-  -DLLVM_ENABLE_PROJECTS="clang" ^
-  -DLLVM_TARGETS_TO_BUILD="X86" ^
+cmake -G "Visual Studio 15 2017" `
+  -B "%BUILD_DIR%" `
+  -S "%SOURCE_DIR%" `
+  -DCMAKE_INSTALL_PREFIX="%INSTALL_DIR%" `
+  -DLLVM_ENABLE_PROJECTS="clang" `
+  -DLLVM_TARGETS_TO_BUILD="X86" `
   -DCMAKE_BUILD_TYPE=Release
 
 if %ERRORLEVEL% neq 0 (
