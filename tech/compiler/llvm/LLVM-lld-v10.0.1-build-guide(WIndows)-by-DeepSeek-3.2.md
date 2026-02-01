@@ -66,7 +66,7 @@ mkdir install
 ### 4.1 使用CMake GUI配置（推荐）
 
 1. 打开CMake GUI
-2. 设置源代码路径：`C:/llvm-build/llv-project/lld`
+2. 设置源代码路径：`C:/llvm-build/llvm-project/lld`
 3. 设置构建路径：`C:/llvm-build/lld-build`
 4. 点击"Configure"
 
@@ -99,7 +99,7 @@ mkdir install
 cd C:\llvm-build\lld-build
 
 # 基本配置（构建LLD）
-cmake ../llv-project/lld `
+cmake ../llvm-project/lld `
   -G "Visual Studio 15 2017" -A x64 -Thost=x64 `
   -DCMAKE_INSTALL_PREFIX="C:/llvm-build/lld-install" `
   -DLLVM_ENABLE_PROJECTS="lld" `
@@ -125,7 +125,7 @@ cmake ../llv-project/lld `
 cd C:\llvm-build\lld-build
 
 # Clang 和 LLD 一起构建
-cmake ../llv-project/lld `
+cmake ../llvm-project/lld `
   -G "Visual Studio 15 2017" -A x64 -Thost=x64 `
   -DCMAKE_INSTALL_PREFIX="C:/llvm-build/lld-install" `
   -DLLVM_ENABLE_PROJECTS="clang;lld" `
