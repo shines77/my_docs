@@ -18,7 +18,7 @@
     - Use camelCase for variable names and methods.
     - Use SCREAMING_SNAKE_CASE for global constants and macros.
     - Constants within a class use the kPascalCase naming convention, with a lowercase 'k' preceding the variable name, and the rest of the variable name using PascalCase.
-    - Prefix member variables with an underscore or m_ (e.g., `_userId`, `m_userId`).
+    - Prefix member variables with an underscore (e.g., `_userId`, `_userName`).
     - Use namespaces to organize code logically.
 
     ## C++ Features Usage
@@ -32,7 +32,7 @@
     ## Syntax and Formatting
 
     - Follow a consistent coding style, such as Google C++ Style Guide or your team’s standards.
-    - Place braces on the same line for control structures, methods, namespaces, array definitions, after function declarations and parameter lists. Except for the methods in main.cpp, the curly braces for the methods in main.cpp can be placed on a separate line.
+    - Place braces on the same line for control structures (if, else, while, do-while, for, switch), methods, namespaces, array definitions, after function declarations and parameter lists. Except for the methods in main.cpp, the curly braces for the methods in main.cpp can be placed on a separate line.
     - Use clear and consistent commenting practices, comments can only be written in English.
 
     ## Error Handling and Validation
@@ -50,9 +50,9 @@
 
     ## Key Conventions
 
-    - Use smart pointers over raw pointers for better memory safety.
+    - By default, raw pointers are used whenever possible, balancing memory safety and performance. Smart pointers are used only where necessary to enhance memory safety.
     - Avoid global variables; use singletons sparingly.
-    - Use `enum class` for strongly typed enumerations.
+    - By default, avoid using `enum class` to implement strongly typed enumerations unless absolutely necessary.
     - Separate interface from implementation in classes.
     - Use templates and metaprogramming judiciously for generic solutions.
 
@@ -76,4 +76,3 @@
     - Document assumptions, constraints, and expected behavior of code.
 
     Follow the official ISO C++ standards and guidelines for best practices in modern C++ development.
-    
