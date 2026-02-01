@@ -101,6 +101,7 @@ cd C:\llvm-build\lld-build
 # 基本配置（构建LLD）
 cmake ../llvm-project/lld `
   -G "Visual Studio 15 2017" -A x64 -Thost=x64 `
+  -DLLVM_CONFIG_PATH="C:/llvm-build/install/bin/llvm-config.exe" `
   -DCMAKE_INSTALL_PREFIX="C:/llvm-build/lld-install" `
   -DLLVM_ENABLE_PROJECTS="lld" `
   -DLLVM_TARGETS_TO_BUILD="X86" `
@@ -114,10 +115,29 @@ cmake ../llvm-project/lld `
   -DLLVM_ENABLE_RTTI=ON `
   -DLLVM_EXPORT_SYMBOLS_FOR_PLUGINS=ON `
   -DCMAKE_POLICY_VERSION_MINIMUM="3.5" `
-  -DCMAKE_POLICY_DEFAULT_CMP0000=NEW `
+  -DCMAKE_POLICY_DEFAULT_CMP0000=OLD `
   -DCMAKE_POLICY_DEFAULT_CMP0053=NEW `
   -Wno-dev
 ```
+
+在 Windows 上，如果不自己手动指定 `LLVM_CONFIG_PATH` 路径会报如下错误：
+
+```powershell
+CMake Error at C:/llvm-build/lld-build/CMakeFiles/CMakeScratch/TryCompile-1yv9wl/CMakeLists.txt:2 (set):
+  Syntax error in cmake code at
+
+    C:/llvm-build/lld-build/CMakeFiles/CMakeScratch/TryCompile-1yv9wl/CMakeLists.txt:2
+
+  when parsing string
+
+    C:\llvm-build\install\lib\cmake\llvm
+
+  Invalid character escape '\l'.
+```
+
+原因是无法处理 Windows 的 "\" 路径分隔符，所有必须自己手动指定，路径分隔符改为 "/"。
+
+注意：这里 `LLVM_CONFIG_PATH` 指定的是 `llvm-config` 的可执行文件的具体文件名，而不仅仅是 Path，这是个坑。而 `LLVM_CONFIG` 则才是 `llvm-config` 可执行文件的路径，这个设定感觉是搞反了。如果指定了以后还是报错，再次执行同样的命令即可通过。（很奇怪的现象）
 
 ### 4.3 如果需要构建Clang + LLD（完整工具链）
 
@@ -127,6 +147,7 @@ cd C:\llvm-build\lld-build
 # Clang 和 LLD 一起构建
 cmake ../llvm-project/lld `
   -G "Visual Studio 15 2017" -A x64 -Thost=x64 `
+  -DLLVM_CONFIG_PATH="C:/llvm-build/install/bin/llvm-config.exe" `
   -DCMAKE_INSTALL_PREFIX="C:/llvm-build/lld-install" `
   -DLLVM_ENABLE_PROJECTS="clang;lld" `
   -DLLVM_TARGETS_TO_BUILD="X86" `
@@ -144,14 +165,45 @@ cmake ../llvm-project/lld `
   -DCLANG_DEFAULT_UNWINDLIB="libunwind" `
   -DLLVM_ENABLE_LLD=ON `
   -DCMAKE_POLICY_VERSION_MINIMUM="3.5" `
-  -DCMAKE_POLICY_DEFAULT_CMP0000=NEW `
+  -DCMAKE_POLICY_DEFAULT_CMP0000=OLD `
   -DCMAKE_POLICY_DEFAULT_CMP0053=NEW `
   -Wno-dev
 ```
 
-## 第5步：构建LLD
+## 第5步：构建 LLD
 
-### 5.1 使用Visual Studio构建
+### 5.1 使用 CMake 命令行构建 (Windows下)
+
+```bash
+cd C:\llvm-build\lld-build
+
+# 方法1：并行构建（推荐）
+cmake --build . --config Release --parallel 8
+
+# 方法2：构建所有（包括依赖）
+cmake --build . --config Release --target ALL_BUILD -- /m /p:Platform=x64
+
+# 方法3：只构建lld
+cmake --build . --config Release --target lld
+
+# 方法4：构建特定目标
+cmake --build . --config Release --target lld-link  # Windows链接器
+cmake --build . --config Release --target lld       # 所有LLD工具
+```
+
+安装 LLD
+
+```bash
+cd C:\llvm-build\lld-build
+
+# 安装所有
+cmake --build . --config Release --target install
+
+# 或只安装LLD相关文件
+cmake --build . --config Release --target install-lld
+```
+
+### 5.2 使用Visual Studio构建
 
 ```bash
 # 打开生成的解决方案
@@ -166,19 +218,19 @@ cmake ../llvm-project/lld `
    - 在解决方案资源管理器中找到"lld"项目
    - 右键 -> "生成"
 
-### 5.2 使用命令行构建
+### 5.3 使用命令行构建
 
 ```batch
 cd C:\llvm-build\lld-build
 
-# 方法1：构建所有（包括依赖）
+# 方法1：并行构建（推荐）
+cmake --build . --config Release --parallel 8
+
+# 方法2：构建所有（包括依赖）
 cmake --build . --config Release --target ALL_BUILD -- /m /p:Platform=x64
 
-# 方法2：只构建lld
+# 方法3：只构建lld
 cmake --build . --config Release --target lld
-
-# 方法3：并行构建（推荐）
-cmake --build . --config Release --parallel 8
 
 # 方法4：构建特定目标
 cmake --build . --config Release --target lld-link  # Windows链接器
