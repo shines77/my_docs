@@ -19,6 +19,7 @@
     - Use SCREAMING_SNAKE_CASE for global constants and macros.
     - Constants within a class use the kPascalCase naming convention, with a lowercase 'k' preceding the variable name, and the rest of the variable name using PascalCase.
     - Member variables of a class should be prefixed with an underscore (e.g., `_userId`, `_userName`), do not use underscores for member variables of a struct; use camelCase naming convention instead.
+    - Avoid using abbreviations for variable names unless the character length is more than 9 characters, in which case you may consider using abbreviations appropriately.
     - Use namespaces to organize code logically.
 
     ## C++ Features Usage
