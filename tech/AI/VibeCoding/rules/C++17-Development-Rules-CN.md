@@ -17,7 +17,7 @@
 - 变量名和方法名使用 camelCase 命名法。
 - 全局常量和宏使用 SCREAMING_SNAKE_CASE 命名法。
 - 类内部的常量使用 kPascalCase 命名法，变量名前面加一个小写的k，后续的变量名使用 PascalCase 命名法。
-- 成员变量名前缀使用下划线（例如，`_userId`、`_userName`）。
+- class的成员变量名前缀使用下划线（例如，`_userId`、`_userName`），struct的成员变量不要加下划线，使用 camelCase 命名法。
 - 使用命名空间对代码进行逻辑组织。
 
 ## C++ 特性使用
