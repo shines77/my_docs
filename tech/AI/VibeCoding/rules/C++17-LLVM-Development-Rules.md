@@ -33,6 +33,8 @@
 
     - Follow a consistent coding style, such as Google C++ Style Guide or your team’s standards.
     - Place braces on the same line for control structures (if, else, while, do-while, for, switch), methods, namespaces, array definitions, after function declarations and parameter lists. Except for the methods in main.cpp, the curly braces for the methods in main.cpp can be placed on a separate line.
+    - All namespaces should start at the beginning of the line (no leading spaces). The code following the namespace should be indented at the same level as the namespace.
+    - All indentations should use two space characters.
     - Use clear and consistent commenting practices, comments can only be written in English.
 
     ## Error Handling and Validation
