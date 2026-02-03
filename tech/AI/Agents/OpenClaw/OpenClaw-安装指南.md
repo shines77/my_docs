@@ -251,3 +251,9 @@ http://localhost:18792/
 ```bash
 http://localhost:18789/__openclaw__/canvas/
 ```
+
+## 参考文章
+
+- [OpenClaw(Clawd/Moltbot)汉化版搭建指南](https://cloud.tencent.com/developer/article/2626168)
+
+- [OpenClaw 中文汉化版](https://openclaw.qt.cool/)
