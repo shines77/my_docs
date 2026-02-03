@@ -190,6 +190,7 @@ openclaw dashboard
 
 # Start the gateway
 openclaw gateway start
+openclaw gateway restart
 ```
 
 ## 安装 Chrome 浏览器扩展
