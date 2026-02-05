@@ -78,7 +78,7 @@ curl -fsSL https://openclaw.ai/install.sh | bash
 
 ### 2.2 npm 安装（node.js）
 
-需要先安装 node.js，最好安装最新版，例如：[Windows x64 - v24.13.0](https://nodejs.org/dist/v24.13.0/node-v24.13.0-x64.msi)。
+需要先安装 node.js，版本要求 ≥22.12.0，推荐安装官方推荐的最新 LTS 版本，例如：[Windows x64 - v24.13.0](https://nodejs.org/dist/v24.13.0/node-v24.13.0-x64.msi)。
 
 官网(需要科学上网)：[https://nodejs.org](https://nodejs.org)<br/>
 Nodejs中文网(非官方)：[https://node.org.cn/en](https://node.org.cn/en)<br/>
@@ -101,7 +101,7 @@ npm config set registry https://registry.npmjs.org/
 
 ```bash
 # Install OpenClaw
-npm i -g openclaw
+npm i -g openclaw@latest
 
 # Config your openclaw
 openclaw onboard
@@ -182,6 +182,9 @@ http://localhost:18789/?token=561529b6efeb7eca0bcfaf92fcc0b70978133e729d54821a
 ```
 
 ```bash
+# Install gateway service (后台运行 gateway)
+openclaw onboard --install-daemon
+
 # Open Terminal UI
 openclaw tui
 
@@ -191,6 +194,20 @@ openclaw dashboard
 # Start the gateway
 openclaw gateway start
 openclaw gateway restart
+```
+
+## OpenClaw 的升级
+
+如果你不是用 git 仓库导出，从源码安装的话，是不能使用 update 命令来升级的。
+
+```bash
+openclaw update
+```
+
+如果你用的是 npm 安装的话，必须用你的包管理来升级 openclaw。
+
+```bash
+npm i -g openclaw@latest
 ```
 
 ## 安装 Chrome 浏览器扩展

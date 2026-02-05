@@ -101,14 +101,14 @@ openclaw plugins enable @m1heng-clawd/feishu
 
     如果你是通过 `npm install -g openclaw` 全局安装的 OpenClaw，且 OpenClaw 没能创建用户级目录，它可能会尝试链接到：
 
-    %AppData%\npm\node_modules\openclaw\node_modules (即：C:\Users\shines77\AppData\Roaming\npm\node_modules\openclaw\node_modules)
+    %AppData%\npm\node_modules\openclaw (即：C:\Users\shines77\AppData\Roaming\npm\node_modules\openclaw)
 
 因为我们是使用全局安装的 OpenClaw，所以我们要切换到第二个位置的目录去执行安装命令，再启用它。
 
 ```bash
-cd C:\Users\shines77\AppData\Roaming\npm\node_modules\openclaw\node_modules
+cd C:\Users\shines77\AppData\Roaming\npm\node_modules\openclaw
 
-# 在 \openclaw 的 \node_modules 下安装 (不要全局安装)
+# 在全局 npm 的 \openclaw 目录下安装 (不要用全局安装)
 npm install @m1heng-clawd/feishu
 
 # 然后把 C:\Users\shines77\AppData\Roaming\npm\node_modules\openclaw\node_modules\@m1heng-clawd 下的 feishu 目录拷贝一份到 C:\Users\shines77\AppData\Roaming\npm\node_modules\openclaw\extensions 下面
@@ -127,6 +127,8 @@ openclaw plugins enable feishu
 Enabled plugin "feishu". Restart the gateway to apply.
 ```
 
+需要 restart 一次 gateway 才能生效。
+
 ## 创建机器人
 
 方法见：[百度云：OpenClaw接入飞书](https://cloud.baidu.com/doc/LS/s/Wml21yd8l)
@@ -135,7 +137,7 @@ Enabled plugin "feishu". Restart the gateway to apply.
 
 ### 设置 feishu channel
 
-先添加 channel：
+先添加飞书的 channel：
 
 ```bash
 openclaw channels add --channel feishu --token "{Your_appId}:{Your_appSecret}"
