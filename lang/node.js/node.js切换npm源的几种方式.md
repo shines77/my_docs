@@ -6,62 +6,62 @@
 
 修改全局 .npmrc 文件（对所有项目有效）：
 
-    ```bash
-    registry=https://registry.npmmirror.com/
-    ```
+```bash
+registry=https://registry.npmmirror.com/
+```
 
 ### 1.2 npm 命令
 
 通过命令行更改当前项目的源：
 
-    ```bash
-    npm config set registry https://registry.npmmirror.com/
-    ```
+```bash
+npm config set registry https://registry.npmmirror.com/
+```
 
 查看当前源的命令:
 
-    ```bash
-    npm config get registry
-    ```
+```bash
+npm config get registry
+```
 
 ## 2. NRM 包切换
 
 安装依赖:
 
-    ```
-    npm install -g nrm
-    ```
+```
+npm install -g nrm
+```
 
 查看可用的源:
 
-    ```
-    nrm ls
-    ```
+```
+nrm ls
+```
 
-    ```
-    $ nrm ls
-      npm ---------- https://registry.npmjs.org/
-      yarn --------- https://registry.yarnpkg.com/
-      tencent ------ https://mirrors.cloud.tencent.com/npm/
-      cnpm --------- https://r.cnpmjs.org/
-    * taobao ------- https://registry.npmmirror.com/
-      npmMirror ---- https://skimdb.npmjs.com/registry/
-      huawei ------- https://repo.huaweicloud.com/repository/npm/
-    ```
+```
+$ nrm ls
+  npm ---------- https://registry.npmjs.org/
+  yarn --------- https://registry.yarnpkg.com/
+  tencent ------ https://mirrors.cloud.tencent.com/npm/
+  cnpm --------- https://r.cnpmjs.org/
+* taobao ------- https://registry.npmmirror.com/
+  npmMirror ---- https://skimdb.npmjs.com/registry/
+  huawei ------- https://repo.huaweicloud.com/repository/npm/
+```
 
 切换源:
 
-    ```
-    nrm use taobao
-    ```
+```
+nrm use taobao
+```
 
 测试速度（所有源的响应时间）:
 
 根据源的响应时间长短选择最快的源使用即可。
 
-    ```
-    nrm test
-    ```
+```
+nrm test
+```
 
 ## 3. 解决 npm 下载慢的问题
 
@@ -86,17 +86,17 @@ cnpm : 无法加载文件 C:\Users\XXXXXX\AppData\Roaming\npm\cnpm.ps1，因为�
 1. 以管理员身份运行 `Windows PowerShell`；
 2. 运行命令：
 
-    ```shell
-    get-ExecutionPolicy
-    ```
+```shell
+get-ExecutionPolicy
+```
 
     若显示 `Restricted` 则表示运行状态是禁止的，若显示 `RemoteSigned` 则表示 OK 了。
 
 3. 执行命令：
 
-    ```shell
-    set-ExecutionPolicy
-    ```
+```shell
+set-ExecutionPolicy
+```
 
     会提示你输入参数，输入 `RemoteSigned` 回车，即可。如果之后还提示进行选择，输入 `Y`  回车。
 

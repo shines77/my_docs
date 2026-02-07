@@ -42,7 +42,7 @@ API 格式是：Anthropic Message(原生) 。
 
 ## 5. 编辑配置文件
 
-编辑或新增 .claude.json 文件，MacOS & Linux 为 ~/.claude.json，Windows 为用户目录 /.claude.json 。
+编辑或新增 `.claude.json` 文件，MacOS & Linux 为 `~/.claude.json`，Windows 为用户目录 `%USERPROFILE%\.claude.json` 。
 
 ```bash
 # 在 json 文件头部或尾部，新增 `hasCompletedOnboarding` 参数
