@@ -23,6 +23,7 @@ Note: 不同的平台的安装有所不同，Claude Code 有一个内建的 plug
 恢复官方的 markerplace ：
 
 ```bash
+/plugin marketplace add anthropics/claude-plugins-official
 /plugin marketplace add anthropics/skills
 ```
 
