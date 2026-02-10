@@ -23,9 +23,22 @@ cd build
 
 ### 2. 配置 CMake (Release 构建，推荐)
 
+如果使用 CMake 4.0 以上的版本，需要先手动把 CMakeLists.txt 中的 cmake_minimum_required(VERSION 3.4.3) 改为：
+
+```bash
+# 必须大于 3.5 版本
+cmake_minimum_required(VERSION 3.5)
+
+# 或者这种新的奇怪的方式，也许能解决报错的问题，如果还是报错，可以尝试把3.5和3.28对调一下
+cmake_minimum_required(VERSION 3.5..3.28)
+```
+
+因为 4.0 以后，最低支持的版本是 3.5，低于这个版本会报错。
+
 对于日常开发使用，推荐构建 **Release** 版本（速度快，体积小）：
 
 ```powershell
+## MSVC 2017 (x64)
 cmake ../llvm-project/llvm `
   -G "Visual Studio 15 2017" -A x64 -Thost=x64 `
   -DCMAKE_BUILD_TYPE=Release `
@@ -40,6 +53,22 @@ cmake ../llvm-project/llvm `
   -DLLVM_USE_CRT_RELEASE=MT `
   -DCMAKE_POLICY_VERSION_MINIMUM="3.5" `
   -DCMAKE_POLICY_DEFAULT_CMP0000=OLD `
+  -DCMAKE_POLICY_DEFAULT_CMP0053=NEW `
+  -Wno-dev
+
+## mingw-64
+cmake ../llvm-project/llvm `
+  -G "MinGW Makefiles" `
+  -DCMAKE_SYSTEM_PROCESSOR=x86_64 `
+  -DCMAKE_INSTALL_PREFIX="C:/llvm-build/install" `
+  -DLLVM_ENABLE_PROJECTS="llvm;clang" `
+  -DLLVM_TARGETS_TO_BUILD="X86" `
+  -DCMAKE_BUILD_TYPE=Release `
+  -DLLVM_OPTIMIZED_TABLEGEN=ON `
+  -DBUILD_SHARED_LIBS=OFF `
+  -DLLVM_USE_CRT_RELEASE=MT `
+  -DCMAKE_POLICY_VERSION_MINIMUM="3.5" `
+  -DCMAKE_POLICY_DEFAULT_CMP0000=NEW `
   -DCMAKE_POLICY_DEFAULT_CMP0053=NEW `
   -Wno-dev
 ```
@@ -58,6 +87,26 @@ cmake ../llvm-project/llvm `
 - `-DLLVM_OPTIMIZED_TABLEGEN=ON`: 优化TableGen
 - `-DBUILD_SHARED_LIBS=OFF`: 构建静态库（可选）
 - `-DLLVM_USE_CRT_RELEASE=MT`: 使用静态运行时
+
+如果你的 MinGW64 路径不在系统 PATH 中，可以显式指定编译器：
+
+```bash
+  -DCMAKE_C_COMPILER="C:/mingw64/bin/gcc.exe" `
+  -DCMAKE_CXX_COMPILER="C:/mingw64/bin/g++.exe" `
+  -DCMAKE_ASM_COMPILER="C:/mingw64/bin/gcc.exe" `
+```
+
+这两个选项不太推荐，有可能会覆盖掉其他编译选项。推荐使用 `-DCMAKE_SYSTEM_PROCESSOR=x86_64` 。
+
+```bash
+# 通过 CMAKE_SYSTEM_PROCESSOR，推荐
+cmake .. -G "MinGW Makefiles" -DCMAKE_SYSTEM_PROCESSOR=x86_64
+
+# 或使用自定义选项（不推荐，可能会覆盖其他编译选项）
+cmake .. -G "MinGW Makefiles" \
+  -DCMAKE_CXX_FLAGS="-m64" \
+  -DCMAKE_C_FLAGS="-m64"
+```
 
 ### 3. 开始构建
 
