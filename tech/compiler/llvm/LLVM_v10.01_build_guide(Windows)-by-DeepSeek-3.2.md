@@ -273,7 +273,7 @@ C:\llvm-build\llvm-project\llvm\utils\benchmark\src\benchmark_register.h:17:30: 
 
 原因是缺少头文件 <limits> 的声明。
 
-在 `\llvm-project\llvm\utils\benchmark\src` 文件中插入这两句：
+在 `\llvm-project\llvm\utils\benchmark\src\benchmark_register.h` 文件中插入这两句：
 
 ```cpp
 #ifndef BENCHMARK_REGISTER_H
