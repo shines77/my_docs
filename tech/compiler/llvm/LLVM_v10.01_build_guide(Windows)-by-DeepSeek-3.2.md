@@ -262,6 +262,32 @@ git clone --depth 1 https://gitee.com/mirrors/llvm-project.git
 # 从 https://github.com/llvm/llvm-project/releases/tag/llvmorg-10.0.1
 ```
 
+### 问题 4：mingw64 下编译错误
+
+在 mingw64 下编译 llvm 10.0.1，报如下错误：
+
+```bash
+C:\llvm-build\llvm-project\llvm\utils\benchmark\src\benchmark_register.h:17:30: error: 'numeric_limits' is not a member of 'std' [-Wtemplate-body]
+   17 |   static const T kmax = std::numeric_limits<T>::max();
+```
+
+原因是缺少头文件 <limits> 的声明。
+
+在 `\llvm-project\llvm\utils\benchmark\src` 文件中插入这两句：
+
+```cpp
+#ifndef BENCHMARK_REGISTER_H
+#define BENCHMARK_REGISTER_H
+
+// Add header files here
+#include <limits>
+#include <cstdint>   // Sometimes need this one too.
+
+#include <vector>
+
+........
+```
+
 ## 简化构建脚本
 
 创建一个构建脚本 `build_clang.bat`：
