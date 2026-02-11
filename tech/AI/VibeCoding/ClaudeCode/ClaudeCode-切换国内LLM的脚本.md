@@ -22,6 +22,8 @@ Windows 路径：%USERPROFILE%\.claude.json
 
 根据您的要求，我已调查了智谱、MiniMax、Kimi 等供应商的 Claude Code 配置方法，并生成以下脚本。
 
+国际用户使用 https://api.minimax.io/anthropic，中国大陆用户使用 https://api.minimaxi.com/anthropic 。
+
 ## Windows 版本 (setup_claude.bat):
 
 ```batch
