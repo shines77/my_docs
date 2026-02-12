@@ -51,10 +51,10 @@ Claude Code 按 Ctrl + Tab 可以切换到 accept edit on 模式，这种模式�
 `--dangerously-skip-permissions` 模式。
 
 ```bash
-claude --dangerously-skip-permissions --resume
+claude --dangerously-skip-permissions
 ```
 
-打开 bypass permissions on 模式，并且恢复之前的 session，可自行选择要恢复的 session 。
+打开 bypass permissions on 模式。
 
 这是方式可以交互，非常推荐，但是 Claude Code 完成一个阶段的任务还是会停下来，所以尽量安排它做更长的任务，比如可以的话。
 
