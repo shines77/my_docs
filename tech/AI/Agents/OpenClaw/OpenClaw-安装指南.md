@@ -162,6 +162,22 @@ openclaw onboard
 http://localhost:18789/?token=561529b6efeb7eca0bcfaf92fcc0b70978133e729d54821a
 ```
 
+如果不知道 token 是多少，可以使用下列命令获取：
+
+```bash
+cat ~/.openclaw/openclaw.json | grep token
+
+      "mode": "token",
+      "token": "561529b6efeb7eca0bcfaf92fcc0b70978133e729d54821a"
+```
+
+或者打开 dashboard 直接访问：
+
+```bash
+# 自动打开 Dashboard 并处理认证
+openclaw dashboard
+```
+
 输入：“你好，你是什么大模型？”
 
 回答：
@@ -194,6 +210,36 @@ openclaw dashboard
 # Start the gateway
 openclaw gateway start
 openclaw gateway restart
+```
+
+查看/重置 Dashboard 登录密码：
+
+```bash
+# 查看当前密码（如果之前设置过）
+openclaw config get dashboard.auth.password
+
+# 如果忘记密码，直接重置一个新密码
+openclaw config set dashboard.auth.password --value "你的新密码"
+
+# 或者让系统生成一个随机强密码
+openclaw config generate dashboard.auth.password
+```
+
+完全关闭登录认证（仅限内网环境）：
+
+```bash
+openclaw config set dashboard.auth.enabled --value false
+openclaw gateway restart
+```
+
+查看当前 Dashboard 正在使用的 API Token：
+
+```bash
+# 查看当前生效的访问令牌
+openclaw config get dashboard.auth.token
+
+# 或者重新生成一个新的
+openclaw token generate --for-dashboard --expires-in 30d
 ```
 
 ## OpenClaw 的升级
