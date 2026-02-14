@@ -1,0 +1,127 @@
+###############################################################################
+# Set default behavior to automatically normalize line endings.
+# 所有文件视为文本，但由 Git 自动处理换行符（推荐）
+###############################################################################
+* text=auto
+
+###############################################################################
+# 明确指定 Markdown 相关文件使用 LF 换行符（关键！）
+###############################################################################
+*.md text eol=lf
+*.markdown text eol=lf
+
+###############################################################################
+# 其他 Unix/Linux 文档
+###############################################################################
+*.sh text eol=lf
+
+###############################################################################
+# 或者可以在本地仓库执行命令，只对本仓库有效，关闭自动 CrLf 转换。
+#
+# git config core.autocrlf false
+#
+# 全局设置：
+#
+# git config --global core.autocrlf false
+#
+###############################################################################
+
+###############################################################################
+# Set default behavior for command prompt diff.
+#
+# This is need for earlier builds of msysgit that does not have it on by
+# default for csharp files.
+# Note: This is only used by command line
+###############################################################################
+#*.cs     diff=csharp
+
+###############################################################################
+# Set the merge driver for project and solution files
+#
+# Merging from the command prompt will add diff markers to the files if there
+# are conflicts (Merging from VS is not affected by the settings below, in VS
+# the diff markers are never inserted). Diff markers may cause the following 
+# file extensions to fail to load in VS. An alternative would be to treat
+# these files as binary and thus will always conflict and require user
+# intervention with every merge. To do so, just uncomment the entries below
+###############################################################################
+#*.sln       merge=binary
+#*.csproj    merge=binary
+#*.vbproj    merge=binary
+#*.vcxproj   merge=binary
+#*.vcproj    merge=binary
+#*.dbproj    merge=binary
+#*.fsproj    merge=binary
+#*.lsproj    merge=binary
+#*.wixproj   merge=binary
+#*.modelproj merge=binary
+#*.sqlproj   merge=binary
+#*.wwaproj   merge=binary
+
+###############################################################################
+# Object files & Library files
+###############################################################################
+*.lib   binary
+*.dll   binary
+*.o     binary
+*.a     binary
+*.obj   binary
+
+###############################################################################
+# behavior for image files
+#
+# image files are treated as binary by default.
+###############################################################################
+*.bmp   binary
+*.png   binary
+*.gif   binary
+*.jpg   binary
+*.jpeg  binary
+*.tga   binary
+*.jif   binary
+*.tiff  binary
+*.webp  binary
+*.ico   binary
+*.icon  binary
+*.psd   binary
+
+###############################################################################
+# Video files
+###############################################################################
+#.mp3   binary
+#.mp4   binary
+#.mpg   binary
+#.mpeg  binary
+#.avi   binary
+#.rm    binary
+#.wav   binary
+#.asf   binary
+
+###############################################################################
+# 避免对二进制文件进行换行符转换
+###############################################################################
+*.exe   binary
+*.dat   binary
+*.pdf   binary
+*.zip   binary
+*.rar   binary
+*.7z    binary
+*.gz    binary
+
+###############################################################################
+# diff behavior for common document formats
+# 
+# Convert binary document formats to text before diffing them. This feature
+# is only available from the command line. Turn it on by uncommenting the 
+# entries below.
+###############################################################################
+#*.doc   diff=astextplain
+#*.DOC   diff=astextplain
+#*.docx  diff=astextplain
+#*.DOCX  diff=astextplain
+#*.dot   diff=astextplain
+#*.DOT   diff=astextplain
+#*.pdf   diff=astextplain
+#*.PDF   diff=astextplain
+#*.rtf   diff=astextplain
+#*.RTF   diff=astextplain

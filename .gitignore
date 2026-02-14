@@ -24,6 +24,16 @@ var/
 # PyCharm
 .idea
 
+# Ignore Obsidian settings
+*.obsidian
+Untitled.base
+
+# Ignore VSCode project settings
+*.vscode
+
+# Ignore Claude Code project settings
+*.claude
+
 .installed.cfg
 *.egg
 
