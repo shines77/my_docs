@@ -35,7 +35,7 @@ model = AutoModel(model="/local/path", disable_update=True)
 ### 2.1 语音识别技术代际
 
 | 时期 | 技术 | 代表项目 | 当前状态 |
-| :---: | :----: | :---: | :----: |
+|:-----:|:-----:|:-----:|:-----:|
 | 2011-2019 | HMM/GMM/WFST | Kaldi | ❌ 已停止开发（2019年后无重大更新） |
 | 2018-2020 | i-vector/x-vector | Kaldi | ⚠️ 被 ECAPA-TDNN 超越 |
 | 2020-2022 | ECAPA-TDNN | SpeechBrain/3D-Speaker | ✅ 声纹识别主流（2024年司法鉴定论文仍在使用） |
@@ -64,7 +64,7 @@ SenseVoice 本质上是 FunASR 框架下的一个模型，但阿里为了营销�
 sherpa-onnx 是 Kaldi 之父 Daniel Povey 加入小米后主导的"新一代 Kaldi"项目（k2-fsa）的推理引擎。
 
 | 对比维度 | FunASR / SenseVoice | sherpa-onnx |
-| :--- | :---: | :---: |
+|:-----:|:-----:|:-----:|
 | **联网依赖** | ⚠️ ModelScope SDK 会检查 | ❌ 完全不需要 |
 | **部署方式** | pip install + 自动下载 | 本地文件路径，零联网 |
 | **依赖体积** | 大（PyTorch全家桶） | 小（纯ONNX Runtime） |
@@ -352,7 +352,7 @@ if __name__ == "__main__":
 sherpa-onnx 支持的功能远不止 ASR（GitHub需代理）：
 
 | 功能 | 说明 | 模型下载 |
-| :---: | :---: | :---: |
+|:-----:|:-----:|:-----:|
 | 语音识别 (ASR) | SenseVoice/Whisper/Paraformer等 | asr-models |
 | 文本转语音 (TTS) | 多种中英文语音，支持VITS等模型 | tts-models |
 | 声纹识别/鉴定 | 说话人验证/识别<br/>支持3D-Speaker等模型，见下节 | speaker-recongition-models |
@@ -405,7 +405,7 @@ wget https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition
 声纹识别用于技术验证没问题，但如果是司法鉴定，关键不是用什么软件，而是需要有资质的鉴定机构出具报告。
 
 | 层面 | 说明 |
-| :--- | :--- |
+|:-----:|:-----:|
 | **技术层面** | ECAPA-TDNN 是2024年司法鉴定论文仍在使用的主流架构 |
 | **法律层面** | 自行使用任何工具分析，都没有法律效力 |
 | **合规流程** | 需要有资质的司法鉴定机构 + 规范的取证流程 + 正式鉴定报告 |
@@ -421,7 +421,7 @@ wget https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition
 ## 七、与其他方案对比总结
 
 | 维度 | Kaldi (传统) | FunASR/SenseVoice | Whisper | sherpa-onnx |
-| :---: | :---: | :---: | :---: | :---: |
+|:-----:|:-----:|:-----:|:-----:|:-----:|
 | 完全离线 | ✅ 但极难部署 | ⚠️ ModelScope检查 | ✅  | ✅ 最简单 |
 | 中文效果 | ⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐<br/>(用SenseVoice模型) |
 | 部署难度 | 极难<br/>（3-6个月学习曲线） | 中等 | 中等 | 简单 |
@@ -434,8 +434,8 @@ wget https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition
 
 ### 场景化选择建议
 
-| 场景 | 推荐方案
-| :---: | :---: |
+| 场景 | 推荐方案 |
+|:-----:|:-----:|
 | 内网/离线部署 | sherpa-onnx |
 | 中文语音识别（有网络） | FunASR/SenseVoice |
 | 多语言/英文为主 | Whisper |
