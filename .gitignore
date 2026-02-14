@@ -104,3 +104,6 @@ ENV/
 # Windows files
 *.psd
 *.bmp
+
+# Unused folders
+tech/hash/hash-table/hashtable-img/**
