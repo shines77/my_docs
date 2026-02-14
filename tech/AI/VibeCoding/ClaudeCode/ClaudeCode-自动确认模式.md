@@ -56,7 +56,15 @@ claude --dangerously-skip-permissions
 
 打开 bypass permissions on 模式。
 
-这是方式可以交互，非常推荐，但是 Claude Code 完成一个阶段的任务还是会停下来，所以尽量安排它做更长的任务，比如可以的话。
+系统配置文件 `~/.claude.json 里会看到多了一个设置，如下所示：
+
+```json
+{
+  "bypassPermissionsModeAccepted": true
+}
+```
+
+这种方式可以交互，非常推荐，但是 Claude Code 完成一个阶段的任务还是会停下来，所以尽量安排它做更长的任务，如果可以的话。
 
 ### 2.3 自动化操作的安全提示
 
