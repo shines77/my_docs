@@ -1,0 +1,1 @@
+espeak-ng.exe -f test.txt -v mb-cn1

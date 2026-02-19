@@ -107,3 +107,7 @@ ENV/
 
 # Unused folders
 tech/hash/hash-table/hashtable-img/**
+
+# Node.js
+node_modules/
+package-lock.json

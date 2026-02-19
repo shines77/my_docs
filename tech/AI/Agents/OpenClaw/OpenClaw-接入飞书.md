@@ -183,8 +183,6 @@ openclaw config set channels.feishu.appId "Your appId"
 openclaw config edit
 ```
 
-
-
 然后重启 gateway ：
 
 ```bash
