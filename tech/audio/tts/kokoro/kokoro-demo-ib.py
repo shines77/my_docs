@@ -41,9 +41,9 @@ text = '中國人民不信邪也不怕邪，不惹事也不怕事，任何外國
 # 4️⃣ Generate, display, and save audio files in a loop.
 # af_alloy, af_aoede, af_bella, af_heart, af_jessica, af_kore, af_sarah, af_sky
 # am_adam, am_eric, am_santa, am_puck
-# zf_xiaobei, zf_xiaoni, zf_xiaoxiao, zf_xiaoyi
+# zf_xiaobei(东北口音), zf_xiaoni(陕西口音), zf_xiaoxiao(正常), zf_xiaoyi(萝莉)
 generator = pipeline(
-    text, voice='af_heart', # <= change voice here
+    text, voice='zf_xiaoxiao', # <= change voice here
     speed=1, split_pattern=r'\n+'
 )
 # Alternatively, load voice tensor directly:
