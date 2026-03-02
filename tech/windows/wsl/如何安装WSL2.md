@@ -52,7 +52,7 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
 如果你之前装过 WSL (1代)，可以先把它升级为 WSL 2，命令如下，例如：
 
 ```powershell
-wsl —set-version Ubuntu-18.04 2
+wsl -set-version Ubuntu-18.04 2
 ```
 
 其中 Ubuntu-18.04 是你以前安装的 WSL Linux 系统的名称。你可以随时将上述命令中的“2”改成“1”来让 WSL 回滚到 WSL (1)。
