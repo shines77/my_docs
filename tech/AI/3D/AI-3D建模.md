@@ -1,8 +1,21 @@
 # AI 3D建模
 
-## 1. 3D建模
+## 1. 排行榜
 
-### 1.1 Tripo3D
+AI 3D建模排行榜：
+
+网址：[https://top3d.ai/](https://top3d.ai/)
+
+- 类似于 LLM 的 AI 3D大模型的竞技场
+- 有排名，可以自己去打分
+- Tripo3D 目前以 4.2 分排第一，Hitem3D(Sparc3D) 以 3.9 分排第二
+- 混元3D 以 3.9 分排第四，Hyper3D 以 3.9 分排第六
+
+## 2. 3D建模
+
+### 2.1 Tripo3D
+
+来自 Vast 公司。
 
 官网：[https://www.tripo3d.ai/](https://www.tripo3d.ai/)
 
@@ -18,9 +31,9 @@
 - 免费 300 积分（最多生成 12 次）
 - 专业版 83￥（原价140￥）/月（3000 积分，最多生成120次）
 
-### 1.2 Hyper3D
+### 2.2 Hyper3D
 
-Hyper3D 生成3D的模型叫 Rodin 。
+Hyper3D 生成3D的模型叫 Rodin，团队来自 上海科技大学 。
 
 官网：[https://hyper3d.ai/](https://hyper3d.ai/)
 
@@ -44,7 +57,7 @@ Hyper3D 生成3D的模型叫 Rodin 。
 - 教育计划 12＄（84￥）/月，30 积分（一般可以生成 30-60 次）
 - 创作者计划 24＄/月，30 积分（一般可以生成 30-60 次）
 
-### 1.3 Meshy
+### 2.3 Meshy
 
 官网：[https://www.meshy.ai/](https://www.meshy.ai/)
 
@@ -62,7 +75,9 @@ Hyper3D 生成3D的模型叫 Rodin 。
 - 免费 100 积分（最多生成 10 次）
 - Pro版 145￥/月，优惠价 110￥/月（最多生成 100 次）
 
-### 1.4 腾讯混元3D
+### 2.4 腾讯混元3D
+
+腾讯开源的 3D 大模型。
 
 官网：[https://3d.hunyuan.tencent.com/](https://3d.hunyuan.tencent.com/)
 
@@ -80,6 +95,20 @@ Hyper3D 生成3D的模型叫 Rodin 。
 - 每天免费 20 次
 - 免费开源
 
-## 2. 参考
+### 2.5 Trellis
+
+微软 联合 清华大学、中科大 开发。
+
+官网：[https://microsoft.github.io/TRELLIS/](https://microsoft.github.io/TRELLIS/)
+
+特点：
+
+- 一般，没仔细研究
+
+## 3. 参考
 
 - [AI 3D建模大比拼！Meshy、Tripo、混元、Rodin谁最强?](https://www.bilibili.com/video/BV1YScpz3Er1)
+
+- [五款ai生成3D工具大比拼！！](https://www.bilibili.com/video/BV1dmQ3YcEsA)
+
+- [AI建模工具的竞技场：混元3D、hyper、YVO3D、Tripo AI、Hitem3D、TRELLIS、Meshy哪家强？](https://www.bilibili.com/video/BV1S6rpBUEfx)
