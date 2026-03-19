@@ -6,7 +6,7 @@ PostgreSQL 数据库的性能和最小内存需求取决于多个因素，包括
 
 - 共享缓冲区（Shared Buffers）：这是最重要的内存配置参数之一，因为它直接影响到查询缓存的大小和执行效率。PostgreSQL 使用这部分内存来缓存表数据和索引，以加速数据访问。推荐的设置通常是系统总内存的25%到40%。例如，如果你有 16GB 的RAM，设置 `shared_buffers` 为4GB（4194304kB）或更低一些（例如3GB）通常是合理的。
 
-- 工作内存（Work Memory）：这是用于排序操作、哈希表和复杂查询中的临时结果存储的内存。默认值通常是几个MB，但在处理大型查询时可能需要增加。例如，对于大型数据集的分析，可以将 `work_mem` 设置为 512MB 或更高。
+- 工作内存（Work Memory）：这是用于排序操作、哈希表和复杂查询中的临时结果存储的内存。默认值通常是几个MB，但在处理大型查询时可能需要增加，一般建议从 4MB（默认） ~ 16MB ~ 64MB 根据实际并发压力逐步调高。例如，对于大型数据集的分析，可以将 `work_mem` 设置为 512MB 或更高。
 
 - 维护工作内存（Maintenance Work Memory）：主要用于执行如 `CREATE INDEX` 这样的维护操作时的排序和哈希操作。默认值通常是几个 MB，但在创建大型索引时可能需要增加。
 
@@ -27,17 +27,17 @@ PostgreSQL 数据库的性能和最小内存需求取决于多个因素，包括
 假设你有 2 GB 的RAM，一个基本的 PostgreSQL 配置可能如下：
 
 ```sql
-shared_buffers = 512MB;        -- 大约25%的RAM
-work_mem = 64MB;               -- 默认值或根据需要调整
-maintenance_work_mem = 128MB;  -- 默认值或根据需要调整
+shared_buffers = 512MB;        -- 共享缓冲区，建议为总内存的 25%~40%
+work_mem = 16MB;               -- 每个操作的内存，如排序、哈希，根据并发量调整
+maintenance_work_mem = 64MB;   -- 维护操作内存，如建索引、VACUUM
 ```
 
 假设你有 8 GB 的 RAM，则 PostgreSQL 配置可能如下：
 
 ```sql
-shared_buffers = 2GB;          -- 大约25%的RAM
-work_mem = 64MB;               -- 默认值或根据需要调整
-maintenance_work_mem = 128MB;  -- 默认值或根据需要调整
+shared_buffers = 2GB;          -- 共享缓冲区，建议为总内存的 25%~40%
+work_mem = 64MB;               -- 每个操作的内存，如排序、哈希，根据并发量调整
+maintenance_work_mem = 128MB;  -- 维护操作内存，如建索引、VACUUM
 ```
 
 结论
