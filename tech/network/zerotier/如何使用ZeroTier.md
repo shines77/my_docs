@@ -74,11 +74,67 @@ zerotier 网页端会要你确认授权，在通知弹窗中点击 `Authorized` 
 
 > 建议直接管理设备以避免意外的大规模授权。
 
-## 4. 搭建 ZeroTier Moon 服务器
+## 3. xxxx
+
+XXXXXX
+
+## 4. 配置文件
+
+### 4.1 工作目录
+
+ZeroTier One 服务将其配置和状态信息保存在工作目录中。
+
+工作目录位置为：
+
+- Windows: `C:\ProgramData\ZeroTier\One`
+- MacOS: `/Library/Application Support/ZeroTier/One`
+- Linux: `/var/lib/zerotier-one`
+- FreeBSD/OpenBSD: `/var/db/zerotier-one`
+
+#### 网络特定配置
+
+在工作目录下找到 `{$WORKING_DIR}/networks.d` 目录。
+
+#### `<network-id>.conf` 是一个二进制文件，你不能手动编辑它。
+
+如果你放一个空的文件 `<network-id>.conf` 在 `networks.d` 目录中, ZeroTier 将在启动的时候加入相应 `Network ID` 的网络.
+
+#### `<network-id>.local.conf` 文件包含了如下网络设置。
+
+该文件内容如下所示：
+
+```text
+allowManaged=1
+allowGlobal=0
+allowDefault=0
+allowDNS=0
+```
+
+这些设置适用于特定的 ZeroTier 网络。
+
+以下是它们的含义总结：
+
+- Allow Managed. Default Yes. Allow ZeroTier to set IP Addresses and Routes ( [local/private](https://en.wikipedia.org/wiki/Private_network) ranges only)
+- Allow Global. Default No. Allow ZeroTier to set Global/Public/Not-Private range IPs and Routes.
+- Allow Default. Default No. Allow ZeroTier to set the Default Route on the system. See [Full Tunnel Mode](https://zerotier.atlassian.net/wiki/spaces/SD/pages/7110693/Overriding+Default+Route+Full+Tunnel+Mode).
+- Allow DNS. Default No. Allow ZeroTier to set DNS servers.
+
+ZeroTier 启动时将使用这些设置。如果您通过用户界面（UI）或 zerotier-cli 更改这些设置，文件将会更新。如果您直接编辑该文件，则需要重新启动服务。
+
+### 4.2 用户目录
+
+一些用户特定的设置可能会存储在用户的路径中：
+
+- `C:\Users\<User>\AppData\Local\ZeroTier` (Windows)
+- `~/Library/Application\ Support/ZeroTier` (MacOS)
+
+更多的关于配置文件的内容可以参考官网文档 ：[ZeroTier: Client Configuration](https://docs.zerotier.com/config/) 。
+
+## 5. 搭建 ZeroTier Moon 服务器
 
 官方 Moon 中转服务器在国外，国内客户端使用延迟大，甚至出现访问不了的问题。可以自己搭建 Moon 中转服务器，来实现稳定的服务。Moon 服务器需要一个静态公网 IP。
 
-## 4.1 配置 Moon 服务器
+## 5.1 配置 Moon 服务器
 
 进入 ZeroTier 配置文件目录。
 
@@ -102,7 +158,7 @@ zerotier-idtool initmoon identity.public >>moon.json
 "stableEndpoints": ["114.114.114.114/9993"]
 ```
 
-一定要用 9993 端口，因为这是 Moon 服务器默认使用的端口。
+一定要用 9993 端口 (UDP)，因为这是 Moon 服务器默认使用的端口。
 
 注意：记录下 moon.json 文件中的 id，这个 ID 也就是你的 Address ID，也要在 Moon 中使用。
 
@@ -132,7 +188,65 @@ cp {Your_Address_ID}.moon ./moons.d/
 /etc/init.d/zerotier-one restart
 ```
 
-## 5. 卸载 ZeroTier
+### 5.2 设备连入 Moon 服务器
+
+使用其 `World ID` 和 `Seed` 加入 federated root set（moon）。
+
+命令格式：
+
+```bash
+zerotier-cli orbit <World ID> <Seed>
+```
+
+<World ID> 就是我们的 `Address ID`，<Seed> 也可以用 `Address ID`，则命令为：
+
+```bash
+zerotier-cli orbit {Your_Address_ID} {Your_Address_ID}
+```
+
+例如：
+
+```bash
+zerotier-cli orbit 0000006eadbeef00 0000006eadbeef00
+```
+
+注：Windows 下需要使用管理员权限启动 PowerShell 才能执行 CLI 命令。
+
+### 5.3 检测生效
+
+在非 Moon 的客户端，比如 Windows 客户端上，输入命令：
+
+```bash
+zerotier-cli listpeers
+```
+
+如果能看到远端服务器的端口是 9993，则说明成功了。
+
+### 5.4 其他
+
+使用如下命令可以查看 `/var/lib/zerotier-one/moon.json` 文件的内容：
+
+```bash
+zerotier-cli listmoons
+```
+
+## 6. 防火墙
+
+### 6.1 检查操作系统防火墙
+
+这是最常见的原因。即使ZeroTier网络层面已经连通，你设备自身的防火墙也很可能默认阻止了来自虚拟网卡（zt接口）的Ping请求（ICMP协议）。
+
+Linux: 可以临时关闭防火墙进行测试，以快速定位问题。
+
+```bash
+# 临时关闭firewalld (CentOS/RHEL/Fedora)
+sudo systemctl stop firewalld
+
+# 临时关闭ufw (Ubuntu/Debian)
+sudo ufw disable
+```
+
+## 7. 卸载 ZeroTier
 
 **Ubuntu / Debian 卸载方法**
 
