@@ -52,7 +52,7 @@ ZeroTier Central 有两个版本：
 
 点击前面创建的`Network Groups`，点右侧的按钮 `New Network` 按钮，创建一个网络，例如："pensive-suess"。
 
-### 2.4 加入你的网络
+### 2.4 加入网络
 
 点击进入前面创建的 `Network`，复制右上角的 `Network ID`，例如：`e812ds922df921a0`，是一个 16 个字符的 16 进制字符串。
 
@@ -64,7 +64,7 @@ ZeroTier Central 有两个版本：
 sudo zerotier-cli join NETWORK_ID
 ```
 
-### 2.5 授权您的设备
+### 2.5 授权设备
 
 zerotier 网页端会要你确认授权，在通知弹窗中点击 `Authorized` 按钮，这是批量授权，即如果同时有多个授权请求，都会同意。
 
@@ -74,11 +74,57 @@ zerotier 网页端会要你确认授权，在通知弹窗中点击 `Authorized` 
 
 > 建议直接管理设备以避免意外的大规模授权。
 
-## 3. xxxx
+## 3. 常用命令
 
-XXXXXX
+### 3.1 启动/自启
+
+启动 ZeroTier 服务：
+
+```bash
+sudo systemctl start zerotier-one.service
+```
+
+并设置开机自启：
+
+```bash
+sudo systemctl enable zerotier-one.service
+```
+
+### 3.2 节点状态
+
+显示 ZeroTier 服务的状态，包括版本、节点 ID 和在线状态。
+
+```bash
+zerotier-cli status
+```
+
+| Node Status | Explanation |
+| :---------: | ----------- |
+| ONLINE | The client is able to communicate with the global root infrastructure. |
+| OFFLINE | Unable to contact the root infrastructure but will continue retrying. This could take a few seconds. If it takes much longer, see Router Configuration Tips. |
+| TUNNELED | Unable to communicate over UDP/9993, ZeroTier is now using a TCP fallback relay |
+
+输入结果示例：
+
+```bash
+200 info abcdef1234 X.YY.ZZ ONLINE
+```
 
 ## 4. 配置文件
+
+**设置客户端设置**
+
+设置一个特定的客户端设置，该设置不会影响网络的其他部分或节点。此处可用的设置包括 `allowManaged`、`allowGlobal`、`allowDefault` 和 `allowDNS`。如需了解这些设置的更多信息，请参阅 [此处](https://docs.zerotier.com/config/) 。
+
+```bash
+# 命令格式：
+zerotier-cli set <network ID> <setting>
+
+# 例如：
+zerotier-cli set 8056c2e21c000001 allowGlobal true
+```
+
+下面介绍如何通过修改配置文件来达到相同的效果，这会在下次启动的时候依然生效。
 
 ### 4.1 工作目录
 
@@ -95,11 +141,11 @@ ZeroTier One 服务将其配置和状态信息保存在工作目录中。
 
 在工作目录下找到 `{$WORKING_DIR}/networks.d` 目录。
 
-#### `<network-id>.conf` 是一个二进制文件，你不能手动编辑它。
+#### `<network-id>.conf` 是一个二进制文件，你不能手动编辑它
 
 如果你放一个空的文件 `<network-id>.conf` 在 `networks.d` 目录中, ZeroTier 将在启动的时候加入相应 `Network ID` 的网络.
 
-#### `<network-id>.local.conf` 文件包含了如下网络设置。
+#### `<network-id>.local.conf` 文件包含了如下网络设置
 
 该文件内容如下所示：
 
@@ -120,6 +166,10 @@ allowDNS=0
 - Allow DNS. Default No. Allow ZeroTier to set DNS servers.
 
 ZeroTier 启动时将使用这些设置。如果您通过用户界面（UI）或 zerotier-cli 更改这些设置，文件将会更新。如果您直接编辑该文件，则需要重新启动服务。
+
+```bash
+/etc/init.d/zerotier-one restart
+```
 
 ### 4.2 用户目录
 
@@ -145,7 +195,7 @@ cd /var/lib/zerotier-one
 生成 moon.json 文件。
 
 ```bash
-zerotier-idtool initmoon identity.public >>moon.json
+zerotier-idtool initmoon identity.public > moon.json
 ```
 
 编辑 moon.json 文件。
@@ -198,7 +248,7 @@ cp {Your_Address_ID}.moon ./moons.d/
 zerotier-cli orbit <World ID> <Seed>
 ```
 
-<World ID> 就是我们的 `Address ID`，<Seed> 也可以用 `Address ID`，则命令为：
+`<World ID>` 就是我们的 `Address ID`，`<Seed>` 也可以用 `Address ID`，则命令为：
 
 ```bash
 zerotier-cli orbit {Your_Address_ID} {Your_Address_ID}
@@ -230,11 +280,75 @@ zerotier-cli listpeers
 zerotier-cli listmoons
 ```
 
-## 6. 防火墙
+## 6. 路由和防火墙
 
-### 6.1 检查操作系统防火墙
+### 6.1 路由
 
-这是最常见的原因。即使ZeroTier网络层面已经连通，你设备自身的防火墙也很可能默认阻止了来自虚拟网卡（zt接口）的Ping请求（ICMP协议）。
+使用 ip 命令查看路由：
+
+```bash
+ip route show
+```
+
+结果一般如下：
+
+```bash
+10.0.0.0/8 dev eth1 proto kernel scope link src 10.0.1.124 
+10.114.100.0/24 dev ztfl6dcgxb proto kernel scope link src 10.114.100.88 
+10.144.172.0/24 dev ztugaqveyu proto kernel scope link src 10.144.172.88 
+123.213.222.0/24 dev eth0 proto kernel scope link src 123.213.222.111 
+```
+
+查看现有路由表：
+
+```bash
+route -n
+```
+
+```bash
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         123.213.222.1   0.0.0.0         UG    0      0        0 eth0
+10.0.0.0        0.0.0.0         255.0.0.0       U     0      0        0 eth1
+10.114.100.0    0.0.0.0         255.255.255.0   U     0      0        0 ztfl6dcgxb
+10.144.172.0    0.0.0.0         255.255.255.0   U     0      0        0 ztugaqveyu
+123.213.222.0   0.0.0.0         255.255.255.0   U     0      0        0 eth0
+```
+
+### 6.2 以太网桥接
+
+把 ZeroTier 的网络接口桥接到默认上网的以太网卡上。
+
+```bash
+# 创建一个桥接网络，如果需要的话
+sudo brctl addbr br0
+
+# 将你需要的 ZeroTier 接口添加到桥接网络中
+sudo brctl addif br0 ztugaqveyu eth0
+```
+
+### 6.2 配置防火墙（可选）
+
+如果您使用的是 `UFW`（Uncomplicated Firewall），一般在 Ubuntu/Debian 上使用，需要允许 ZeroTier 的流量通过防火墙：
+
+```bash
+sudo ufw status  # 查看防火墙状态
+
+# 不支持通配符 zt*
+sudo ufw allow in on ztugaqveyu
+sudo ufw allow out on ztugaqveyu
+
+# 不支持通配符 zt*
+sudo ufw allow in on ztfl6dcgxb
+sudo ufw allow out on ztfl6dcgxb
+
+sudo ufw allow 9993/udp   # 开放 UDP 端口
+sudo ufw allow 9993/tcp   # 开放 TCP 端口
+```
+
+### 6.3 检查操作系统防火墙
+
+这是最常见的原因。即使 ZeroTier 网络层面已经连通，你设备自身的防火墙也很可能默认阻止了来自虚拟网卡（zt接口）的 Ping 请求（ICMP协议）。
 
 Linux: 可以临时关闭防火墙进行测试，以快速定位问题。
 
@@ -242,8 +356,81 @@ Linux: 可以临时关闭防火墙进行测试，以快速定位问题。
 # 临时关闭firewalld (CentOS/RHEL/Fedora)
 sudo systemctl stop firewalld
 
-# 临时关闭ufw (Ubuntu/Debian)
+# 临时关闭 ufw (Ubuntu/Debian)
 sudo ufw disable
+```
+
+### 6.4 典型问题解决方案
+
+连接超时排查流程：
+
+1. 检查服务器端口开放
+
+    ```bash
+    sudo netstat -tulnp | grep 9993
+    ```
+
+2. 测试UDP连通性（在客户端执行）：
+
+    ```bash
+    nc -zv -u {服务器IP} 9993
+    ```
+
+3. 查看ZeroTier日志：
+
+    ```bash
+    sudo journalctl -u zerotier-one -f
+    ```
+
+数据包丢失优化：
+
+1. 启用QoS策略：
+
+    ```bash
+    sudo tc qdisc add dev ztugaqveyu root fq
+    ```
+
+2. 调整MTU值（在客户端）：
+
+    ```bash
+    sudo ifconfig ztugaqveyu mtu 1400
+    ```
+
+### 6.5 自动伸缩方案
+
+通过 cron 设置定时启停（非工作时间关闭 Moon）：
+
+```bash
+# 每天 20:00 停止
+0 20 * * * systemctl stop zerotier-one
+
+# 每天 8:00 启动
+0 8 * * * systemctl start zerotier-one
+```
+
+### 6.6 安全加固建议
+
+**证书轮换策略：**
+
+1. 每月重新生成 Moon 证书：
+
+    ```bash
+    sudo rm /var/lib/zerotier-one/moons.d/*
+    sudo zerotier-idtool genmoon moon.json
+    ```
+
+2. 通知客户端更新 .moon 文件
+
+**访问控制列表：**
+
+编辑 local.conf 添加 ACL 规则：
+
+```json
+{
+  "settings": {
+    "allowManagementFrom": ["192.168.1.0/24"]
+  }
+}
 ```
 
 ## 7. 卸载 ZeroTier
@@ -285,3 +472,5 @@ Windows卸载
 - [ZeroTier Docs: Quickstart Guide](https://docs.zerotier.com/quickstart/)
 
 - [使用ZeroTier实现内网穿透并异地组网](https://www.cnblogs.com/ubirdy/p/18721780)
+
+- [腾讯云轻量服务器5分钟搞定ZeroTier Moon节点搭建（附避坑指南）](https://blog.csdn.net/weixin_29288313/article/details/159147567)
