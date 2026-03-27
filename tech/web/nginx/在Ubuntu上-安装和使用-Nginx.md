@@ -28,14 +28,21 @@ sudo systemctl enable nginx
 sudo nginx -t
 # 重新加载配置
 sudo systemctl reload nginx
+
+# 查看 Nginx 进程（若有 nginx 进程，说明启动成功）
+ps aux | grep nginx
+
+# 测试 Nginx 默认页面（本地访问，或服务器IP访问）
+# 如果 127.0.0.1 能访问，说明启动成功。如果用服务器IP访问不了，可能是还没有绑定服务器IP
+curl http://127.0.0.1
 ```
 
 Nginx 安装完成后文件位置：
 
 - `/usr/sbin/nginx`：主程序
-- `/etc/nginx`：存放配置文件
-- `/usr/share/nginx`：存放静态文件
-- `/var/log/nginx`：存放日志
+- `/etc/nginx`：存放配置文件, nginx.conf
+- `/usr/share/nginx/html`：存放静态文件
+- `/var/log/nginx`：存放 log 日志
 
 如果你需要对 Nginx 进行配置，比如设置虚拟主机、修改默认端口等，你可以编辑 Nginx 的配置文件。这些文件通常位于 `/etc/nginx/` 目录下。
 
@@ -106,10 +113,10 @@ sudo apt-get install libssl-dev
 
 ### 4.3 安装 Nginx
 
-源码下载到你的用户目录 `/home/{$your_username}` 下：
+源码下载到你的用户目录 `/home/{$your_username}` 下，例如：`/home/ubuntu`：
 
 ```bash
-cd /home/{$your_username}
+cd /home/ubuntu
 mkdir nginx
 cd nginx
 
@@ -119,14 +126,14 @@ tar -xvf nginx-1.28.2.tar.gz
 
 ### 4.4 编译 Nginx
 
-编译和安装到 `/usr/local/nginx` 目录：
+编译，然后安装到 `/usr/local/nginx` 目录：
 
 ```bash
 # 进入 Nginx 目录
 cd ./nginx-1.28.2
 
-# 执行命令
-./configure --prefix=/usr/local/nginx
+# 执行命令, 启用 SSL 模块，用于后续配置 HTTPS
+./configure --prefix=/usr/local/nginx --with-http_ssl_module
 
 # 执行 make 命令, 如果你的 CPU 核心多，把 2 改为你的 CPU 核心数
 make -j2
@@ -151,6 +158,17 @@ cd /usr/local/nginx/sbin
 # 重新加载配置
 ./nginx -s reload
 ```
+
+### 4.6 默认目录位置
+
+先确认，基于前文 `--prefix=/usr/local/nginx` 为安装路径。
+
+则，Nginx 编译安装的默认目录位置为：
+
+- `/usr/local/nginx/sbin/nginx`：主程序
+- `/usr/local/nginx/conf`：存放配置文件, nginx.conf
+- `/usr/local/nginx/html`：存放静态文件
+- `/usr/local/nginx/logs`：存放 log 日志
 
 ## 5. 把 Nginx 安装成系统服务
 
@@ -199,10 +217,16 @@ sudo systemctl start nginx.service
 sudo systemctl enable nginx.service
 ```
 
-检查 Nginx 是否启动：
+检查 Nginx 是否启动成功：
 
 ```bash
+# 查看 Nginx 进程（若有 Nginx 进程，说明启动成功）
 ps -ef | grep nginx
+
+# 测试 Nginx 默认页面（本地访问，或服务器IP访问）
+# 如果 127.0.0.1 能访问，说明启动成功。如果用服务器IP访问不了，可能是还没有绑定服务器IP
+curl http://127.0.0.1
+
 # 或者
 sudo systemctl status nginx
 ```
@@ -214,6 +238,11 @@ sudo systemctl status nginx
 ```bash
 sudo ufw allow 'Nginx HTTP'
 sudo ufw allow 'Nginx HTTPS'
+
+sudo ufw allow 80
+sudo ufw allow 443
+
+sudo ufw reload
 ```
 
 关闭防火墙：
@@ -228,11 +257,11 @@ sudo systemctl stop firewalld.service
 sudo systemctl disable firewalld.service
 ```
 
-放行 80, 433 端口：
+放行 80, 443 端口：
 
 ```bash
 sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
-sudo firewall-cmd --zone=public --add-port=433/tcp --permanent
+sudo firewall-cmd --zone=public --add-port=443/tcp --permanent
 ```
 
 重启防火墙：

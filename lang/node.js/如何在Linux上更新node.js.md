@@ -23,17 +23,19 @@
 1.  **安装NVM**：使用`curl`或`wget`下载并执行安装脚本。以下以`curl`为例：
 
     ```bash
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
     ```
-    
-    > 你可以去NVM的GitHub页面查找最新的版本号（如`v0.40.1`）替换上述链接。
+    > .
+    > 你可以去 NVM 的 GitHub 页面查找最新的版本号（如`v0.40.1`）替换上述链接。
+    > 在这里查看：https://github.com/nvm-sh/nvm，最新版是：v0.40.4
+    > .
 
 2.  **激活NVM**：安装脚本运行后，需要重新加载shell配置或重启终端：
 
     ```bash
     source ~/.bashrc
     ```
-    如果你使用zsh，则命令为 `source ~/.zshrc`。
+    如果你使用 zsh，则命令为 `source ~/.zshrc`。
 
 3.  **验证安装**：
 

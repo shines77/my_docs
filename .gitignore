@@ -107,6 +107,7 @@ ENV/
 
 # Unused folders
 tech/hash/hash-table/hashtable-img/**
+tech/audio/tts/kokoro/**
 
 # Node.js
 node_modules/
