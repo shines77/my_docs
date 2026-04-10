@@ -188,6 +188,24 @@ sudo sysctl -p
 
 配置完成后，你可以在手机上关闭 Wi-Fi，用 4G/5G 网络测试一下，访问 [https://ip.sb](https://ip.sb) 这类网站，显示的应该就是你公网服务器的 IP 地址了。
 
+## 其他
+
+Windows 10 修改网络配置的 `公用网络`、`专业网络` 属性。
+
+Windows PowerShell (需要管理员权限)。
+
+按网络名称修改（推荐）：
+
+```powershell
+Set-NetConnectionProfile -Name "网络 10" -NetworkCategory Private
+```
+
+按接口别名修改：
+
+```powershell
+Set-NetConnectionProfile -InterfaceAlias "以太网 2" -NetworkCategory Private
+```
+
 ## :book: 参考文章
 
 - [DeepSeek-V3.2 问答](https://chat.deepseek.com/a/chat/s/0486ff7c-29bb-420f-b63a-0fbdd38e3929)
