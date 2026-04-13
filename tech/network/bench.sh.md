@@ -6,15 +6,15 @@
 
 ## 一键运行
 
-服务器在国外可以使用以下命令运行测试：
+服务器在国外（因为可能需要科学上网），可以使用以下命令运行测试：
 
 ```bash
 wget -qO- bench.sh | bash
 ```
 
-​服务器在国内只能从 [github](https://github.com/teddysun/across/blob/master/bench.sh) 复制脚本到本地运行。脚本内容已经贴到下面：复制代码块，保存到 bench.sh 文件中，chmod +x 赋权, ./bench.sh 运行。
+​服务器在国内，则只能从 [https://github.com/teddysun/across/blob/master/bench.sh](https://github.com/teddysun/across/blob/master/bench.sh) 复制脚本到本地运行。保存脚本文件为 `bench.sh`，使用 `chmod +x` 添加运行权限, 使用 `./bench.sh` 命令运行。
 
-复制脚本到本地运行：
+以下是较早的版本（注：下面有更新一点的版本）：
 
 ```bash
 #!/usr/bin/env bash
