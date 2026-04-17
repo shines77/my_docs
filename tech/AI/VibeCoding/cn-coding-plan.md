@@ -12,6 +12,20 @@
 
 [https://bailian.console.aliyun.com/cn-beijing/?tab=coding-plan#/efm/coding-plan-index](https://bailian.console.aliyun.com/cn-beijing/?tab=coding-plan#/efm/coding-plan-index)
 
+模型广场（全部模型）：
+
+[https://bailian.console.aliyun.com/cn-beijing?&tab=model#/model-market/all](https://bailian.console.aliyun.com/cn-beijing?&tab=model#/model-market/all)
+
+例如，kimi-k2.5（阿里云版本）：
+
+上下文最大长度 (Tokens)：256K，最大输入 Tokens：224K，最大输出 Tokens: 16K 。
+
+kimi-k2.5（月之暗面官方提供的版本）：
+
+上下文最大长度 (Tokens)：256K，最大输入 Tokens：256K，最大输出 Tokens: 256K 。
+
+思考模式下，最大输入 Tokens：256K，最大输出 Tokens: 256K 。
+
 ### 1.2 腾讯云
 
 腾讯云 Coding Plan：
@@ -32,7 +46,7 @@
 
 例如，GLM-5.1：
 
-上下文最大长度：200K，最大输入 Tokens：200K，最大输出 Tokens: 128K 。
+上下文最大长度 (Tokens)：200K，最大输入 Tokens：200K，最大输出 Tokens: 128K 。
 
 ### 1.4 清华智谱(GLM)
 
