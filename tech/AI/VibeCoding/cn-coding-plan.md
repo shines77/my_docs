@@ -24,6 +24,16 @@
 
 [https://www.volcengine.com/activity/codingplan](https://www.volcengine.com/activity/codingplan)
 
+模型列表：
+
+[https://www.volcengine.com/docs/82379/1330310?lang=zh](https://www.volcengine.com/docs/82379/1330310?lang=zh)
+
+为了节省推理的显存，大多数模型限制上下文最大长度为：200K 或者 256K，最大输入 Max Tokens 限制到 168K 或者 224K，输出 Max Tokens: 32K 。
+
+例如，GLM-5.1：
+
+上下文最大长度：200K，最大输入 Tokens：200K，最大输出 Tokens: 128K 。
+
 ### 1.4 清华智谱(GLM)
 
 官网：[https://chatglm.cn](https://chatglm.cn) | [https://www.zhipuai.cn/](https://www.zhipuai.cn/)
@@ -58,7 +68,13 @@ MiniMax Token Plan：
 
 [https://www.jdcloud.com/cn/products/clawlab](https://www.jdcloud.com/cn/products/clawlab)
 
-活动与公告： [去购买 Coding Plan Pro](https://joybuilder-console.jdcloud.com/system/subscribe/list)
+活动与公告（购买页面）：[去购买 Coding Plan Pro](https://joybuilder-console.jdcloud.com/system/subscribe/list)
+
+模型广场：
+
+[https://joybuilder-console.jdcloud.com/smart-square/model/list](https://joybuilder-console.jdcloud.com/smart-square/model/list)
+
+为了节省推理的显存，大多数模型限制上下文最大长度为：200K 或者 256K，最大输入 Max Tokens 限制到 168K 或者 224K，输出 Max Tokens: 32K 。
 
 ### 1.8 科大讯飞
 
@@ -100,6 +116,10 @@ Qwen3.6 发布 全模型通享低至 4.5 折(包季才能享受 4.5折)
 
 ### 2.3 点评
 
-两者各有千秋，阿里云可以使用 Qwen-3.6-Plus 等新模型，也支持 GLM-5、Kimi-K2.5、MiniMax-M2.5、DeepSeek V3.2 等，腾讯云的只有 GLM-5、Kimi-K2.5、MiniMax-M2.5、DeepSeek V3.2，以及腾讯自己的 Tencent HY 2.0、Hunyuan-T1 等模型，没有 Qwen-3.5。Token 用量上不好评估，差不太多，可能腾讯云(Token Plan) 的套餐从 Token 上来说更划算一点，但可选模型不如阿里云。
+两者各有千秋，阿里云可以使用 Qwen-3.6-Plus、GLM-5.1 等新模型，也支持 Qwen-3.5 系列、GLM-5.1、GLM-5、Kimi-K2.5、MiniMax-M2.5、DeepSeek V3.2 等模型。
 
-阿里云是按月抵扣，当月不用完额度会消失，但没有5小时、周限制。腾讯云(Token Plan)是包干制，没有任何时间限制，也不会有5小时、周限制。
+腾讯云(Token Plan)的也支持 GLM-5.1，甚至还支持很少见的需要商业授权的 MiniMax-M2.7，除了基本的模型 GLM-5、Kimi-K2.5、MiniMax-M2.5、DeepSeek V3.2 等，还有腾讯自产的 Tencent HY 2.0、Hunyuan-T1 等模型，但没有 Qwen-3.5、Qwen-3.6 以及所有 Qwen 的模型。
+
+两者 Token 用量上不好评估，差不太多，可能腾讯云(Token Plan) 的套餐从 Token 上来说更划算一点，腾讯云多了 MiniMax-M2.7，但少了 Qwen 系列模型。
+
+另外，阿里云是按月抵扣的，当月额度不用完会消失，但没有5小时、周限制。腾讯云(Token Plan)是包干制，没有任何时间限制，也不会有5小时、周限制。
