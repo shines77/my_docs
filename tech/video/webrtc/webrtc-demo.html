@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <button id="start">开始</button>
+        <button id="stop">停止</button>
+    </div>
+    <div>
+        <video autoplay controls id="id__stream"></video>
+    </div>
+    <script>
+        // 只获取视频
+        let constraints = {audio: false, video: true}; 
+        let startBtn = document.getElementById('start')
+        let stopBtn  = document.getElementById('stop')
+        let videoShowControl = document.getElementById('id__stream')
+        startBtn.onclick = function() {
+            navigator.getUserMedia(constraints, function(stream) {
+                videoShowControl.srcObject = stream;
+                window.stream = stream;
+            }, function(err) {
+                console.log(err)
+            })
+        }
+        stopBtn.onclick = function() {
+            videoShowControl.pause();
+        }
+    </script>
+</body>
+</html>
