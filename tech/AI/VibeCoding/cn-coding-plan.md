@@ -32,6 +32,10 @@ kimi-k2.5（月之暗面官方提供的版本）：
 
 [https://cloud.tencent.com/act/pro/codingplan](https://cloud.tencent.com/act/pro/codingplan)
 
+模型广场：
+
+[https://console.cloud.tencent.com/tokenhub/models?regionId=1](https://console.cloud.tencent.com/tokenhub/models?regionId=1)
+
 ### 1.3 火山引擎(字节)
 
 方舟 Coding Plan：
