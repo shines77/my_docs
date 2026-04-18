@@ -279,4 +279,5 @@ sudo tail -f /var/log/auth.log
 ## 4. 参考文章
 
 - [SSH客户端与服务器配置实战解析](https://my.oschina.net/emacs_9519843/blog/18723465)
+- [sshd服务基本配置和使用(201610改)](https://www.cnblogs.com/lykyl/archive/2011/03/19/1980304.html)
 - [隐秘通道：通过PAM模块实现SSH认证绕过与密码捕获](https://blog.csdn.net/weixin_29274969/article/details/158404519)
