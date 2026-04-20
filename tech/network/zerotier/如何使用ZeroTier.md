@@ -122,6 +122,10 @@ zerotier-cli set <network ID> <setting>
 
 # 例如：
 zerotier-cli set 8056c2e21c000001 allowGlobal true
+
+# 常用的命令, 用你的 <network ID> 替换 <ID> 即可
+zerotier-cli set <ID> allowDefault true
+zerotier-cli set <ID> allowDefault false
 ```
 
 下面介绍如何通过修改配置文件来达到相同的效果，这会在下次启动的时候依然生效。
@@ -414,10 +418,12 @@ sudo ufw disable
 
 1. 每月重新生成 Moon 证书：
 
-    ```bash
-    sudo rm /var/lib/zerotier-one/moons.d/*
-    sudo zerotier-idtool genmoon moon.json
-    ```
+```bash
+sudo rm /var/lib/zerotier-one/moons.d/*
+
+cd /var/lib/zerotier-one/moons.d/
+sudo zerotier-idtool genmoon moon.json
+```
 
 2. 通知客户端更新 .moon 文件
 
@@ -451,7 +457,7 @@ sudo rm -rf /var/lib/zerotier-one/
 
 **Windows 卸载**
 
-Windows卸载
+Windows 卸载
 
 在“应用和功能”中卸载 ZeroTier One 。
 
