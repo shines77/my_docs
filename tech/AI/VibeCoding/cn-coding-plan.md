@@ -30,7 +30,9 @@ kimi-k2.5（月之暗面官方提供的版本）：
 
 腾讯云 Coding Plan：
 
-[https://cloud.tencent.com/act/pro/codingplan](https://cloud.tencent.com/act/pro/codingplan)
+优惠活动已结束：[https://cloud.tencent.com/act/pro/codingplan](https://cloud.tencent.com/act/pro/codingplan)
+
+需登录：[https://console.cloud.tencent.com/tokenhub/codingplan?regionId=1](https://console.cloud.tencent.com/tokenhub/codingplan?regionId=1)
 
 模型广场：
 
@@ -42,7 +44,15 @@ kimi-k2.5（月之暗面官方提供的版本）：
 
 [https://www.volcengine.com/activity/codingplan](https://www.volcengine.com/activity/codingplan)
 
-模型列表：
+模型广场：
+
+[https://console.volcengine.com/ark/region:ark+cn-beijing/model](https://console.volcengine.com/ark/region:ark+cn-beijing/model)
+
+更多模型：
+
+[https://console.volcengine.com/ark/region:ark+cn-beijing/model?filters=N4IgbgpgdgJg9gJwM4gFwG0QCECeAXCGAQygGMIQBdAXyA&groupType=ModelGroups&vendor=Bytedance&view=CARD_VIEW](https://console.volcengine.com/ark/region:ark+cn-beijing/model?filters=N4IgbgpgdgJg9gJwM4gFwG0QCECeAXCGAQygGMIQBdAXyA&groupType=ModelGroups&vendor=Bytedance&view=CARD_VIEW)
+
+更详细的，模型列表：
 
 [https://www.volcengine.com/docs/82379/1330310?lang=zh](https://www.volcengine.com/docs/82379/1330310?lang=zh)
 
@@ -114,7 +124,7 @@ Qwen3.6 发布 全模型通享低至 4.5 折(包季才能享受 4.5折)
 
 ### 2.2 腾讯云(Token Plan)
 
-专门为 龙虾 用户提供的套餐。
+专门为 龙虾 用户提供的套餐，Token 有效期只有一个月。
 
 个人版–-基础套餐（Standard）：
 
@@ -132,12 +142,33 @@ Qwen3.6 发布 全模型通享低至 4.5 折(包季才能享受 4.5折)
 
 [https://console.cloud.tencent.com/tokenhub/tokenplan?regionId=1](https://console.cloud.tencent.com/tokenhub/tokenplan?regionId=1)
 
+Token Plan 套餐（个人版）概览：
+
+[https://cloud.tencent.com/document/product/1823/130060](https://cloud.tencent.com/document/product/1823/130060)
+
+所有套餐均支持以下模型：
+
+> 说明：Token Plan 可用模型暂不支持图片、视频等多模态能力。
+
+- Auto 模型（系统智能路由）
+- MiniMax-M2.5
+- MiniMax-M2.7
+- GLM-5
+- GLM-5.1
+- Kimi-K2.5（资源负载较高，高峰时段可能触发请求限频机制，为保障使用体验，请优先选用其他模型）
+- Tencent HY 2.0 Instruct（即将下线）
+- Tencent HY 2.0 Think（即将下线）
+- Hunyuan-T1（即将下线）
+- Hunyuan-TurboS（即将下线）
+
+更多模型将持续接入中。
+
 ### 2.3 点评
 
 两者各有千秋，阿里云可以使用 Qwen-3.6-Plus、GLM-5.1 等新模型，也支持 Qwen-3.5 系列、GLM-5.1、GLM-5、Kimi-K2.5、MiniMax-M2.5、DeepSeek V3.2 等模型。
 
 腾讯云(Token Plan)的也支持 GLM-5.1，甚至还支持很少见的需要商业授权的 MiniMax-M2.7，除了基本的模型 GLM-5、Kimi-K2.5、MiniMax-M2.5、DeepSeek V3.2 等，还有腾讯自产的 Tencent HY 2.0、Hunyuan-T1 等模型，但没有 Qwen-3.5、Qwen-3.6 以及所有 Qwen 的模型。
 
-两者 Token 用量上不好评估，差不太多，可能腾讯云(Token Plan) 的套餐从 Token 上来说更划算一点，腾讯云多了 MiniMax-M2.7，但少了 Qwen 系列模型。
+两者 Token 用量上不好评估，差不太多，可能腾讯云(Token Plan) 的套餐从 Token 上来说更划算一点，腾讯云多了 MiniMax-M2.7 和自家模型，但少了 Qwen 系列模型。
 
-另外，阿里云是按月抵扣的，当月额度不用完会消失，但没有5小时、周限制。腾讯云(Token Plan)是包干制，没有任何时间限制，也不会有5小时、周限制。
+另外，阿里云是按月抵扣的，当月额度不用完会消失，但没有5小时、周限制。腾讯云(Token Plan)是按 Token 算量，有效期也只有一个月，也没有5小时、周限制。
