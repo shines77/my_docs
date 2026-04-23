@@ -119,8 +119,8 @@ PasswordAuthentication no
 KbdInteractiveAuthentication no
 UsePAM yes
 
-# 重启SSH服务使配置生效
-sudo systemctl restart ssh
+# 重启 SSH 服务使配置生效
+sudo systemctl restart sshd
 ```
 
 关于 `UsePAM` 的解释：
@@ -161,16 +161,16 @@ vim /etc/pam.d/sshd
 
 ```bash
 # 启动SSH服务
-sudo systemctl start ssh
+sudo systemctl start sshd
 
 # 停止SSH服务
-sudo systemctl stop ssh
+sudo systemctl stop sshd
 
 # 重启SSH服务
-sudo systemctl restart ssh
+sudo systemctl restart sshd
 
 # 检查SSH服务状态
-sudo systemctl status ssh
+sudo systemctl status sshd
 ```
 
 ### 3.4 安全加固 SSH 服务器
@@ -229,7 +229,7 @@ DenyUsers user1 user2
 DenyGroups group1 group2
 
 # 重启SSH服务使配置生效
-sudo systemctl restart ssh
+sudo systemctl restart sshd
 ```
 
 建议还是允许 root 登陆（为了方便），并且开启密码认证（也是为了方便）。当然，如果为了安全，可以两者都关闭，使用密钥登录。
