@@ -16,6 +16,46 @@ brew install --cask codex
 
 更新版本时，也使用同样的命令。
 
+## 日常使用
+
+### --sandbox
+
+选择执行模型生成的 shell 命令时要使用的沙盒策略。
+
+```bash
+codex --sandbox <SANDBOX_MODE>
+```
+
+可选的值：`read-only`, `workspace-write`, `danger-full-access`
+
+### --ask-for-approval
+
+配置模型在执行命令前是否需要人工审批的情况。
+
+```bash
+codex --ask-for-approval <APPROVAL_POLICY>
+```
+
+可选的值：
+
+- untrusted:  仅运行“受信任”的命令（如ls、cat、sed），无需用户批准。如果模型建议的命令不在“受信任”的命令集中，则会提示用户
+
+- on-failure: 已弃用：运行所有命令时无需用户批准。仅当命令执行失败时，才会请求用户批准，此时会提示用户进行非沙盒执行。对于交互式运行，建议使用“on-request”模式；对于非交互式运行，建议使用“never”模式
+
+- on-request: 由模型决定何时请求用户批准
+
+- never:      无需请求用户批准，执行失败会立即反馈给模型
+
+### YOLO mode
+
+跳过所有询问：
+
+```bash
+codex --dangerously-bypass-approvals-and-sandbox
+```
+
+跳过所有确认提示，并在不启用沙盒的情况下执行命令。此操作极其危险，仅适用于在外部已启用沙盒的环境中运行。不推荐，非沙盒环境推荐使用 `--ask-for-approval on-request` 。
+
 ## 安装 Rust
 
 因为要用源码来编译，是需要 Rust 的，Codex 内核是用 Rust 写的，nmp 只是一个壳而已。
