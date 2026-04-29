@@ -54,6 +54,12 @@
 - AI Scout [https://aiscout.net](https://aiscout.net/)
 - AI Hunt [https://aihunt.app](https://aihunt.app/)
 
+## 新收录
+
+- [AI工具集 - 一站式人工智能工具导航站](https://www.aitools.cc/)
+- [AI工具集官网 - 速创猫Ai简历](https://ai-tools.cn/)
+- [AI工具集 | 一站式AI工具导航](https://daohang.xinlingshou.com/)
+
 ## 共建[](https://ai-dh.cn/#%E5%85%B1%E5%BB%BA)
 
 website：[https://ai-dh.cn](https://ai-dh.cn/)
