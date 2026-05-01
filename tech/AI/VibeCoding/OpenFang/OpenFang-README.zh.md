@@ -192,18 +192,18 @@ OpenFang 不会在事后加强安全措施。每一层都是可独立测试的�
 
 |#|系统|它做什么|
 |---|---|---|
-|1|**WASM dual-metered 沙箱**|工具代码在 WebAssembly 中运行，带有 fuel metering + epoch interruption 。watchdog 线程会关掉失控的代码。|
+|1|**WASM dual-metered 沙盒**|工具代码在 WebAssembly 中运行，带有 fuel metering + epoch interruption 。watchdog 线程会关掉失控的代码。|
 |2|**Merkle hash-chain 审计追踪**|每一个动作都与前一个动作有加密联系。篡改一个入口，整个链条就会断裂。|
 |3|**信息流跟踪**|标签通过执行传播。秘密从源头追踪到源头。|
-|4|**Ed25519 签名代理人清单**|每个代理身份和能力集都经过加密签名。|
+|4|**Ed25519 签名 agent 清单**|每个 agent 身份和能力集都经过加密签名。|
 |5|**SSRF Protection**|阻止私有 IP、云元数据端点和 DNS 重新绑定攻击。|
 |6|**Secret Zeroization**|`Zeroizing<String>` 在不再需要 API 密钥时，自动从内存中清除这些密钥。|
 |7|**OFP 相互认证**|用于P2P网络的基于 HMAC-SHA256 随机数的恒定时间验证。|
-|8|**能力门**|基于角色的访问控制。代理声明所需的工具，内核强制执行|
-|9|**安全标头**|每个响应上都有 CSP、X-Frame-Options、HSTS、X-Content-Type-Options。|
+|8|**Capability Gates**|基于角色的访问控制。代理声明所需的工具，内核强制执行|
+|9|**Security Headers**|每个响应上都有 CSP、X-Frame-Options、HSTS、X-Content-Type-Options。|
 |10|**健康端点补救措施**|公共卫生检查返回的信息很少。完整的诊断需要身份验证。|
-|11|**子流程沙盒**|`env_clear()` + 选择性变量传递。使用跨平台 kill 进行进程树隔离。|
-|12|**快速注射扫描仪**|检测技能中的覆盖尝试、数据泄露模式和 shell 引用注入。|
+|11|**子进程沙盒**|`env_clear()` + 选择性变量传递。使用跨平台 kill 进行进程树隔离。|
+|12|**Prompt 注入扫描器**|检测 Skills 中的覆盖尝试、数据泄露模式和 shell 引用注入。|
 |13|**环路保护**|基于 SHA256 的断路器工具调用回路检测。处理乒乓球图案。|
 |14|**会话修复**|7 阶段消息历史验证和从损坏中自动恢复。|
 |15|**路径穿越预防**|规范化，防止符号链接逃逸。 `../` 这里不工作。|
@@ -363,7 +363,7 @@ Anthropic、Gemini、OpenAI、Groq、DeepSeek、OpenRouter、Together、Mistral�
 
 ## 从 OpenClaw 迁移
 
-已经在运行 OpenClaw 了？输入一个命令：
+已经在运行 OpenClaw 了？你只要输入一个命令：
 
 BASH
 
@@ -376,13 +376,13 @@ openfang migrate --from openclaw --path ~/.openclaw
 openfang migrate --from openclaw --dry-run
 ```
 
-迁移引擎导入您的 agents、对话历史、skills 和配置。OpenFang 读取原生的 `SKILL.md`，并与 `ClawHub` 市场兼容。
+迁移引擎将导入您的 agents、对话历史、skills 和配置。OpenFang 读取原生的 `SKILL.md`，并与 `ClawHub` 市场兼容。
 
 ---
 
 ## OpenAI 兼容的 API
 
-插入替换。将您现有的工具指向 OpenFang：
+Drop-in 替换。将您现有的工具指向 OpenFang：
 
 BASH
 
