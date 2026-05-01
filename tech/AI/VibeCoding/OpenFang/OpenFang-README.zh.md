@@ -439,24 +439,24 @@ BASH
 
 ```bash
 # Build the workspace (default is debug mode)
-cargo build --workspace --lib
+cargo build -j 4 --workspace --lib
 
 # Build the workspace (release mode)
-cargo build --release --workspace --lib
+cargo build --release -j 4 --workspace --lib
 
 # Build the workspace to binary (release mode)
-cargo build --release --workspace --bin openfang
-cargo build --release --workspace --bin openfang-desktop
-cargo build --release --workspace --bin xtask
+cargo build --release -j 4 --workspace --bin openfang
+cargo build --release -j 4 --workspace --bin openfang-desktop
+cargo build --release -j 4 --workspace --bin xtask
 
 # Run all debug tests (1,767+)
-cargo test --workspace
+cargo test -j 4 --workspace
 
 # Run all relase tests (1,767+)
-cargo test --release --workspace
+cargo test -j 4 --release --workspace
 
 # Lint (must be 0 warnings)
-cargo clippy --workspace --all-targets -- -D warnings
+cargo clippy -j 4 --workspace --all-targets -- -D warnings
 
 # Format
 cargo fmt --all -- --check
