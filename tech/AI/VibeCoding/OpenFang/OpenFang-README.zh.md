@@ -13,7 +13,7 @@ Open-source Agent OS built in Rust. 137K LOC. 14 crates. 1,767+ tests. Zero clip
 
 > **v0.5.10（2026 年 4 月）**
 >
-> OpenFang 功能完整，但仍然是 1.0 之前的版本。预计次要版本之间会有粗糙的边缘和突破性的变化。我们发货快，修理快。固定到特定的提交以供生产使用，直到 v1.0。 [在此处报告问题。](https://github.com/RightNow-AI/openfang/issues)
+> OpenFang 功能完整，但仍然是 1.0 之前的版本。预计次要版本之间会有粗糙的边缘和突破性的变化。我们发行快，修理 bug 迅速。固定到特定的提交以供生产使用，直到 v1.0。 [在此处报告问题。](https://github.com/RightNow-AI/openfang/issues)
 
 ---
 
@@ -23,7 +23,7 @@ OpenFang 是一个 **开源 Agent 操作系统**。不是聊天机器人框架�
 
 传统的 agent 框架等待您键入内容。OpenFang 运行 **为您工作的自主 agent**：按计划，全天候，构建知识图，监控目标，生成潜在客户，管理社交媒体，并将结果报告到仪表板。
 
-整个系统编译为 **单个~32MB二进制文件**。一次安装，一个命令，你的 Agents 就上线了。
+整个系统编译为 **单个~32MB二进制文件**。一次安装，一个命令，你的 Agent 就上线了。
 
 BASH
 
@@ -46,7 +46,7 @@ openfang start
 
 ---
 
-## Hands：真正做事的 Agents
+## Hands：真正做事的 Agent
 
 _"Traditional agents wait for you to type. Hands work **for** you."_
 
@@ -69,11 +69,11 @@ _"Traditional agents wait for you to type. Hands work **for** you."_
 | .Hand. | 它到底在做什么 |
 | --- | --- |
 | **Clip** | 剪辑，获取 YouTube URL，下载它，识别最佳时刻，将其切成带有字幕和缩略图的垂直短片，可选择添加 AI 画外音，并发布到 Telegram 和 WhatsApp。8 相管道。FFmpeg + yt-dlp + 5 STT 后端。 |
-| **Lead** | 领导者，每天运行。发现与您的 ICP 匹配的潜在客户，用网络研究丰富他们，评分 0-100，根据您现有的数据库进行重复数据消除，并以 CSV/JSON/Markdown 格式提供合格的潜在客户。随着时间的推移建立 ICP 档案。 |
+| **Lead** | 引导者，每天运行。发现与您的 ICP 匹配的潜在客户，用网络研究丰富他们，评分 0-100，根据您现有的数据库进行重复数据消除，并以 CSV/JSON/Markdown 格式提供合格的潜在客户。随着时间的推移建立 ICP 档案。 |
 | **Collector** | 收集者，OSINT 级智力。你给它一个目标（公司、个人、主题）。它持续监控：变化检测、情绪跟踪、知识图构建，以及重要事物发生变化时的关键警报。 |
 | **Predictor** | 预测器，超级预测引擎。从多个来源收集信号，构建校准的推理链，使用置信区间进行预测，并使用 Brier 评分跟踪其自身的准确性。有一种逆向思维模式，故意反对共识。 |
 | **Researcher** | 研究员，深度自主研究者。交叉引用多个来源，使用 CRAAP 标准（货币、相关性、权威性、准确性、目的）评估可信度，生成 APA 格式的引用报告，支持多种语言。 |
-| **Twitter** | 推特，自主推特/X 账户管理器。以 7 种轮换格式创建内容，安排帖子以获得最佳参与度，回应提及，跟踪绩效指标。有一个审批队列，所以没有你的同意，什么都不会发布 |
+| **Twitter** | 推特，自主 Twitter/X 账户管理器。以 7 种轮换格式创建内容，安排帖子以获得最佳参与度，回应提及，跟踪绩效指标。有一个审批队列，所以没有你的同意，什么都不会发布 |
 | **Browser** | 浏览器，Web 自动化代理。浏览网站、填写表单、点击按钮、处理多步骤工作流。使用具有会话持久性的 Playwright 桥。 **强制性采购审批门**：没有明确的确认，它永远不会花你的钱。 |
 
 BASH
@@ -280,7 +280,7 @@ mode = "web"
 default_agent = "assistant"
 ```
 
-**3. 设置网关URL（选择一个）：**
+**3. 设置网关 URL（选择一个）：**
 
 添加到您的 shell 配置文件中以实现持久性：
 
@@ -310,7 +310,7 @@ node packages/whatsapp-gateway/index.js
 
 网关监听端口 `3009` 默认情况下。覆盖 `WHATSAPP_GATEWAY_PORT`.
 
-**5. 启动OpenFang：**
+**5. 启动 OpenFang：**
 
 BASH
 
@@ -347,7 +347,7 @@ openfang start
 
 ### 备选方案：WhatsApp 云 API
 
-对于生产工作负载，请使用 [WhatsApp云API](https://developers.facebook.com/docs/whatsapp/cloud-api) 拥有Meta Business帐户。看 [云API配置文档](https://openfang.sh/docs/channels/whatsapp).
+对于生产工作负载，请使用 [WhatsApp 云 API](https://developers.facebook.com/docs/whatsapp/cloud-api) 拥有Meta Business帐户。看 [云 API 配置文档](https://openfang.sh/docs/channels/whatsapp).
 
 ---
 
@@ -376,11 +376,11 @@ openfang migrate --from openclaw --path ~/.openclaw
 openfang migrate --from openclaw --dry-run
 ```
 
-迁移引擎导入您的代理、对话历史、技能和配置。[OpenFang 原生读取 SKILL.md](http://xn--openfangskill-3g7v7ym542bohsd.md/)，并与 ClawHub 市场兼容。
+迁移引擎导入您的 agents、对话历史、skills 和配置。OpenFang 读取原生的 `SKILL.md`，并与 `ClawHub` 市场兼容。
 
 ---
 
-## OpenAI兼容的API
+## OpenAI 兼容的 API
 
 插入替换。将您现有的工具指向 OpenFang：
 
