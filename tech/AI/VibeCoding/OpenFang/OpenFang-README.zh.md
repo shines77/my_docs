@@ -433,17 +433,31 @@ openfang start
 
 ---
 
-## 发展
+## Development
 
 BASH
 
 ```bash
-# Build the workspace
+# Build the workspace (default is debug mode)
 cargo build --workspace --lib
-# Run all tests (1,767+)
+
+# Build the workspace (release mode)
+cargo build --release --workspace --lib
+
+# Build the workspace to binary (release mode)
+cargo build --release --workspace --bin openfang
+cargo build --release --workspace --bin openfang-desktop
+cargo build --release --workspace --bin xtask
+
+# Run all debug tests (1,767+)
 cargo test --workspace
+
+# Run all relase tests (1,767+)
+cargo test --release --workspace
+
 # Lint (must be 0 warnings)
 cargo clippy --workspace --all-targets -- -D warnings
+
 # Format
 cargo fmt --all -- --check
 ```
