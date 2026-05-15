@@ -585,7 +585,10 @@ Windows 路径：`%USERPROFILE%\.claude.json`
 
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
-  }
+  },
+  "teammateMode": "auto",
+
+  .............
 }
 ```
 
