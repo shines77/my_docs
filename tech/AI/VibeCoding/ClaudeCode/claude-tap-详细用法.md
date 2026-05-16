@@ -103,6 +103,10 @@ claude-tap -- --dangerously-skip-permissions
 claude-tap --tap-live -- --dangerously-skip-permissions --model claude-sonnet-4-6
 ```
 
+## Claude Code 搭配 DeepSeek API
+
+请参考：[Claude Code 搭配 DeepSeek API](https://github.com/liaohch3/claude-tap/blob/main/docs/guides/deepseek-claude-code.zh.md)
+
 ## Codex CLI 详细用法
 
 Codex CLI 支持两种认证方式：OAuth 和 API Key，常用的是 OAuth 方式。
