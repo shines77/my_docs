@@ -83,6 +83,7 @@ sudo apt-get install iptables-persistent
 
 ```bash
 ETH0_IFACE=ens17; ZT_IFACE=ztugaqveyu
+ETH0_IFACE=eth0; ZT_IFACE=ztyqbzebjv; ZT_SUBNET=10.241.0.0/24
 ```
 
 添加 iptables 规则：
@@ -101,6 +102,32 @@ sudo iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 # 允许从 ZeroTier 接口向公网接口转发流量
 sudo iptables -A FORWARD -i $ZT_IFACE -o $ETH0_IFACE -j ACCEPT
+```
+
+iptables 规则（第二版）：
+
+```bash
+# 允许来自 ZeroTier 网段的流量转发
+sudo iptables -A FORWARD -i $ZT_IFACE -j ACCEPT
+sudo iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# 开启 NAT 伪装（请根据你实际的 ZeroTier 网段修改，如 10.147.17.0/24）
+sudo iptables -t nat -A POSTROUTING -s $ZT_SUBNET -o $ETH0_IFACE -j MASQUERADE
+```
+
+iptables 规则（第三版），参考: [VPN Exit Node](https://docs.zerotier.com/exitnode/)：
+
+```
+ETH0_IFACE=eth0; ZT_IFACE=ztyqbzebjv; ZT_SUBNET=10.241.0.0/24
+
+# 允许流量转发：
+sudo iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+# 允许从 ZeroTier 接口到 LAN 接口的流量转发：
+sudo iptables -A FORWARD -i $ZT_IFACE -o $ETH0_IFACE -j ACCEPT
+
+# 启用 NAT 和 IP 伪装功能：
+sudo iptables -t nat -A POSTROUTING -o $ETH0_IFACE -j MASQUERADE
 ```
 
 使用下列命令查看添加后的结果：

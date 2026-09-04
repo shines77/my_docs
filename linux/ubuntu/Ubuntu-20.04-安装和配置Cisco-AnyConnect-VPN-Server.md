@@ -25,7 +25,7 @@
 
 从官网下载 `ocserv` 的源码包，并解压：
 
-```shell
+```bash
 cd ~/
 mkdir ocserv
 cd ocserv
@@ -52,19 +52,19 @@ sudo apt install libev-dev
 
 开始配置和编译源码，然后安装 `ocserv`：
 
-```shell
+```bash
 sudo ./configure
 sudo make
 sudo make install
 ```
 
-## 2. 配置 ocserv
+## 3. 配置 ocserv
 
 ### 3.1. 安装证书工具
 
 先安装一下证书生成工具（`certtool`），并创建一个目录，来存放生成的证书：
 
-```shell
+```bash
 cd ~
 sudo apt-get install gnutls-bin
 sudo mkdir certificates
@@ -90,9 +90,9 @@ cert_signing_key
 crl_signing_key
 ```
 
-然后，生成一个随机的 `CA key`，并用这个 `key` 和 `ca.tmpl` 模板生成 `CA 证书`（`ca-cert.pem`），如下：
+然后，生成一个随机的密钥 `CA key` ，并用这个密钥和 `ca.tmpl` 模板生成 `CA 证书`（`ca-cert.pem`），如下：
 
-```shell
+```bash
 sudo certtool --generate-privkey --outfile ca-key.pem
 sudo certtool --generate-self-signed --load-privkey ca-key.pem --template ca.tmpl --outfile ca-cert.pem
 ```
@@ -126,18 +126,18 @@ organization = "Cisco AnyConnect"
 
 （注：这里的 `organization` 字段可以跟 `ca.tmpl` 里的 `organization` 名字不一样。）
 
-然后，生成 `server key`，并使用这个 `server key`、`CA key`、`CA 证书` 以及 `server.tmpl` 模板生成 `server 证书`（`server-cert.pem`），如下：
+然后，生成一个随机的密钥 `Server key`，并使用这个 `Server key` 密钥、`CA key` 密钥、`CA 证书` 以及 `server.tmpl` 模板生成 `server 证书`（`server-cert.pem`），如下：
 
-```shell
+```bash
 sudo certtool --generate-privkey --outfile server-key.pem
 sudo certtool --generate-certificate --load-privkey server-key.pem --load-ca-certificate ca-cert.pem --load-ca-privkey ca-key.pem --template server.tmpl --outfile server-cert.pem
 ```
 
 ### 3.4. 拷贝证书
 
-新建一个 `/etc/ocserv` 目录，拷贝 `server 证书`, `server key` 和 `ca 证书` 到 `/etc/ocserv` 目录下：
+新建一个 `/etc/ocserv` 目录，把 `server 证书`, `server key` 和 `ca 证书` 拷贝到该目录下：
 
-```shell
+```bash
 sudo mkdir -p /etc/ocserv
 sudo cp server-cert.pem server-key.pem ca-cert.pem /etc/ocserv
 ```
@@ -204,7 +204,7 @@ sz ~/certificates/user.p12
 
 在 `ocserv` 源代码里有一个简单的配置范例文件：`/ocserv-1.1.6/doc/sample.config`，把它复制到 `/etc/ocserv/` 目录下：
 
-```shell
+```bash
 sudo cp ~/ocserv/ocserv-1.1.6/doc/sample.config /etc/ocserv/config
 ```
 
@@ -265,7 +265,7 @@ ipv4-netmask = 255.255.0.0
 
 # DNS 设置
 dns = 8.8.8.8
-dns = 8.8.4.4
+dns = 8.8.8.4
 
 # 香港本地的 DNS (备用)
 # dns = 202.238.95.24
@@ -342,13 +342,13 @@ xxxxxx
 
 ```text
 港服：          202.238.95.24、202.238.95.26
-香港特别行政区： 202.181.224.2、203.80.96.10、202.45.84.58
+香港特别行政区：202.181.224.2、203.80.96.10、202.45.84.58
 香港 BBN：      203.80.96.10
 ```
 
-由于我们的配置文件里指定了 `ocserv` 用户和 `ocserv` 组，所以我们要添加这个用户和组，命令如下：
+由于我们的配置文件里指定了 `ocserv` 用户和 `ocserv` 用户组，所以我们要添加这个用户和用户组，命令如下：
 
-```shell
+```bash
 sudo groupadd -f -r -g 21 ocserv
 sudo useradd -M -s /sbin/nologin -g ocserv ocserv
 sudo passwd ocserv
@@ -363,13 +363,13 @@ sudo gpasswd -a ocserv sudo
 
 创建 `ocserv` 用户的命令格式是：
 
-```shell
+```bash
 sudo ocpasswd -c /etc/ocserv/ocpasswd username
 ```
 
 例如，要创建一个用户叫 `test`，命令如下：
 
-```shell
+```bash
 sudo ocpasswd -c /etc/ocserv/ocpasswd test
 ```
 
@@ -379,7 +379,7 @@ sudo ocpasswd -c /etc/ocserv/ocpasswd test
 
 由于 `VPN` 内部需要 `NAT` 功能，所以必须打开 `ipv4` 的转发，设置为如下值：
 
-```shell
+```bash
 sudo vim /etc/sysctl.conf
 
 net.ipv4.ip_forward = 1
@@ -387,7 +387,7 @@ net.ipv4.ip_forward = 1
 
 修改保存后，让配置生效，执行下列命令：
 
-```shell
+```bash
 sudo /sbin/sysctl -p /etc/sysctl.conf
 ```
 
@@ -395,13 +395,13 @@ sudo /sbin/sysctl -p /etc/sysctl.conf
 
 打开了 `IP` 转发，还需要启用和配置 `NAT`：
 
-```shell
+```bash
 sudo iptables -t nat -A POSTROUTING -j MASQUERADE
 ```
 
 可以通过下面的命令查看 `NAT` 的设置：
 
-```shell
+```bash
 sudo iptables -t nat --list
 
 Chain PREROUTING (policy ACCEPT)
@@ -424,14 +424,14 @@ MASQUERADE  all  --  anywhere             anywhere
 
 下面的命令即是保存 `iptables` 的配置到 `/etc/iptables` 文件里：
 
-```shell
+```bash
 sudo touch /etc/iptables
 sudo iptables-save > /etc/iptables
 ```
 
 在系统启动时，恢复 `iptables` 的配置，编辑 `/etc/rc.local` 文件，恢复 `iptables` 的命令必须写在 `exit 0` 语句之前：
 
-```shell
+```bash
 sudo vim /etc/rc.local
 
 ......... (前面的内容省略)
@@ -443,13 +443,13 @@ sudo vim /etc/rc.local
 
 启动的命令如下：
 
-```shell
+```bash
 sudo /usr/local/sbin/ocserv -c /etc/ocserv/config -f -d 1
 ```
 
 如果想在系统启动的时候就启动 `ocserv` 服务，可以编辑 `/etc/rc.local` 文件，把上面的启动命令写在 `exit 0` 语句之前（但是要记得去掉 `-f` 参数，否则你的系统重启时会卡在启动 `ocserv`，无法完全进入系统，切记！）：
 
-```shell
+```bash
 sudo vim /etc/rc.local
 
 ......... (前面的内容省略)
@@ -463,13 +463,13 @@ sudo vim /etc/rc.local
 
 先通过 `systemctl --help` 命令来检查是否已经安装了 `Systemd`，如果没有安装，则使用如下命令安装：
 
-```shell
+```bash
 sudo apt-get install systemd
 ```
 
 新建 `ocserv` 配置文件：
 
-```shell
+```bash
 sudo vim /etc/systemd/system/ocserv.service
 ```
 
@@ -491,26 +491,26 @@ WantedBy=multi-user.target
 
 让 `ocserv` 配置生效：
 
-```shell
+```bash
 sudo systemctl enable /etc/systemd/system/ocserv.service
 ```
 
 执行的结果如下：
 
-```shell
+```bash
 ln -s '/etc/systemd/systemocserv.service'
       '/etc/systemd/system/multi-user.target.wants/ocserv.service'
 ```
 
 启动 `ocserv` 服务：
 
-```shell
+```bash
 sudo systemctl start ocserv
 ```
 
 查询 `ocserv` 服务当前的状态：
 
-```shell
+```bash
 sudo systemctl status ocserv
 ```
 
@@ -518,11 +518,11 @@ sudo systemctl status ocserv
 
 确认已经开启成功：
 
-```shell
+```bash
 netstat -tulpn | grep 443
 ```
 
-```shell
+```bash
 tcp      0     0 0.0.0.0:443     0.0.0.0:*     LISTEN      511/ocserv-main
 tcp6     0     0 :::443          :::*          LISTEN      511/ocserv-main
 udp      0     0 0.0.0.0:443     0.0.0.0:*                 511/ocserv-main
