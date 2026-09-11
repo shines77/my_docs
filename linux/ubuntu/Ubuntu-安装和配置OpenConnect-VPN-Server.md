@@ -203,8 +203,8 @@ tcp-port = 443
 udp-port = 443
 
 # 运行用户和组，默认值是 nobody 和 daemon
-run-as-user = ocserv
-run-as-group = ocserv
+run-as-user = nobody
+run-as-group = daemon
 
 # socket file used for IPC with occtl. You only need to set that,
 # if you use more than a single servers.
@@ -245,7 +245,8 @@ try-mtu-discovery = true
 # tls-priorities = "NORMAL:%SERVER_PRECEDENCE:%COMPAT:-VERS-SSL3.0"
 # tls-priorities = "NORMAL:%SERVER_PRECEDENCE:%COMPAT:-VERS-SSL3.0:-VERS-TLS1.0:-VERS-TLS1.1"
 # tls-priorities = "NORMAL:%SERVER_PRECEDENCE:%COMPAT:-VERS-SSL3.0:-VERS-TLS1.0:-VERS-TLS1.1:-VERS-TLS1.2"
-tls-priorities = "NORMAL:%SERVER_PRECEDENCE:%COMPAT:-VERS-SSL3.0:-VERS-TLS1.0:-VERS-TLS1.1:-VERS-TLS1.3"
+# tls-priorities = "NORMAL:%SERVER_PRECEDENCE:%COMPAT:-VERS-SSL3.0:-VERS-TLS1.0:-VERS-TLS1.1:-VERS-TLS1.3"
+tls-priorities = "NORMAL:%SERVER_PRECEDENCE:%COMPAT:-VERS-SSL3.0:-VERS-TLS1.0:-VERS-TLS1.1:-VERS-TLS1.2:-VERS-TLS1.3"
 
 # 最小验证重试时间：单位(秒)
 min-reauth-time = 300
@@ -263,7 +264,7 @@ ipv4-netmask = 255.255.0.0
 
 # DNS 设置
 dns = 8.8.8.8
-dns = 8.8.8.4
+dns = 8.8.4.4
 
 # 香港本地的 DNS (备用)
 # dns = 202.238.95.24
