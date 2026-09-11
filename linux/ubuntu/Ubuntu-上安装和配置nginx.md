@@ -127,7 +127,7 @@ sudo chown -R www-data:www-data /var/www/mysite
 ### **步骤2：创建站点配置文件**
 
 ```bash
-# 在sites-available中创建配置文件
+# 在 ./sites-available/ 中创建配置文件
 sudo nano /etc/nginx/sites-available/mysite
 ```
 
@@ -154,7 +154,7 @@ server {
 ### **步骤3：启用站点并测试**
 
 ```bash
-# 创建符号链接到sites-enabled
+# 创建符号链接到 ./sites-enabled/ 目录下
 sudo ln -s /etc/nginx/sites-available/mysite /etc/nginx/sites-enabled/
 
 # 测试配置文件语法

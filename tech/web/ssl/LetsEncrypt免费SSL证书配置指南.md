@@ -71,9 +71,19 @@ ln -s /snap/bin/certbot /usr/bin/certbot
 ```bash
 # 指定网站根目录, 例如: /var/www/html
 certbot certonly --webroot -w /var/www/html -d example.com -d www.example.com
+certbot certonly --webroot -w /var/www/html -d coding-fans.cn -d www.coding-fans.cn
 ```
 
 然后要输入一个 email 。
+
+返回的结果如下：
+
+```bash
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/coding-fans.cn/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/coding-fans.cn/privkey.pem
+This certificate expires on 2026-12-10.
+``
 
 **独立运行模式（没有 Web 服务器时）：**
 
@@ -82,6 +92,7 @@ certbot certonly --webroot -w /var/www/html -d example.com -d www.example.com
 ```bash
 # 需要 80 端口空闲
 certbot certonly --standalone -d example.com -d www.example.com
+certbot certonly --standalone -d coding-fans.cn -d www.coding-fans.cn
 ```
 
 需要输入一个 email，跟前面类似。
@@ -94,6 +105,7 @@ apt install python3-certbot-nginx
 
 # 自动获取证书并配置 Nginx
 certbot --nginx -d example.com -d www.example.com
+certbot --nginx -d coding-fans.cn -d www.coding-fans.cn
 ```
 
 ### 2.3 获取证书（DNS验证）
@@ -101,6 +113,7 @@ certbot --nginx -d example.com -d www.example.com
 ```bash
 # 泛域名证书
 certbot certonly --manual --preferred-challenges dns -d "*.example.com" -d example.com
+certbot certonly --manual --preferred-challenges dns -d "*.coding-fans.cn" -d coding-fans.cn
 ```
 
 执行后会提示添加 DNS TXT 记录：
@@ -112,7 +125,36 @@ with the following value:
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
+```bash
+Please deploy a DNS TXT record under the name:
+
+_acme-challenge.coding-fans.cn.
+
+with the following value:
+
+WyPr8RZ1qLyyEz_-_dlMrb7hf9e2bbyzUnOWCzux__8
+```
+
 添加记录后等待 DNS 生效，然后继续。
+
+可以用这个地址来查询修改的 DNS 值是否生效了。
+
+```bash
+https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.coding-fans.cn
+```
+
+等 DNS 生效后，按任意键确定后，得到的结果：
+
+```bash
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/coding-fans.cn-0001/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/coding-fans.cn-0001/privkey.pem
+This certificate expires on 2026-12-10.
+These files will be updated when the certificate renews.
+
+NEXT STEPS:
+- This certificate will not be renewed automatically. Autorenewal of --manual certificates requires the use of an authentication hook script (--manual-auth-hook) but one was not provided. To renew this certificate, repeat this same certbot command before the certificate's expiry date.
+```
 
 ### 2.4 证书文件说明
 
@@ -125,25 +167,60 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 | fullchain.pem | 完整证书链 | Nginx ssl_certificate |
 | privkey.pem | 私钥 | Nginx ssl_certificate_key |
 
+例如，放在：`/etc/letsencrypt/live/coding-fans.cn/`。
+
 ## 3. Nginx https 配置
 
 ### 3.1 基础配置
 
+先在 ./sites-available 目录下创建配置文件，再在把配置文件软链接到 ./sites-enabled 目录下。
+
+因为 vim 复制有缩进的整段代码会不断的自动加缩进，所以改用 nano 来编辑。
+
+（nano 下面的快捷键，`^O` 代表 Ctrl + O，写入。`M-U` 代表 Alt + U，撤销，退出是 `^X` (Ctrl + X)，以此类推。）
+
+```bash
+# 在 ./sites-available 中创建配置文件
+nano /etc/nginx/sites-available/example.com
+nano /etc/nginx/sites-available/coding-fans.cn
+```
+
+内容如下，在 XShell 终端中，用鼠标右键或者 Shift + Ins 就可以把整段文字复制到 nano 编辑器里了：
+
 ```nginx
 server {
+    # 绑定到所有 IP 的 80 端口
     listen 80;
     listen [::]:80
-    server_name example.com www.example.com;
+
+    # 匹配指定的域名
+    # server_name example.com www.example.com;
+
+    # 通配符匹配所有子域名
+    server_name example.com *.example.com;
     
     # HTTP 重定向到 HTTPS
-    return 301 https://$server_name$request_uri;
+
+    # 重定向到 example.com 顶级域名
+    # return 301 https://$server_name$request_uri;
+
+    # 重定向到 *.example.com （包括子域名等）
+    return 301 https://$host$request_uri;
+
+    # 重定向到 *.example.com:8080（带端口，对于 https 跳转不推荐）
+    # return 301 https://$http_host$request_uri;
 }
 
 server {
+    # 绑定到所有 IP 的 443 端口
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    server_name example.com www.example.com;
-    
+    server_name example.com *.example.com;
+
+    # 网站根目录
+    root /var/www/html;
+    index index.html index.htm;
+
     # SSL 证书
     ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
@@ -155,9 +232,6 @@ server {
     
     # HSTS（可选，强制 HTTPS）
     add_header Strict-Transport-Security "max-age=31536000" always;
-    
-    root /var/www/html;
-    index index.html;
 
     # 访问日志
     access_log /var/log/nginx/example.com_access.log;
@@ -175,7 +249,53 @@ server {
 }
 ```
 
+把 `example.com` 改为你所使用的域名即可。
+
+然后，把配置文件软链接到 `./sites-enabled` 目录下：
+
+```bash
+# 创建符号链接到 ./sites-enabled/ 目录下
+sudo ln -s /etc/nginx/sites-available/example.com /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/coding-fans.cn /etc/nginx/sites-enabled/
+```
+
+因为我们接管了 80 端口，所以要把默认的 `/etc/nginx/sites-enabled/default` 删掉，这里只是软链接，真实的配置文件 default 还是在 `/etc/nginx/sites-available/` 里的，随时可以恢复。
+
+```bash
+cd /etc/nginx/sites-enabled/
+rm -f ./default
+# 或者
+rm -f /etc/nginx/sites-enabled/default
+```
+
+让 nginx 重新加载配置，或重启 nginx：
+
+```bash
+# 测试语法
+sudo nginx -t
+
+# 重载配置
+sudo systemctl reload nginx
+
+# 或者重启
+sudo systemctl restart nginx
+```
+
+如果报 `unknown directive "stream" in xxxxxx`，说明 Nginx 没编译 stream 模块，需要：
+
+```bash
+# 检查是否支持
+nginx -V 2>&1 | grep -o with-stream
+
+# Ubuntu 官方源一般已内置，若没有可安装完整版
+sudo apt install nginx-full
+```
+
 ### 3.2 安全加固配置
+
+```bash
+vim /etc/nginx/conf.d/ssl.conf
+```
 
 ```nginx
 # /etc/nginx/conf.d/ssl.conf
@@ -196,7 +316,10 @@ ssl_stapling_verify on;
 ssl_trusted_certificate /etc/letsencrypt/live/example.com/chain.pem;
 
 # DNS
-resolver 8.8.8.8 8.8.4.4 valid=300s;
+# Google 的 DNS
+# resolver 8.8.8.8 8.8.4.4 valid=300s;
+# Cloudflare 的 DNS
+resolver 1.1.1.1 1.0.0.1 valid=300s;
 resolver_timeout 5s;
 
 # DH 参数（可选，增强安全性）
@@ -249,6 +372,7 @@ certbot renew --dry-run
 
 ```bash
 # crontab -e
+
 0 3 * * * certbot renew --quiet --post-hook "nginx -s reload"
 ```
 
@@ -273,6 +397,8 @@ systemctl list-timers | grep certbot
 ```bash
 # 续期成功后执行的命令
 certbot renew --post-hook "systemctl reload nginx"
+
+vim /etc/letsencrypt/renewal/example.com.conf
 
 # 或在配置文件中设置
 # /etc/letsencrypt/renewal/example.com.conf
