@@ -7,6 +7,15 @@
 
 [http://my.oschina.net/u/244918/blog/393642]()
 
+使用 gh 登陆 github：
+
+```bash
+apt install gh
+
+# 登陆 github
+gh auth login
+```
+
 记住密码（默认只保存 15 分钟）:
 
     $ git config --global credential.helper cache
