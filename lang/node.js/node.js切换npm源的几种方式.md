@@ -7,6 +7,8 @@
 修改全局 .npmrc 文件（对所有项目有效）：
 
 ```bash
+vim ~/.npmrc
+
 registry=https://registry.npmmirror.com/
 ```
 
@@ -28,17 +30,17 @@ npm config get registry
 
 安装依赖:
 
-```
+```bash
 npm install -g nrm
 ```
 
 查看可用的源:
 
-```
+```bash
 nrm ls
 ```
 
-```
+```bash
 $ nrm ls
   npm ---------- https://registry.npmjs.org/
   yarn --------- https://registry.yarnpkg.com/
@@ -51,7 +53,7 @@ $ nrm ls
 
 切换源:
 
-```
+```bash
 nrm use taobao
 ```
 
@@ -59,7 +61,7 @@ nrm use taobao
 
 根据源的响应时间长短选择最快的源使用即可。
 
-```
+```bash
 nrm test
 ```
 
@@ -99,7 +101,7 @@ set-ExecutionPolicy
 ```
 
     会提示你输入参数，输入 `RemoteSigned` 回车，即可。如果之后还提示进行选择，输入 `Y`  回车。
-
+    
     如果没有以 “管理员身份运行” 运行 `Windows PowerShell`，此步会报错。
 
 4. 再次使用 `get-ExecutionPolicy` 命令检查一下设置是否成功。
