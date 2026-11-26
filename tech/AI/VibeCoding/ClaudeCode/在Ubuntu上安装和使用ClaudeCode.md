@@ -5,7 +5,7 @@
 ### 1.1 安装 npm
 
 ```bash
-apt install npm
+sudo apt install npm
 ```
 
 安装完成后，Ubuntu 24.04 会安装一个 v18.19.1 版本的 nodejs。
@@ -21,7 +21,7 @@ apt install npm
 可以通过以下命令安装 NVM：
 
 ```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+sudo curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 ```
 
 如果 GitHub 访问不了，或很慢，则使用镜像站，镜像站的站点可以来这里找：
@@ -33,7 +33,7 @@ https://freevaults.com/github-mirror-daily-updates/
 例如，有一个 GitHub 镜像站是：[https://gitclone.com](https://gitclone.com) 。
 
 ```bash
-curl -o- https://gitclone.com/raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+sudo curl -o- https://gitclone.com/raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 ```
 
 但是，这个镜像站好像只能镜像 github.com 这个域名，上面这个命令会告诉你路径不存在，所以只能用 clone 仓库的办法了。
@@ -41,17 +41,17 @@ curl -o- https://gitclone.com/raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/insta
 或者，直接 clone 官方仓库：
 
 ```bash
-git clone https://github.com/nvm-sh/nvm.git
+sudo git clone https://github.com/nvm-sh/nvm.git
 或
-git clone https://gitclone.com/github.com/nvm-sh/nvm.git
+sudo git clone https://gitclone.com/github.com/nvm-sh/nvm.git
 cd nvm
-./install.sh
+sudo ./install.sh
 ```
 
 安装完成后, 需要重新加载配置文件让 nvm 生效：
 
 ```bash
-source ~/.bashrc
+sudo source ~/.bashrc
 ```
 
 如果你用的是 zsh，则执行 `source ~/.zshrc`，或者直接关掉终端重新开一个也行。
@@ -59,7 +59,7 @@ source ~/.bashrc
 用下列命令检查安装是否成功, 不成功可以调整一下环境变量的顺序:
 
 ```bash
-nvm -v
+sudo nvm -v
 ```
 
 ### 1.3 安装 node.js LTS版本
@@ -68,16 +68,16 @@ nvm -v
 
 ```bash
 # 在 Linux 或 MacOS 上
-nvm install --lts
+sudo nvm install --lts
 
 # 在 Windows 上使用下列命令
-nvm install lts
+sudo nvm install lts
 ```
 
 如果你需要特定版本，比如 v24.22.3，你可以通过以下命令安装：
 
 ```bash
-nvm install 24.22.3
+sudo nvm install 24.22.3
 ```
 
 ### 1.4 切换 node.js 版本
@@ -85,19 +85,19 @@ nvm install 24.22.3
 查看已经安装的版本:
 
 ```bash
-nvm ls
+sudo nvm ls
 ```
 
 可以使用 `nvm use` 命令切换 `node.js` 版本。例如，切换到 `node.js 24.22.3`：
 
 ```bash
-nvm use 24.22.3
+sudo nvm use 24.22.3
 ```
 
 此外，你还可以指定使用当前的 `LTS` 版本：
 
 ```bash
-nvm use lts
+sudo nvm use lts
 ```
 
 ## 2. 更换 nvm 的安装源
@@ -107,8 +107,9 @@ nvm use lts
 修改全局 .npmrc 文件（对所有项目有效）：
 
 ```bash
-vim ~/.npmrc
+sudo vim ~/.npmrc
 
+# 修改或添加如下内容
 registry=https://registry.npmmirror.com/
 ```
 
@@ -117,13 +118,13 @@ registry=https://registry.npmmirror.com/
 通过命令行更改当前项目的源：
 
 ```bash
-npm config set registry https://registry.npmmirror.com/
+sudo npm config set registry https://registry.npmmirror.com/
 ```
 
 查看当前源的命令:
 
 ```bash
-npm config get registry
+sudo npm config get registry
 ```
 
 ### 2.3 nrm 包切换
@@ -131,17 +132,17 @@ npm config get registry
 安装依赖:
 
 ```bash
-npm install -g nrm
+sudo npm install -g nrm
 ```
 
 查看可用的源:
 
 ```bash
-nrm ls
+sudo nrm ls
 ```
 
 ```bash
-$ nrm ls
+$ sudo nrm ls
   npm ---------- https://registry.npmjs.org/
   yarn --------- https://registry.yarnpkg.com/
   tencent ------ https://mirrors.cloud.tencent.com/npm/
@@ -154,7 +155,7 @@ $ nrm ls
 切换源:
 
 ```bash
-nrm use taobao
+sudo nrm use taobao
 ```
 
 测试速度（所有源的响应时间）:
@@ -162,7 +163,7 @@ nrm use taobao
 根据源的响应时间长短选择最快的源使用即可。
 
 ```bash
-nrm test
+sudo nrm test
 ```
 
 ## 3. Claude Code
@@ -170,7 +171,7 @@ nrm test
 ### 3.1 安装 Claude Code
 
 ```bash
-npm install -g @anthropic-ai/claude-code
+sudo npm install -g @anthropic-ai/claude-code
 ```
 
 日常使用：
@@ -187,13 +188,13 @@ claude --dangerously-skip-permissions -c
 CC-Swicth 有一个 CLI 的版本：
 
 ```bash
-npm install -g cc-switch-cli
+sudo npm install -g cc-switch-cli
 ```
 
 第一次启动 cc-switch-cli，它会自动关闭 Claude Code 的官方登录，并且新增一个模型配置。
 
 ```bash
-cc-switch-cli
+sudo cc-switch-cli
 ```
 
 例如：
