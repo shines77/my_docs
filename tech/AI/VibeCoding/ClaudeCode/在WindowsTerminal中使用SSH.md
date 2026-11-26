@@ -83,6 +83,14 @@ echo $TERM         # 应含 256color, xterm-256color
 echo $COLORTERM    # truecolor
 ```
 
+如果 `echo $COLORTERM` 显示为空，看后面的第三小节： `[3. 关于 setenv 的报错]` 。
+
+也可以使用如下命令：
+
+```bash
+export COLORTERM=truecolor
+```
+
 这样 OpenCode/ClaudeCode 的颜色、图标、按键都会正常。
 
 ## 2. WT 存在的问题，换 WezTerm
@@ -187,3 +195,63 @@ wezterm connect SSHMUX:你的 ssh 配置别名
 关于如何在 Ubuntu 24.04 上安装 WezTerm，请查阅另一篇文章：
 
 [在Ubuntu24.04上安装WezTerm.md](./在Ubuntu24.04上安装WezTerm.md)
+
+事实上，Linux 上的 WezTerm 只能工作在 GUI 模式，没有 GUI 的服务器版就不要折腾了，直接使用 `wezterm ssh 你的SSH domain` 连接服务器即可。
+
+## 3. 关于 setenv 的报错
+
+在 Windows 上用 wezterm 以 SSH 的方式登陆服务器的时候，会看到如下的报错信息：
+
+```text
+wezterm_ssh::pty[0m > ssh: setenv COLORTERM=truecolor failed: RequestDenied: Channel request env failed. Check the AcceptEnv setting on the ssh server side. Additional errors with setting env vars in this session will be logged at debug log level.
+```
+
+这个报错本身**不是致命错误**，它只是 WezTerm 尝试通过 SSH 把本地的 `COLORTERM=truecolor` 环境变量发送到远程服务器时，被服务器拒绝了。远程服务器仍然可以正常连接和使用，只是可能无法正确识别你的终端支持真彩色（truecolor）。
+
+### 为什么会出现这个报错
+
+WezTerm 内置的 SSH 客户端为了确保远程端的程序能正确显示颜色和终端特性，会自动尝试发送一些环境变量（如 `COLORTERM`、`TERM_PROGRAM` 等）。但是，SSH 服务器出于安全考虑，默认只接收白名单里的环境变量。如果服务器的 `sshd_config` 中没有配置 `AcceptEnv COLORTERM`，它就会拒绝这个请求，从而产生你看到的日志。
+
+### 解决方法
+
+**方案一：修改远程服务器的 SSH 配置（推荐）**
+
+如果你拥有远程服务器的管理权限，并且希望彻底消除这个报错，让 WezTerm 能正常传递颜色信息，可以在服务器端进行配置。
+
+1.  登录到远程服务器。
+2.  编辑 SSH 配置文件（通常位于 `/etc/ssh/sshd_config`）：
+
+    ```bash
+    sudo nano /etc/ssh/sshd_config
+    或
+    sudo vim /etc/ssh/sshd_config
+    ```
+    
+3.  在文件中找到或添加 `AcceptEnv` 这一行。你可以专门针对 WezTerm 发送的变量进行放行：
+
+    ```text
+    # 例如原来是：
+    AcceptEnv LANG LC_*
+    
+    # 在后面添加我们的 Env 变量，改为：
+    AcceptEnv LANG LC_* TERM COLORTERM TERM_PROGRAM TERM_PROGRAM_VERSION WEZTERM_* WSLENV WT_SESSION WT_PROFILE_ID
+    ```
+
+    如果文件中已经存在 `AcceptEnv LANG LC_*` 之类的行，直接在后面追加即可，`AcceptEnv` 指令是累加的。
+
+4.  保存文件后，重启 SSH 服务使配置生效：
+
+    ```bash
+    sudo systemctl restart ssh
+    
+    # 保险一点，再执行一次
+    sudo systemctl daemon-reload
+    ```
+
+    完成这些步骤后，再次通过 WezTerm 连接，该报错就不会再出现了。
+
+**方案二：忽略报错（如果你不介意颜色可能不准）**
+
+如果你没有服务器权限，或者觉得这个报错很烦但不想改配置，其实**完全可以忽略它**。这只是一个警告级别的日志，不会影响你正常登录和使用远程服务器。只是某些依赖 `COLORTERM` 变量来判断是否启用真彩色的程序（如 Vim、Neovim 或某些 CLI 工具）在远程端可能会退回到 256 色模式。
+
+**补充说明**：根据 WezTerm 的代码提交记录，开发者也在后续版本中调整了逻辑，遇到这种被服务器拒绝的情况时会仅记录日志而不再“硬失败”（hard fail），所以你看到的是一个警告而非错误。

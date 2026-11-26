@@ -8,15 +8,15 @@
 
 这是最方便、也最推荐的方式，可以让你通过 `apt` 命令安装和更新。不过，由于 Ubuntu 24.04 的官方稳定版包缺失，通过这个方式安装的其实是 **Nightly** 版本。
 
-1.  **添加 GPG 密钥和软件源**：在终端中执行以下命令。
+1. **添加 GPG 密钥和软件源**：在终端中执行以下命令。
 
-    ```bash
-    curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
-
-    echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
-    
-    sudo chmod 644 /usr/share/keyrings/wezterm-fury.gpg
-    ```
+   ```bash
+   curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
+   
+   echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
+   
+   sudo chmod 644 /usr/share/keyrings/wezterm-fury.gpg
+   ```
 
 2.  **更新并安装**：
 
