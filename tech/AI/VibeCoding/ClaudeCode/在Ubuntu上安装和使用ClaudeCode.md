@@ -12,7 +12,7 @@ sudo apt install npm
 
 ### 1.2  安装 nvm
 
-`NPM`（Node Version Manager）是最常用的 `node.js` 版本管理工具。它允许我们轻松安装、卸载和切换不同的 `node.js` 版本，并且支持跨平台使用。以下是 `NVM` 的安装和使用步骤:
+`NVM`（Node Version Manager）是最常用的 `node.js` 版本管理工具。它允许我们轻松安装、卸载和切换不同的 `node.js` 版本，并且支持跨平台使用。以下是 `NVM` 的安装和使用步骤:
 
 ### 1.2.1 安装 nvm
 
