@@ -187,8 +187,6 @@ claude --dangerously-skip-permissions -c
 CC-Swicth 有一个 CLI 的版本：
 
 ```bash
-npm install -g claude-settings-switch
-或
 npm install -g cc-switch-cli
 ```
 
@@ -215,10 +213,12 @@ API-Key 可以使用 Shift + Ins 粘贴，粘贴完后，按 Tab 键就会显示
 
 ### 3.3 Claude Code 配置文件
 
+注：由于 `cc-switch-cli` 只能修改 root 用户的配置（即使你是使用非 root 用户登录的），所以如果是非 root 用户，只能自己手动修改配置文件了。
+
 编辑 claude code 的配置文件：
 
 ```bash
-vim ~/.claude.json
+sudo vim ~/.claude.json
 ```
 
 可以看到，关闭 claude 官方登陆的设置项和其他：
@@ -230,17 +230,17 @@ vim ~/.claude.json
 供应商的配置文件：
 
 ```bash
-vim ~/.claude/settings.json
+sudo vim ~/.claude/settings.json
 ```
 
 按照 DeepSeek 的官方映射规则，如果模型名以 `claude-opus` 开头，请求确实会被路由到更贵的 `deepseek-v4-pro`，并按 V4 Pro 的价格计费。要确保只使用 `deepseek-flash`，关键在于彻底避开 `claude-opus` 这个前缀。
 
 调整方案：把 Opus 槽位也指向 Flash
-既然你已经理解了不能随意填 `claude-opus-*`，那么解决办法就是：把 Claude Code 里所有能配置模型的变量，尤其是 `ANTHROPIC_DEFAULT_OPUS_MODEL`，都明确指向 `claude-sonnet` 或 `claude-haiku` 这类会被映射到 `deepseek-flash` 的名称。
+既然你已经理解了不能随意填 `claude-opus-*`，那么解决办法就是：把 Claude Code 里所有能配置模型的变量，尤其是 `ANTHROPIC_DEFAULT_FABLE_MODEL`、 `ANTHROPIC_DEFAULT_OPUS_MODEL`，都明确指向 `claude-sonnet` 或 `claude-haiku` 这类会被映射到 `deepseek-flash` 的名称。
 
 详细可以参考：[DeepSeek-v4.1-flash 对话历史](https://chat.deepseek.com/share/8s6qg9l7w37xurq6ze)
 
-所以，改成如下所示：
+所以，添加如下的配置，例如：
 
 ```json
 {
@@ -248,6 +248,7 @@ vim ~/.claude/settings.json
     "ANTHROPIC_BASE_URL": "https://api.deepseek.com/anthropic",
     "ANTHROPIC_AUTH_TOKEN": "你的DeepSeek API密钥",
     "ANTHROPIC_MODEL": "claude-sonnet-5",
+    "ANTHROPIC_DEFAULT_FABLE_MODEL": "claude-sonnet-5",
     "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-sonnet-5",
     "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-5",
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-haiku-5"
