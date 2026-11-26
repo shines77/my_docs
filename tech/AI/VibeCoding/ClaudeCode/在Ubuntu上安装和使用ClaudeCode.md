@@ -36,10 +36,14 @@ https://freevaults.com/github-mirror-daily-updates/
 curl -o- https://gitclone.com/raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 ```
 
+但是，这个镜像站好像只能镜像 github.com 这个域名，上面这个命令会告诉你路径不存在，所以只能用 clone 仓库的办法了。
+
 或者，直接 clone 官方仓库：
 
 ```bash
 git clone https://github.com/nvm-sh/nvm.git
+或
+git clone https://gitclone.com/github.com/nvm-sh/nvm.git
 cd nvm
 ./install.sh
 ```
