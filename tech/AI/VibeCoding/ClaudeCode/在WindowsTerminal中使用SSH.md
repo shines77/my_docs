@@ -12,7 +12,7 @@
 通用建议：
 
 - 装一款  Nerd  Font（如  JetBrainMono Nerd Font）并在终端里设为默认字体，避免图标乱码。
-- 确认 echo #TERM 输出含 256color，COLORTERM=truecolor。
+- 确认 echo $TERM 输出含 256color，COLORTERM=truecolor。
 - 若在远程服务器上跑，最终显示取决于你的本地终端，服务器端只影响能力探测。
 
 ### 1.1 装 Windows Terminal
@@ -186,4 +186,4 @@ wezterm connect SSHMUX:你的 ssh 配置别名
 
 关于如何在 Ubuntu 24.04 上安装 WezTerm，请查阅另一篇文章：
 
-[Ubuntu24.04上安装WezTerm.md](./Ubuntu24.04上安装WezTerm.md)
+[在Ubuntu24.04上安装WezTerm.md](./在Ubuntu24.04上安装WezTerm.md)
